@@ -6,12 +6,10 @@ class_name ActorPreset
 @export var text : String = "Undef Actor"
 @export_multiline var description : String = ""
 @export var MAXHP : float = -1
-var HP : float = 1
 @export var AR : float = -1
 @export var DR : float = -1
 @export var PHYSDEF : float = -1
 @export var MAGDEF : float = -1
-var dead : bool = false
 @export var actions : Array[Action] = []
 @export var drops : Array[Equipment] = []
 @export var dropChances : Array[float] = []
@@ -74,11 +72,6 @@ func getDrops(magicFind) -> Array[Equipment] :
 		if (randf() < dropChances[index]*magicFind) :
 			retVal.append(drops[index])
 	return retVal
-
-func getHP() :
-	return HP
-func setHP(val) :
-	HP = val
 	
 func getName() : return text
 func getResourceName() : return resource_path.get_file().get_basename()

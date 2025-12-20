@@ -14,14 +14,16 @@ func resetCombat(friendlyCores : Array[ActorPreset], enemyCores : Array[ActorPre
 		if (friend == friendlyCores[0] && Definitions.GODMODE) :
 			friend.actions = [GODPUNCHloader]
 		var newActor = actorLoader.instantiate()
-		newActor.core = friend.duplicate(true)
+		newActor.core = friend
+		newActor.HP = newActor.core.MAXHP
 		$FriendlyParty.add_child(newActor)
 		newActor.connect("actionTaken", _on_friend_action_taken)
 		newActor.size_flags_horizontal = 0
 		newActor.size_flags_vertical = Control.SIZE_SHRINK_END
 	for enemy in enemyCores :
 		var newActor = actorLoader.instantiate()
-		newActor.core = enemy.duplicate(true)
+		newActor.core = enemy
+		newActor.HP = newActor.core.MAXHP
 		$EnemyParty.add_child(newActor)
 		newActor.connect("actionTaken", _on_enemy_action_taken)
 		newActor.size_flags_horizontal = 0
@@ -34,11 +36,9 @@ func restartCombat() :
 	var friendlyCores : Array[ActorPreset] = []
 	for child in $FriendlyParty.get_children() :
 		friendlyCores.append(child.core)
-		friendlyCores.back().HP = friendlyCores.back().MAXHP
 	var enemyCores : Array[ActorPreset] = []
 	for child in $EnemyParty.get_children() :
 		enemyCores.append(child.core)
-		enemyCores.back().HP = enemyCores.back().MAXHP
 	resetCombat(friendlyCores, enemyCores)
 	
 func initPartyPositions(party : Array) :
@@ -91,12 +91,12 @@ func doCombatStep() :
 func getStatus() :
 	var victoryBool : bool = true
 	for child in $EnemyParty.get_children() :
-		if (!child.core.dead) :
+		if (!child.dead) :
 			victoryBool = false
 	if (victoryBool) : return combatStatus.victory
 	var defeatBool : bool = true
 	for child in $FriendlyParty.get_children() :
-		if (!child.core.dead) :
+		if (!child.dead) :
 			defeatBool = false
 	if (defeatBool) : return combatStatus.defeat
 	return combatStatus.running
@@ -137,7 +137,7 @@ func getTarget(emitter, otherParty, action) :
 func getRandomTarget(otherParty) :
 	var validTargets : Array
 	for unit in otherParty :
-		if (!unit.core.dead) :
+		if (!unit.dead) :
 			validTargets.append(unit)
 	if (validTargets.size() == 0) :
 		return -1
@@ -148,8 +148,8 @@ func getLowestTarget(otherParty) :
 	var lowestHP = otherParty[0].core.MAXHP
 	var lowestTarget
 	for unit in otherParty :
-		if (unit.core.HP <= lowestHP && unit.core.HP > 0) :
-			lowestHP = unit.core.HP
+		if (unit.HP <= lowestHP && unit.HP > 0) :
+			lowestHP = unit.HP
 			lowestTarget = unit
 	return lowestTarget
 
@@ -167,7 +167,7 @@ func getStandardTarget(emitter, otherParty) :
 
 func searchPartyAlive(party, pos:int) :
 	for unit in party :
-		if (unit.combatPosition == pos && !unit.core.dead) :
+		if (unit.combatPosition == pos && !unit.dead) :
 			return unit
 	return null
 
@@ -192,10 +192,10 @@ func executeAction(emitter, action, target) :
 		return
 	var args : Array = [action.power, DR, AR, defense]
 	var damage = Encyclopedia.getFormula("Damage Value", Encyclopedia.formulaAction.getCalculation_full, args)
-	if (damage > target.core.HP) :
+	if (damage > target.HP) :
 		target.setHP(0)
 	else :
-		target.setHP(target.core.HP-damage)
+		target.setHP(target.HP-damage)
 
 func _on_check_box_toggled(toggled_on: bool) -> void:
 	autoMode = toggled_on

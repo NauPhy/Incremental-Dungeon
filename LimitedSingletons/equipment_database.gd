@@ -1,15 +1,12 @@
 extends Node
 
-const resourceLoader0 = preload("res://Resources/NewEquipment/NewEquipmentReferences.gd")
-const resourceLoader1 = preload("res://Resources/OldEquipment/OldEquipmentReferences.gd")
-
 func getEquipment(myName : String) :
-	var try = resourceLoader0.getNewEquipment(myName)
+	var try = MegaFile.getNewEquipment(myName)
 	if (try != null) :
 		return try
-	return resourceLoader1.getOldEquipment(myName)
+	return MegaFile.getOldEquipment(myName)
 
 func getAllEquipment() -> Array[Equipment] :
-	var list = resourceLoader0.getAllNewEquipment()
-	list.append_array(resourceLoader1.getAllOldEquipment())
+	var list = MegaFile.getAllNewEquipment()
+	list.append_array(MegaFile.getAllOldEquipment())
 	return list

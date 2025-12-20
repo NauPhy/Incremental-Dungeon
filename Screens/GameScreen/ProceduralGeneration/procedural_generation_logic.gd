@@ -23,16 +23,15 @@ func getAllItems() :
 			list.remove_at(list.find(item))
 	return list
 	
-const environmentList = preload("res://Resources/Environment/EnvironmentReferences.gd")
 func createEnvironment() -> MyEnvironment :
 	if (previousEnvironments.size() == 9) :
-		return environmentList.getEnvironment("fort_demon")
-	var myRange = environmentList.FilesDictionary.size()-1
-	var randKey = environmentList.FilesDictionary.keys()[randi_range(0,myRange)]
-	var potentialEnvironment = environmentList.FilesDictionary[randKey]
+		return MegaFile.getEnvironment("fort_demon")
+	var myRange = MegaFile.Environment_FilesDictionary.size()-1
+	var randKey = MegaFile.Environment_FilesDictionary.keys()[randi_range(0,myRange)]
+	var potentialEnvironment = MegaFile.FilesDictionary[randKey]
 	while (createdRecently(potentialEnvironment)) :
-		randKey = environmentList.FilesDictionary.keys()[randi_range(0,myRange)]
-		potentialEnvironment = environmentList.FilesDictionary[randKey]
+		randKey = MegaFile.Environment_FilesDictionary.keys()[randi_range(0,myRange)]
+		potentialEnvironment = MegaFile.getEnvironment(randKey)
 	previousEnvironments.append(randKey)
 	return potentialEnvironment.duplicate()
 	
@@ -115,7 +114,7 @@ func getElite() -> ActorPreset :
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite)
 	
 ############# Saving
-var previousEnvironments : Array[String] = []
+var previousEnvironments : Array = []
 var myReady : bool = false
 func _ready() :
 	myReady = true

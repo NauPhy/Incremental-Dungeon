@@ -1,6 +1,5 @@
 extends Control
 
-const textureRefs = preload("res://Resources/Textures/PlayerTexture/PlayerTextureReferences.gd")
 const permittedBasePrefixes = ["deep_dwarf", "deep_elf", "demigod", "dwarf", "elf", "gnome", "human", "vampire"]
 
 var permittedNames : Array[String] = []
@@ -36,7 +35,7 @@ func setupCarousels(isBody : bool) :
 	
 func setupBase(type) -> int :
 	var count = 0
-	var values = textureRefs.getDictionary(type).keys()
+	var values = MegaFile.getPlayerTextureDictionary(type).keys()
 	for value in values :
 		var permitted : bool = false
 		for prefix in permittedBasePrefixes :
@@ -48,12 +47,12 @@ func setupBase(type) -> int :
 			count += 1
 	return count
 func setupCat(type) -> int :
-	return textureRefs.getDictionary(type).size()
+	return MegaFile.getPlayerTextureDictionary(type).size()
 func setupOther(type) -> int :
-	return textureRefs.getDictionary(type).size() + 1
+	return MegaFile.getPlayerTextureDictionary(type).size() + 1
 
 func setDefaultTextures() :
-	$Portrait/Base.texture = textureRefs.getbase(permittedBasePrefixes[0]+"_female")
+	$Portrait/Base.texture = MegaFile.getPlayerTexture_base(permittedBasePrefixes[0]+"_female")
 	for child in $Portrait.get_children() :
 		if (child == $Portrait/Base || child == $Portrait/Cat) :
 			pass
@@ -75,13 +74,13 @@ func connectCarousels() :
 func _on_carousel_move(emitter : Node, currentPos, _currentOption) :
 	var type : String = emitter.get_parent().name
 	if (type == "base") :
-		$Portrait/Base.texture = textureRefs.getbase(permittedNames[currentPos])
+		$Portrait/Base.texture = MegaFile.getPlayerTexture_base(permittedNames[currentPos])
 	elif (type == "felids") :
-		$Portrait/Cat.texture = textureRefs.getDictionary(type).values()[currentPos]
+		$Portrait/Cat.texture = MegaFile.getPlayerTextureDictionary(type).values()[currentPos]
 	elif (currentPos == 0) :
 		$Portrait.get_node(type).texture = null
 	else :
-		$Portrait.get_node(type).texture = textureRefs.getDictionary(type).values()[currentPos-1]
+		$Portrait.get_node(type).texture = MegaFile.getPlayerTextureDictionary(type).values()[currentPos-1]
 
 func setupLayout() :
 	var base = $Carousels/VBoxContainer/Body/base

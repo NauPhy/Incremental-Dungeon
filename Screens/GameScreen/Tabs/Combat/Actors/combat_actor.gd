@@ -2,6 +2,8 @@ extends Panel
 
 signal actionTaken
 var core : ActorPreset
+var HP : float = 1
+var dead : bool = false
 var combatPosition : int = -1
 var isEnemy : bool = false
 
@@ -11,8 +13,8 @@ func HPBar() :
 const damageNumberLoader = preload("res://Graphic Elements/damage_number.tscn")
 const estimatedSize : Vector2 = Vector2(92,40)
 func setHP(val) :
-	if (!$ResourceCard/VBoxContainer/ActionProgressBar.paused && val < core.HP) :
-		var damage = core.HP - val
+	if (!$ResourceCard/VBoxContainer/ActionProgressBar.paused && val < HP) :
+		var damage = HP - val
 		var screenSize : Vector2i = Engine.get_singleton("DisplayServer").screen_get_size()
 		var X0 = clamp(global_position.x-estimatedSize.x-50, 0, screenSize.x-estimatedSize.x)
 		var X1 = clamp(global_position.x+size.x+50,0,screenSize.x-estimatedSize.x)
@@ -27,7 +29,7 @@ func setHP(val) :
 		var damageNumber = damageNumberLoader.instantiate()
 		add_child(damageNumber)
 		damageNumber.initialiseAndRun(damage, X0,X1,Y0,Y1)
-	core.HP = val
+	HP = val
 
 #Add more sophisticated AI later
 func _ready() :
@@ -42,7 +44,7 @@ func _process(_delta) :
 	if (checkDeath()) :
 		return
 	HPBar().setMaxHP(core.MAXHP)
-	HPBar().setCurrentHP(core.HP)
+	HPBar().setCurrentHP(HP)
 
 func pause() :
 	$ResourceCard/VBoxContainer/ActionProgressBar.paused = true
@@ -56,8 +58,8 @@ func takeAction(action) :
 	$ResourceCard/VBoxContainer/ActionProgressBar.value = 0
 	
 func checkDeath() :
-	if (core.dead || core.HP <= 0) :
-		core.dead = true
+	if (dead || HP <= 0) :
+		dead = true
 		$ResourceCard/ActionLabel.text = "Dead"
 		HPBar().setCurrentHP(0)
 		$ResourceCard/VBoxContainer/ActionProgressBar.value = 0

@@ -82,10 +82,10 @@ func beforeLoad(_newGame) :
 		newHeader.name = Definitions.attributeDictionary[key]
 		newHeader.text = Definitions.attributeDictionaryShort[key]
 		newHeader.connect("myPressed", _on_header_button_pressed)
-	for key in RoutineReferences.RoutineDictionary.keys() :
+	for key in MegaFile.Routine_FilesDictionary.keys() :
 		var newEntry = trainingEntry.instantiate()
 		$Con.add_child(newEntry)
-		newEntry.setResource(RoutineReferences.getRoutine(key))
+		newEntry.setResource(MegaFile.getRoutine(key))
 		newEntry.name = newEntry.getResource().text
 		newEntry.visible = !newEntry.getResource().hidden
 		newEntry.connect("requestedEnable", _on_requested_enable)

@@ -202,9 +202,9 @@ func _ready() :
 	$VBoxContainer/OtherStatPanel.initialise(otherStatObjects)
 	myReady = true
 	
+var humanMan = preload("res://Resources/OldActor/Misc/human.tres")
 func beforeLoad(_newSave : bool) :
-	var temp = load("res://Screens/GameScreen/Tabs/Combat/Actors/human.tres")
-	core = temp.duplicate()
+	core = humanMan.duplicate()
 	
 func onLoad(loadDict) -> void :	
 	setClass(load(loadDict["playerClass"]))
