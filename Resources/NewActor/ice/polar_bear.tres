@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://ccjutw67ksawb"]
+
+[ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_umihn"]
+[ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_vsnwf"]
+[ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_ngret"]
+[ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_iq7wi"]
+[ext_resource type="Texture2D" uid="uid://digwayo4dnf4o" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/animals/polar_bear.png" id="4_vsnwf"]
+
+[sub_resource type="Resource" id="Resource_onj1i"]
+script = ExtResource("3_ngret")
+isEligible = true
+enemyQuality = 1
+droppedArmorClasses = Array[int]([])
+droppedWeaponClasses = Array[int]([])
+droppedTechnologyClasses = Array[int]([])
+faction = 3
+
+[resource]
+script = ExtResource("4_iq7wi")
+portrait = ExtResource("4_vsnwf")
+text = "Polar Bear"
+description = ""
+MAXHP = -1.0
+AR = -1.0
+DR = -1.0
+PHYSDEF = -1.0
+MAGDEF = -1.0
+actions = Array[ExtResource("1_umihn")]([])
+drops = Array[ExtResource("2_vsnwf")]([])
+dropChances = Array[float]([])
+enemyGroups = SubResource("Resource_onj1i")
+metadata/_custom_type_script = "uid://ddpkx6a4ixuw2"

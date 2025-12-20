@@ -1,0 +1,429 @@
+[gd_scene load_steps=21 format=3 uid="uid://ckj85egqvfy1i"]
+
+[ext_resource type="Script" uid="uid://dtyjf0vx73nxt" path="res://Screens/character_creation_new.gd" id="1_ec33j"]
+[ext_resource type="Script" uid="uid://bkh6okf1c2trl" path="res://Screens/portrait.gd" id="1_jdd23"]
+[ext_resource type="Texture2D" uid="uid://dk1cprmud360t" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/base/elf_female.png" id="2_7xalo"]
+[ext_resource type="Texture2D" uid="uid://bsneg763fewlg" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/legs/leg_armor_1.png" id="3_njo3g"]
+[ext_resource type="Texture2D" uid="uid://btlxwd8bxpu7e" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/body/dragon_armor_cyan_new.png" id="4_5hiny"]
+[ext_resource type="Texture2D" uid="uid://cg14xl7jtn67d" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/hair/fem_black.png" id="4_exae6"]
+[ext_resource type="Texture2D" uid="uid://dtdfptb1gvlt7" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/beard/long_black.png" id="5_ec33j"]
+[ext_resource type="Texture2D" uid="uid://7mwwe142g7i7" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/felids/cat_5.png" id="6_1ldgm"]
+[ext_resource type="Texture2D" uid="uid://oimqh08a3y2g" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/head/isildur.png" id="7_oobpv"]
+[ext_resource type="Texture2D" uid="uid://dxe1eb6bki7j4" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/gloves/gauntlet_blue.png" id="8_8s7uo"]
+[ext_resource type="Texture2D" uid="uid://bems1utyayvtk" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/boots/middle_gold.png" id="9_7rg6p"]
+[ext_resource type="Texture2D" uid="uid://qynreusj6ned" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/hand_left/shield_holy.png" id="10_q47kp"]
+[ext_resource type="Texture2D" uid="uid://bmb3psy11xlrs" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/hand_right/axe_executioner_new.png" id="11_eevmu"]
+[ext_resource type="PackedScene" uid="uid://demic8kpubfcc" path="res://Graphic Elements/Carousel/carousel_basic.tscn" id="13_5hiny"]
+[ext_resource type="Texture2D" uid="uid://dx4fvgghc0432" path="res://Images/CC0 Assets/icon_map.png" id="14_q47kp"]
+[ext_resource type="Script" uid="uid://c0e8ghbyrf5w0" path="res://Screens/my_texture_button.gd" id="15_eevmu"]
+[ext_resource type="PackedScene" uid="uid://c5uhhdm6s5ims" path="res://Graphic Elements/Buttons/my_button.tscn" id="16_63urx"]
+[ext_resource type="Theme" uid="uid://c8cfcbe6ioxu5" path="res://Graphic Elements/Themes/subTab.tres" id="17_8nt8s"]
+
+[sub_resource type="Theme" id="Theme_5hiny"]
+RichTextLabel/font_sizes/normal_font_size = 25
+
+[sub_resource type="Theme" id="Theme_ec33j"]
+RichTextLabel/font_sizes/normal_font_size = 25
+
+[node name="CharacterCreation" type="Control"]
+texture_filter = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_5hiny")
+script = ExtResource("1_ec33j")
+
+[node name="Portrait" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.523
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jdd23")
+myScale = 20.0
+
+[node name="Base" type="Sprite2D" parent="Portrait"]
+position = Vector2(366.08, 540)
+scale = Vector2(20, 20)
+texture = ExtResource("2_7xalo")
+
+[node name="legs" type="Sprite2D" parent="Portrait"]
+position = Vector2(366.08, 540)
+scale = Vector2(20, 20)
+texture = ExtResource("3_njo3g")
+
+[node name="body" type="Sprite2D" parent="Portrait"]
+position = Vector2(366.08, 540)
+scale = Vector2(20, 20)
+texture = ExtResource("4_5hiny")
+
+[node name="beard" type="Sprite2D" parent="Portrait"]
+position = Vector2(366.08, 540)
+scale = Vector2(20, 20)
+texture = ExtResource("5_ec33j")
+
+[node name="hair" type="Sprite2D" parent="Portrait"]
+position = Vector2(366.08, 540)
+scale = Vector2(20, 20)
+texture = ExtResource("4_exae6")
+
+[node name="head" type="Sprite2D" parent="Portrait"]
+position = Vector2(366.08, 540)
+scale = Vector2(20, 20)
+texture = ExtResource("7_oobpv")
+
+[node name="gloves" type="Sprite2D" parent="Portrait"]
+position = Vector2(366.08, 540)
+scale = Vector2(20, 20)
+texture = ExtResource("8_8s7uo")
+
+[node name="boots" type="Sprite2D" parent="Portrait"]
+position = Vector2(366.08, 540)
+scale = Vector2(20, 20)
+texture = ExtResource("9_7rg6p")
+
+[node name="hand_left" type="Sprite2D" parent="Portrait"]
+position = Vector2(366.08, 540)
+scale = Vector2(20, 20)
+texture = ExtResource("10_q47kp")
+
+[node name="hand_right" type="Sprite2D" parent="Portrait"]
+position = Vector2(366.08, 540)
+scale = Vector2(20, 20)
+texture = ExtResource("11_eevmu")
+
+[node name="Cat" type="Sprite2D" parent="Portrait"]
+position = Vector2(766.08, 668)
+scale = Vector2(10, 10)
+texture = ExtResource("6_1ldgm")
+
+[node name="Carousels" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.523
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Carousels"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.7
+anchor_bottom = 1.0
+offset_right = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 100
+alignment = 1
+
+[node name="Body" type="VBoxContainer" parent="Carousels/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Body"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 30
+text = " Body "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="Carousels/VBoxContainer/Body"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="base" type="HBoxContainer" parent="Carousels/VBoxContainer/Body"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Body/base"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Body "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="TextureButton" type="TextureButton" parent="Carousels/VBoxContainer/Body/base"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+texture_normal = ExtResource("14_q47kp")
+script = ExtResource("15_eevmu")
+
+[node name="MyButton" parent="Carousels/VBoxContainer/Body/base" instance=ExtResource("16_63urx")]
+layout_mode = 2
+theme = ExtResource("17_8nt8s")
+text = "-10"
+
+[node name="MyButton2" parent="Carousels/VBoxContainer/Body/base" instance=ExtResource("16_63urx")]
+layout_mode = 2
+theme = ExtResource("17_8nt8s")
+text = "+10"
+
+[node name="Carousel" parent="Carousels/VBoxContainer/Body/base" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+myWrap = true
+textureScale = 3.0
+
+[node name="hair" type="HBoxContainer" parent="Carousels/VBoxContainer/Body"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Body/hair"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Hair "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Carousel" parent="Carousels/VBoxContainer/Body/hair" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+myWrap = true
+textureScale = 3.0
+
+[node name="beard" type="HBoxContainer" parent="Carousels/VBoxContainer/Body"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Body/beard"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Beard "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Carousel" parent="Carousels/VBoxContainer/Body/beard" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+myWrap = true
+textureScale = 3.0
+
+[node name="felids" type="HBoxContainer" parent="Carousels/VBoxContainer/Body"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Body/felids"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Cat "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Carousel" parent="Carousels/VBoxContainer/Body/felids" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+myWrap = true
+textureScale = 3.0
+
+[node name="Clothes" type="VBoxContainer" parent="Carousels/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Clothes"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 30
+text = " Clothing "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="Carousels/VBoxContainer/Clothes"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="head" type="HBoxContainer" parent="Carousels/VBoxContainer/Clothes"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Clothes/head"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Helmet "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Carousel" parent="Carousels/VBoxContainer/Clothes/head" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+myWrap = true
+textureScale = 3.0
+
+[node name="body" type="HBoxContainer" parent="Carousels/VBoxContainer/Clothes"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Clothes/body"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Body "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Carousel" parent="Carousels/VBoxContainer/Clothes/body" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+myWrap = true
+textureScale = 3.0
+
+[node name="legs" type="HBoxContainer" parent="Carousels/VBoxContainer/Clothes"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Clothes/legs"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Pants "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Carousel" parent="Carousels/VBoxContainer/Clothes/legs" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+myWrap = true
+textureScale = 3.0
+
+[node name="boots" type="HBoxContainer" parent="Carousels/VBoxContainer/Clothes"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Clothes/boots"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Shoes "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Carousel" parent="Carousels/VBoxContainer/Clothes/boots" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+myWrap = true
+textureScale = 3.0
+
+[node name="hand_left" type="HBoxContainer" parent="Carousels/VBoxContainer/Clothes"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Clothes/hand_left"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Left Hand "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Carousel" parent="Carousels/VBoxContainer/Clothes/hand_left" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+myWrap = true
+textureScale = 3.0
+
+[node name="hand_right" type="HBoxContainer" parent="Carousels/VBoxContainer/Clothes"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/VBoxContainer/Clothes/hand_right"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Right Hand "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Carousel" parent="Carousels/VBoxContainer/Clothes/hand_right" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+myWrap = true
+textureScale = 3.0
+
+[node name="Checkboxes" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Checkboxes"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.2
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Humans" type="HBoxContainer" parent="Checkboxes/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Checkboxes/VBoxContainer/Humans"]
+layout_mode = 2
+theme = SubResource("Theme_ec33j")
+text = " Humans "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="CheckBox" type="CheckBox" parent="Checkboxes/VBoxContainer/Humans"]
+layout_mode = 2
+size_flags_horizontal = 10
+button_pressed = true
+
+[node name="Humanoids" type="HBoxContainer" parent="Checkboxes/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Checkboxes/VBoxContainer/Humanoids"]
+layout_mode = 2
+text = " Humanoids "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="CheckBox" type="CheckBox" parent="Checkboxes/VBoxContainer/Humanoids"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="Non-humanoids" type="HBoxContainer" parent="Checkboxes/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Checkboxes/VBoxContainer/Non-humanoids"]
+layout_mode = 2
+text = " Non-humanoids "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="CheckBox" type="CheckBox" parent="Checkboxes/VBoxContainer/Non-humanoids"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[connection signal="pressed" from="Carousels/VBoxContainer/Body/base/TextureButton" to="Carousels/VBoxContainer/Body/base/TextureButton" method="_on_pressed"]

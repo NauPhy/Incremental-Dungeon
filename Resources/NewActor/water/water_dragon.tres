@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://dufytc4wnyes"]
+
+[ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_quclm"]
+[ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_1u5cc"]
+[ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_uyinh"]
+[ext_resource type="Texture2D" uid="uid://d0qqwol870yl" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/dragons/storm_dragon_new.png" id="4_1u5cc"]
+[ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_ofcuy"]
+
+[sub_resource type="Resource" id="Resource_5r5te"]
+script = ExtResource("3_uyinh")
+isEligible = true
+enemyQuality = 2
+droppedArmorClasses = Array[int]([])
+droppedWeaponClasses = Array[int]([])
+droppedTechnologyClasses = Array[int]([])
+faction = 1
+
+[resource]
+script = ExtResource("4_ofcuy")
+portrait = ExtResource("4_1u5cc")
+text = "Water Dragon"
+description = ""
+MAXHP = -1.0
+AR = -1.0
+DR = -1.0
+PHYSDEF = -1.0
+MAGDEF = -1.0
+actions = Array[ExtResource("1_quclm")]([])
+drops = Array[ExtResource("2_1u5cc")]([])
+dropChances = Array[float]([])
+enemyGroups = SubResource("Resource_5r5te")
+metadata/_custom_type_script = "uid://ddpkx6a4ixuw2"

@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://e652i0ujfpjf"]
+
+[ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_u4nhb"]
+[ext_resource type="Resource" uid="uid://bu5a0rsdhamjq" path="res://Resources/NewAction/EnemyExclusiveAttacks/fire_claw.tres" id="2_r76lm"]
+[ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_fn1rk"]
+[ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_q3tad"]
+[ext_resource type="Texture2D" uid="uid://n1tnu73t6pce" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/demons/hairy_devil.png" id="4_r76lm"]
+
+[sub_resource type="Resource" id="Resource_30uvt"]
+script = ExtResource("3_fn1rk")
+isEligible = true
+glassCannonIndex = 1.5
+HPToDefRatio = 1.5
+defRatio = 1.2
+atkRatio = 0.4
+isPhysical = true
+enemyQuality = 0
+droppedArmorClasses = Array[int]([0])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([0, 1])
+faction = 6
+
+[resource]
+script = ExtResource("4_q3tad")
+portrait = ExtResource("4_r76lm")
+text = "Hairy Devil"
+description = "Physically stronger than imps and salamanders, but too stupid to take orders, hairy devils are only exceptionally allowed in the demon military."
+MAXHP = null
+AR = null
+DR = null
+PHYSDEF = null
+MAGDEF = null
+actions = Array[ExtResource("1_u4nhb")]([ExtResource("2_r76lm")])
+drops = null
+dropChances = null
+enemyGroups = SubResource("Resource_30uvt")
+metadata/_custom_type_script = "uid://ddpkx6a4ixuw2"

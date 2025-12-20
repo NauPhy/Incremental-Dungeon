@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MyEnvironment" load_steps=2 format=3 uid="uid://ceplqw55gy80t"]
+
+[ext_resource type="Script" uid="uid://bnx1tuoy1ucgk" path="res://Resources/Environment/my_environment.gd" id="1_o4tx8"]
+
+[resource]
+script = ExtResource("1_o4tx8")
+title = "Chaos Dimension"
+permittedFactions = Array[int]([0, 1, 2, 3, 4, 5, 6, 7, 8])
+firePermitted = true
+icePermitted = true
+earthPermitted = true
+waterPermitted = true
+metadata/_custom_type_script = "uid://bnx1tuoy1ucgk"

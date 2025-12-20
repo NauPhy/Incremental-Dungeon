@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://cov7sdkx8fsmx"]
+
+[ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_kindo"]
+[ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_5t0m8"]
+[ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_h3m3j"]
+[ext_resource type="Texture2D" uid="uid://cuh1533f6yw1h" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/goblin_old.png" id="4_5t0m8"]
+[ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_5vngx"]
+
+[sub_resource type="Resource" id="Resource_w761a"]
+script = ExtResource("3_h3m3j")
+isEligible = true
+enemyQuality = 0
+droppedArmorClasses = Array[int]([])
+droppedWeaponClasses = Array[int]([])
+droppedTechnologyClasses = Array[int]([])
+faction = 8
+
+[resource]
+script = ExtResource("4_5vngx")
+portrait = ExtResource("4_5t0m8")
+text = "Goblin Skirmisher"
+description = ""
+MAXHP = -1.0
+AR = -1.0
+DR = -1.0
+PHYSDEF = -1.0
+MAGDEF = -1.0
+actions = Array[ExtResource("1_kindo")]([])
+drops = Array[ExtResource("2_5t0m8")]([])
+dropChances = Array[float]([])
+enemyGroups = SubResource("Resource_w761a")
+metadata/_custom_type_script = "uid://ddpkx6a4ixuw2"
