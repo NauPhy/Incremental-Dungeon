@@ -105,7 +105,7 @@ func _on_player_class_requested(emitter) :
 signal newFloorCompleted
 func _on_map_completed(emitter) :
 	var completedIndex = Helpers.findIndexInContainer($MapContainer, emitter)
-	if (completedIndex == maxFloor && $MapContainer.get_child_count() > maxFloor+1) :
+	if (completedIndex == maxFloor) :
 		maxFloor += 1
 		$FloorDisplay.setMaxFloor(maxFloor)
 		var typicalEnemyDefense = emitter.getTypicalEnemyDefense()

@@ -6,7 +6,7 @@ var itemsObtainedDictionary : Dictionary = {}
 func _init() :
 	add_to_group("Saveable")
 	
-func getAllEnemies() -> Array[ActorPreset] :
+func getAllEnemies() -> Array :
 	var actorList = MegaFile.getAllNewActor()
 	actorList.append_array(MegaFile.getAllOldActor())
 	return actorList

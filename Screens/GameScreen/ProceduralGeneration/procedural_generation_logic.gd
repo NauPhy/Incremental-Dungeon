@@ -11,10 +11,11 @@ func createMap() -> MapData :
 	return encounters
 
 func getAllEnemies() :
-	var list = EnemyDatabase.getAllActors()
+	var list = EnemyDatabase.getAllEnemies()
 	for actor in list :
 		if (!actor.enemyGroups.isEligible) :
 			list.remove_at(list.find(actor))
+	return list
 		
 func getAllItems() :
 	var list = EquipmentDatabase.getAllEquipment()
@@ -28,7 +29,7 @@ func createEnvironment() -> MyEnvironment :
 		return MegaFile.getEnvironment("fort_demon")
 	var myRange = MegaFile.Environment_FilesDictionary.size()-1
 	var randKey = MegaFile.Environment_FilesDictionary.keys()[randi_range(0,myRange)]
-	var potentialEnvironment = MegaFile.FilesDictionary[randKey]
+	var potentialEnvironment = MegaFile.getEnvironment(randKey)
 	while (createdRecently(potentialEnvironment)) :
 		randKey = MegaFile.Environment_FilesDictionary.keys()[randi_range(0,myRange)]
 		potentialEnvironment = MegaFile.getEnvironment(randKey)
@@ -70,48 +71,48 @@ func addDrops(encounter : Encounter) -> void :
 	
 func createCentralEncounter() -> Encounter :
 	var retVal = Encounter.new()
-	retVal.enemies.append(getVeteran().duplicate())
+	retVal.enemies.append(createVeteran())
 	if (randi_range(0,2) == 0) :
-		retVal.enemies.append(getVeteran().duplicate())
+		retVal.enemies.append(createVeteran())
 	else :
 		for index in range(0,randi_range(2,3)) :
-			retVal.enemies.append(getNormal().duplicate())
+			retVal.enemies.append(createNormal())
 	addDrops(retVal)
 	return retVal
 
 func createSideEncounter() -> Encounter :
 	var retVal = Encounter.new()
 	if (randi_range(0,2)==0) :
-		retVal.enemies.append(getVeteran().duplicate())
+		retVal.enemies.append(createVeteran())
 		if (randi_range(0,2) == 0) :
-			retVal.enemies.append(getNormal().duplicate())
+			retVal.enemies.append(createNormal())
 	elif (randi_range(0,9) == 0) :
-		var enemy = getNormal().duplicate()
+		var enemy = createNormal()
 		for index in range(0,5) :
 			retVal.enemies.append(enemy)
 	else :
 		for index in range(0, randi_range(2,3)) :
-			retVal.enemies.append(getNormal().duplicate())
+			retVal.enemies.append(createNormal())
 	addDrops(retVal)
 	return retVal
 
 func createBossEncounter() -> Encounter :
 	var retVal = Encounter.new()
-	retVal.enemies.append(getElite().duplicate())
+	retVal.enemies.append(createElite())
 	if (randi_range(0,1) == 0) :
-		retVal.enemies.append(getVeteran().duplicate())
+		retVal.enemies.append(createVeteran())
 	else :
 		for index in range(0,randi_range(2,3)) :
-			retVal.enemies.append(getNormal().duplicate())
+			retVal.enemies.append(createNormal())
 	addDrops(retVal)
 	return retVal
 		
-func getNormal() -> ActorPreset :
-	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal)
-func getVeteran() -> ActorPreset :
-	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran)
-func getElite() -> ActorPreset :
-	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite)
+func createNormal() -> ActorPreset :
+	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal).getAdjustedCopy(1)
+func createVeteran() -> ActorPreset :
+	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran).getAdjustedCopy(1)
+func createElite() -> ActorPreset :
+	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite).getAdjustedCopy(1)
 	
 ############# Saving
 var previousEnvironments : Array = []

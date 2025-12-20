@@ -1,10 +1,10 @@
 extends Node
 
 var environment : MyEnvironment = null
-var enemyPool : Array[ActorPreset] = []
+var enemyPool : Array = []
 var enemyCounts : Array[int] = [0,0,0]
 
-func reset(env : MyEnvironment, enemies : Array[ActorPreset]) :
+func reset(env : MyEnvironment, enemies : Array) :
 	environment = env
 	enemyPool = enemies
 	filterEnemyPool_env()

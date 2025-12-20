@@ -1,11 +1,11 @@
 extends Node
 
 var environment : MyEnvironment = null
-var itemPool : Array[Equipment] = []
+var itemPool : Array = []
 
-var workingPool : Array[Equipment] = []
+var workingPool : Array = []
 
-func reset(env : MyEnvironment, items : Array[Equipment]) :
+func reset(env : MyEnvironment, items : Array) :
 	environment = env
 	itemPool = items
 	filterItemPool_env()

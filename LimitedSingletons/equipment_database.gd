@@ -6,7 +6,7 @@ func getEquipment(myName : String) :
 		return try
 	return MegaFile.getOldEquipment(myName)
 
-func getAllEquipment() -> Array[Equipment] :
+func getAllEquipment() -> Array :
 	var list = MegaFile.getAllNewEquipment()
 	list.append_array(MegaFile.getAllOldEquipment())
 	return list

@@ -59,7 +59,7 @@ func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 	## and defRatio = PHYSDEF/MAGDEF
 	retVal.MAGDEF = (2*theoreticalDefense)/(enemyGroups.defRatio+1)
 	retVal.PHYSDEF = enemyGroups.defRatio*retVal.MAGDEF
-	retVal.HP = eHP/theoreticalDefense
+	retVal.MAXHP = eHP/theoreticalDefense
 	var product = eDPS*actions[0].getPower()/actions[0].getWarmup()
 	retVal.AR = sqrt(product/enemyGroups.atkRatio)
 	retVal.DR = product/retVal.AR
