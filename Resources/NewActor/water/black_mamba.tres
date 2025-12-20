@@ -12,6 +12,7 @@ isEligible = true
 glassCannonIndex = 1.0
 HPToDefRatio = 1.0
 defRatio = 1.0
+atkRatio = 1.0
 enemyQuality = 0
 droppedArmorClasses = Array[int]([])
 droppedWeaponClasses = Array[int]([])

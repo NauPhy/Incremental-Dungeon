@@ -69,6 +69,8 @@ func getResourceTypes(isTextures : bool) -> Dictionary :
 	return retVal
 	
 func createDictionary(myName : String, keys : Array, values : Array) :
+	var temp = load(values[0])
+	var resourceName : String = temp.get_script().get_global_name()	
 	var retVal : String = ""
 	retVal += "const " + myName + "Dictionary = {\n"
 	for index in range(0,keys.size()) :
@@ -95,6 +97,8 @@ func getAllResourcesInDirectoryRecursive(directory : String, currentValues : Arr
 	return retVal
 
 func createDictionariesFromFilesystem(resources : Dictionary, resourceType : String) -> String :
+	var temp = load(resources.values()[0].values()[0])
+	var resourceName : String = temp.get_script().get_global_name()
 	#print ("Running stringify")
 	var retVal : String = ""
 	for subdirectory in resources.keys() :
@@ -106,16 +110,18 @@ func createDictionariesFromFilesystem(resources : Dictionary, resourceType : Str
 		retVal += "\treturn " + subdirectory + "Dictionary.get(resourceName)"
 		retVal += "\n\n"
 	retVal += "static func get" + resourceType + "(resourceName : String) :\n"
-	retVal += "\tvar retVal\n"
+	#retVal += "\tvar retVal\n"
 	for subdirectory in resources.keys() :
-		retVal += "\tretVal = " + subdirectory + "Dictionary.get(resourceName)\n"
-		retVal += "\tif retVal != null : return retVal\n"
+		retVal += "\tif (" + subdirectory + "Dictionary.has(resourceName)) :\n"
+		retVal += "\t\treturn " + subdirectory + "Dictionary[resourceName]\n"
+		#retVal += "\tretVal = " + subdirectory + "Dictionary.get(resourceName)\n"
+		#retVal += "\tif retVal != null : return retVal\n"
 	retVal += "\treturn null\n\n"
 	retVal += "static func getDictionary(type : String) :\n"
 	for subdirectory in resources.keys() :
 		retVal += "\tif type == \"" + subdirectory + "\" : \n"
-		retVal += "\t\treturn " + subdirectory + "Dictionary\n\n" 
-	retVal += "static func getAll" + resourceType + "() :\n"
+		retVal += "\t\treturn " + subdirectory + "Dictionary\n" 
+	retVal += "static func getAll" + resourceType + "() -> Array :\n"
 	retVal += "\tvar retVal : Array = []\n"
 	for subdirectory in resources.keys() :
 		retVal += "\tretVal.append_array(" + subdirectory + "Dictionary.values())\n"

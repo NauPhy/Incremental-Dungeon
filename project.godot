@@ -27,6 +27,7 @@ IGOptions="*res://Globals/IGOptions.gd"
 EnemyDatabase="*res://LimitedSingletons/enemy_database.gd"
 RoutineReferences="*res://Resources/Routine/RoutineReferences.gd"
 EquipmentDatabase="*res://LimitedSingletons/equipment_database.gd"
+NewActorReferences="*res://Resources/NewActor/NewActorReferences.gd"
 
 [display]
 

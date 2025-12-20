@@ -12,16 +12,14 @@ static func getFiles(resourceName : String) :
 	return FilesDictionary.get(resourceName)
 
 static func getRoutine(resourceName : String) :
-	var retVal
-	retVal = FilesDictionary.get(resourceName)
-	if retVal != null : return retVal
+	if (FilesDictionary.has(resourceName)) :
+		return FilesDictionary[resourceName]
 	return null
 
 static func getDictionary(type : String) :
 	if type == "Files" : 
 		return FilesDictionary
-
-static func getAllRoutine() :
+static func getAllRoutine() -> Array :
 	var retVal : Array = []
 	retVal.append_array(FilesDictionary.values())
 	return retVal

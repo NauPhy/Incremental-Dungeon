@@ -9,6 +9,10 @@
 [sub_resource type="Resource" id="Resource_pr72y"]
 script = ExtResource("3_jpem1")
 isEligible = true
+glassCannonIndex = 1.0
+HPToDefRatio = 1.0
+defRatio = 1.0
+atkRatio = 1.0
 enemyQuality = 2
 droppedArmorClasses = Array[int]([])
 droppedWeaponClasses = Array[int]([])

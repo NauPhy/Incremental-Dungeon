@@ -25,18 +25,39 @@ func getAllItems() :
 	
 const environmentList = preload("res://Resources/Environment/EnvironmentReferences.gd")
 func createEnvironment() -> MyEnvironment :
-	var range = environmentList.FilesDictionary.size()-1
-	var randKey = environmentList.FilesDictionary.keys()[randi_range(0,range)]
-	return environmentList.FilesDictionary[randKey].duplicate()
+	if (previousEnvironments.size() == 9) :
+		return environmentList.getEnvironment("fort_demon")
+	var myRange = environmentList.FilesDictionary.size()-1
+	var randKey = environmentList.FilesDictionary.keys()[randi_range(0,myRange)]
+	var potentialEnvironment = environmentList.FilesDictionary[randKey]
+	while (createdRecently(potentialEnvironment)) :
+		randKey = environmentList.FilesDictionary.keys()[randi_range(0,myRange)]
+		potentialEnvironment = environmentList.FilesDictionary[randKey]
+	previousEnvironments.append(randKey)
+	return potentialEnvironment.duplicate()
+	
+func createdRecently(newEnv : MyEnvironment) -> bool :
+	var envName = newEnv.resource_path.get_file().get_basename()
+	if (previousEnvironments.size() < 4) :
+		if (previousEnvironments.find(envName) != -1) :
+			return true
+	var mostRecentPermitted = previousEnvironments.size()-4
+	return (previousEnvironments.find(envName) < mostRecentPermitted)
 	
 func createEncounters() -> MapData :
 	var retVal = MapData.new()
-	var nodeCount = randi_range(3,6)
+	var nodeCount = randi_range(4,7)
 	for index in range(0,nodeCount) :
-		retVal.centralEncounters.append(createCentralEncounter())
-		var sideNodeCount = randi_range(1,4)
-		for index2 in range(0, sideNodeCount) :
-			retVal.sideEncounters.append(createSideEncounter())
+		var newRow = MapRow.new()
+		newRow.centralEncounter = createCentralEncounter()
+		var sideNodeCount = randi_range(2,5)
+		var leftNodeCount = randi_range(0,sideNodeCount)
+		var rightNodeCount = sideNodeCount-leftNodeCount
+		for leftIndex in range(0,leftNodeCount) :
+			newRow.leftEncounters.append(createSideEncounter())
+		for rightIndex in range(0,rightNodeCount) :
+			newRow.rightEncounters.append(createSideEncounter())
+		retVal.rows.append(newRow)
 	retVal.bossEncounter = createBossEncounter()
 	return retVal
 	
@@ -92,3 +113,18 @@ func getVeteran() -> ActorPreset :
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran)
 func getElite() -> ActorPreset :
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite)
+	
+############# Saving
+var previousEnvironments : Array[String] = []
+var myReady : bool = false
+func _ready() :
+	myReady = true
+func getSaveDictionary() -> Dictionary :
+	var retVal : Dictionary = {}
+	retVal["previousEnvironments"] = previousEnvironments
+	return retVal
+func beforeLoad(_newGame) :
+	pass
+func onLoad(loadDict : Dictionary) :
+	if (loadDict.get("previousEnvironments") != null) :
+		previousEnvironments = loadDict["previousEnvironments"]

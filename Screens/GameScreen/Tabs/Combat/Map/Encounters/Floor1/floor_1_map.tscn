@@ -21,7 +21,6 @@
 [ext_resource type="Resource" uid="uid://crjnofk8mjhk6" path="res://Screens/GameScreen/Tabs/Combat/Map/Encounters/Floor1/boss.tres" id="17_vt8a7"]
 
 [node name="Floor1" instance=ExtResource("1_cipg0")]
-clip_contents = false
 script = ExtResource("2_so1rx")
 
 [node name="Connection2" parent="CombatMap/ConnectionContainer" index="0" node_paths=PackedStringArray("Room1", "Room2") instance=ExtResource("3_3fnip")]

@@ -17,48 +17,55 @@ func updateEnemyCounts() :
 	
 func getEnemyPool() :
 	return enemyPool.duplicate()
-
+	
 func filterEnemyPool_env() :
-	filterEnemyPool_env_envWhitelist() 
-	filterEnemyPool_env_envBlacklist()
-	filterEnemyPool_env_enemyWhitelist()
+	for preEnemy in enemyPool :
+		var enemy = preEnemy.enemyGroups
+		var remove = (environment.permittedFactions.find(enemy.faction) == -1)
+		if (remove && (enemy.faction != EnemyGroups.factionEnum.misc)) :
+			enemyPool.remove_at(enemyPool.find(preEnemy))
 
-func filterEnemyPool_env_envWhitelist() :
-	for preEnemy in enemyPool :
-		var enemy = preEnemy.enemyGroups
-		var remove : bool = false
-		if (environment.isHot && !enemy.isHot) :
-			remove = true
-		elif (environment.isCold && !enemy.isCold) :
-			remove = true
-		if (remove) :
-			enemyPool.remove_at(enemyPool.find(preEnemy))
-func filterEnemyPool_env_envBlacklist() :
-	for preEnemy in enemyPool :
-		var enemy = preEnemy.enemyGroups
-		var remove : bool = false
-		if (environment.isWet && enemy.isGreenskin) :
-			remove = true
-		elif (environment.isDesert && enemy.isMerfolk) :
-			remove = true
-		elif (environment.isRainforest && enemy.isUndead) :
-			remove = true
-		elif (environment.isMartial && enemy.isMindless) :
-			remove = true
-		elif (environment.isHighTech && enemy.isMindless) :
-			remove = true
-		if (remove) :
-			enemyPool.remove_at(enemyPool.find(preEnemy))
-func filterEnemyPool_env_enemyWhitelist() :
-	for preEnemy in enemyPool :
-		var enemy = preEnemy.enemyGroups
-		var remove : bool = false
-		if (enemy.isElemental && !environment.isMagical) :
-			remove = true
-		if (enemy.isFae && !environment.isMagical) :
-			remove = true
-		if (remove) :
-			enemyPool.remove_at(enemyPool.find(preEnemy))
+#func filterEnemyPool_env() :
+	#filterEnemyPool_env_envWhitelist() 
+	#filterEnemyPool_env_envBlacklist()
+	#filterEnemyPool_env_enemyWhitelist()
+#
+#func filterEnemyPool_env_envWhitelist() :
+	#for preEnemy in enemyPool :
+		#var enemy = preEnemy.enemyGroups
+		#var remove : bool = false
+		#if (environment.isHot && !enemy.isHot) :
+			#remove = true
+		#elif (environment.isCold && !enemy.isCold) :
+			#remove = true
+		#if (remove) :
+			#enemyPool.remove_at(enemyPool.find(preEnemy))
+#func filterEnemyPool_env_envBlacklist() :
+	#for preEnemy in enemyPool :
+		#var enemy = preEnemy.enemyGroups
+		#var remove : bool = false
+		#if (environment.isWet && enemy.isGreenskin) :
+			#remove = true
+		#elif (environment.isDesert && enemy.isMerfolk) :
+			#remove = true
+		#elif (environment.isRainforest && enemy.isUndead) :
+			#remove = true
+		#elif (environment.isMartial && enemy.isMindless) :
+			#remove = true
+		#elif (environment.isHighTech && enemy.isMindless) :
+			#remove = true
+		#if (remove) :
+			#enemyPool.remove_at(enemyPool.find(preEnemy))
+#func filterEnemyPool_env_enemyWhitelist() :
+	#for preEnemy in enemyPool :
+		#var enemy = preEnemy.enemyGroups
+		#var remove : bool = false
+		#if (enemy.isElemental && !environment.isMagical) :
+			#remove = true
+		#if (enemy.isFae && !environment.isMagical) :
+			#remove = true
+		#if (remove) :
+			#enemyPool.remove_at(enemyPool.find(preEnemy))
 func getEnemyOfType(type : EnemyGroups.enemyQualityEnum) :
 	var roll = randi_range(0, enemyCounts[type])
 	var currentCount = 0

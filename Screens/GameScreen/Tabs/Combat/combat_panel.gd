@@ -4,7 +4,7 @@ signal victory
 signal defeat
 signal retreat
 
-const GODPUNCHloader = preload("res://Screens/GameScreen/Tabs/Combat/Actions/Attacks/godpunch.tres")
+const GODPUNCHloader = preload("res://Resources/OldAction/Attacks/godpunch.tres")
 var autoMode : bool = false
 
 func resetCombat(friendlyCores : Array[ActorPreset], enemyCores : Array[ActorPreset]) :

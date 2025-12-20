@@ -19,7 +19,6 @@ const enemyQualityDictionary = {
 @export var droppedWeaponClasses : Array[EquipmentGroups.weaponClassEnum] = []
 @export var droppedTechnologyClasses : Array[EquipmentGroups.technologyEnum] = []
 
-
 ##Humanoid types
 enum factionEnum {
 	fire,

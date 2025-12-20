@@ -12,9 +12,9 @@ var HP : float = 1
 @export var PHYSDEF : float = -1
 @export var MAGDEF : float = -1
 var dead : bool = false
-@export var actions : Array[Action]
-@export var drops : Array[Equipment]
-@export var dropChances : Array[float]
+@export var actions : Array[Action] = []
+@export var drops : Array[Equipment] = []
+@export var dropChances : Array[float] = []
 @export var enemyGroups : EnemyGroups = EnemyGroups.new()
 
 func setStat(type : Definitions.baseStatEnum, val : float) :

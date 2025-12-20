@@ -38,26 +38,22 @@ static func getMisc(resourceName : String) :
 	return MiscDictionary.get(resourceName)
 
 static func getOldActor(resourceName : String) :
-	var retVal
-	retVal = Floor0Dictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = Floor1Dictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = MiscDictionary.get(resourceName)
-	if retVal != null : return retVal
+	if (Floor0Dictionary.has(resourceName)) :
+		return Floor0Dictionary[resourceName]
+	if (Floor1Dictionary.has(resourceName)) :
+		return Floor1Dictionary[resourceName]
+	if (MiscDictionary.has(resourceName)) :
+		return MiscDictionary[resourceName]
 	return null
 
 static func getDictionary(type : String) :
 	if type == "Floor0" : 
 		return Floor0Dictionary
-
 	if type == "Floor1" : 
 		return Floor1Dictionary
-
 	if type == "Misc" : 
 		return MiscDictionary
-
-static func getAllOldActor() :
+static func getAllOldActor() -> Array :
 	var retVal : Array = []
 	retVal.append_array(Floor0Dictionary.values())
 	retVal.append_array(Floor1Dictionary.values())

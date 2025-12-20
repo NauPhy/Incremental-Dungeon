@@ -1,6 +1,6 @@
 extends Node
 const currentVersion : String = "V0.6 development"
-var GODMODE : bool = false
+var GODMODE : bool = true
 var DEVMODE : bool = false
 
 func _ready() :

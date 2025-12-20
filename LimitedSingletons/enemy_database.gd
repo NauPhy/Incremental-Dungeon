@@ -1,27 +1,28 @@
 extends Node
 
-var resourceLoader0 = preload("res://Resources/NewActor/NewActorReferences.gd")
 var resourceLoader1 = preload("res://Resources/OldActor/OldActorReferences.gd")
+var resource1
 
-var resources : Node = null
 var killedDictionary : Dictionary = {}
 var itemsObtainedDictionary : Dictionary = {}
 
 func _init() :
 	add_to_group("Saveable")
+	resource1 = resourceLoader1.new()
+	add_child(resource1)
 	#resources = resourceLoader.new()
 	#add_child(resources)
 	
 func getAllEnemies() -> Array[ActorPreset] :
-	var actorList = resourceLoader0.getAllNewActor()
-	actorList.append_array(resourceLoader1.getAllOldActor())
+	var actorList = NewActorReferences.getAllNewActor()
+	actorList.append_array(resource1.getAllOldActor())
 	return actorList
 	
-func getEnemy(enemyName) -> Resource :
-	var try = resourceLoader0.getNewActor(enemyName)
+func getEnemy(enemyName) :
+	var try = NewActorReferences.getNewActor(enemyName)
 	if (try != null) :
 		return try
-	return resourceLoader1.getOldActor(enemyName)
+	return resource1.getOldActor(enemyName)
 	
 signal enemyDataChanged
 func getEnemyKilled(enemyName : String) -> bool :
@@ -55,12 +56,21 @@ func getSaveDictionary() -> Dictionary :
 	
 func beforeLoad(newGame) :
 	if (newGame) :
-		for key in resources.ActorPresetDictionary.keys() :
-			killedDictionary[key] = 0
-			var emptyDict : Dictionary = {}
-			itemsObtainedDictionary[key] = emptyDict
-			for item in getEnemy(key).drops :
-				itemsObtainedDictionary[key][item.getName()] = false
+		for actor in NewActorReferences.getAllNewActor() :
+			resetEntry(actor.resource_path.get_file().get_basename())
+		for actor in resource1.getAllOldActor() :
+			resetEntry(actor.resource_path.get_file().get_basename())
+				
+func resetEntry(key) :
+	killedDictionary[key] = 0
+	var emptyDict : Dictionary = {}
+	itemsObtainedDictionary[key] = emptyDict
+	var enemy = getEnemy(key)
+	print("Type:", typeof(enemy))  # 17 = OBJECT
+	print("Class name:", enemy.get_class())
+	print("Script:", enemy.get_script())
+	for item in enemy.drops :
+		itemsObtainedDictionary[key][item.getName()] = false
 
 func onLoad(loadDict : Dictionary) :
 	killedDictionary = loadDict["killed"]

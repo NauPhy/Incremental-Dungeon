@@ -15,6 +15,10 @@
 [sub_resource type="Resource" id="Resource_n37h1"]
 script = ExtResource("9_6ua55")
 isEligible = false
+glassCannonIndex = 1.0
+HPToDefRatio = 1.0
+defRatio = 1.0
+atkRatio = 1.0
 enemyQuality = 0
 droppedArmorClasses = Array[int]([])
 droppedWeaponClasses = Array[int]([])

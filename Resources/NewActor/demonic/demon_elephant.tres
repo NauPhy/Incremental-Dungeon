@@ -13,7 +13,6 @@ glassCannonIndex = 0.7
 HPToDefRatio = 3.0
 defRatio = 1.0
 atkRatio = 0.5
-isPhysical = true
 enemyQuality = 1
 droppedArmorClasses = Array[int]([])
 droppedWeaponClasses = Array[int]([0])

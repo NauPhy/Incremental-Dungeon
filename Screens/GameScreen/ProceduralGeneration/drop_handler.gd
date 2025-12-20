@@ -1,16 +1,24 @@
 extends Node
 
+const signatureEquipmentList = {
+	"orc_warlord" : "adamantium_greataxe",
+	"iron_golem" : "blunderbuss",
+	"death" : "deaths_scythe",
+	"titan" : "crackling_greataxe"
+}
+
 var itemPool : Array[Equipment]
 var qualityCounts : Array[int] = [0,0,0,0,0]
 
 func reset(items) :
 	itemPool = items
 	
-func getDrops() -> Array[Equipment] :
+func getDrops(enemy) -> Array[Equipment] :
 	updateQualityCounts()
 	var dropCount = getDropCount()
 	var qualities = getDropQualities(dropCount)
-	return getItemsOfQualities(qualities)
+	var items = getItemsOfQualities(qualities)
+	return handleSignatureItem(enemy, items)
 	
 func getDropCount() :
 	var roll = randi_range(0,1)
@@ -21,6 +29,21 @@ func getDropCount() :
 		if (roll == 0) :
 			return 3
 	return 2
+	
+func handleSignatureItem(enemy : ActorPreset, itemList : Array[Equipment]) -> Array[Equipment] :
+	var retVal = itemList
+	var enemyName = enemy.resource_path.get_file().get_basename()
+	if (signatureEquipmentList.get(enemyName) == null) :
+		return retVal
+	var roll = randi_range(0,3)
+	if (roll != 0) :
+		return retVal
+	var signatureItem : Equipment = EquipmentDatabase.getEquipment(signatureEquipmentList[enemyName])
+	if (retVal.is_empty()) :
+		retVal.append(signatureItem)
+	else :
+		retVal[0] = signatureItem
+	return retVal
 	
 const chances : Dictionary = {
 	1 : 0.222,
@@ -38,7 +61,7 @@ func getDropQualities(count : int) -> Array[EquipmentGroups.qualityEnum] :
 	var retVal : Array[EquipmentGroups.qualityEnum] = []
 	for index in range(0,count) :
 		var roll = randf_range(0,100)
-		var quality
+		#var quality
 		for qualityIndex in range(0,qualityThresholds.size()) :
 			if (roll <= qualityThresholds[qualityIndex]) :
 				retVal.append((4-qualityIndex) as EquipmentGroups.qualityEnum)

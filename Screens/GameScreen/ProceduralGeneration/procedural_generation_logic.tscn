@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://5e5xfarrtrrg" path="res://Screens/GameScreen/ProceduralGeneration/enemy_pool_handler.gd" id="3_h3vjr"]
 [ext_resource type="Script" uid="uid://bls30wor1wti8" path="res://Screens/GameScreen/ProceduralGeneration/drop_handler.gd" id="4_yfklh"]
 
-[node name="ProceduralGenerationLogic" type="Node"]
+[node name="ProceduralGenerationLogic" type="Node" groups=["Saveable"]]
 script = ExtResource("1_hy14w")
 
 [node name="ItemPoolHandler" type="Node" parent="."]

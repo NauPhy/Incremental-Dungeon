@@ -188,10 +188,8 @@ func afterDependencyLoaded(_dependency : Definitions.loadDependencyName) :
 	
 func getSaveDictionary() -> Dictionary :
 	var tempDict = {}
-	var key : String = "playerClass"
-	tempDict[key] = characterClass.resource_path
-	key = "playerName"
-	tempDict[key] = characterName
+	tempDict["playerClass"] = characterClass.resource_path
+	tempDict["playerName"] = characterName
 	tempDict["typicalEnemyDefense"] = typicalEnemyDefense
 	return tempDict
 	

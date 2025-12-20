@@ -155,61 +155,50 @@ static func getwater(resourceName : String) :
 	return waterDictionary.get(resourceName)
 
 static func getNewActor(resourceName : String) :
-	var retVal
-	retVal = demonicDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = demonic_militaryDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = earthDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = fireDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = greenskinDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = iceDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = merfolkDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = miscDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = undeadDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = waterDictionary.get(resourceName)
-	if retVal != null : return retVal
+	if (demonicDictionary.has(resourceName)) :
+		return demonicDictionary[resourceName]
+	if (demonic_militaryDictionary.has(resourceName)) :
+		return demonic_militaryDictionary[resourceName]
+	if (earthDictionary.has(resourceName)) :
+		return earthDictionary[resourceName]
+	if (fireDictionary.has(resourceName)) :
+		return fireDictionary[resourceName]
+	if (greenskinDictionary.has(resourceName)) :
+		return greenskinDictionary[resourceName]
+	if (iceDictionary.has(resourceName)) :
+		return iceDictionary[resourceName]
+	if (merfolkDictionary.has(resourceName)) :
+		return merfolkDictionary[resourceName]
+	if (miscDictionary.has(resourceName)) :
+		return miscDictionary[resourceName]
+	if (undeadDictionary.has(resourceName)) :
+		return undeadDictionary[resourceName]
+	if (waterDictionary.has(resourceName)) :
+		return waterDictionary[resourceName]
 	return null
 
 static func getDictionary(type : String) :
 	if type == "demonic" : 
 		return demonicDictionary
-
 	if type == "demonic_military" : 
 		return demonic_militaryDictionary
-
 	if type == "earth" : 
 		return earthDictionary
-
 	if type == "fire" : 
 		return fireDictionary
-
 	if type == "greenskin" : 
 		return greenskinDictionary
-
 	if type == "ice" : 
 		return iceDictionary
-
 	if type == "merfolk" : 
 		return merfolkDictionary
-
 	if type == "misc" : 
 		return miscDictionary
-
 	if type == "undead" : 
 		return undeadDictionary
-
 	if type == "water" : 
 		return waterDictionary
-
-static func getAllNewActor() :
+static func getAllNewActor() -> Array :
 	var retVal : Array = []
 	retVal.append_array(demonicDictionary.values())
 	retVal.append_array(demonic_militaryDictionary.values())

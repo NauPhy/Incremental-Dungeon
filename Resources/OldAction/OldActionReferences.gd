@@ -35,16 +35,14 @@ static func getAttacks(resourceName : String) :
 	return AttacksDictionary.get(resourceName)
 
 static func getOldAction(resourceName : String) :
-	var retVal
-	retVal = AttacksDictionary.get(resourceName)
-	if retVal != null : return retVal
+	if (AttacksDictionary.has(resourceName)) :
+		return AttacksDictionary[resourceName]
 	return null
 
 static func getDictionary(type : String) :
 	if type == "Attacks" : 
 		return AttacksDictionary
-
-static func getAllOldAction() :
+static func getAllOldAction() -> Array :
 	var retVal : Array = []
 	retVal.append_array(AttacksDictionary.values())
 	return retVal

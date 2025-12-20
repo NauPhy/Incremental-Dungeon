@@ -109,8 +109,19 @@ func _on_map_completed(emitter) :
 		maxFloor += 1
 		$FloorDisplay.setMaxFloor(maxFloor)
 		var typicalEnemyDefense = emitter.getTypicalEnemyDefense()
+		if (completedIndex == 1) :
+			createNewFloor()
 		emit_signal("newFloorCompleted", typicalEnemyDefense)
 
+const mapLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/combat_map_template.tscn")
+func createNewFloor() :
+	var mapData : MapData = $ProceduralGenerationLogic.createMap()
+	var newFloor = mapLoader.instantiate()
+	$MapContainer.add_child(newFloor)
+	newFloor.name = "Floor" + str($MapContainer.get_child_count()-1)
+	newFloor.setFromMapData(mapData)
+	connectToMapSignals(newFloor)
+	
 func _on_floor_display_floor_up() -> void:
 	var currentFloorIndex = Helpers.findIndexInContainer($MapContainer, currentFloor)
 	if (currentFloorIndex != null && currentFloorIndex != 0) :
@@ -170,6 +181,19 @@ func startDefeatCoroutine() :
 	
 func interruptDefeatCoroutine() :
 	defeatCoroutineInterrupted = true
+	
+func connectToMapSignals(map : Node) :
+	if (map.has_signal("levelChosen2")) :
+		map.connect("levelChosen2", _on_level_chosen)
+	if (map.has_signal("playerClassRequested")) :
+		map.connect("playerClassRequested", _on_player_class_requested)
+	if (map.has_signal("tutorialRequested")) :
+		map.connect("tutorialRequested", _on_tutorial_requested)
+	if (map.has_signal("routineUnlockRequested")) :
+		map.connect("routineUnlockRequested", _on_routine_unlock_requested)
+	if (map.has_signal("shopRequested")) :
+		map.connect("shopRequested", _on_shop_requested)
+	map.connect("mapCompleted", _on_map_completed)
 
 const combatRewardsLoader = preload("res://Screens/GameScreen/Tabs/Combat/CombatRewards/combat_rewards.tscn")
 var firstReward : bool = true
@@ -217,17 +241,7 @@ func beforeLoad(newGame) :
 		$FloorDisplay.setFloor(0)
 		currentFloor.visible = true
 	for map in $MapContainer.get_children() :
-		if (map.has_signal("levelChosen2")) :
-			map.connect("levelChosen2", _on_level_chosen)
-		if (map.has_signal("playerClassRequested")) :
-			map.connect("playerClassRequested", _on_player_class_requested)
-		if (map.has_signal("tutorialRequested")) :
-			map.connect("tutorialRequested", _on_tutorial_requested)
-		if (map.has_signal("routineUnlockRequested")) :
-			map.connect("routineUnlockRequested", _on_routine_unlock_requested)
-		if (map.has_signal("shopRequested")) :
-			map.connect("shopRequested", _on_shop_requested)
-		map.connect("mapCompleted", _on_map_completed)
+		connectToMapSignals(map)
 func onLoad(loadDict : Dictionary) :
 	firstReward = loadDict["firstReward"]
 	maxFloor = loadDict["maxFloor"]

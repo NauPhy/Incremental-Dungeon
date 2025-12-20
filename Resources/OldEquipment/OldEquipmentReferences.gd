@@ -37,7 +37,6 @@ const WeaponsDictionary = {
 	"bat_bat" : preload("res://Resources/OldEquipment/Weapons/bat_bat.tres"),
 	"bat_staff" : preload("res://Resources/OldEquipment/Weapons/bat_staff.tres"),
 	"cat_claws" : preload("res://Resources/OldEquipment/Weapons/cat_claws.tres"),
-	"executioners_sword" : preload("res://Resources/OldEquipment/Weapons/executioners_sword.tres"),
 	"goose_flail" : preload("res://Resources/OldEquipment/Weapons/goose_flail.tres"),
 	"kiwi_dagger" : preload("res://Resources/OldEquipment/Weapons/kiwi_dagger.tres"),
 	"magic_stick_int" : preload("res://Resources/OldEquipment/Weapons/magic_stick_int.tres"),
@@ -58,31 +57,26 @@ static func getWeapons(resourceName : String) :
 	return WeaponsDictionary.get(resourceName)
 
 static func getOldEquipment(resourceName : String) :
-	var retVal
-	retVal = AccessoriesDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = ArmorDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = CurrencyDictionary.get(resourceName)
-	if retVal != null : return retVal
-	retVal = WeaponsDictionary.get(resourceName)
-	if retVal != null : return retVal
+	if (AccessoriesDictionary.has(resourceName)) :
+		return AccessoriesDictionary[resourceName]
+	if (ArmorDictionary.has(resourceName)) :
+		return ArmorDictionary[resourceName]
+	if (CurrencyDictionary.has(resourceName)) :
+		return CurrencyDictionary[resourceName]
+	if (WeaponsDictionary.has(resourceName)) :
+		return WeaponsDictionary[resourceName]
 	return null
 
 static func getDictionary(type : String) :
 	if type == "Accessories" : 
 		return AccessoriesDictionary
-
 	if type == "Armor" : 
 		return ArmorDictionary
-
 	if type == "Currency" : 
 		return CurrencyDictionary
-
 	if type == "Weapons" : 
 		return WeaponsDictionary
-
-static func getAllOldEquipment() :
+static func getAllOldEquipment() -> Array :
 	var retVal : Array = []
 	retVal.append_array(AccessoriesDictionary.values())
 	retVal.append_array(ArmorDictionary.values())

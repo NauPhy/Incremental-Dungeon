@@ -166,23 +166,59 @@ func getSaveDictionary() -> Dictionary :
 const roomLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/room.tscn")
 const connectionLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/connection.tscn")
 func setFromMapData(val : MapData) :
-	for index in range(0,val.centralEncounters.size()) :
-		var newRoom = roomLoader.instantiate()
-		$CombatMap/RoomContainer.add_child(newRoom)
-		newRoom.name = "N" + str(index)
-		newRoom.encounter = val.centralEncounters[index]
-		setRoomToOrigin(newRoom)
-		setRoomPosVertical(newRoom, index, false)
-		if (index == 0) :
-			newRoom.visibilityOnStartup = 2
-		else :
-			var newConnection = connectionLoader.instantiate()
-			newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(index))
-			newConnection.Room2 = newRoom
-			if (index == 1) :
-				newRoom.visibilityOnStartup = 1
-				newConnection.visibilityOnStartup = 1
+	for index in range(0,val.rows.size()) :
+		addRow(val, index)
+	addBossRoom(val)
+	
+func addRow(val : MapData, row : int) :
+	var centerRoom = roomLoader.instantiate()
+	$CombatMap/RoomContainer.add_child(centerRoom)
+	centerRoom.name = "N" + str(row)
+	centerRoom.encounter = val.rows[row].centralEncounter
+	setRoomToOrigin(centerRoom)
+	setRoomPosVertical(centerRoom, row, false)
+	if (row == 0) :
+		centerRoom.visibilityOnStartup = 2
+	else :
+		var newConnection = connectionLoader.instantiate()
+		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row))
+		newConnection.Room2 = centerRoom
+		if (row == 1) :
+			centerRoom.visibilityOnStartup = 1
+			newConnection.visibilityOnStartup = 1
+	for index in range(0, val.rows[row].leftEncounters.size()) :
+		addSideRoom(val, row, index, true)
+	for index in range(0, val.rows[row].rightEncounters.size()) :
+		addSideRoom(val, row, index, false)
+	
+func addSideRoom(val : MapData, row : int, leafCounter : int, isLeft : bool) :
+	var newRoom = roomLoader.instantiate()
+	$CombatMap/RoomContainer.add_child(newRoom)
+	var leftRightChar
+	if (isLeft) :
+		leftRightChar = "L"
+	else :
+		leftRightChar = "R"
+	newRoom.name = "N" + str(row) + leftRightChar + str(leafCounter)
+	if (isLeft) :
+		newRoom.encounter = val.rows[row].leftEncounters[leafCounter]
+	else :
+		newRoom.encounter = val.rows[row].rightEncounters[leafCounter]
+	setRoomToOrigin(newRoom)
+	setRoomPosVertical(newRoom, row, false)
+	var horizontalPos = leafCounter+1
+	if (isLeft) :
+		horizontalPos *= -1
+	setRoomPosHorizontal(newRoom, horizontalPos)
+	var newConnection = connectionLoader.instantiate()
+	$CombatMap/ConnectionContainer.add_child(newConnection)
+	newConnection.Room2 = newRoom
+	if (leafCounter == 0) :
+		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row))
+	else :
+		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row)+leftRightChar+str(leafCounter-1))
 		
+func addBossRoom(val : MapData) :
 	var bossRoom = roomLoader.instantiate()
 	$CombatMap/RoomContainer.add_child(bossRoom)
 	bossRoom.name = "N" + str(val.centralEncounters.size())
@@ -192,35 +228,6 @@ func setFromMapData(val : MapData) :
 	var bossConnection = connectionLoader.instantiate()
 	bossConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(val.centralEncounters.size()-1))
 	bossConnection.Room2 = bossRoom
-	
-	for index in range(0, val.sideEncounters.size()) :
-		var newRoom = roomLoader.instantiate()
-		$CombatMap/RoomContainer.add_child(newRoom)
-		var branchCounter : int = randi_range(1,val.centralEncounters.size()-1)
-		var myName = "N" + str(branchCounter)
-		var leftRightChar
-		if (randi_range(0,1) == 0) :
-			leftRightChar = "R"
-		else :
-			leftRightChar = "L"
-		myName += leftRightChar
-		var leafCounter : int = 0
-		while(nameTaken(myName + str(leafCounter))) :
-			leafCounter += 1
-		newRoom.name = myName + str(leafCounter)
-		setRoomToOrigin(newRoom)
-		setRoomPosVertical(newRoom, branchCounter, false)
-		var horizontalPos = leafCounter+1
-		if (leftRightChar == "L") :
-			horizontalPos *= -1
-		setRoomPosHorizontal(newRoom, horizontalPos)
-		var newConnection = connectionLoader.instantiate()
-		$CombatMap/ConnectionContainer.add_child(newConnection)
-		newConnection.Room2 = newRoom
-		if (leafCounter == 0) :
-			newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(branchCounter))
-		else :
-			newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(branchCounter)+leftRightChar+str(leafCounter-1))
 		
 func nameTaken(myName : String) :
 	var currentList = $CombatMap/RoomContainer.get_children()
