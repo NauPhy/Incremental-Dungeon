@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_rky33")
 type = 0
-power = 1.2
-text = "Frostbite"
+power = 0.85
+text = "Relentless Frostbite"
 mode = 0
-warmup = 3.0
+warmup = 2.2
 metadata/_custom_type_script = "uid://6o4dw2binuis"

@@ -65,7 +65,7 @@ func addDrops(encounter : Encounter) -> void :
 	for enemy in encounter.enemies :
 		var itemPool = $ItemPoolHandler.getItemPoolForEnemy(enemy)
 		$DropHandler.reset(itemPool)
-		var newDrops = $Drophandler.getDrops()
+		var newDrops = $DropHandler.getDrops(enemy)
 		enemy.drops.append_array(newDrops)
 		enemy.dropChances.append_array($DropHandler.getDropChances(newDrops.size()))
 	
@@ -108,8 +108,14 @@ func createBossEncounter() -> Encounter :
 	return retVal
 		
 func createNormal() -> ActorPreset :
+	var test = $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal)
+	if (test == null): 
+		print("null")
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal).getAdjustedCopy(1)
 func createVeteran() -> ActorPreset :
+	var test = $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran)
+	if (test == null): 
+		print("null")
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran).getAdjustedCopy(1)
 func createElite() -> ActorPreset :
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite).getAdjustedCopy(1)

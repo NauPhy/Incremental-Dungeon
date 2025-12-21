@@ -17,3 +17,27 @@ func getRewards(magicFind) -> Array[Equipment] :
 		if (!drops.is_empty()) :
 			retVal.append_array(drops)
 	return retVal
+
+func getSaveDictionary() -> Dictionary :
+	var retVal = {}
+	retVal["enemies"] = []
+	for enemy in enemies :
+		retVal["enemies"].append(enemy.getSaveDictionary())
+	retVal["rewards"] = []
+	retVal["introTitle"] = introTitle
+	retVal["introText"] = introText
+	retVal["victoryTitle"] = victoryTitle
+	retVal["victoryText"] = victoryText
+	return retVal
+
+static func createFromSaveDictionary(val : Dictionary) -> Encounter :
+	var retVal = Encounter.new()
+	var tempEnemies = val["enemies"]
+	for enemy in tempEnemies :
+		retVal.enemies.append(ActorPreset.createFromSaveDictionary(enemy))
+	retVal.rewards = []
+	retVal.introTitle = val["introTitle"]
+	retVal.introText = val["introText"]
+	retVal.victoryTitle = val["victoryTitle"]
+	retVal.victoryText = val["victoryText"]
+	return retVal

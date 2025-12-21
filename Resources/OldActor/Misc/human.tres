@@ -8,7 +8,7 @@
 
 [sub_resource type="Resource" id="Resource_pw1ay"]
 script = ExtResource("3_7ue22")
-isEligible = true
+isEligible = false
 glassCannonIndex = 1.0
 HPToDefRatio = 1.0
 defRatio = 1.0

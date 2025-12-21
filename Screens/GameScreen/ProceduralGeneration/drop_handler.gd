@@ -7,13 +7,13 @@ const signatureEquipmentList = {
 	"titan" : "crackling_greataxe"
 }
 
-var itemPool : Array[Equipment]
+var itemPool : Array
 var qualityCounts : Array[int] = [0,0,0,0,0]
 
 func reset(items) :
 	itemPool = items
 	
-func getDrops(enemy) -> Array[Equipment] :
+func getDrops(enemy) -> Array :
 	updateQualityCounts()
 	var dropCount = getDropCount()
 	var qualities = getDropQualities(dropCount)
@@ -30,7 +30,7 @@ func getDropCount() :
 			return 3
 	return 2
 	
-func handleSignatureItem(enemy : ActorPreset, itemList : Array[Equipment]) -> Array[Equipment] :
+func handleSignatureItem(enemy : ActorPreset, itemList : Array) -> Array :
 	var retVal = itemList
 	var enemyName = enemy.resource_path.get_file().get_basename()
 	if (signatureEquipmentList.get(enemyName) == null) :
@@ -69,7 +69,7 @@ func getDropQualities(count : int) -> Array[EquipmentGroups.qualityEnum] :
 	return retVal
 	
 func getItemsOfQualities(qualities : Array[EquipmentGroups.qualityEnum]) :
-	var retVal : Array[Equipment] = []
+	var retVal : Array = []
 	for index in range(0,qualities.size()) :
 		var targetQuality = qualities[index]
 		for quality in range(targetQuality as int, qualityCounts.size()) :

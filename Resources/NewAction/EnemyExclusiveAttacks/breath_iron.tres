@@ -4,9 +4,9 @@
 
 [resource]
 script = ExtResource("1_ajka2")
-type = 1
+type = 0
 power = 3.91
-text = "Midas' Breath"
+text = "Breath of Steel"
 mode = 0
 warmup = 8.0
 metadata/_custom_type_script = "uid://6o4dw2binuis"

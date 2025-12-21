@@ -38,7 +38,9 @@ func getStat(type : Definitions.baseStatEnum) -> float :
 		return -1
 
 const referencePowerLevel = 442000000
+var myScalingFactor : float = -1
 func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
+	myScalingFactor = scalingFactor
 	if (!enemyGroups.isEligible) :
 		return self.duplicate()
 	var strengthMultiplier
@@ -51,7 +53,7 @@ func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 	else :
 		return self.duplicate()
 	var powerLevel = referencePowerLevel*scalingFactor*strengthMultiplier
-	var retVal : ActorPreset = ActorPreset.new()
+	var retVal : ActorPreset = self.duplicate()
 	var eDPS = sqrt(powerLevel/(30/enemyGroups.glassCannonIndex))
 	var eHP = powerLevel/eDPS
 	var theoreticalDefense = sqrt(eHP/10/enemyGroups.HPToDefRatio)
@@ -76,3 +78,20 @@ func getDrops(magicFind) -> Array[Equipment] :
 func getName() : return text
 func getResourceName() : return resource_path.get_file().get_basename()
 func getDesc() : return description
+
+func getSaveDictionary() -> Dictionary :
+	var retVal = {}
+	if (!enemyGroups.isEligible) :
+		return retVal
+	retVal["name"] = getResourceName()
+	retVal["myScalingFactor"] = myScalingFactor
+	return retVal
+	
+static func createFromSaveDictionary(val : Dictionary) -> ActorPreset :
+	if (val.is_empty()) :
+		return ActorPreset.new()
+	var scalingFactor = val["myScalingFactor"]
+	if (scalingFactor != -1) :
+		return EnemyDatabase.getEnemy(val["name"]).getAdjustedCopy(scalingFactor)
+	else :
+		return EnemyDatabase.getEnemy(val["name"]).duplicate()

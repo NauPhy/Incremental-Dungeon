@@ -1,27 +1,28 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://dwa7hmggq3o77"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://dwa7hmggq3o77"]
 
-[ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_h37mw"]
-[ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_cotoh"]
-[ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_sl1nv"]
-[ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_7vde2"]
-[ext_resource type="Texture2D" uid="uid://ceisj8xfgew6s" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/merfolk_javelineer_water_new.png" id="4_cotoh"]
+[ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_v0ovr"]
+[ext_resource type="Resource" uid="uid://cso8qfu7bw8af" path="res://Resources/NewAction/Attacks/spear_1h.tres" id="2_wph7o"]
+[ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="3_t45xq"]
+[ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="4_6hdg1"]
+[ext_resource type="Texture2D" uid="uid://ceisj8xfgew6s" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/merfolk_javelineer_water_new.png" id="5_dat4i"]
+[ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="6_gqx8r"]
 
 [sub_resource type="Resource" id="Resource_ynhb6"]
-script = ExtResource("3_sl1nv")
+script = ExtResource("4_6hdg1")
 isEligible = true
-glassCannonIndex = 1.0
+glassCannonIndex = 1.2
 HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+defRatio = 1.1
+atkRatio = 1.7
 enemyQuality = 0
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([1, 2])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([2, 3])
 faction = 7
 
 [resource]
-script = ExtResource("4_7vde2")
-portrait = ExtResource("4_cotoh")
+script = ExtResource("6_gqx8r")
+portrait = ExtResource("5_dat4i")
 text = "Merfolk Spearfisher"
 description = ""
 MAXHP = -1.0
@@ -29,8 +30,8 @@ AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_h37mw")]([])
-drops = Array[ExtResource("2_cotoh")]([])
+actions = Array[ExtResource("1_v0ovr")]([ExtResource("2_wph7o")])
+drops = Array[ExtResource("3_t45xq")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_ynhb6")
 metadata/_custom_type_script = "uid://ddpkx6a4ixuw2"

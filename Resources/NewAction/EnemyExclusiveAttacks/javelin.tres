@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_yxoew")
 type = 0
-power = 0.0
-text = "UndefAction"
+power = 2.07
+text = "Javelin Throw"
 mode = 0
-warmup = 1.0
+warmup = 4.8
 metadata/_custom_type_script = "uid://6o4dw2binuis"

@@ -3,6 +3,8 @@ extends Panel
 signal levelChosen2
 signal tutorialRequested
 
+@export var isPresentInNG : bool = false
+
 var UIEnabled : bool = true
 func disableUI() :
 	UIEnabled = false
@@ -146,29 +148,17 @@ func goHome() :
 	$CombatMap.position = homePosition
 	setMapPosRatio()
 	
-func getSaveDictionary() -> Dictionary :
-	var tempDict = {}
-	var connections = $CombatMap/ConnectionContainer.get_children()
-	for index in range (connections.size()) :
-		var key : String = "connection" + str(index)
-		tempDict[key] = connections[index].getVisibility()
-	var rooms = $CombatMap/RoomContainer.get_children()
-	for index in range (rooms.size()) :
-		var key : String = "room" + str(index)
-		tempDict[key+"override"] = rooms[index].getOverridePath()
-		tempDict[key+"override_once"] = rooms[index].getOverrideOnce()
-	tempDict["mapPosX"] = mapPosRatio.x
-	tempDict["mapPosY"] = mapPosRatio.y
-	return tempDict
-	
 #######################
 ## Scope creep but could add in map layout specifiers to environment - like making barracks symmetric
 const roomLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/room.tscn")
 const connectionLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/connection.tscn")
+var mapData : MapData = null
 func setFromMapData(val : MapData) :
+	mapData = val
 	for index in range(0,val.rows.size()) :
 		addRow(val, index)
 	addBossRoom(val)
+	internalInitialise()
 	
 func addRow(val : MapData, row : int) :
 	var centerRoom = roomLoader.instantiate()
@@ -221,20 +211,20 @@ func addSideRoom(val : MapData, row : int, leafCounter : int, isLeft : bool) :
 func addBossRoom(val : MapData) :
 	var bossRoom = roomLoader.instantiate()
 	$CombatMap/RoomContainer.add_child(bossRoom)
-	bossRoom.name = "N" + str(val.centralEncounters.size())
+	bossRoom.name = "N" + str(val.rows.size())
 	bossRoom.encounter = val.bossEncounter
 	setRoomToOrigin(bossRoom)
-	setRoomPosVertical(bossRoom, val.centralEncounters.size(), true)
+	setRoomPosVertical(bossRoom, val.rows.size(), true)
 	var bossConnection = connectionLoader.instantiate()
-	bossConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(val.centralEncounters.size()-1))
+	bossConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(val.rows.size()-1))
 	bossConnection.Room2 = bossRoom
 		
-func nameTaken(myName : String) :
-	var currentList = $CombatMap/RoomContainer.get_children()
-	for child in currentList :
-		if (child.name == myName) :
-			return true
-	return false
+#func nameTaken(myName : String) :
+	#var currentList = $CombatMap/RoomContainer.get_children()
+	#for child in currentList :
+		#if (child.name == myName) :
+			#return true
+	#return false
 		
 func setRoomToOrigin(room : Button) :
 	room.anchor_left = 0.5
@@ -256,24 +246,6 @@ func setRoomPosVertical(room : Button, amount : int, isBoss : bool) :
 	else :
 		room.offset_bottom = -200*amount
 	
-	
-var fullyInitialised : bool = false
-	
-var myReady : bool = false
-func _ready() :
-	myReady = true
-	
-func beforeLoad(newSave) :
-	clip_contents = true
-	for child in $CombatMap/RoomContainer.get_children() :
-		child.connect("levelChosen", _on_level_chosen)
-		if (child.has_signal("shopRequested")) :
-			child.connect("shopRequested", _on_shop_requested)
-	initScroll()
-	goHome()
-	if (newSave) :
-		fullyInitialised = true
-		
 func getTypicalEnemyDefense() :
 	var numArr : Array[float] = []
 	for room in $CombatMap/RoomContainer.get_children() :
@@ -289,21 +261,16 @@ signal shopRequested
 func _on_shop_requested(details : ShopDetails) :
 	emit_signal("shopRequested", details)
 	
-func onLoad(loadDict) -> void :
-	var connections = $CombatMap/ConnectionContainer.get_children()
-	for index in range (connections.size()) :
-		var key : String = "connection" + str(index) 
-		connections[index].setVisibility(loadDict[key])
-	var rooms = $CombatMap/RoomContainer.get_children()
-	for index in range (rooms.size()) :
-		var key : String = "room" + str(index)
-		var overridePath = loadDict[key+"override"]
-		if (overridePath != "null") :
-			rooms[index].overrideEncounter(load(overridePath), loadDict[key+"override_once"])
-	mapPosRatio = Vector2(loadDict["mapPosX"], loadDict["mapPosY"])
-	setFromMapPosRatio()
-	fullyInitialised = true
-	
+var fullyInitialised : bool = false
+
+func _on_home_button_was_selected(_emitter) -> void:
+	goHome()
+
+func _on_resized() -> void:
+	if (fullyInitialised) :
+		initScroll()
+		setFromMapPosRatio()
+		
 func setFromMapPosRatio() :
 	if (mapPosRatio.x == -99 || (minX > maxX)) :
 		$CombatMap.position.x = size.x/2-$CombatMap.size.x/2
@@ -313,17 +280,109 @@ func setFromMapPosRatio() :
 		$CombatMap.position.y = size.y/2-$CombatMap.size.y/2
 	else :
 		$CombatMap.position.y = (maxY-minY)*mapPosRatio.y
+
+############################################################
+func getSaveDictionary() -> Dictionary :
+	var retVal : Dictionary = {}
+	retVal["isRuntime"] = !isPresentInNG
+	if (!isPresentInNG) :
+		retVal["seed"] = mapData.getSaveDictionary()
+	var rooms = $CombatMap/RoomContainer.get_children()
+	for index in range(0, rooms.size()) :
+		retVal["room"+str(index)] = rooms[index].getSaveDictionary()
+	var connections = $CombatMap/ConnectionContainer.get_children()
+	for index in range(0, connections.size()) :
+		retVal["connection"+str(index)] = connections[index].getSaveDictionary()
+	retVal["mapPosX"] = mapPosRatio.x
+	retVal["mapPosY"] = mapPosRatio.y
+	return retVal
+
+func beforeLoad(newGame) :
+	if (!isPresentInNG) :
+		return
+	internalInitialise()
+	if (newGame) :
+		fullyInitialised = true
 	
-func _on_home_button_was_selected(_emitter) -> void:
+func internalInitialise() :
+	clip_contents = true
+	setupSignals()
+	initScroll()
 	goHome()
+	for room in $
+	
+func onLoad(loadDict : Dictionary) :
+	if (loadDict["isRuntime"]) :
+		var data = MapData.createFromSaveDictionary(loadDict["seed"])
+		setFromMapData(data)
+	var rooms = $CombatMap/RoomContainer.get_children()
+	for index in range(0, rooms.size()) :
+		rooms[index].onLoad(loadDict["room"+str(index)])
+	var connections = $CombatMap/ConnectionContainer.get_children()
+	for index in range(0, connections.size()) :
+		connections[index].onLoad(loadDict["connection"+str(index)])
+	mapPosRatio = Vector2(loadDict["mapPosX"], loadDict["mapPosY"])
+	setFromMapPosRatio()
+	fullyInitialised = true
 
-func _on_resized() -> void:
-	if (fullyInitialised) :
-		initScroll()
-		setFromMapPosRatio()
+		
+func setupSignals() :
+	for child in $CombatMap/RoomContainer.get_children() :
+		child.connect("levelChosen", _on_level_chosen)
+		if (child.has_signal("shopRequested")) :
+			child.connect("shopRequested", _on_shop_requested)
 
-func _on_combat_map_resized() -> void:
-	pass
-	#if (mapViewportRatio == Vector2(-99,-99)) :
-		#return
-	#size = Vector2(1/(mapViewportRatio.x/$CombatMap.size.x),1/(mapViewportRatio.y/$CombatMap.size.y))
+#var myReady : bool = false
+#func _ready() :
+	#myReady = true
+#
+#func beforeLoad(newSave) :
+	#clip_contents = true
+	##for child in $CombatMap/RoomContainer.get_children() :
+		##child.connect("levelChosen", _on_level_chosen)
+		##if (child.has_signal("shopRequested")) :
+			##child.connect("shopRequested", _on_shop_requested)
+	#initScroll()
+	#goHome()
+	#if (newSave) :
+		#fullyInitialised = true
+#
+#func onLoad(loadDict) -> void :
+	#if (!isPresentInNG) :
+		#var data = MapData.createFromSaveDictionary(loadDict["mapData"])
+		#if (data != null) :
+			#setFromMapData(data)
+	#var connections = $CombatMap/ConnectionContainer.get_children()
+	#for index in range (connections.size()) :
+		#var key : String = "connection" + str(index) 
+		#connections[index].setVisibility(loadDict[key])
+	#var rooms = $CombatMap/RoomContainer.get_children()
+	#for index in range (rooms.size()) :
+		#var key : String = "room" + str(index)
+		#var overridePath = loadDict[key+"override"]
+		#if (overridePath != "null") :
+			#rooms[index].overrideEncounter(load(overridePath), loadDict[key+"override_once"])
+	#mapPosRatio = Vector2(loadDict["mapPosX"], loadDict["mapPosY"])
+	#setFromMapPosRatio()
+	#fullyInitialised = true
+#
+#func getSaveDictionary() -> Dictionary :
+	#var tempDict = {}
+	#if (!isPresentInNG) :
+		#if (mapData == null) :
+			#tempDict["mapData"] = "null"
+		#else :
+			#tempDict["mapData"] = mapData.getSaveDictionary()
+	#var connections = $CombatMap/ConnectionContainer.get_children()
+	#for index in range (connections.size()) :
+		#var key : String = "connection" + str(index)
+		#tempDict[key] = connections[index].getVisibility()
+	#var rooms = $CombatMap/RoomContainer.get_children()
+	#for index in range (rooms.size()) :
+		#var key : String = "room" + str(index)
+		#tempDict[key+"override"] = rooms[index].getOverridePath()
+		#tempDict[key+"override_once"] = rooms[index].getOverrideOnce()
+		#tempDict[key+"saveData"] = rooms[index].getSaveDictionary()
+	#tempDict["mapPosX"] = mapPosRatio.x
+	#tempDict["mapPosY"] = mapPosRatio.y
+	#return tempDict

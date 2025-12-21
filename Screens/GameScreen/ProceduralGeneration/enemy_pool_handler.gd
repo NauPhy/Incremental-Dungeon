@@ -19,11 +19,16 @@ func getEnemyPool() :
 	return enemyPool.duplicate()
 	
 func filterEnemyPool_env() :
-	for preEnemy in enemyPool :
+	var index = 0
+	while (index < enemyPool.size()) :
+		var preEnemy = enemyPool[index]
 		var enemy = preEnemy.enemyGroups
 		var remove = (environment.permittedFactions.find(enemy.faction) == -1)
 		if (remove && (enemy.faction != EnemyGroups.factionEnum.misc)) :
-			enemyPool.remove_at(enemyPool.find(preEnemy))
+			var pos = enemyPool.find(preEnemy)
+			enemyPool.remove_at(pos)
+		else :
+			index += 1
 
 #func filterEnemyPool_env() :
 	#filterEnemyPool_env_envWhitelist() 
@@ -67,7 +72,7 @@ func filterEnemyPool_env() :
 		#if (remove) :
 			#enemyPool.remove_at(enemyPool.find(preEnemy))
 func getEnemyOfType(type : EnemyGroups.enemyQualityEnum) :
-	var roll = randi_range(0, enemyCounts[type])
+	var roll = randi_range(0, enemyCounts[type]-1)
 	var currentCount = 0
 	for enemy in enemyPool :
 		if (enemy.enemyGroups.enemyQuality == type) :

@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://bk0wfe4puk0l3"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://bk0wfe4puk0l3"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_y66yn"]
+[ext_resource type="Resource" uid="uid://dnnve2dxsgdcg" path="res://Resources/NewAction/EnemyExclusiveAttacks/ice_blast.tres" id="2_77xd4"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_mjyu7"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_77xd4"]
 [ext_resource type="Texture2D" uid="uid://dsnpeegnib81b" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/amorphous/azure_jelly_new.png" id="4_mjyu7"]
@@ -9,14 +10,14 @@
 [sub_resource type="Resource" id="Resource_tkak0"]
 script = ExtResource("3_77xd4")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 1.4
+HPToDefRatio = 3.0
+defRatio = 0.91
+atkRatio = 1.1
 enemyQuality = 0
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([0, 1])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([0])
 faction = 3
 
 [resource]
@@ -29,7 +30,7 @@ AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_y66yn")]([])
+actions = Array[ExtResource("1_y66yn")]([ExtResource("2_77xd4")])
 drops = Array[ExtResource("2_mjyu7")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_tkak0")

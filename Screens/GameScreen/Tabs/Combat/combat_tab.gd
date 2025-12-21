@@ -230,19 +230,41 @@ func getSaveDictionary() -> Dictionary :
 	if (currentFloorIndex == null) :
 		currentFloorIndex = "null"
 	tempDict["currentFloorIndex"] = currentFloorIndex
+	tempDict["maps"] = []
+	for map in $MapContainer.get_children() :
+		tempDict["maps"].append(map.getSaveDictionary())
 	return tempDict
+	
 var myReady : bool = false
 func _ready() :
+	for map in $MapContainer.get_children() :
+		if(!map.myReady) :
+			await map.myReadySignal
 	myReady = true
+	
 func beforeLoad(newGame) :
+	for map in $MapContainer.get_children() :
+		map.beforeLoad(newGame)
+		connectToMapSignals(map)
 	friendlyParty.resize(1)
 	if (newGame) :
 		currentFloor = $MapContainer.get_child(0)
 		$FloorDisplay.setFloor(0)
 		currentFloor.visible = true
-	for map in $MapContainer.get_children() :
-		connectToMapSignals(map)
+		
 func onLoad(loadDict : Dictionary) :
+	var hardMapCount = $MapContainer.get_child_count()
+	for index in range(0, loadDict["maps"].size()) :
+		if (index < hardMapCount) :
+			$MapContainer.get_child(index).onLoad(loadDict["maps"][index])
+		else :
+			var newMap = mapLoader.instantiate()
+			$MapContainer.add_child(newMap)
+			if (!newMap.myReady) :
+				await newMap.myReadySignal
+			newMap.beforeLoad(false)
+			newMap.onLoad(loadDict["maps"][index])
+		
 	firstReward = loadDict["firstReward"]
 	maxFloor = loadDict["maxFloor"]
 	$FloorDisplay.setMaxFloor(maxFloor)

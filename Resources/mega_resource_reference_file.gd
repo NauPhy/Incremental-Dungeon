@@ -83,18 +83,42 @@ const NewAction_AttacksDictionary = {
 	"throw_kunai" : preload("res://Resources/NewAction/Attacks/throw_kunai.tres"),
 	"thrust_sword_1h" : preload("res://Resources/NewAction/Attacks/thrust_sword_1h.tres"),
 	"thrust_sword_2h" : preload("res://Resources/NewAction/Attacks/thrust_sword_2h.tres"),
-	"water_jet" : preload("res://Resources/NewAction/Attacks/water_jet.tres")}
+	"water_jet" : preload("res://Resources/NewAction/Attacks/water_jet.tres"),
+	"water_jet_2" : preload("res://Resources/NewAction/Attacks/water_jet_2.tres"),
+	"water_jet_3" : preload("res://Resources/NewAction/Attacks/water_jet_3.tres")}
 
 
 func getNewAction_Attacks(resourceName : String) :
 	return NewAction_AttacksDictionary.get(resourceName)
 
 const NewAction_EnemyExclusiveAttacksDictionary = {
+	"arcane_bolt" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/arcane_bolt.tres"),
+	"bite_acid_2" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_acid_2.tres"),
+	"bite_fire" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_fire.tres"),
+	"bite_generic" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_generic.tres"),
+	"bite_ice" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_ice.tres"),
+	"bite_ice_2" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_ice_2.tres"),
+	"breath_acid" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_acid.tres"),
+	"breath_fire" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_fire.tres"),
+	"breath_frost" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_frost.tres"),
+	"breath_iron" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_iron.tres"),
+	"breath_midas" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_midas.tres"),
+	"breath_shadow" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_shadow.tres"),
 	"claw" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/claw.tres"),
-	"fire_claw" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/fire_claw.tres"),
+	"claw_fire" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/claw_fire.tres"),
+	"fire_blast" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/fire_blast.tres"),
+	"fire_blast_2" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/fire_blast_2.tres"),
+	"fire_blast_3" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/fire_blast_3.tres"),
 	"gore" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/gore.tres"),
 	"hellfire_cleave" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/hellfire_cleave.tres"),
-	"slavering_bite" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/slavering_bite.tres")}
+	"ice_blast" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/ice_blast.tres"),
+	"javelin" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/javelin.tres"),
+	"lava" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/lava.tres"),
+	"poison_spore" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/poison_spore.tres"),
+	"psychic_scream" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/psychic_scream.tres"),
+	"stomp_fire" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/stomp_fire.tres"),
+	"stomp_generic" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/stomp_generic.tres"),
+	"stomp_ice" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/stomp_ice.tres")}
 
 
 func getNewAction_EnemyExclusiveAttacks(resourceName : String) :
@@ -158,6 +182,7 @@ const NewActor_earthDictionary = {
 	"faun" : preload("res://Resources/NewActor/earth/faun.tres"),
 	"forest_drake" : preload("res://Resources/NewActor/earth/forest_drake.tres"),
 	"hill_giant" : preload("res://Resources/NewActor/earth/hill_giant.tres"),
+	"rock_troll" : preload("res://Resources/NewActor/earth/rock_troll.tres"),
 	"satyr" : preload("res://Resources/NewActor/earth/satyr.tres"),
 	"swamp_dragon" : preload("res://Resources/NewActor/earth/swamp_dragon.tres"),
 	"swamp_worm" : preload("res://Resources/NewActor/earth/swamp_worm.tres"),
@@ -189,7 +214,6 @@ const NewActor_greenskinDictionary = {
 	"goblin_skirmisher" : preload("res://Resources/NewActor/greenskin/goblin_skirmisher.tres"),
 	"juggernaut" : preload("res://Resources/NewActor/greenskin/juggernaut.tres"),
 	"orc_knight" : preload("res://Resources/NewActor/greenskin/orc_knight.tres"),
-	"orc_new" : preload("res://Resources/NewActor/greenskin/orc_new.tres"),
 	"orc_sorcerer" : preload("res://Resources/NewActor/greenskin/orc_sorcerer.tres"),
 	"orc_warlord" : preload("res://Resources/NewActor/greenskin/orc_warlord.tres"),
 	"polyphemus" : preload("res://Resources/NewActor/greenskin/polyphemus.tres")}
@@ -217,11 +241,11 @@ func getNewActor_ice(resourceName : String) :
 const NewActor_merfolkDictionary = {
 	"champion_of_poesideon" : preload("res://Resources/NewActor/merfolk/champion_of_poesideon.tres"),
 	"ilsuiw" : preload("res://Resources/NewActor/merfolk/ilsuiw.tres"),
-	"merfolk_fighter" : preload("res://Resources/NewActor/merfolk/merfolk_fighter.tres"),
-	"merfolk_grunt" : preload("res://Resources/NewActor/merfolk/merfolk_grunt.tres"),
-	"merfolk_impaler" : preload("res://Resources/NewActor/merfolk/merfolk_impaler.tres"),
-	"merfolk_javalineer" : preload("res://Resources/NewActor/merfolk/merfolk_javalineer.tres"),
-	"merfolk_mage" : preload("res://Resources/NewActor/merfolk/merfolk_mage.tres"),
+	"merfolk_T1_mage" : preload("res://Resources/NewActor/merfolk/merfolk_T1_mage.tres"),
+	"merfolk_T1_spear" : preload("res://Resources/NewActor/merfolk/merfolk_T1_spear.tres"),
+	"merfolk_T2_mage" : preload("res://Resources/NewActor/merfolk/merfolk_T2_mage.tres"),
+	"merfolk_T2_spear_melee" : preload("res://Resources/NewActor/merfolk/merfolk_T2_spear_melee.tres"),
+	"merfolk_T2_spear_ranged" : preload("res://Resources/NewActor/merfolk/merfolk_T2_spear_ranged.tres"),
 	"siren" : preload("res://Resources/NewActor/merfolk/siren.tres")}
 
 
@@ -508,7 +532,6 @@ func getOldActor_Floor1(resourceName : String) :
 	return OldActor_Floor1Dictionary.get(resourceName)
 
 const OldActor_MiscDictionary = {
-	"fighter_preset" : preload("res://Resources/OldActor/Misc/fighter_preset.tres"),
 	"human" : preload("res://Resources/OldActor/Misc/human.tres")}
 
 

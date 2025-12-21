@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_i1lf3")
 type = 1
-power = 2.45
-text = "Water Torrent"
+power = 3.3
+text = "Great Wave"
 mode = 0
-warmup = 5.5
+warmup = 7.0
 metadata/_custom_type_script = "uid://6o4dw2binuis"

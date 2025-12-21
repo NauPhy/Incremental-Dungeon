@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cb0xb20pk0mpa" path="res://Images/SpriteSheets/sprite.tscn" id="3_vvaik"]
 [ext_resource type="Texture2D" uid="uid://bskuycfjhmas4" path="res://Images/Sprites/shop.png" id="4_dn8wb"]
 
-[node name="Room" type="Button" groups=["Saveable"]]
+[node name="Room" type="Button"]
 custom_minimum_size = Vector2(215.7, 133)
 offset_right = 215.7
 offset_bottom = 133.0

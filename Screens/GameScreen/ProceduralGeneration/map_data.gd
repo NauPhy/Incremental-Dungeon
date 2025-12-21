@@ -1,5 +1,23 @@
 extends Resource
 
 class_name MapData
-@export var rows : Array[MapRow]
+@export var rows : Array[MapRow] = []
 @export var bossEncounter : Encounter
+
+static func createFromSaveDictionary(val : Dictionary) :
+	if (val.is_empty()) :
+		return null
+	var retVal = MapData.new()
+	var tempRows = val["rows"]
+	for row in tempRows :
+		retVal.rows.append(MapRow.createFromSaveDictionary(row))
+	retVal.bossEncounter = Encounter.createFromSaveDictionary(val["boss"])
+	return retVal
+	
+func getSaveDictionary() -> Dictionary :
+	var retVal : Dictionary = {}
+	retVal["rows"] = []
+	for row in rows :
+		retVal["rows"].append(row.getSaveDictionary())
+	retVal["boss"] = bossEncounter.getSaveDictionary()
+	return retVal

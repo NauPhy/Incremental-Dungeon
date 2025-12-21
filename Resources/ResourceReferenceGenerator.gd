@@ -4,7 +4,7 @@ extends EditorScript
 const myResourcePath = "res://Resources/"
 const texturePath = "res://Resources/Textures/"
 
-const excludedResources = ["fighter_preset.tres","human.tres","unarmed_Rogue.tres","unarmed_Mage.tres","unarmed_Fighter.tres"]
+const excludedResources = []
 
 func _run() :
 	print("NEW RUNNING")
@@ -64,7 +64,8 @@ func addDictionariesFromResource(scriptContent : String, resourceName : String, 
 	var resourceFiles : Dictionary = getFileDictionary(resourcePath + "/")
 	for filename in excludedResources : 
 		for subdirectory in resourceFiles.keys() :
-			var pos = resourceFiles[subdirectory].find_key(resourcePath + filename)
+			#print ("looking for ", resourcePath + "/" + subdirectory + "/" + filename)
+			var pos = resourceFiles[subdirectory].find_key(resourcePath + "/" + subdirectory + "/" + filename)
 			if (pos != null) :
 				resourceFiles[subdirectory].erase(pos)
 				print("removed ", filename)
@@ -117,7 +118,7 @@ func getAllResourceFilePathsInDirectoryRecursive(directory : String, currentValu
 	var dir = DirAccess.open(directory)
 	#print("directory is ", directory)
 	var directories = dir.get_directories()
-	print(directories)
+	#print(directories)
 	for tempDir in directories :
 		#print("Entering directory", tempDir)
 		retVal = getAllResourceFilePathsInDirectoryRecursive(directory + tempDir + "/", retVal)
