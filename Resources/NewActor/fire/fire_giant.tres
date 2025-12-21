@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://d20ofixdlb1w3"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://d20ofixdlb1w3"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_hijg0"]
+[ext_resource type="Resource" uid="uid://pegl050or8si" path="res://Resources/NewAction/EnemyExclusiveAttacks/stomp_fire.tres" id="2_68xrd"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_amluv"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_68xrd"]
 [ext_resource type="Texture2D" uid="uid://4sfkd1tgykd0" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/fire_giant_new.png" id="4_amluv"]
@@ -9,14 +10,14 @@
 [sub_resource type="Resource" id="Resource_3f4vr"]
 script = ExtResource("3_68xrd")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 0.6
+HPToDefRatio = 3.0
+defRatio = 0.83
+atkRatio = 0.25
 enemyQuality = 1
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([0, 1])
+droppedWeaponClasses = Array[int]([0])
+droppedTechnologyClasses = Array[int]([0, 1])
 faction = 0
 
 [resource]
@@ -29,7 +30,7 @@ AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_hijg0")]([])
+actions = Array[ExtResource("1_hijg0")]([ExtResource("2_68xrd")])
 drops = Array[ExtResource("2_amluv")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_3f4vr")

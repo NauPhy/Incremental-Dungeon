@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://bqq2a86b1khu1"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://bqq2a86b1khu1"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_g5di2"]
+[ext_resource type="Resource" uid="uid://bsjxpeb3xjthl" path="res://Resources/NewAction/Attacks/axe_2h.tres" id="2_6ue6l"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_wna1e"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_6ue6l"]
 [ext_resource type="Texture2D" uid="uid://bcjvvlcj0dsyt" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/demons/hell_sentinel.png" id="4_wna1e"]
@@ -9,27 +10,27 @@
 [sub_resource type="Resource" id="Resource_apmac"]
 script = ExtResource("3_6ue6l")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 0.5
+HPToDefRatio = 0.08
+defRatio = 1.5
+atkRatio = 4.0
 enemyQuality = 2
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([2])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([3])
 faction = 5
 
 [resource]
 script = ExtResource("4_yy3fn")
 portrait = ExtResource("4_wna1e")
 text = "Hellforged Golem"
-description = ""
+description = "There are no finer forges in all the realms than the Hellforges of the Underworld, and the pride and joy of demonic craftsmen are the Hellforged Golems. While much smaller than the iron golems of the surface world, Hellforged Golems are superior in nearly every other way, from durability to infamy."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_g5di2")]([])
+actions = Array[ExtResource("1_g5di2")]([ExtResource("2_6ue6l")])
 drops = Array[ExtResource("2_wna1e")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_apmac")

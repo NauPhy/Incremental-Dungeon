@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://bdg1h6xxpmtkx"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://bdg1h6xxpmtkx"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_ec2i4"]
+[ext_resource type="Resource" uid="uid://cfu5avjlndjoe" path="res://Resources/NewAction/Attacks/mace_2h.tres" id="2_vlmga"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_xq8es"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_vlmga"]
 [ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_cwgif"]
@@ -9,27 +10,29 @@
 [sub_resource type="Resource" id="Resource_74tmj"]
 script = ExtResource("3_vlmga")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 0.5
+HPToDefRatio = 0.75
+defRatio = 0.83
+atkRatio = 0.7
 enemyQuality = 1
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([0])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([0])
 faction = 2
 
 [resource]
 script = ExtResource("4_cwgif")
 portrait = ExtResource("4_xq8es")
 text = "Treant"
-description = ""
+description = "Though the first Treants were created from normal trees by angry druids, Treants reproduce just like normal trees, and thus can be created by other Treants. 
+
+Treants prefer to spend 100% of their time unmoving, but they are occasionally motivated to move about to secure more sunlight or to deal with intruders reported by their dryad friends."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_ec2i4")]([])
+actions = Array[ExtResource("1_ec2i4")]([ExtResource("2_vlmga")])
 drops = Array[ExtResource("2_xq8es")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_74tmj")

@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://cmql03nxqruum"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://cmql03nxqruum"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_a00ms"]
+[ext_resource type="Resource" uid="uid://dt13iuuy3pswr" path="res://Resources/NewAction/Attacks/flame_whip.tres" id="2_hmpym"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_vd1dh"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_hmpym"]
 [ext_resource type="Texture2D" uid="uid://ck51x1t7a5kdl" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/demons/balrug_new.png" id="4_qwsnk"]
@@ -9,27 +10,27 @@
 [sub_resource type="Resource" id="Resource_jubvq"]
 script = ExtResource("3_hmpym")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 0.75
+HPToDefRatio = 2.5
+defRatio = 1.2
+atkRatio = 0.8
 enemyQuality = 2
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([2])
+droppedWeaponClasses = Array[int]([0])
+droppedTechnologyClasses = Array[int]([2, 3, 1])
 faction = 5
 
 [resource]
 script = ExtResource("5_7kls5")
 portrait = ExtResource("4_qwsnk")
 text = "Balrog"
-description = ""
+description = "Although commonly called fallen angels, Balrogs are closer to fallen demigods, maintaining but a shred of their former sanity. Though they are unhinged and destructive, Balrogs maintain high positions in the \"might makes right\" pecking order of the Demonic Military, though they are discreetly left uninvited to strategic meetings."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_a00ms")]([])
+actions = Array[ExtResource("1_a00ms")]([ExtResource("2_hmpym")])
 drops = Array[ExtResource("2_vd1dh")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_jubvq")

@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://1o0v87q5vo8c"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://1o0v87q5vo8c"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_sj1fx"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_d2wrh"]
+[ext_resource type="Resource" uid="uid://b2serwufoqsqm" path="res://Resources/NewAction/EnemyExclusiveAttacks/bite_acid_2.tres" id="2_ids5v"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_ids5v"]
 [ext_resource type="Texture2D" uid="uid://j40gp5lq124y" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/lindwurm.png" id="4_d2wrh"]
 [ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_x1lq5"]
@@ -9,27 +10,27 @@
 [sub_resource type="Resource" id="Resource_njr52"]
 script = ExtResource("3_ids5v")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 1.5
+HPToDefRatio = 0.8
+defRatio = 0.91
+atkRatio = 1.2
 enemyQuality = 2
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([1])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([0])
 faction = 2
 
 [resource]
 script = ExtResource("4_x1lq5")
 portrait = ExtResource("4_d2wrh")
 text = "Lindwurm"
-description = ""
+description = "Sometimes called \"snake-dragons\", Lindwurms are related to snakes and naga, though much larger than either. Lindwurms are omnivores, and will eat pretty much anything to sate their monstrous appetite, easily digesting flesh, vegetation, bone, and wood. On the rare occasion Lindwurms are slain, they are typically found with partially digested stones in their gut. Scholars believe that since their stomach acid is easily strong enough to dissolve any organic material, Lindwurms do not swallow stones to aid in digestion, but rather to take the edge off their hunger."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_sj1fx")]([])
+actions = Array[ExtResource("1_sj1fx")]([ExtResource("2_ids5v")])
 drops = Array[ExtResource("2_d2wrh")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_njr52")

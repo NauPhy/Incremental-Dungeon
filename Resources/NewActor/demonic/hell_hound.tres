@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_w7xya"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_2vtu4"]
-[ext_resource type="Resource" uid="uid://uu0t5t5uelix" path="res://Resources/NewAction/EnemyExclusiveAttacks/slavering_bite.tres" id="2_tjqf4"]
+[ext_resource type="Resource" uid="uid://uu0t5t5uelix" path="res://Resources/NewAction/EnemyExclusiveAttacks/bite_generic.tres" id="2_tjqf4"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_tjqf4"]
 [ext_resource type="Texture2D" uid="uid://cvj7gtfm5wsmt" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/animals/hell_hound_new.png" id="4_2vtu4"]
 [ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_x5he0"]
@@ -15,9 +15,9 @@ HPToDefRatio = 1.4
 defRatio = 1.0
 atkRatio = 0.7
 enemyQuality = 0
-droppedArmorClasses = Array[int]([0])
+droppedArmorClasses = Array[int]([0, 1])
 droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([0, 1, 2])
 faction = 6
 
 [resource]

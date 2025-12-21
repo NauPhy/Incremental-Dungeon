@@ -12,12 +12,12 @@ script = ExtResource("3_ahm35")
 isEligible = true
 glassCannonIndex = 1.8
 HPToDefRatio = 1.2
-defRatio = 0.75
+defRatio = 0.83
 atkRatio = 0.5
 enemyQuality = 2
-droppedArmorClasses = Array[int]([0, 1, 2])
+droppedArmorClasses = Array[int]([0])
 droppedWeaponClasses = Array[int]([0, 1])
-droppedTechnologyClasses = Array[int]([0, 1, 2, 3])
+droppedTechnologyClasses = Array[int]([0, 1, 2])
 faction = 6
 
 [resource]

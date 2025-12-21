@@ -12,19 +12,19 @@ script = ExtResource("3_avndt")
 isEligible = true
 glassCannonIndex = 1.2
 HPToDefRatio = 1.2
-defRatio = 0.85
+defRatio = 1.1
 atkRatio = 1.2
 enemyQuality = 0
-droppedArmorClasses = Array[int]([0, 1])
+droppedArmorClasses = Array[int]([1, 2])
 droppedWeaponClasses = Array[int]([0, 1])
-droppedTechnologyClasses = Array[int]([2])
+droppedTechnologyClasses = Array[int]([2, 3])
 faction = 5
 
 [resource]
 script = ExtResource("4_m2gtm")
 portrait = ExtResource("4_j1576")
 text = "Imp"
-description = "Being the weakest sapient demon subrace, imps are the lowest in the demonic hierarchy. Rarely trusted with hellforged tools, they make do with quality tempered steel."
+description = "Being the weakest sapient demon subrace, Imps are the lowest in the demonic hierarchy. Rarely trusted with hellforged tools, they make do with quality tempered steel."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0

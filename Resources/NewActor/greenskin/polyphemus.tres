@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://bfau2b3rbtrdc"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://bfau2b3rbtrdc"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_jmeh2"]
+[ext_resource type="Resource" uid="uid://cfu5avjlndjoe" path="res://Resources/NewAction/Attacks/mace_2h.tres" id="2_m8om6"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_tvuk6"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_m8om6"]
 [ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_jkuil"]
@@ -9,14 +10,14 @@
 [sub_resource type="Resource" id="Resource_21wiy"]
 script = ExtResource("3_m8om6")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 0.5
+HPToDefRatio = 2.0
+defRatio = 1.1
+atkRatio = 1.2
 enemyQuality = 2
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([1, 2])
+droppedWeaponClasses = Array[int]([0])
+droppedTechnologyClasses = Array[int]([2, 3])
 faction = 8
 
 [resource]
@@ -29,7 +30,7 @@ AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_jmeh2")]([])
+actions = Array[ExtResource("1_jmeh2")]([ExtResource("2_m8om6")])
 drops = Array[ExtResource("2_tvuk6")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_21wiy")
