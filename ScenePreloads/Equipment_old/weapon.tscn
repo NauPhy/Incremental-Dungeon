@@ -7,6 +7,7 @@
 script = ExtResource("2_ek85t")
 
 [node name="Icon" parent="SuperButton/HBoxContainer/Sprite" index="0"]
+flip_h = true
 region_rect = Rect2(0, 0, 32, 32)
 
 [editable path="SuperButton"]
