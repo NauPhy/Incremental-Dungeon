@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://qiojemqqumqi"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://qiojemqqumqi"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_tjdn1"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_lybpd"]
+[ext_resource type="Resource" uid="uid://istodownlvaf" path="res://Resources/NewAction/raise_undead.tres" id="2_xikwn"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_xikwn"]
 [ext_resource type="Texture2D" uid="uid://c4ine7im1exsx" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/necromancer_new.png" id="4_lybpd"]
 [ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_p3fum"]
@@ -10,26 +11,26 @@
 script = ExtResource("3_xikwn")
 isEligible = true
 glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
+HPToDefRatio = 2.5
+defRatio = 1.1
 atkRatio = 1.0
 enemyQuality = 0
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([0, 1])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([0, 1, 2])
 faction = 4
 
 [resource]
 script = ExtResource("4_p3fum")
 portrait = ExtResource("4_lybpd")
 text = "Necromancer Initiate"
-description = ""
+description = "Although necromancers are generally considered evil, they argue that there is no such thing as evil, and that they are in fact quite ethical. Their menial laborers and warriors feel no exhaustion nor pain nor fear, and the typical standard of living for their sapient citizenry is far above that of conventional societies."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_tjdn1")]([])
+actions = Array[ExtResource("1_tjdn1")]([ExtResource("2_xikwn")])
 drops = Array[ExtResource("2_lybpd")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_4dmg7")

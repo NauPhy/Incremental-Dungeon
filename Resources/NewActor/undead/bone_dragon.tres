@@ -9,21 +9,21 @@
 [sub_resource type="Resource" id="Resource_3hwgv"]
 script = ExtResource("3_5q5ow")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 0.4
+HPToDefRatio = 0.85
+defRatio = 1.35
+atkRatio = 0.15
 enemyQuality = 2
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([2])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([0])
 faction = 4
 
 [resource]
 script = ExtResource("4_jd6lc")
 portrait = ExtResource("4_eyn33")
 text = "Bone Dragon"
-description = ""
+description = "Although humanoid skeletons are fragile and can be dispatched with a solid bonk to the noggin, dragon bones are well known for being strong and hard as hellforged steel. This combined with top notch reanimation magic and immunity to organ failure and exanguination make Bone Dragons incredibly durable. Rather than using weapons, they tend to just spew death magic at anyone who draws near. Whether this is legitimately their best form of attack or evidence that they remember a small part of their former identity is unknown."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0

@@ -83,12 +83,17 @@ func doNotCall() :
 	emit_signal("tutorialRequested")
 #####################################
 ## Set from MapData
-const roomLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/room.tscn")
+const roomLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/Map_Runtime/room_runtime.tscn")
 const connectionLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/connection.tscn")
+var mapData : MapData = null
 func setFromMapData(val : MapData) :
+	mapData = val
 	for index in range(0,val.rows.size()) :
 		addRow(val, index)
 	addBossRoom(val)
+	for child in $CombatMap/RoomContainer.get_children() :
+		if (!child.myReady) :
+			await child.myReadySignal
 	
 func addRow(val : MapData, row : int) :
 	var centerRoom = roomLoader.instantiate()
@@ -101,6 +106,7 @@ func addRow(val : MapData, row : int) :
 	else :
 		visibility = 0
 	centerRoom.initialise(val.rows[row].centralEncounter, visibility)
+	centerRoom.name = "N" + str(row)
 	setRoomToOrigin(centerRoom)
 	setRoomPosVertical(centerRoom, row, false)
 	if (row != 0) :
@@ -147,11 +153,11 @@ func addBossRoom(val : MapData) :
 	var bossRoom = roomLoader.instantiate()
 	$CombatMap/RoomContainer.add_child(bossRoom)
 	bossRoom.initialise(val.bossEncounter, 0)
-	bossRoom.name = "N" + str(val.centralEncounters.size())
+	bossRoom.name = "N" + str(val.rows.size())
 	setRoomToOrigin(bossRoom)
-	setRoomPosVertical(bossRoom, val.centralEncounters.size(), true)
+	setRoomPosVertical(bossRoom, val.rows.size(), true)
 	var bossConnection = connectionLoader.instantiate()
-	bossConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(val.centralEncounters.size()-1))
+	bossConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(val.rows.size()-1))
 	bossConnection.Room2 = bossRoom
 		
 func setRoomToOrigin(room : Button) :
@@ -180,13 +186,18 @@ func setRoomPosVertical(room : Button, amount : int, isBoss : bool) :
 ## This function constructs itself as well as its rooms and calls initialise() for each
 ## room. room.beforeLoad() and room.onLoad() is left for map.beforeLoad() and map.onLoad().
 var fullyInitialised : bool = false
-func initialise(data : MapData) :
-	setFromMapData(data)
-	setupRoomConnections()
-	clip_contents = true
-	initScroll()
-	goHome()
-	fullyInitialised = true
+func initialise(val) :
+	if (val is MapData) :
+		await setFromMapData(val)
+		setupRoomConnections()
+		clip_contents = true
+		initScroll()
+		goHome()
+		fullyInitialised = true
+	elif (val == null) :
+		return
+	else :
+		initialise(val["mapData"])
 	
 func setupRoomConnections() :
 	for child in $CombatMap/RoomContainer.get_children() :
@@ -227,6 +238,7 @@ func getSaveDictionary() -> Dictionary :
 	var rooms = $CombatMap/RoomContainer.get_children()
 	for index in range (rooms.size()) :
 		tempDict["room"+str(index)] = rooms[index].getSaveDictionary()
+	tempDict["mapData"] = mapData
 	return tempDict
 
 func onLoad(loadDict) -> void :

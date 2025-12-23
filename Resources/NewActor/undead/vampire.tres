@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://voxr01t4mk2f"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://voxr01t4mk2f"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_bhye6"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_lgx61"]
+[ext_resource type="Resource" uid="uid://bdj8cvya1egh6" path="res://Resources/NewAction/Attacks/thrust_sword_1h.tres" id="2_mfh6u"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_mfh6u"]
 [ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_0kmak"]
 [ext_resource type="Texture2D" uid="uid://erjxhvx4esd6" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/undead/vampire_knight_new.png" id="4_lgx61"]
@@ -9,27 +10,27 @@
 [sub_resource type="Resource" id="Resource_1ipkx"]
 script = ExtResource("3_mfh6u")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 1.5
+HPToDefRatio = 0.25
+defRatio = 1.2
+atkRatio = 3.5
 enemyQuality = 1
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([2])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([3])
 faction = 4
 
 [resource]
 script = ExtResource("4_0kmak")
 portrait = ExtResource("4_lgx61")
 text = "Vampire"
-description = ""
+description = "Vampires are sapient undead, and unlike skeletons and zombies, require fresh blood to sustain. As a result, vampires are substantially more expensive to upkeep than skeletons and zombies, and as such are only raised by well established necromantic organisations, particuarly those with access to farm animals. They make up for their expensive lifestyle with their ferocity, cunning, and spellcasting, and wear the best equipment money can buy."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_bhye6")]([])
+actions = Array[ExtResource("1_bhye6")]([ExtResource("2_mfh6u")])
 drops = Array[ExtResource("2_lgx61")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_1ipkx")

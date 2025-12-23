@@ -41,8 +41,10 @@ const referencePowerLevel = 442000000
 var myScalingFactor : float = -1
 func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 	myScalingFactor = scalingFactor
+	var retVal = self.duplicate()
+	retVal.resourceName = self.getResourceName()
 	if (!enemyGroups.isEligible) :
-		return self.duplicate()
+		return retVal
 	var strengthMultiplier
 	if (enemyGroups.enemyQuality == enemyGroups.enemyQualityEnum.normal) :
 		strengthMultiplier = 0.333
@@ -51,9 +53,8 @@ func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 	elif (enemyGroups.enemyQuality == enemyGroups.enemyQualityEnum.elite) :
 		strengthMultiplier = 1.67
 	else :
-		return self.duplicate()
+		return retVal
 	var powerLevel = referencePowerLevel*scalingFactor*strengthMultiplier
-	var retVal : ActorPreset = self.duplicate()
 	var eDPS = sqrt(powerLevel/(30/enemyGroups.glassCannonIndex))
 	var eHP = powerLevel/eDPS
 	var theoreticalDefense = sqrt(eHP/10/enemyGroups.HPToDefRatio)
@@ -62,9 +63,14 @@ func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 	retVal.MAGDEF = (2*theoreticalDefense)/(enemyGroups.defRatio+1)
 	retVal.PHYSDEF = enemyGroups.defRatio*retVal.MAGDEF
 	retVal.MAXHP = eHP/theoreticalDefense
-	var product = eDPS*actions[0].getPower()/actions[0].getWarmup()
-	retVal.AR = sqrt(product/enemyGroups.atkRatio)
-	retVal.DR = product/retVal.AR
+	if (!(actions[0].has_method("getPower"))) :
+		retVal.AR = 0
+		retVal.DR = 0
+	else :
+		var product = eDPS*actions[0].getPower()/actions[0].getWarmup()
+		retVal.AR = sqrt(product/enemyGroups.atkRatio)
+		retVal.DR = product/retVal.AR
+	retVal.resourceName = getResourceName()
 	return retVal
 	
 		
@@ -76,7 +82,11 @@ func getDrops(magicFind) -> Array[Equipment] :
 	return retVal
 	
 func getName() : return text
-func getResourceName() : return resource_path.get_file().get_basename()
+var resourceName : String = ""
+func getResourceName() : 
+	if (resourceName == "") :
+		resourceName = resource_path.get_file().get_basename()
+	return resourceName
 func getDesc() : return description
 
 func getSaveDictionary() -> Dictionary :

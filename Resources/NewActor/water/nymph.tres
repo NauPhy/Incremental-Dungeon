@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://bm0fae1hq2t8r"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://bm0fae1hq2t8r"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_k8gvt"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_kml3u"]
+[ext_resource type="Resource" uid="uid://dy1a63hiu782l" path="res://Resources/NewAction/Attacks/curse.tres" id="2_o4qid"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_o4qid"]
 [ext_resource type="Texture2D" uid="uid://dcfmetqihqke7" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/water_nymph.png" id="4_kml3u"]
 [ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_te5mp"]
@@ -9,27 +10,27 @@
 [sub_resource type="Resource" id="Resource_1j0f8"]
 script = ExtResource("3_o4qid")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 2.0
+HPToDefRatio = 2.0
+defRatio = 0.83
+atkRatio = 4.0
 enemyQuality = 0
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([0])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([0, 1])
 faction = 1
 
 [resource]
 script = ExtResource("4_te5mp")
 portrait = ExtResource("4_kml3u")
-text = "Undef Actor"
+text = "Water Nymph"
 description = "This sprite may have single-handedly increased the age rating of this game. All worth it, if you ask me."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_k8gvt")]([])
+actions = Array[ExtResource("1_k8gvt")]([ExtResource("2_o4qid")])
 drops = Array[ExtResource("2_kml3u")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_1j0f8")

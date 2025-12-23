@@ -13,8 +13,8 @@ var completed : bool = false
 ## Construction
 ## After calling this function (with valid arguments), it is safe to call 
 ## beforeLoad(), and optionally onLoad()
-func initialise(encounter : Encounter, visibility : int) :
-	setEncounter(encounter)
+func initialise(myEncounter : Encounter, visibility : int) :
+	setEncounter(myEncounter)
 	setVisibility(visibility)
 #########################################
 ## Getters

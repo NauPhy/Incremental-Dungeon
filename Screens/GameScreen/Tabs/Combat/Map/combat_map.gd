@@ -1,6 +1,6 @@
 extends Panel
 
-signal levelChosen2
+signal levelChosen
 signal tutorialRequested
 
 var UIEnabled : bool = true
@@ -24,7 +24,7 @@ func doNotCall() :
 ################################
 #map
 func _on_level_chosen(emitter) :
-	emit_signal("levelChosen2", emitter, emitter.getEncounterRef())
+	emit_signal("levelChosen", emitter, emitter.getEncounterRef())
 	
 signal mapCompleted
 func completeRoom(completedRoom) :
@@ -159,96 +159,7 @@ func getSaveDictionary() -> Dictionary :
 		tempDict[key+"override_once"] = rooms[index].getOverrideOnce()
 	tempDict["mapPosX"] = mapPosRatio.x
 	tempDict["mapPosY"] = mapPosRatio.y
-	return tempDict
-	
-#######################
-## Scope creep but could add in map layout specifiers to environment - like making barracks symmetric
-const roomLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/room.tscn")
-const connectionLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/connection.tscn")
-func setFromMapData(val : MapData) :
-	for index in range(0,val.centralEncounters.size()) :
-		var newRoom = roomLoader.instantiate()
-		$CombatMap/RoomContainer.add_child(newRoom)
-		newRoom.name = "N" + str(index)
-		newRoom.encounter = val.centralEncounters[index]
-		setRoomToOrigin(newRoom)
-		setRoomPosVertical(newRoom, index, false)
-		if (index == 0) :
-			newRoom.visibilityOnStartup = 2
-		else :
-			var newConnection = connectionLoader.instantiate()
-			newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(index))
-			newConnection.Room2 = newRoom
-			if (index == 1) :
-				newRoom.visibilityOnStartup = 1
-				newConnection.visibilityOnStartup = 1
-		
-	var bossRoom = roomLoader.instantiate()
-	$CombatMap/RoomContainer.add_child(bossRoom)
-	bossRoom.name = "N" + str(val.centralEncounters.size())
-	bossRoom.encounter = val.bossEncounter
-	setRoomToOrigin(bossRoom)
-	setRoomPosVertical(bossRoom, val.centralEncounters.size(), true)
-	var bossConnection = connectionLoader.instantiate()
-	bossConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(val.centralEncounters.size()-1))
-	bossConnection.Room2 = bossRoom
-	
-	for index in range(0, val.sideEncounters.size()) :
-		var newRoom = roomLoader.instantiate()
-		$CombatMap/RoomContainer.add_child(newRoom)
-		var branchCounter : int = randi_range(1,val.centralEncounters.size()-1)
-		var myName = "N" + str(branchCounter)
-		var leftRightChar
-		if (randi_range(0,1) == 0) :
-			leftRightChar = "R"
-		else :
-			leftRightChar = "L"
-		myName += leftRightChar
-		var leafCounter : int = 0
-		while(nameTaken(myName + str(leafCounter))) :
-			leafCounter += 1
-		newRoom.name = myName + str(leafCounter)
-		setRoomToOrigin(newRoom)
-		setRoomPosVertical(newRoom, branchCounter, false)
-		var horizontalPos = leafCounter+1
-		if (leftRightChar == "L") :
-			horizontalPos *= -1
-		setRoomPosHorizontal(newRoom, horizontalPos)
-		var newConnection = connectionLoader.instantiate()
-		$CombatMap/ConnectionContainer.add_child(newConnection)
-		newConnection.Room2 = newRoom
-		if (leafCounter == 0) :
-			newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(branchCounter))
-		else :
-			newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(branchCounter)+leftRightChar+str(leafCounter-1))
-		
-func nameTaken(myName : String) :
-	var currentList = $CombatMap/RoomContainer.get_children()
-	for child in currentList :
-		if (child.name == myName) :
-			return true
-	return false
-		
-func setRoomToOrigin(room : Button) :
-	room.anchor_left = 0.5
-	room.anchor_right = 0.5
-	room.anchor_top = 1.0
-	room.anchor_bottom = 1.0
-	room.offset_bottom = -20
-	room.offset_top = 0
-	room.offset_left = 0
-	room.offset_right = 0
-	room.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	room.grow_vertical = Control.GROW_DIRECTION_BEGIN
-func setRoomPosHorizontal(room : Button, amount : int) :
-	room.offset_left = 300*amount
-	room.offset_right = 300*amount
-func setRoomPosVertical(room : Button, amount : int, isBoss : bool) :
-	if (isBoss) :
-		room.offset_bottom = -200*(amount-1) - 300
-	else :
-		room.offset_bottom = -200*amount
-	
+	return tempDict	
 	
 var fullyInitialised : bool = false
 	

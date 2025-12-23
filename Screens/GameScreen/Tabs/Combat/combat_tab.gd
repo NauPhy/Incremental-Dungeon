@@ -113,13 +113,16 @@ func _on_map_completed(emitter) :
 			createNewFloor()
 		emit_signal("newFloorCompleted", typicalEnemyDefense)
 
-const mapLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/combat_map_template.tscn")
+const mapLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/Map_Runtime/combat_map_template_runtime.tscn")
 func createNewFloor() :
 	var mapData : MapData = $ProceduralGenerationLogic.createMap()
 	var newFloor = mapLoader.instantiate()
 	$MapContainer.add_child(newFloor)
+	if (!newFloor.myReady) :
+		await newFloor.myReadySignal
+	await newFloor.initialise(mapData)
+	newFloor.beforeLoad()
 	newFloor.name = "Floor" + str($MapContainer.get_child_count()-1)
-	newFloor.setFromMapData(mapData)
 	connectToMapSignals(newFloor)
 	
 func _on_floor_display_floor_up() -> void:
@@ -183,8 +186,8 @@ func interruptDefeatCoroutine() :
 	defeatCoroutineInterrupted = true
 	
 func connectToMapSignals(map : Node) :
-	if (map.has_signal("levelChosen2")) :
-		map.connect("levelChosen2", _on_level_chosen)
+	if (map.has_signal("levelChosen")) :
+		map.connect("levelChosen", _on_level_chosen)
 	if (map.has_signal("playerClassRequested")) :
 		map.connect("playerClassRequested", _on_player_class_requested)
 	if (map.has_signal("tutorialRequested")) :
@@ -244,7 +247,8 @@ func _ready() :
 	
 func beforeLoad(newGame) :
 	for map in $MapContainer.get_children() :
-		map.beforeLoad(newGame)
+		if (!map.is_in_group("Saveable")) :
+			map.beforeLoad(newGame)
 		connectToMapSignals(map)
 	friendlyParty.resize(1)
 	if (newGame) :
@@ -262,7 +266,8 @@ func onLoad(loadDict : Dictionary) :
 			$MapContainer.add_child(newMap)
 			if (!newMap.myReady) :
 				await newMap.myReadySignal
-			newMap.beforeLoad(false)
+			await newMap.initialise(loadDict["maps"][index])
+			newMap.beforeLoad()
 			newMap.onLoad(loadDict["maps"][index])
 		
 	firstReward = loadDict["firstReward"]

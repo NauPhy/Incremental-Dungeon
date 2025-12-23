@@ -4,9 +4,9 @@
 
 [resource]
 script = ExtResource("1_mfo67")
-type = 0
-power = 0.0
-text = "UndefAction"
+type = 1
+power = 4.91
+text = "Fire Breath"
 mode = 0
-warmup = 1.0
+warmup = 8.0
 metadata/_custom_type_script = "uid://6o4dw2binuis"
