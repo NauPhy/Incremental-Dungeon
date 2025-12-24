@@ -66,7 +66,7 @@ func setVisibility(param) :
 			enableEnemyList()
 ##########################################
 ## Internal
-const enemyEntryLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/enemy_entry.tscn")
+const enemyEntryLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/Map_Runtime/enemy_entry_runtime.tscn")
 func setupEnemies() :
 	for enemy in encounter.enemies :
 		var newEntry = enemyEntryLoader.instantiate()
@@ -75,8 +75,6 @@ func setupEnemies() :
 		
 func createBigEntry() :
 	for child in $VBoxContainer.get_children() :
-		if (!EnemyDatabase.getEnemyKilled(child.getEnemy().getName())) :
-			continue
 		var x1 = child.global_position.x
 		var x2 = x1 + child.size.x
 		var y1 = child.global_position.y
@@ -102,6 +100,9 @@ func disableEnemyList() :
 ## Callbacks
 func onCombatComplete() :	
 	completed = true
+	var enemyEntries = $VBoxContainer.get_children()
+	for index in range(0,enemyEntries.size()) :
+		enemyEntries[index].incrementKilled()
 	enableEnemyList()
 func onCombatLoss() :
 	enableEnemyList()
@@ -134,10 +135,16 @@ func onLoad(loadDict) :
 	visited = loadDict["visited"]
 	completed = loadDict["completed"]
 	setVisibility(loadDict["visibility"])
+	var enemies = $VBoxContainer.get_children()
+	for index in range(0, enemies.size()) :
+		enemies[index].onLoad(loadDict["enemies"][index])
 
 func getSaveDictionary() :
 	var tempDict : Dictionary = {}
 	tempDict["visited"] = visited
 	tempDict["completed"] = completed
 	tempDict["visibility"] = currentVisibility
+	tempDict["enemies"] = []
+	for enemy in $VBoxContainer.get_children() :
+		tempDict["enemies"].append(enemy.getSaveDictionary())
 	return tempDict

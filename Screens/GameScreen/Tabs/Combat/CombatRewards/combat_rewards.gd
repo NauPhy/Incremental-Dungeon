@@ -114,7 +114,8 @@ func removeItemFromList(itemSceneRef) :
 		newIndex = newItemList.size()-1
 	else :
 		newIndex = killableIndex
-	$Content/Details.setItemSceneRefBase(newItemList[newIndex].getItemSceneRef())
+	if (newItemList.size()-1<=newIndex && newItemList[newIndex] != null) :
+		$Content/Details.setItemSceneRefBase(newItemList[newIndex].getItemSceneRef())
 	newItemList[newIndex].getItemSceneRef().select()
 	waitingForResponse = false
 	addDenied = false

@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://d072iqto3xhm7"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://d072iqto3xhm7"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_awpxh"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_kohsy"]
+[ext_resource type="Resource" uid="uid://u5gt0556yaoo" path="res://Resources/NewAction/EnemyExclusiveAttacks/bite_big.tres" id="2_xqbnb"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_xqbnb"]
 [ext_resource type="Texture2D" uid="uid://behhfih4dx20" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/aquatic/kraken_head_new.png" id="4_kohsy"]
 [ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_opeej"]
@@ -9,14 +10,14 @@
 [sub_resource type="Resource" id="Resource_tt6w3"]
 script = ExtResource("3_xqbnb")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 0.35
+HPToDefRatio = 5.0
+defRatio = 0.91
+atkRatio = 0.2
 enemyQuality = 2
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([0, 1])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([0])
 faction = 1
 
 [resource]
@@ -29,7 +30,7 @@ AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_awpxh")]([])
+actions = Array[ExtResource("1_awpxh")]([ExtResource("2_xqbnb")])
 drops = Array[ExtResource("2_kohsy")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_tt6w3")

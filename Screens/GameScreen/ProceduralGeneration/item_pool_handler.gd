@@ -11,7 +11,6 @@ func reset(env : MyEnvironment, items : Array) :
 	filterItemPool_env()
 	
 func getItemPoolForEnemy(newEnemy : ActorPreset) :
-	workingPool = itemPool
 	filterWorkingPool_enemy(newEnemy)
 	return workingPool.duplicate()
 
@@ -28,18 +27,22 @@ func filterItemPool_env() :
 			itemPool.remove_at(itemPool.find(preItem))
 			
 func filterWorkingPool_enemy(preEnemy : ActorPreset) :
-	workingPool = itemPool
+	workingPool = itemPool.duplicate()
 	var enemy = preEnemy.enemyGroups
-	for preItem in workingPool :
+	var index = 0
+	while (index < workingPool.size()) :
 		var remove : bool = false
-		var item = preItem.equipmentGroups
+		var preItem = workingPool[index]
+		var item = workingPool[index].equipmentGroups
 		if (preItem is Armor) :
 			remove = remove || (enemy.droppedArmorClasses.find(item.armorClass) == -1)
 		if (preItem is Weapon) :
 			remove = remove || (enemy.droppedWeaponClasses.find(item.weaponClass) == -1)
 		remove = remove || (enemy.droppedTechnologyClasses.find(item.technology) == -1)
 		if (remove) :
-			workingPool.remove_at(itemPool.find(preItem))
+			workingPool.remove_at(index)
+		else :
+			index += 1
 			
 #func filterItemPool_env_itemWhitelists() :
 	#for preItem in itemPool :

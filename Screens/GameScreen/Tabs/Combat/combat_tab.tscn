@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://6dlrgv7rgovn"]
+[gd_scene load_steps=16 format=3 uid="uid://6dlrgv7rgovn"]
 
 [ext_resource type="PackedScene" uid="uid://b0dk8gsoe4wgw" path="res://Screens/GameScreen/Tabs/tab.tscn" id="1_sfv5i"]
 [ext_resource type="Script" uid="uid://h4t80xg2j3yj" path="res://Screens/GameScreen/Tabs/Combat/combat_tab.gd" id="2_d5esk"]
@@ -20,6 +20,8 @@ border_width_left = 3
 border_width_right = 3
 border_width_bottom = 3
 border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y6o0r"]
 
 [node name="CombatTab" groups=["Saveable"] instance=ExtResource("1_sfv5i")]
 theme_override_styles/panel = SubResource("StyleBoxFlat_n6jna")
@@ -62,6 +64,7 @@ offset_bottom = -3.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("6_hrq1d")
+theme_override_styles/panel = SubResource("StyleBoxFlat_y6o0r")
 script = ExtResource("7_2lm74")
 text = "Sample text"
 title = "After the Fight"

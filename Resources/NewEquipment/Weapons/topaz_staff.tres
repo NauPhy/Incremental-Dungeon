@@ -8,9 +8,9 @@
 [sub_resource type="Resource" id="Resource_bu230"]
 script = ExtResource("1_0lywj")
 isEligible = true
-quality = 0
-technology = 0
-weaponClass = 2
+quality = 1
+technology = 1
+weaponClass = 1
 armorClass = 3
 isFire = false
 isIce = false

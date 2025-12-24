@@ -104,7 +104,7 @@ scaling = {
 attackBonus = 103.0
 basicAttack = ExtResource("1_ibtoi")
 isUnarmed = false
-title = "Sample title"
+title = "Bardiche"
 description = "The bardiche is a descendent of the pole axe, featuring a much longer blade (sometimes more than 3 times the length), often necessitating a second socket connecting the blade to the pole. 
 
 This gigantic blade makes the bardiche the largest axe practical for many humanoid species, though outclassed by the greataxes favoured by orcs and ogres."

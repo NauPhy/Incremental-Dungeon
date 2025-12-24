@@ -5,12 +5,23 @@ class_name EquipmentGroups
 @export var isEligible : bool = true
 enum qualityEnum {common,uncommon,rare,epic,legendary}
 const qualityDictionary = {
-	qualityEnum.common : "common",
-	qualityEnum.uncommon : "uncommon",
-	qualityEnum.rare : "rare",
-	qualityEnum.epic : "epic",
-	qualityEnum.legendary : "legendary"
+	qualityEnum.common : "Common",
+	qualityEnum.uncommon : "Uncommon",
+	qualityEnum.rare : "Rare",
+	qualityEnum.epic : "Epic",
+	qualityEnum.legendary : "Legendary"
 }
+static func getColouredQualityString(quality : qualityEnum, lightBackground : bool) :
+	return colourText(quality, qualityDictionary[quality], lightBackground)
+static func colourText(quality : qualityEnum, myText : String, lightBackground : bool) -> String :
+	const colours = ["#202020", "57a968", "#4566c3", "#a149cc", "#d4941c"]
+	const colours_alt = ["#e5e5e5", "4c945b", "4d70d1", "a149cc", "#efa71f"]
+	var colourStr
+	if (lightBackground) :
+		colourStr = colours[quality]
+	else :
+		colourStr = colours_alt[quality]
+	return "[color=" + colourStr + "]" + myText + "[/color]"
 @export var quality : qualityEnum = qualityEnum.common
 enum technologyEnum {natural,crude,advanced,superior}
 ##Natural is stuff made in nature (duh). On average you can expect natural equipment to be worse, but there are exceptions

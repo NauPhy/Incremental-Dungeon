@@ -15,6 +15,15 @@ func getTypicalEnemyDefense() :
 		return numArr[(numArr.size()-1)/2]
 	else :
 		return (numArr[(numArr.size()-2)/2]+numArr[numArr.size()/2])/2.0
+func getBossName() -> String :
+	if (mapData == null) :
+		return ""
+	var boss = mapData.bossEncounter.enemies[0]
+	return boss.getName()
+func getEnvironment() -> MyEnvironment :
+	if (mapData == null) :
+		return MyEnvironment.new()
+	return MegaFile.getEnvironment(mapData.environmentName)
 #######################################
 ## Setters
 var UIEnabled : bool = true
@@ -60,8 +69,6 @@ func completeRoom(completedRoom) :
 				#Fully reveal
 				adjacentRoom.setVisibility("full")
 				connection.fullReveal()
-				if (adjacentRoom.isShop) :
-					completeRoom(adjacentRoom)
 				#Find rooms that are 2 links away
 				for potentialLooseConnection in $CombatMap/ConnectionContainer.get_children() :
 					var overAdjacentRoom = null
@@ -111,7 +118,8 @@ func addRow(val : MapData, row : int) :
 	setRoomPosVertical(centerRoom, row, false)
 	if (row != 0) :
 		var newConnection = connectionLoader.instantiate()
-		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row))
+		$CombatMap/ConnectionContainer.add_child(newConnection)
+		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row-1))
 		newConnection.Room2 = centerRoom
 		if (row == 1) :
 			newConnection.setVisibility(1)
@@ -157,6 +165,7 @@ func addBossRoom(val : MapData) :
 	setRoomToOrigin(bossRoom)
 	setRoomPosVertical(bossRoom, val.rows.size(), true)
 	var bossConnection = connectionLoader.instantiate()
+	$CombatMap/ConnectionContainer.add_child(bossConnection)
 	bossConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(val.rows.size()-1))
 	bossConnection.Room2 = bossRoom
 		
@@ -176,9 +185,9 @@ func setRoomPosHorizontal(room : Button, amount : int) :
 	room.offset_right = 300*amount
 func setRoomPosVertical(room : Button, amount : int, isBoss : bool) :
 	if (isBoss) :
-		room.offset_bottom = -200*(amount-1) - 300
+		room.offset_bottom += -200*(amount-1) - 300
 	else :
-		room.offset_bottom = -200*amount
+		room.offset_bottom += -200*amount
 #######################################################
 ## Construction
 ## It is not safe to call beforeLoad() or onLoad() before constructing the map
@@ -197,7 +206,7 @@ func initialise(val) :
 	elif (val == null) :
 		return
 	else :
-		initialise(val["mapData"])
+		initialise(MapData.createFromSaveDictionary(val["mapData"]))
 	
 func setupRoomConnections() :
 	for child in $CombatMap/RoomContainer.get_children() :
@@ -227,6 +236,8 @@ func _ready() :
 func beforeLoad() :
 	for room in $CombatMap/RoomContainer.get_children() :
 		room.beforeLoad()
+	for connection in $CombatMap/ConnectionContainer.get_children() :
+		connection.updatePos()
 	
 func getSaveDictionary() -> Dictionary :
 	var tempDict = {}
@@ -238,7 +249,7 @@ func getSaveDictionary() -> Dictionary :
 	var rooms = $CombatMap/RoomContainer.get_children()
 	for index in range (rooms.size()) :
 		tempDict["room"+str(index)] = rooms[index].getSaveDictionary()
-	tempDict["mapData"] = mapData
+	tempDict["mapData"] = mapData.getSaveDictionary()
 	return tempDict
 
 func onLoad(loadDict) -> void :

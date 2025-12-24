@@ -35,6 +35,8 @@ func addToModifierPacket(packetRef : ModifierPacket) -> ModifierPacket :
 	return ModifierPacket.add(packetRef, core.getModifierPacket())
 func getRewardBehaviour() -> rewardBehaviour :
 	return myBehaviour
+func getQuality() -> EquipmentGroups.qualityEnum :
+	return core.equipmentGroups.quality
 ###################################################################################
 ##This scene is not "saveable" but is explicitly saved by EquipmentTab/Inventory##
 func getSaveDictionary() -> Dictionary :

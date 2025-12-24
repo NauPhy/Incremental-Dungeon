@@ -1,15 +1,16 @@
-[gd_resource type="Resource" script_class="Weapon" load_steps=6 format=3 uid="uid://ju0rq33h4rdq"]
+[gd_resource type="Resource" script_class="Weapon" load_steps=7 format=3 uid="uid://ju0rq33h4rdq"]
 
 [ext_resource type="Script" uid="uid://bjf2usx5yhgpu" path="res://Resources/OldEquipment/equipment_grouping.gd" id="1_m75kg"]
+[ext_resource type="Resource" uid="uid://w3pmcq15a002" path="res://Resources/NewAction/Attacks/disintigrate.tres" id="1_ybwi2"]
 [ext_resource type="Script" uid="uid://drk1kxvptw3qa" path="res://Screens/GameScreen/Player/modifier_packet.gd" id="2_ybwi2"]
 [ext_resource type="Script" uid="uid://6qgd3qugycc1" path="res://Resources/OldEquipment/weapon.gd" id="3_vybl8"]
 
 [sub_resource type="Resource" id="Resource_8q4s3"]
 script = ExtResource("1_m75kg")
 isEligible = true
-quality = 0
-technology = 0
-weaponClass = 2
+quality = 3
+technology = 3
+weaponClass = 1
 armorClass = 3
 isFire = false
 isIce = false
@@ -101,6 +102,7 @@ scaling = {
 "Strength": 0.0
 }
 attackBonus = 99.2
+basicAttack = ExtResource("1_ybwi2")
 isUnarmed = false
 title = "Wand of Disintigration"
 description = "Its victims stop being biology and start being physics. Side effects of use include:

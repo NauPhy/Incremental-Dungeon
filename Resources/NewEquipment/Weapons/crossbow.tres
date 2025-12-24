@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="Weapon" load_steps=6 format=3 uid="uid://bceo8bmyngyv8"]
+[gd_resource type="Resource" script_class="Weapon" load_steps=7 format=3 uid="uid://bceo8bmyngyv8"]
 
+[ext_resource type="Resource" uid="uid://cvul1fmi5ehmb" path="res://Resources/NewAction/Attacks/crossbow.tres" id="1_8b2oh"]
 [ext_resource type="Script" uid="uid://bjf2usx5yhgpu" path="res://Resources/OldEquipment/equipment_grouping.gd" id="1_exei3"]
 [ext_resource type="Script" uid="uid://drk1kxvptw3qa" path="res://Screens/GameScreen/Player/modifier_packet.gd" id="2_8b2oh"]
 [ext_resource type="Script" uid="uid://6qgd3qugycc1" path="res://Resources/OldEquipment/weapon.gd" id="3_f401n"]
@@ -101,6 +102,7 @@ scaling = {
 "Strength": 0.375
 }
 attackBonus = 86.4
+basicAttack = ExtResource("1_8b2oh")
 isUnarmed = false
 title = "Crossbow"
 description = "The height of mechanical technology, this weapon is devastating even in the hands of a novice, though it requires great strength to load quickly."

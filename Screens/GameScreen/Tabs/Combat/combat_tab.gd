@@ -106,12 +106,43 @@ signal newFloorCompleted
 func _on_map_completed(emitter) :
 	var completedIndex = Helpers.findIndexInContainer($MapContainer, emitter)
 	if (completedIndex == maxFloor) :
+		var isNarrative : bool = false
+		if (currentFloor.has_method("getBossName")) :
+			isNarrative = true
+			var outroText = "As the " + currentFloor.getBossName() + " falls, the path forward opens."
+			var title = "Victory!"
+			var button = "Descend"
+			launchNarrative(title, outroText, button, false)
 		maxFloor += 1
 		$FloorDisplay.setMaxFloor(maxFloor)
 		var typicalEnemyDefense = emitter.getTypicalEnemyDefense()
-		if (completedIndex == 1) :
+		if (completedIndex >= 1) :
 			createNewFloor()
+		if (narrativeWorking) :
+			await $NarrativePanel.continueSignal
+		_on_floor_display_floor_down()
+		if (currentFloor.has_method("getEnvironment")) :
+			var environment : MyEnvironment = currentFloor.getEnvironment()
+			var title = environment.getName()
+			var myText = environment.introText
+			var button = "Continue"
+			launchNarrative(title, myText, button, true)
 		emit_signal("newFloorCompleted", typicalEnemyDefense)
+
+var narrativeWorking : bool = false
+func launchNarrative(title : String, myText : String, buttonText : String, waitToFinish : bool) :
+	$NarrativePanel.setTitle(title)
+	$NarrativePanel.setText(myText)
+	$NarrativePanel.setButtonText(buttonText)
+	disableUI()
+	$NarrativePanel.visible = true
+	if (waitToFinish) :
+		await $NarrativePanel.continueSignal
+	
+func _on_narrative_panel_complete() :
+	$NarrativePanel.visible = false
+	enableUI()
+	narrativeWorking = false
 
 const mapLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/Map_Runtime/combat_map_template_runtime.tscn")
 func createNewFloor() :
@@ -246,6 +277,7 @@ func _ready() :
 	myReady = true
 	
 func beforeLoad(newGame) :
+	$NarrativePanel.connect("continueSignal", _on_narrative_panel_complete)
 	for map in $MapContainer.get_children() :
 		if (!map.is_in_group("Saveable")) :
 			map.beforeLoad(newGame)
@@ -260,7 +292,8 @@ func onLoad(loadDict : Dictionary) :
 	var hardMapCount = $MapContainer.get_child_count()
 	for index in range(0, loadDict["maps"].size()) :
 		if (index < hardMapCount) :
-			$MapContainer.get_child(index).onLoad(loadDict["maps"][index])
+			pass
+			#$MapContainer.get_child(index).onLoad(loadDict["maps"][index])
 		else :
 			var newMap = mapLoader.instantiate()
 			$MapContainer.add_child(newMap)
@@ -269,6 +302,7 @@ func onLoad(loadDict : Dictionary) :
 			await newMap.initialise(loadDict["maps"][index])
 			newMap.beforeLoad()
 			newMap.onLoad(loadDict["maps"][index])
+			connectToMapSignals(newMap)
 		
 	firstReward = loadDict["firstReward"]
 	maxFloor = loadDict["maxFloor"]

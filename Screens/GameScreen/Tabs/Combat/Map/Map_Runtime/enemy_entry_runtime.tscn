@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://cot21pcofosh4"]
+
+[ext_resource type="Theme" uid="uid://c8cfcbe6ioxu5" path="res://Graphic Elements/Themes/subTab.tres" id="1_wcufp"]
+[ext_resource type="Script" uid="uid://xejjsa16jnwb" path="res://Screens/GameScreen/Tabs/Combat/Map/Map_Runtime/enemy_entry_runtime.gd" id="2_bncx2"]
+[ext_resource type="PackedScene" uid="uid://uqxmlj50yyor" path="res://Screens/GameScreen/Tabs/Combat/contained_sprite.tscn" id="3_xpsfc"]
+[ext_resource type="Texture2D" uid="uid://bjkt524kinw48" path="res://Images/Sprites/skull2.png" id="4_mm7qw"]
+[ext_resource type="Texture2D" uid="uid://3750ul5u2ol8" path="res://Images/Sprites/star.png" id="5_83nfv"]
+
+[node name="EnemyEntry" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("1_wcufp")
+theme_override_constants/separation = 8
+alignment = 1
+script = ExtResource("2_bncx2")
+
+[node name="Name" type="RichTextLabel" parent="."]
+layout_mode = 2
+mouse_filter = 2
+text = " Enemy Name "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Skull" parent="." instance=ExtResource("3_xpsfc")]
+visible = false
+layout_mode = 2
+size_flags_vertical = 4
+initSprite = ExtResource("4_mm7qw")
+initStr = "You have defeated this enemy before."
+
+[node name="Star" parent="." instance=ExtResource("3_xpsfc")]
+visible = false
+layout_mode = 2
+size_flags_vertical = 4
+initSprite = ExtResource("5_83nfv")
+initStr = "You have collected all of this enemy's drops."

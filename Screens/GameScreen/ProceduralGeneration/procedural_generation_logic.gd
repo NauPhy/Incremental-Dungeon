@@ -4,27 +4,44 @@ extends Node
 ## getX() -> X implies that the "readonly" disk version of X is returned- or a reference to a member in another class
 
 func createMap() -> MapData :
-	var environment : MyEnvironment = createEnvironment()
+	var environment : MyEnvironment = getEnvironment()
 	$EnemyPoolHandler.reset(environment, getAllEnemies())
 	$ItemPoolHandler.reset(environment, getAllItems())
 	var encounters : MapData = createEncounters()
+	encounters.environmentName = environment.getFileName()
 	return encounters
 
 func getAllEnemies() :
 	var list = EnemyDatabase.getAllEnemies()
-	for actor in list :
-		if (!actor.enemyGroups.isEligible) :
-			list.remove_at(list.find(actor))
+	var index = 0
+	while (index < list.size()) :
+		if (!list[index].enemyGroups.isEligible) :
+			list.remove_at(index)
+		else :
+			index += 1
+	return list
+	
+func getAllMisc() :
+	var list = EnemyDatabase.getAllEnemies() 
+	var index = 0
+	while (index < list.size()) :
+		if (!list[index].enemyGroups.isEligible || !(list[index].enemyGroups.faction == EnemyGroups.factionEnum.misc)) :
+			list.remove_at(index)
+		else :
+			index += 1
 	return list
 		
 func getAllItems() :
 	var list = EquipmentDatabase.getAllEquipment()
-	for item in list :
-		if (!item.equipmentGroups.isEligible) :
-			list.remove_at(list.find(item))
+	var index = 0
+	while (index < list.size()) :
+		if (!list[index].equipmentGroups.isEligible) :
+			list.remove_at(index)
+		else :
+			index += 1
 	return list
 	
-func createEnvironment() -> MyEnvironment :
+func getEnvironment() -> MyEnvironment :
 	if (previousEnvironments.size() == 9) :
 		return MegaFile.getEnvironment("fort_demon")
 	var myRange = MegaFile.Environment_FilesDictionary.size()-1
@@ -34,7 +51,7 @@ func createEnvironment() -> MyEnvironment :
 		randKey = MegaFile.Environment_FilesDictionary.keys()[randi_range(0,myRange)]
 		potentialEnvironment = MegaFile.getEnvironment(randKey)
 	previousEnvironments.append(randKey)
-	return potentialEnvironment.duplicate()
+	return potentialEnvironment
 	
 func createdRecently(newEnv : MyEnvironment) -> bool :
 	var envName = newEnv.resource_path.get_file().get_basename()
@@ -108,14 +125,14 @@ func createBossEncounter() -> Encounter :
 	return retVal
 		
 func createNormal() -> ActorPreset :
-	var test = $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal)
-	if (test == null): 
-		print("null")
+	#var test = $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal)
+	#if (test == null): 
+		#print("null")
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal).getAdjustedCopy(1)
 func createVeteran() -> ActorPreset :
-	var test = $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran)
-	if (test == null): 
-		print("null")
+	#var test = $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran)
+	#if (test == null): 
+		#print("null")
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran).getAdjustedCopy(1)
 func createElite() -> ActorPreset :
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite).getAdjustedCopy(1)
@@ -130,7 +147,7 @@ func getSaveDictionary() -> Dictionary :
 	retVal["previousEnvironments"] = previousEnvironments
 	return retVal
 func beforeLoad(_newGame) :
-	pass
+	$EnemyPoolHandler.initialiseMiscPool(getAllMisc())
 func onLoad(loadDict : Dictionary) :
 	if (loadDict.get("previousEnvironments") != null) :
 		previousEnvironments = loadDict["previousEnvironments"]

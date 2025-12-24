@@ -21,6 +21,7 @@ border_color = Color(0, 0, 0, 1)
 bg_color = Color(0.458824, 0.458824, 0.458824, 1)
 
 [node name="MapViewport_Runtime" type="Panel"]
+visible = false
 clip_contents = true
 anchors_preset = 15
 anchor_right = 1.0

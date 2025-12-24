@@ -9,14 +9,14 @@
 [sub_resource type="Resource" id="Resource_5r5te"]
 script = ExtResource("3_uyinh")
 isEligible = true
-glassCannonIndex = 1.0
-HPToDefRatio = 1.0
-defRatio = 1.0
-atkRatio = 1.0
+glassCannonIndex = 0.8
+HPToDefRatio = 0.8
+defRatio = 0.83
+atkRatio = 0.8
 enemyQuality = 2
-droppedArmorClasses = Array[int]([])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([])
+droppedArmorClasses = Array[int]([0, 1, 2])
+droppedWeaponClasses = Array[int]([0, 1])
+droppedTechnologyClasses = Array[int]([0, 1, 2, 3])
 faction = 1
 
 [resource]

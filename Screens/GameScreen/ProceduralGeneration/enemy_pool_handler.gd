@@ -2,19 +2,26 @@ extends Node
 
 var environment : MyEnvironment = null
 var enemyPool : Array = []
+var miscPool : Array = []
 var enemyCounts : Array[int] = [0,0,0]
-
+var miscEnemyCounts : Array[int] = [0,0,0]
 func reset(env : MyEnvironment, enemies : Array) :
 	environment = env
 	enemyPool = enemies
 	filterEnemyPool_env()
 	updateEnemyCounts()
+	
+func initialiseMiscPool(newMiscPool) :
+	miscEnemyCounts = [0,0,0]
+	miscPool = newMiscPool
+	for enemy in miscPool :
+		miscEnemyCounts[enemy.enemyGroups.enemyQuality] += 1
 
 func updateEnemyCounts() :
 	enemyCounts = [0,0,0]
 	for enemy in enemyPool :
 		enemyCounts[enemy.enemyGroups.enemyQuality] += 1
-	
+		
 func getEnemyPool() :
 	return enemyPool.duplicate()
 	
@@ -24,7 +31,7 @@ func filterEnemyPool_env() :
 		var preEnemy = enemyPool[index]
 		var enemy = preEnemy.enemyGroups
 		var remove = (environment.permittedFactions.find(enemy.faction) == -1)
-		if (remove && (enemy.faction != EnemyGroups.factionEnum.misc)) :
+		if (remove) :
 			var pos = enemyPool.find(preEnemy)
 			enemyPool.remove_at(pos)
 		else :
@@ -72,11 +79,21 @@ func filterEnemyPool_env() :
 		#if (remove) :
 			#enemyPool.remove_at(enemyPool.find(preEnemy))
 func getEnemyOfType(type : EnemyGroups.enemyQualityEnum) :
-	var roll = randi_range(0, enemyCounts[type]-1)
+	var isMisc = miscEnemyCounts[type] != 0 && randi_range(0,4) == 0
 	var currentCount = 0
-	for enemy in enemyPool :
-		if (enemy.enemyGroups.enemyQuality == type) :
-			if (currentCount == roll) :
-				return enemy
-			else :
-				currentCount += 1
+	if (isMisc) :
+		var roll = randi_range(0, miscEnemyCounts[type]-1)
+		for enemy in miscPool : 
+			if (enemy.enemyGroups.enemyQuality == type) :
+				if (currentCount == roll) :
+					return enemy
+				else :
+					currentCount += 1
+	else :
+		var roll = randi_range(0, enemyCounts[type]-1)
+		for enemy in enemyPool :
+			if (enemy.enemyGroups.enemyQuality == type) :
+				if (currentCount == roll) :
+					return enemy
+				else :
+					currentCount += 1

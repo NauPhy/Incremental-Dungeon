@@ -40,9 +40,9 @@ func getStat(type : Definitions.baseStatEnum) -> float :
 const referencePowerLevel = 442000000
 var myScalingFactor : float = -1
 func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
-	myScalingFactor = scalingFactor
 	var retVal = self.duplicate()
 	retVal.resourceName = self.getResourceName()
+	retVal.myScalingFactor = scalingFactor
 	if (!enemyGroups.isEligible) :
 		return retVal
 	var strengthMultiplier
@@ -70,15 +70,16 @@ func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 		var product = eDPS*actions[0].getPower()/actions[0].getWarmup()
 		retVal.AR = sqrt(product/enemyGroups.atkRatio)
 		retVal.DR = product/retVal.AR
-	retVal.resourceName = getResourceName()
+	#retVal.resourceName = getResourceName()
 	return retVal
 	
-		
+signal droppedItems
 func getDrops(magicFind) -> Array[Equipment] :
 	var retVal : Array[Equipment] = []
 	for index in range(0,drops.size()) :
 		if (randf() < dropChances[index]*magicFind) :
 			retVal.append(drops[index])
+	emit_signal("droppedItems", retVal)
 	return retVal
 	
 func getName() : return text
@@ -93,15 +94,26 @@ func getSaveDictionary() -> Dictionary :
 	var retVal = {}
 	if (!enemyGroups.isEligible) :
 		return retVal
-	retVal["name"] = getResourceName()
+	retVal["resourceName"] = getResourceName()
 	retVal["myScalingFactor"] = myScalingFactor
+	if (myScalingFactor != -1) :
+		retVal["drops"] = []
+		retVal["dropChances"] = []
+		for index in range (0,drops.size()) :
+			retVal["drops"].append(drops[index].getItemName())
+			retVal["dropChances"].append(dropChances[index])
 	return retVal
 	
 static func createFromSaveDictionary(val : Dictionary) -> ActorPreset :
 	if (val.is_empty()) :
 		return ActorPreset.new()
 	var scalingFactor = val["myScalingFactor"]
-	if (scalingFactor != -1) :
-		return EnemyDatabase.getEnemy(val["name"]).getAdjustedCopy(scalingFactor)
+	if (scalingFactor == -1) :
+		return EnemyDatabase.getEnemy(val["resourceName"]).getAdjustedCopy(scalingFactor)
 	else :
-		return EnemyDatabase.getEnemy(val["name"]).duplicate()
+		var retVal = EnemyDatabase.getEnemy(val["resourceName"]).duplicate()
+		retVal.resourceName = val["resourceName"]
+		for index in range(0,val["drops"].size()) :
+			retVal.drops.append(EquipmentDatabase.getEquipment(val["drops"][index]))
+			retVal.dropChances.append(val["dropChances"][index])
+		return retVal

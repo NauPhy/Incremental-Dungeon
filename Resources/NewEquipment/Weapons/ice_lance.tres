@@ -9,7 +9,7 @@
 script = ExtResource("1_urubg")
 isEligible = true
 quality = 3
-technology = 1
+technology = 0
 weaponClass = 0
 armorClass = 3
 isFire = false

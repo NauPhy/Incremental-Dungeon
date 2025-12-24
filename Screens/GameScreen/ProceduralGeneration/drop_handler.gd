@@ -4,7 +4,14 @@ const signatureEquipmentList = {
 	"orc_warlord" : "adamantium_greataxe",
 	"iron_golem" : "blunderbuss",
 	"death" : "deaths_scythe",
-	"titan" : "crackling_greataxe"
+	"titan" : "crackling_greataxe",
+	"lich" : "wand_of_disintigration", ##temporary??
+	## add legendary trident variant for the fish lady that stabs you?
+	"water_elemental" : "staff_of_water",
+	"fire_elemental" : "staff_of_fire",
+	"ice_elemental" : "staff_of_ice",
+	"deathcap" : "staff_of_earth",##temporary
+	"electric_eel" : "lightning_rod" 
 }
 
 var itemPool : Array
@@ -18,6 +25,8 @@ func getDrops(enemy) -> Array :
 	var dropCount = getDropCount()
 	var qualities = getDropQualities(dropCount)
 	var items = getItemsOfQualities(qualities)
+	if (items.size() == 0) :
+		print("problem")
 	return handleSignatureItem(enemy, items)
 	
 func getDropCount() :
@@ -69,28 +78,63 @@ func getDropQualities(count : int) -> Array[EquipmentGroups.qualityEnum] :
 	return retVal
 	
 func getItemsOfQualities(qualities : Array[EquipmentGroups.qualityEnum]) :
-	var retVal : Array = []
-	for index in range(0,qualities.size()) :
-		var targetQuality = qualities[index]
-		for quality in range(targetQuality as int, qualityCounts.size()) :
-			if (qualityCounts[quality] == 0) :
-				targetQuality -= 1
-		if (targetQuality < (EquipmentGroups.qualityEnum.common as int)) :
-			continue
-		var roll = randi_range(0,qualityCounts[targetQuality])
-		var currentCount = 0
-		for item in itemPool :
-			if (item.equipmentGroups.quality == targetQuality) :
-				if (currentCount == roll) :
-					retVal.append(item)
-					break;
-				else :
-					currentCount += 1
+	var indices : Array[int] = []
+	for quality in qualities :
+		#var actualQuality = reduceToValidQuality(quality, indices)
+		var newIndex = getIndexOfQuality(quality, indices)
+		if (newIndex != -1) :
+			indices.append(newIndex)
+	var retVal : Array[Equipment] = []
+	for index in indices :
+		retVal.append(itemPool[index])
 	return retVal
+	
+func reduceToValidQuality(startingQuality, excludedIndices) :
+	var currentQuality = startingQuality
+	while (true) :
+		var availableSpots = qualityCounts[currentQuality] - getQualityCountInList(currentQuality, excludedIndices)
+		if (availableSpots <= 0) :
+			currentQuality -= 1
+		if (availableSpots > 0 || currentQuality == -1) :
+			break
+	if (currentQuality == -1) :
+		return null
+	return currentQuality
+	
+func getIndexOfQuality(targetQuality, excludedIndices) :
+	var actualQuality = reduceToValidQuality(targetQuality, excludedIndices)
+	if (actualQuality == null) :
+		return -1
+	var adjustedCount = qualityCounts[actualQuality] - getQualityCountInList(actualQuality, excludedIndices)
+	var roll = randi_range(0,adjustedCount-1)
+	var currentCount = 0
+	for index in range(0, itemPool.size()) :
+		if (excludedIndices.find(index) != -1) :
+			continue
+		if (itemPool[index].equipmentGroups.quality == actualQuality) :
+			if (currentCount == roll) :
+				return index
+			else :
+				currentCount += 1
+	#for index in range(0, itemPool.size()) :
+		#if (excludedIndices.find(index) != -1) :
+			#continue
+		#if (itemPool[index].equipmentGroups.quality == targetQuality) :
+			#if (currentCount == roll) :
+				#return index
+			#else :
+				#currentCount += 1
+	return -1
+			
+func getQualityCountInList(targetQuality, list) :
+	var count = 0
+	for item in list :
+		if itemPool[item].equipmentGroups.quality == targetQuality :
+			count += 1
+	return count
 		
 func updateQualityCounts() :
-	for count in qualityCounts :
-		count = 0
+	qualityCounts = [0,0,0,0,0]
 	for item in itemPool :
 		var quality = item.equipmentGroups.quality
 		qualityCounts[quality as int] += 1

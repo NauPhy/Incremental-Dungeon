@@ -1,0 +1,104 @@
+[gd_resource type="Resource" script_class="Armor" load_steps=6 format=3 uid="uid://d2vktviberwuu"]
+
+[ext_resource type="Script" uid="uid://bjf2usx5yhgpu" path="res://Resources/OldEquipment/equipment_grouping.gd" id="1_co2un"]
+[ext_resource type="Script" uid="uid://drk1kxvptw3qa" path="res://Screens/GameScreen/Player/modifier_packet.gd" id="2_ajua8"]
+[ext_resource type="Script" uid="uid://bnh3m73ifmphh" path="res://Resources/OldEquipment/armor.gd" id="3_iugcr"]
+
+[sub_resource type="Resource" id="Resource_xugd0"]
+script = ExtResource("1_co2un")
+isEligible = true
+quality = 3
+technology = 3
+weaponClass = 2
+armorClass = 2
+isFire = false
+isIce = false
+isEarth = false
+isWater = false
+
+[sub_resource type="Resource" id="Resource_mkqis"]
+script = ExtResource("2_ajua8")
+attributeMods = {
+"Dexterity": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Durability": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Intelligence": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Skill": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Strength": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+}
+}
+statMods = {
+"Attack Rating": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Damage Rating": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Magic Defense": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Max HP": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Defense": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+}
+}
+otherMods = {
+"Magic Find": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+}
+}
+
+[resource]
+script = ExtResource("3_iugcr")
+PHYSDEF = 0.0
+MAGDEF = 0.0
+title = "Hellforged Plate"
+description = "Fortified with extensive enchantments and forged in the deepest pits of the Underworld, Hellforged Plate is a paragon of industrial metalworking.
+
+Granted exclusively to Hell Knights and Hell Sentinels, Hellforged Plate is a symbol of great prestige and authority."
+myPacket = SubResource("Resource_mkqis")
+equipmentGroups = SubResource("Resource_xugd0")
+metadata/_custom_type_script = "uid://bnh3m73ifmphh"

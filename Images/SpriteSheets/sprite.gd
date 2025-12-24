@@ -62,3 +62,7 @@ func isIs32() :
 	return is32
 func setIs32(val) :
 	is32 = val
+func getFlipped() -> bool :
+	return $Icon.flip_h
+func setFlipped(val : bool) :
+	$Icon.flip_h = val

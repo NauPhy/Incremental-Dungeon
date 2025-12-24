@@ -35,7 +35,7 @@ static func createFromSaveDictionary(val : Dictionary) -> Encounter :
 	var tempEnemies = val["enemies"]
 	for enemy in tempEnemies :
 		retVal.enemies.append(ActorPreset.createFromSaveDictionary(enemy))
-	retVal.rewards = []
+	#retVal.rewards = []
 	retVal.introTitle = val["introTitle"]
 	retVal.introText = val["introText"]
 	retVal.victoryTitle = val["victoryTitle"]

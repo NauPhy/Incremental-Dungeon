@@ -6,7 +6,7 @@
 script = ExtResource("1_f54p7")
 type = 0
 power = 2.18
-text = "Comp"
+text = "Chomp"
 mode = 0
 warmup = 5.0
 metadata/_custom_type_script = "uid://6o4dw2binuis"

@@ -25,6 +25,7 @@ func updateText_sprite() :#
 	mySprite.is48 = newSprite.is48
 	mySprite.setTexture(newSprite.getTexture())
 	mySprite.setRegionRect(newSprite.getRegionRect())
+	mySprite.setFlipped(newSprite.getFlipped())
 	if (isInIGOptions) :
 		mySprite.setScale(10)
 	else :
@@ -40,7 +41,7 @@ func updateText_clearChildren(myText) :
 		
 func updateText_weapon(myText) :
 	$Text/VBoxContainer/Extra.text = ""
-	myText = myText + "Attack Bonus:\n\t" + str(Helpers.myRound(currentItemSceneRef.getAttack(),3)) + "\n\n"
+	myText += "Attack Bonus:\n\t" + str(Helpers.myRound(currentItemSceneRef.getAttack(),3)) + "\n\n"
 	myText = updateText_weapon_scaling(myText)
 	myText = updateText_weapon_action(myText)
 	myText += "\n"
@@ -72,19 +73,19 @@ func updateText_weapon_action(myText) :
 
 func updateText_armor(myText) :
 	$Text/VBoxContainer/Extra.text = ""
-	myText = "Physical defense:\n    " + str(currentItemSceneRef.getPhysicalDefense()) + "\n"
+	myText += "Physical defense:\n    " + str(currentItemSceneRef.getPhysicalDefense()) + "\n"
 	myText = myText + "Magic defense:\n    " + str(currentItemSceneRef.getMagicDefense()) + "\n"
 	myText = myText + "\n"
 	return myText
 	
 func updateText_accessory(myText) :
 	$Text/VBoxContainer/Extra.text = ""
-	myText = ""
+	myText += ""
 	return myText
 	
 func updateText_currency(myText) :
 	$Text/VBoxContainer/Extra.setText("Currency")
-	myText = ""
+	myText += ""
 	return myText
 	
 func updateText_modifiers(myText) :
@@ -122,6 +123,7 @@ func updateText() :
 	updateText_sprite()
 	$Text/VBoxContainer/Title.text = currentItemSceneRef.getTitle()
 	var myText : String = ""
+	myText = "[font_size=22]" + EquipmentGroups.getColouredQualityString(currentItemSceneRef.getQuality(), false) + " " + EquipmentGroups.colourText(currentItemSceneRef.getQuality(), Definitions.equipmentTypeDictionary[currentItemSceneRef.getType()], false)+ "[/font_size]\n"
 	if (currentItemSceneRef.core is Weapon) :
 		myText = updateText_weapon(myText)
 	elif (currentItemSceneRef.core is Armor) :
@@ -139,6 +141,8 @@ func updateText() :
 	$Picture/CenterContainer.visible = true
 	$Text/VBoxContainer/Extra.visible = $Text/VBoxContainer/Extra.text != ""
 	await $Text/VBoxContainer/Panel/ScrollContainer/Description.setText(myText)
+	if (currentItemSceneRef == null) :
+		return
 	if (currentItemSceneRef.core is Weapon) :
 		addWeaponScalingTooltips()
 
