@@ -14,11 +14,11 @@ glassCannonIndex = 0.75
 HPToDefRatio = 2.5
 defRatio = 0.91
 atkRatio = 1.4
+equipmentLevel = 1
 enemyQuality = 1
-droppedArmorClasses = Array[int]([0, 1])
-droppedWeaponClasses = Array[int]([0])
-droppedTechnologyClasses = Array[int]([0, 1])
-faction = 3
+enemyArmor = 1
+enemyRange = 1
+faction = 2
 
 [resource]
 script = ExtResource("6_wueaf")

@@ -14,10 +14,10 @@ glassCannonIndex = 2.0
 HPToDefRatio = 1.0
 defRatio = 1.1
 atkRatio = 0.5
+equipmentLevel = 2
 enemyQuality = 1
-droppedArmorClasses = Array[int]([0, 1])
-droppedWeaponClasses = Array[int]([1])
-droppedTechnologyClasses = Array[int]([2, 3])
+enemyArmor = 0
+enemyRange = 2
 faction = 5
 
 [resource]

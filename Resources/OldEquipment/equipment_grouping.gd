@@ -23,7 +23,14 @@ static func colourText(quality : qualityEnum, myText : String, lightBackground :
 		colourStr = colours_alt[quality]
 	return "[color=" + colourStr + "]" + myText + "[/color]"
 @export var quality : qualityEnum = qualityEnum.common
-enum technologyEnum {natural,crude,advanced,superior}
+enum technologyEnum {perennial,natural,crude,advanced,superior}
+const technologyDictionary = {
+	technologyEnum.perennial : "Perennial",
+	technologyEnum.natural : "Natural",
+	technologyEnum.crude : "Crude",
+	technologyEnum.advanced : "Advanced",
+	technologyEnum.superior : "Superior"
+}
 ##Natural is stuff made in nature (duh). On average you can expect natural equipment to be worse, but there are exceptions
 ##such as... well... any dragon body part really. 
 ## Crude is basically anything made without artificial magic or metallurgy, including leather armor, slings, dragonbone armor, etc.
@@ -33,11 +40,10 @@ enum technologyEnum {natural,crude,advanced,superior}
 
 ##Usage : An animal cannot drop anything that isn't natural, an Orc can't drop superior but can drop advanced, a death knight will only drop superior, etc.
 @export var technology : technologyEnum = technologyEnum.natural
-
-enum weaponClassEnum {melee, ranged, na}
-@export var weaponClass : weaponClassEnum = weaponClassEnum.na
-enum armorClassEnum {light,medium,heavy,na}
-@export var armorClass : armorClassEnum = armorClassEnum.na
+enum weaponClassEnum {melee, ranged}
+@export var weaponClass : weaponClassEnum = -1
+enum armorClassEnum {light,medium,heavy}
+@export var armorClass : armorClassEnum = -1
 
 ## Environment whitelists: If an item has one of these properties it will not show up in the rewards unless
 ## in a specific environment
@@ -45,3 +51,4 @@ enum armorClassEnum {light,medium,heavy,na}
 @export var isIce : bool = false
 @export var isEarth : bool = false
 @export var isWater : bool = false
+@export var isSignature : bool = false

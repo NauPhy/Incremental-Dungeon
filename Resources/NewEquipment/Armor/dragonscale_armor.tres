@@ -9,12 +9,13 @@ script = ExtResource("1_bc2wp")
 isEligible = true
 quality = 4
 technology = 0
-weaponClass = 2
+weaponClass = -1
 armorClass = 1
 isFire = false
 isIce = false
 isEarth = false
 isWater = false
+isSignature = false
 
 [sub_resource type="Resource" id="Resource_2clsr"]
 script = ExtResource("2_hwmic")

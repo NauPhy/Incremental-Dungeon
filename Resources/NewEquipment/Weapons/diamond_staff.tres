@@ -9,13 +9,14 @@
 script = ExtResource("1_2qr86")
 isEligible = true
 quality = 4
-technology = 1
+technology = 2
 weaponClass = 1
-armorClass = 3
+armorClass = -1
 isFire = false
 isIce = false
 isEarth = false
 isWater = false
+isSignature = false
 
 [sub_resource type="Resource" id="Resource_oox1b"]
 script = ExtResource("2_8xfok")

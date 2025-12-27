@@ -9,13 +9,14 @@
 script = ExtResource("1_ydyet")
 isEligible = true
 quality = 0
-technology = 1
+technology = 0
 weaponClass = 1
-armorClass = 3
+armorClass = -1
 isFire = true
 isIce = false
 isEarth = false
 isWater = false
+isSignature = false
 
 [sub_resource type="Resource" id="Resource_iid34"]
 script = ExtResource("2_4hdad")

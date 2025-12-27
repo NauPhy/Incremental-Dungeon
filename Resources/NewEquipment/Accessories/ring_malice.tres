@@ -1,24 +1,24 @@
-[gd_resource type="Resource" script_class="Accessory" load_steps=6 format=3 uid="uid://bqbxkodneuxks"]
+[gd_resource type="Resource" script_class="Accessory" load_steps=6 format=3 uid="uid://f8yobdbmuli4"]
 
-[ext_resource type="Script" uid="uid://bjf2usx5yhgpu" path="res://Resources/OldEquipment/equipment_grouping.gd" id="1_eovcx"]
-[ext_resource type="Script" uid="uid://drk1kxvptw3qa" path="res://Screens/GameScreen/Player/modifier_packet.gd" id="2_7wq7p"]
-[ext_resource type="Script" uid="uid://bmbbygpmfs6mv" path="res://Resources/OldEquipment/accessory.gd" id="3_4v2ni"]
+[ext_resource type="Script" uid="uid://bjf2usx5yhgpu" path="res://Resources/OldEquipment/equipment_grouping.gd" id="1_k1hff"]
+[ext_resource type="Script" uid="uid://drk1kxvptw3qa" path="res://Screens/GameScreen/Player/modifier_packet.gd" id="2_kdam5"]
+[ext_resource type="Script" uid="uid://bmbbygpmfs6mv" path="res://Resources/OldEquipment/accessory.gd" id="3_lpghv"]
 
-[sub_resource type="Resource" id="Resource_70hl5"]
-script = ExtResource("1_eovcx")
-isEligible = true
-quality = 2
-technology = 4
+[sub_resource type="Resource" id="Resource_nfovh"]
+script = ExtResource("1_k1hff")
+isEligible = false
+quality = 4
+technology = 0
 weaponClass = -1
-armorClass = 2
+armorClass = -1
 isFire = false
 isIce = false
 isEarth = false
 isWater = false
-isSignature = false
+isSignature = true
 
-[sub_resource type="Resource" id="Resource_pwm3w"]
-script = ExtResource("2_7wq7p")
+[sub_resource type="Resource" id="Resource_h3vp8"]
+script = ExtResource("2_kdam5")
 attributeMods = {
 "Dexterity": {
 "Postbonus": 0.0,
@@ -66,7 +66,7 @@ statMods = {
 },
 "Magic Defense": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.12,
+"Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 },
@@ -78,7 +78,7 @@ statMods = {
 },
 "Physical Defense": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.18,
+"Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 }
@@ -98,7 +98,7 @@ otherMods = {
 },
 "Magic Damage Taken": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.0,
+"Postmultiplier": -0.3,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 },
@@ -141,11 +141,11 @@ otherMods = {
 }
 
 [resource]
-script = ExtResource("3_4v2ni")
-boostedAttr1 = 1
-boostedAttr2 = 3
-title = "Dwarven Tower Shield"
+script = ExtResource("3_lpghv")
+boostedAttr1 = 3
+boostedAttr2 = -1
+title = "Sample title"
 description = "Sample description"
-myPacket = SubResource("Resource_pwm3w")
-equipmentGroups = SubResource("Resource_70hl5")
+myPacket = SubResource("Resource_h3vp8")
+equipmentGroups = SubResource("Resource_nfovh")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

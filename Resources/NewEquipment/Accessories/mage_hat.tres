@@ -8,9 +8,9 @@
 script = ExtResource("1_irnv5")
 isEligible = true
 quality = 0
-technology = 1
-weaponClass = 2
-armorClass = 3
+technology = 2
+weaponClass = -1
+armorClass = 0
 isFire = false
 isIce = false
 isEarth = false

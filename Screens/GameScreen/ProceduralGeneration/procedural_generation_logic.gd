@@ -6,10 +6,20 @@ extends Node
 func createMap() -> MapData :
 	var environment : MyEnvironment = getEnvironment()
 	$EnemyPoolHandler.reset(environment, getAllEnemies())
-	$ItemPoolHandler.reset(environment, getAllItems())
+	#$ItemPoolHandler.reset(environment, getAllItems())
 	var encounters : MapData = createEncounters()
 	encounters.environmentName = environment.getFileName()
 	return encounters
+
+
+## moderately inefficent
+func generateDrops(enemies : Array[ActorPreset], mapData : MapData) -> Array[Equipment]:
+	var retVal : Array[Equipment] = []
+	$ItemPoolHandler.reset(MegaFile.getEnvironment(mapData.environmentName), getAllItems())
+	for enemy in enemies :
+		$DropHandler.reset($ItemPoolHandler.getItemPoolForEnemy(enemy))
+		retVal.append_array($DropHandler.createDropsForEnemy(enemy))
+	return retVal
 
 func getAllEnemies() :
 	var list = EnemyDatabase.getAllEnemies()
@@ -78,17 +88,19 @@ func createEncounters() -> MapData :
 	retVal.bossEncounter = createBossEncounter()
 	return retVal
 	
+## Drops are now added on combat end. Instead of drop lists, beastiary will now show tags indicating what categories can and cannot be dropped.
 func addDrops(encounter : Encounter) -> void :
-	for enemy in encounter.enemies :
-		var itemPool = $ItemPoolHandler.getItemPoolForEnemy(enemy)
-		$DropHandler.reset(itemPool)
-		var newDrops = $DropHandler.getDrops(enemy)
-		var createdDrops : Array[Equipment] = []
-		for drop in newDrops :
-			createdDrops.append(drop.getAdjustedCopy(1.0))
-		enemy.drops.append_array(createdDrops)
-		enemy.dropChances.append_array($DropHandler.getDropChances(newDrops.size()))
-	
+	return
+	#for enemy in encounter.enemies :
+		#var itemPool = $ItemPoolHandler.getItemPoolForEnemy(enemy)
+		#$DropHandler.reset(itemPool)
+		#var newDrops = $DropHandler.getDrops(enemy)
+		#var createdDrops : Array[Equipment] = []
+		#for drop in newDrops :
+			#createdDrops.append(drop.getAdjustedCopy(1.0))
+		#enemy.drops.append_array(createdDrops)
+		#enemy.dropChances.append_array($DropHandler.getDropChances(newDrops.size()))
+	#
 func createCentralEncounter() -> Encounter :
 	var retVal = Encounter.new()
 	retVal.enemies.append(createVeteran())

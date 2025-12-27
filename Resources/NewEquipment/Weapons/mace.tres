@@ -9,13 +9,14 @@
 script = ExtResource("1_sfsrm")
 isEligible = true
 quality = 0
-technology = 2
-weaponClass = 0
-armorClass = 3
+technology = 3
+weaponClass = -1
+armorClass = -1
 isFire = false
 isIce = false
 isEarth = false
 isWater = false
+isSignature = false
 
 [sub_resource type="Resource" id="Resource_fxbmv"]
 script = ExtResource("2_2uv18")

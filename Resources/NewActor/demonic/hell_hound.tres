@@ -12,12 +12,12 @@ script = ExtResource("3_tjqf4")
 isEligible = true
 glassCannonIndex = 1.8
 HPToDefRatio = 1.4
-defRatio = 1.0
+defRatio = 1.1
 atkRatio = 0.7
+equipmentLevel = 0
 enemyQuality = 0
-droppedArmorClasses = Array[int]([0, 1])
-droppedWeaponClasses = Array[int]([])
-droppedTechnologyClasses = Array[int]([0, 1, 2])
+enemyArmor = 2
+enemyRange = 0
 faction = 6
 
 [resource]

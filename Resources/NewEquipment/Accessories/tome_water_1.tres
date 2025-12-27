@@ -7,14 +7,15 @@
 [sub_resource type="Resource" id="Resource_ol0m8"]
 script = ExtResource("1_lrymv")
 isEligible = true
-quality = 0
-technology = 1
-weaponClass = 2
-armorClass = 3
+quality = 1
+technology = 0
+weaponClass = -1
+armorClass = -1
 isFire = false
 isIce = false
 isEarth = false
 isWater = true
+isSignature = false
 
 [sub_resource type="Resource" id="Resource_872ee"]
 script = ExtResource("2_68jmw")

@@ -19,6 +19,9 @@ func resetNewEquipmentGrouping() :
 		a.equipmentGroups = EquipmentGroups.new()
 		a.equipmentGroups.isEligible = false
 		)
+		
+func tagUpdate() :
+	performOnNewEquipmentFiles(func(a):a.tagUpdate())
 	
 func resetActorPresets() :
 	performOnResourcesInFolderRecursive("res://Screens/GameScreen/Tabs/Combat/Actors", func(a):a.reset())
@@ -34,6 +37,9 @@ func performOnEquipmentFiles(toCall : Callable) :
 			toCall.call(equipment)
 			ResourceSaver.save(equipment, path + "/" + filename)
 			filename = dir.get_next()
+			
+func performOnNewEquipmentFiles(toCall : Callable) :
+	performOnResourcesInFolderRecursive("res://Resources/NewEquipment", toCall)
 			
 func performOnWeaponFiles(toCall : Callable) :
 	var path = Definitions.equipmentPaths[Definitions.equipmentTypeEnum.weapon]
