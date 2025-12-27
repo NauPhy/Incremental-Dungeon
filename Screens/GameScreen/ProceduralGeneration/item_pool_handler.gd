@@ -19,10 +19,14 @@ func filterItemPool_env() :
 		var remove : bool = false
 		var item = preItem.equipmentGroups
 		remove = remove || (!item.isEligible)
-		remove = remove || (item.isFire && !environment.firePermitted)
-		remove = remove || (item.isIce && !environment.icePermitted)
-		remove = remove || (item.isEarth && !environment.earthPermitted)
-		remove = remove || (item.isWater && !environment.waterPermitted)
+		## Elemental accessories can be dropped in nonelemental areas with a penalty to raritiy
+		if (!environment.firePermitted && !environment.icePermitted && !environment.earthPermitted && !environment.waterPermitted) :
+			pass
+		else :
+			remove = remove || (item.isFire && !environment.firePermitted)
+			remove = remove || (item.isIce && !environment.icePermitted)
+			remove = remove || (item.isEarth && !environment.earthPermitted)
+			remove = remove || (item.isWater && !environment.waterPermitted)
 		if (remove) :
 			itemPool.remove_at(itemPool.find(preItem))
 			
@@ -38,7 +42,11 @@ func filterWorkingPool_enemy(preEnemy : ActorPreset) :
 			remove = remove || (enemy.droppedArmorClasses.find(item.armorClass) == -1)
 		if (preItem is Weapon) :
 			remove = remove || (enemy.droppedWeaponClasses.find(item.weaponClass) == -1)
-		remove = remove || (enemy.droppedTechnologyClasses.find(item.technology) == -1)
+		## All enemies can drop natural and crude accessories
+		if (preItem is Accessory) && (item.technology == EquipmentGroups.technologyEnum.natural || item.technology == EquipmentGroups.technologyEnum.crude) :
+			pass
+		else :
+			remove = remove || (enemy.droppedTechnologyClasses.find(item.technology) == -1)
 		if (remove) :
 			workingPool.remove_at(index)
 		else :

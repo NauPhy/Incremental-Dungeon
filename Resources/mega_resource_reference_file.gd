@@ -94,16 +94,20 @@ func getNewAction_Attacks(resourceName : String) :
 const NewAction_EnemyExclusiveAttacksDictionary = {
 	"arcane_bolt" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/arcane_bolt.tres"),
 	"bite_acid_2" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_acid_2.tres"),
+	"bite_big" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_big.tres"),
 	"bite_fire" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_fire.tres"),
 	"bite_generic" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_generic.tres"),
 	"bite_ice" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_ice.tres"),
 	"bite_ice_2" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_ice_2.tres"),
+	"bite_venomous" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/bite_venomous.tres"),
 	"breath_acid" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_acid.tres"),
+	"breath_death" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_death.tres"),
 	"breath_fire" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_fire.tres"),
 	"breath_frost" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_frost.tres"),
 	"breath_iron" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_iron.tres"),
 	"breath_midas" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_midas.tres"),
 	"breath_shadow" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_shadow.tres"),
+	"breath_water" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/breath_water.tres"),
 	"claw" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/claw.tres"),
 	"claw_fire" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/claw_fire.tres"),
 	"fire_blast" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/fire_blast.tres"),
@@ -113,6 +117,7 @@ const NewAction_EnemyExclusiveAttacksDictionary = {
 	"hellfire_cleave" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/hellfire_cleave.tres"),
 	"ice_blast" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/ice_blast.tres"),
 	"javelin" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/javelin.tres"),
+	"jellyfish" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/jellyfish.tres"),
 	"lava" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/lava.tres"),
 	"poison_spore" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/poison_spore.tres"),
 	"psychic_scream" : preload("res://Resources/NewAction/EnemyExclusiveAttacks/psychic_scream.tres"),
@@ -358,6 +363,34 @@ func getAllNewActor() -> Array :
 	return retVal
 
 ################################################################################
+const NewEquipment_ArmorDictionary = {
+	"armor_blades" : preload("res://Resources/NewEquipment/Armor/armor_blades.tres"),
+	"armor_crab" : preload("res://Resources/NewEquipment/Armor/armor_crab.tres"),
+	"armor_earth" : preload("res://Resources/NewEquipment/Armor/armor_earth.tres"),
+	"armor_fire" : preload("res://Resources/NewEquipment/Armor/armor_fire.tres"),
+	"armor_ice" : preload("res://Resources/NewEquipment/Armor/armor_ice.tres"),
+	"armor_leather" : preload("res://Resources/NewEquipment/Armor/armor_leather.tres"),
+	"armor_molten" : preload("res://Resources/NewEquipment/Armor/armor_molten.tres"),
+	"armor_scale" : preload("res://Resources/NewEquipment/Armor/armor_scale.tres"),
+	"armor_shadow" : preload("res://Resources/NewEquipment/Armor/armor_shadow.tres"),
+	"armor_water" : preload("res://Resources/NewEquipment/Armor/armor_water.tres"),
+	"chainmail" : preload("res://Resources/NewEquipment/Armor/chainmail.tres"),
+	"dragonbone_plate" : preload("res://Resources/NewEquipment/Armor/dragonbone_plate.tres"),
+	"dragonscale_armor" : preload("res://Resources/NewEquipment/Armor/dragonscale_armor.tres"),
+	"enchanted_robes_new" : preload("res://Resources/NewEquipment/Armor/enchanted_robes_new.tres"),
+	"fur_cloak" : preload("res://Resources/NewEquipment/Armor/fur_cloak.tres"),
+	"hellforged_plate" : preload("res://Resources/NewEquipment/Armor/hellforged_plate.tres"),
+	"mithril plate" : preload("res://Resources/NewEquipment/Armor/mithril plate.tres"),
+	"moonstone_plate" : preload("res://Resources/NewEquipment/Armor/moonstone_plate.tres"),
+	"scale_mail" : preload("res://Resources/NewEquipment/Armor/scale_mail.tres"),
+	"silk_robes" : preload("res://Resources/NewEquipment/Armor/silk_robes.tres"),
+	"steel_plate" : preload("res://Resources/NewEquipment/Armor/steel_plate.tres"),
+	"studded_leather" : preload("res://Resources/NewEquipment/Armor/studded_leather.tres")}
+
+
+func getNewEquipment_Armor(resourceName : String) :
+	return NewEquipment_ArmorDictionary.get(resourceName)
+
 const NewEquipment_WeaponsDictionary = {
 	"adamantium_greataxe" : preload("res://Resources/NewEquipment/Weapons/adamantium_greataxe.tres"),
 	"arming_sword" : preload("res://Resources/NewEquipment/Weapons/arming_sword.tres"),
@@ -439,16 +472,21 @@ func getNewEquipment_Weapons(resourceName : String) :
 	return NewEquipment_WeaponsDictionary.get(resourceName)
 
 func getNewEquipment(resourceName : String) :
+	if (NewEquipment_ArmorDictionary.has(resourceName)) :
+		return NewEquipment_ArmorDictionary[resourceName]
 	if (NewEquipment_WeaponsDictionary.has(resourceName)) :
 		return NewEquipment_WeaponsDictionary[resourceName]
 	return null
 
 func getNewEquipmentDictionary(type : String) :
+	if type == "NewEquipment_Armor" : 
+		return NewEquipment_ArmorDictionary
 	if type == "NewEquipment_Weapons" : 
 		return NewEquipment_WeaponsDictionary
 
 func getAllNewEquipment() -> Array :
 	var retVal : Array = []
+	retVal.append_array(NewEquipment_ArmorDictionary.values())
 	retVal.append_array(NewEquipment_WeaponsDictionary.values())
 	return retVal
 

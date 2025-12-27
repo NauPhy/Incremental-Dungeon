@@ -83,7 +83,10 @@ func addDrops(encounter : Encounter) -> void :
 		var itemPool = $ItemPoolHandler.getItemPoolForEnemy(enemy)
 		$DropHandler.reset(itemPool)
 		var newDrops = $DropHandler.getDrops(enemy)
-		enemy.drops.append_array(newDrops)
+		var createdDrops : Array[Equipment] = []
+		for drop in newDrops :
+			createdDrops.append(drop.getAdjustedCopy(1.0))
+		enemy.drops.append_array(createdDrops)
 		enemy.dropChances.append_array($DropHandler.getDropChances(newDrops.size()))
 	
 func createCentralEncounter() -> Encounter :
@@ -105,8 +108,9 @@ func createSideEncounter() -> Encounter :
 			retVal.enemies.append(createNormal())
 	elif (randi_range(0,9) == 0) :
 		var enemy = createNormal()
+		enemy.getResourceName()
 		for index in range(0,5) :
-			retVal.enemies.append(enemy)
+			retVal.enemies.append(enemy.duplicate())
 	else :
 		for index in range(0, randi_range(2,3)) :
 			retVal.enemies.append(createNormal())

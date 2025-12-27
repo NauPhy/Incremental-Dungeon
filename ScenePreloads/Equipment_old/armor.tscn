@@ -6,4 +6,8 @@
 [node name="Armor" instance=ExtResource("1_mn2l1")]
 script = ExtResource("2_rmkej")
 
+[node name="Icon" parent="SuperButton/HBoxContainer/Sprite" index="0"]
+region_rect = Rect2(0, 0, 32, 32)
+
 [editable path="SuperButton"]
+[editable path="SuperButton/HBoxContainer/Sprite"]

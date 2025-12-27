@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_vca8q")
 title = "Volcana"
+introText = ""
 permittedFactions = Array[int]([0, 2])
 firePermitted = true
 icePermitted = false

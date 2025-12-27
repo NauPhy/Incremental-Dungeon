@@ -86,10 +86,26 @@ const attributeDictionaryShort = {
 	attributeEnum.STR : "STR"
 }
 enum otherStatEnum {
-	magicFind
+	magicDamageDealt,
+	physicalDamageDealt,
+	magicDamageTaken,
+	physicalDamageTaken,
+	magicConversion,
+	physicalConversion,
+	magicFind,
+	routineSpeed,
+	routineEffect
 }
 const otherStatDictionary = {
-	otherStatEnum.magicFind : "Magic Find"
+	otherStatEnum.magicDamageDealt : "Magic Damage Dealt",
+	otherStatEnum.physicalDamageDealt : "Physical Damage Dealt",
+	otherStatEnum.magicDamageTaken : "Magic Damage Taken",
+	otherStatEnum.physicalDamageTaken : "Physical Damage Taken", 
+	otherStatEnum.magicConversion : "Magic Conversion",
+	otherStatEnum.physicalConversion : "Physical Conversion",
+	otherStatEnum.magicFind : "Magic Find",
+	otherStatEnum.routineSpeed : "Routine Speed",
+	otherStatEnum.routineEffect : "Routine Effect"
 }
 enum classEnum {
 	fighter,mage,rogue

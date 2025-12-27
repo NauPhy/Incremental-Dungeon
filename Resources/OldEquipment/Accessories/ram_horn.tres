@@ -93,6 +93,8 @@ otherMods = {
 
 [resource]
 script = ExtResource("2_e1t25")
+boostedAttr1 = -1
+boostedAttr2 = -1
 title = "Ram's horn"
 description = "Drinking from this horn fills you with might!"
 myPacket = SubResource("Resource_kabkf")

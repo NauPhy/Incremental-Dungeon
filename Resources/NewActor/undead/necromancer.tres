@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_tjdn1"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_lybpd"]
-[ext_resource type="Resource" uid="uid://istodownlvaf" path="res://Resources/NewAction/raise_undead.tres" id="2_xikwn"]
+[ext_resource type="Resource" uid="uid://dy1a63hiu782l" path="res://Resources/NewAction/Attacks/curse.tres" id="2_xikwn"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_xikwn"]
 [ext_resource type="Texture2D" uid="uid://c4ine7im1exsx" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/necromancer_new.png" id="4_lybpd"]
 [ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_p3fum"]

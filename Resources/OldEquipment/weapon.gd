@@ -73,3 +73,9 @@ static func scalingToLetter(scalingVal : float) -> String :
 		return "S"
 	else :
 		return "S+"
+
+func getAdjustedCopy(scalingFactor : float) -> Weapon :
+	var retVal = super(scalingFactor) as Weapon##not sure if copies weapon properties
+	retVal.attackBonus *= scalingFactor
+	return retVal
+	

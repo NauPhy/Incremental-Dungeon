@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_qh0e7")
 title = "Hell Fortress"
+introText = ""
 permittedFactions = Array[int]([5])
 firePermitted = true
 icePermitted = false

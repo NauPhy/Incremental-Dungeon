@@ -93,6 +93,8 @@ otherMods = {
 
 [resource]
 script = ExtResource("2_dlfg2")
+boostedAttr1 = -1
+boostedAttr2 = -1
 title = "Venom vial"
 description = "This deadly poison is sure to make any cut sting."
 myPacket = SubResource("Resource_y2c1d")

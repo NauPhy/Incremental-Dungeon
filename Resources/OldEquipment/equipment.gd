@@ -9,6 +9,15 @@ class_name Equipment
 ## For procedural generation
 @export var equipmentGroups : EquipmentGroups = EquipmentGroups.new()
 
+var resourceName : String = ""
+func getItemName() :
+	if (resourceName == "") :
+		resourceName = resource_path.get_file().get_basename()
+	return resourceName
+func getAdjustedCopy(scalingFactor : float) -> Equipment :
+	getItemName()
+	return self.duplicate()
+
 func reset() :
 	myPacket = ModifierPacket.new()
 func resetNew() :
@@ -28,7 +37,5 @@ func getModifierPacket() -> ModifierPacket :
 	return myPacket
 func getName() :
 	return title
-func getItemName() :
-	return resource_path.get_file().get_basename()
 func getType() :
 	return Definitions.equipmentTypeEnum.currency

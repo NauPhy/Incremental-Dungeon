@@ -93,6 +93,8 @@ otherMods = {
 
 [resource]
 script = ExtResource("2_h605x")
+boostedAttr1 = -1
+boostedAttr2 = -1
 title = "Magpie's Eye"
 description = "This ring sports a catseye gem with a particularly birdly appearance. You found it in the nest of a Giant Magpie, hidden among a trove of gold and gems. It gleams in the presence of treasure."
 myPacket = SubResource("Resource_o03vc")

@@ -93,6 +93,8 @@ otherMods = {
 
 [resource]
 script = ExtResource("2_74ku1")
+boostedAttr1 = -1
+boostedAttr2 = -1
 title = "Mandragora Potion"
 description = "It's said that a drinking a single mandragora potion adds 20 years to your life."
 myPacket = SubResource("Resource_pgs1w")
