@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://dy4q0d1g47s12"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://dy4q0d1g47s12"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_25uur"]
+[ext_resource type="Resource" uid="uid://bvmp8x6g6fbvr" path="res://Resources/NewAction/EnemyExclusiveAttacks/breath_death.tres" id="2_5q5ow"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_eyn33"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_5q5ow"]
 [ext_resource type="Texture2D" uid="uid://c247b0bprqxlw" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/undead/bone_dragon_new.png" id="4_eyn33"]
@@ -29,7 +30,7 @@ AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_25uur")]([])
+actions = Array[ExtResource("1_25uur")]([ExtResource("2_5q5ow")])
 drops = Array[ExtResource("2_eyn33")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_3hwgv")

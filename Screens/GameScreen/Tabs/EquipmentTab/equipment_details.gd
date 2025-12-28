@@ -73,8 +73,8 @@ func updateText_weapon_action(myText) :
 
 func updateText_armor(myText) :
 	$Text/VBoxContainer/Extra.text = ""
-	myText += "Physical defense:\n    " + str(currentItemSceneRef.getPhysicalDefense()) + "\n"
-	myText = myText + "Magic defense:\n    " + str(currentItemSceneRef.getMagicDefense()) + "\n"
+	myText += "Physical defense:\n    " + str(Helpers.myRound(currentItemSceneRef.getPhysicalDefense(),3)) + "\n"
+	myText = myText + "Magic defense:\n    " + str(Helpers.myRound(currentItemSceneRef.getMagicDefense(),3)) + "\n"
 	myText = myText + "\n"
 	return myText
 	

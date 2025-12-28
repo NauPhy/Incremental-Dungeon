@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="Weapon" load_steps=6 format=3 uid="uid://d24xfp4or72gk"]
+[gd_resource type="Resource" script_class="Weapon" load_steps=7 format=3 uid="uid://d24xfp4or72gk"]
 
+[ext_resource type="Resource" uid="uid://dvhcop7yttlt4" path="res://Resources/NewAction/Attacks/katana_attack.tres" id="1_nk30c"]
 [ext_resource type="Script" uid="uid://bjf2usx5yhgpu" path="res://Resources/OldEquipment/equipment_grouping.gd" id="1_paoiy"]
 [ext_resource type="Script" uid="uid://drk1kxvptw3qa" path="res://Screens/GameScreen/Player/modifier_packet.gd" id="2_nk30c"]
 [ext_resource type="Script" uid="uid://6qgd3qugycc1" path="res://Resources/OldEquipment/weapon.gd" id="3_bjxtk"]
@@ -102,8 +103,9 @@ scaling = {
 "Strength": 0.625
 }
 attackBonus = 105.0
+basicAttack = ExtResource("1_nk30c")
 isUnarmed = false
-title = "Sample title"
+title = "Katana"
 description = "Katanas require considerably greater dexterity to wield than a typical two handed sword, as they perform poorly when used in a chopping motion and are prone to breaking if used incorrectly. In the hands of a master swordsman, however, a katana can perform as well as any greatsword."
 myPacket = SubResource("Resource_frt66")
 equipmentGroups = SubResource("Resource_s7sl2")

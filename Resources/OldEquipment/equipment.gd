@@ -28,11 +28,17 @@ func resetNew() :
 		myPacket = ModifierPacket.new()
 	elif (myPacket.statMods.size() != Definitions.baseStatDictionary.keys().size()) :
 		myPacket = ModifierPacket.new()
-func resetOtherMods() :
-	var oldPacket = myPacket.duplicate()
-	myPacket = ModifierPacket.new()
-	myPacket.attributeMods = oldPacket.attributeMods
-	myPacket.statMods = oldPacket.statMods
+func resetOtherModsIfWrong() :
+	var reset : bool = false
+	for key in Definitions.otherStatDictionary.keys() :
+		if (myPacket.otherMods.get(key) == null) :
+			reset = true
+			break
+	if (reset) :
+		var oldPacket = myPacket.duplicate()
+		myPacket = ModifierPacket.new()
+		myPacket.attributeMods = oldPacket.attributeMods
+		myPacket.statMods = oldPacket.statMods
 
 func getModifierPacket() -> ModifierPacket :
 	return myPacket

@@ -2,8 +2,7 @@
 extends EditorScript
 
 func _run() :
-	resetNewEquipmentGrouping()
-	pass
+	performOnNewEquipmentFiles(func(a):a.resetOtherModsIfWrong)
 	
 func resetAllEquipmentFiles() :
 	performOnEquipmentFiles(func(a):a.reset())

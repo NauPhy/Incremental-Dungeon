@@ -25,10 +25,6 @@ func initialise(rewards : Array[Equipment]) :
 		if (entry.getItemSceneRef().getType() == Definitions.equipmentTypeEnum.currency) :
 			entry.setCount(1)
 		entry.connect("wasSelected", _on_entry_selected)
-	var firstEntry = $Content/InventoryPanel/VBoxContainer.get_child(0)
-	firstEntry.getItemSceneRef().select()
-	$Content/Details.setItemSceneRefBase(firstEntry.getItemSceneRef())
-	
 	var changed : bool = false
 	var optionsCopy = IGOptions.getIGOptionsCopy()
 	var encounteredItems : Array = optionsCopy["encounteredItems"]
@@ -65,6 +61,9 @@ func initialise(rewards : Array[Equipment]) :
 	if (getItemList().is_empty()) :
 		suicide()
 	else :
+		var firstEntry = $Content/InventoryPanel/VBoxContainer.get_child(0)
+		firstEntry.getItemSceneRef().select()
+		$Content/Details.setItemSceneRefBase(firstEntry.getItemSceneRef())
 		self.visible = true
 		initialisationPending = false
 		emit_signal("initialisationComplete")
@@ -114,7 +113,7 @@ func removeItemFromList(itemSceneRef) :
 		newIndex = newItemList.size()-1
 	else :
 		newIndex = killableIndex
-	if (newItemList.size()-1<=newIndex && newItemList[newIndex] != null) :
+	if (newItemList.size()-1>=newIndex && newItemList[newIndex] != null) :
 		$Content/Details.setItemSceneRefBase(newItemList[newIndex].getItemSceneRef())
 	newItemList[newIndex].getItemSceneRef().select()
 	waitingForResponse = false

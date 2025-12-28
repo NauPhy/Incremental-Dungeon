@@ -7,7 +7,7 @@
 
 [sub_resource type="Resource" id="Resource_e1oiv"]
 script = ExtResource("2_ln1ou")
-isEligible = true
+isEligible = false
 quality = 0
 technology = 1
 weaponClass = 1

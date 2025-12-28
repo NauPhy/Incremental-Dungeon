@@ -109,6 +109,8 @@ func getDropQualities(count : int) -> Array[EquipmentGroups.qualityEnum] :
 		for qualityIndex in range(0,qualityThresholds.size()) :
 			if (roll <= qualityThresholds[qualityIndex]) :
 				retVal.append((4-qualityIndex) as EquipmentGroups.qualityEnum)
+				if (roll <= qualityThresholds[0]) :
+					print("Legendary dropped!")
 				break
 	return retVal
 	
