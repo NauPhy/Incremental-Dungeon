@@ -16,7 +16,7 @@ defRatio = 1.1
 atkRatio = 1.5
 equipmentLevel = 1
 enemyQuality = 0
-enemyArmor = 1
+enemyArmor = 2
 enemyRange = 2
 faction = 8
 

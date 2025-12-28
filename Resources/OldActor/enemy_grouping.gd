@@ -53,15 +53,15 @@ enum factionEnum {
 	misc
 }
 const factionDictionary = {
-	factionEnum.fire : "Fire",
-	factionEnum.water : "Water",
-	factionEnum.earth : "Earth",
-	factionEnum.ice : "Ice",
+	factionEnum.fire : "Flamekin",
+	factionEnum.water : "Nautikin",
+	factionEnum.earth : "Naturekin",
+	factionEnum.ice : "Frostkin",
 	factionEnum.undead : "Undead",
 	factionEnum.demonic_military : "Demonic Military",
-	factionEnum.demonic : "Demonic",
+	factionEnum.demonic : "Demon",
 	factionEnum.merfolk : "Merfolk",
 	factionEnum.greenskin : "Greenskin",
-	factionEnum.misc : "Unaligned"
+	factionEnum.misc : "Wanderkin"
 }
 @export var faction : factionEnum

@@ -48,18 +48,20 @@ func getModStringOrNull_otherStat(otherStat : Definitions.otherStatEnum, tag : S
 	
 enum internalCallType{attribute, stat, other}
 func internalGetStrOrNull(type : internalCallType, tag : String, key : String,) :
-	var val : float
+	var val
 	if (type == internalCallType.attribute) :
-		val = attributeMods[key][tag]
+		val = attributeMods.get(key)
 	elif (type == internalCallType.stat) :
-		val = statMods[key][tag]
+		val = statMods.get(key)
 	elif (type == internalCallType.other) :
-		val = otherMods[key][tag]
+		val = otherMods.get(key)
 	else :
+		return null
+	if (val == null) :
 		return null
 	if (key != "") :
 		key += " "
-	return getStrOrNull_static(tag, val, key, true)
+	return getStrOrNull_static(tag, val[tag], key, true)
 	
 static func getStrOrNull_static(tag : String, val : float, prefix : String, specifyType : bool) :
 	var tempStr : String = ""

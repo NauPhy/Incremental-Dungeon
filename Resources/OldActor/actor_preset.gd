@@ -96,24 +96,24 @@ func getSaveDictionary() -> Dictionary :
 		return retVal
 	retVal["resourceName"] = getResourceName()
 	retVal["myScalingFactor"] = myScalingFactor
-	if (myScalingFactor != -1) :
-		retVal["drops"] = []
-		retVal["dropChances"] = []
-		for index in range (0,drops.size()) :
-			retVal["drops"].append(drops[index].getItemName())
-			retVal["dropChances"].append(dropChances[index])
+	#if (myScalingFactor != -1) :
+		#retVal["drops"] = []
+		#retVal["dropChances"] = []
+		#for index in range (0,drops.size()) :
+			#retVal["drops"].append(drops[index].getItemName())
+			#retVal["dropChances"].append(dropChances[index])
 	return retVal
 	
 static func createFromSaveDictionary(val : Dictionary) -> ActorPreset :
 	if (val.is_empty()) :
 		return ActorPreset.new()
 	var scalingFactor = val["myScalingFactor"]
-	if (scalingFactor == -1) :
-		return EnemyDatabase.getEnemy(val["resourceName"]).getAdjustedCopy(scalingFactor)
-	else :
-		var retVal = EnemyDatabase.getEnemy(val["resourceName"]).duplicate()
-		retVal.resourceName = val["resourceName"]
-		for index in range(0,val["drops"].size()) :
-			retVal.drops.append(EquipmentDatabase.getEquipment(val["drops"][index]))
-			retVal.dropChances.append(val["dropChances"][index])
-		return retVal
+	#if (scalingFactor == -1) :
+	return EnemyDatabase.getEnemy(val["resourceName"]).getAdjustedCopy(scalingFactor)
+	#else :
+		#var retVal = EnemyDatabase.getEnemy(val["resourceName"]).duplicate()
+		#retVal.resourceName = val["resourceName"]
+		#for index in range(0,val["drops"].size()) :
+			#retVal.drops.append(EquipmentDatabase.getEquipment(val["drops"][index]))
+			#retVal.dropChances.append(val["dropChances"][index])
+		#return retVal

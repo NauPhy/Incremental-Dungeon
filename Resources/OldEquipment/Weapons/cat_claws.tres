@@ -16,6 +16,7 @@ isFire = false
 isIce = false
 isEarth = false
 isWater = false
+isSignature = false
 
 [sub_resource type="Resource" id="Resource_18lal"]
 script = ExtResource("1_b1710")

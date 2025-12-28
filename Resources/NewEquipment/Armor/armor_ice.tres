@@ -15,6 +15,7 @@ isFire = false
 isIce = true
 isEarth = false
 isWater = false
+isSignature = false
 
 [sub_resource type="Resource" id="Resource_uxun8"]
 script = ExtResource("2_paksw")

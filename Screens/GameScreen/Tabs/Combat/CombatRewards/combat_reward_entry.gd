@@ -6,9 +6,10 @@ var myText : RichTextLabel = null
 #const theme1 = preload("res://Graphic Elements/Themes/mainTab.tres")
 const theme2 = preload("res://Graphic Elements/Themes/subTab.tres")
 
-func initialise(equipmentName : String) :
-	var newItem = SceneLoader.createEquipmentScene(equipmentName)
+func initialise(item : Equipment) :
+	var newItem = SceneLoader.createEquipmentScene(item.getItemName())
 	add_child(newItem)
+	newItem.core = item
 	myItemScene = newItem
 	newItem.name = "equip"
 	var newText : RichTextLabel = $SampleTextLabel.duplicate()

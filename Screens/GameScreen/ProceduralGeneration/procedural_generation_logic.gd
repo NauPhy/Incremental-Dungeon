@@ -13,9 +13,9 @@ func createMap() -> MapData :
 
 
 ## moderately inefficent
-func generateDrops(enemies : Array[ActorPreset], mapData : MapData) -> Array[Equipment]:
+func generateDrops(enemies : Array[ActorPreset], environment : MyEnvironment) -> Array[Equipment]:
 	var retVal : Array[Equipment] = []
-	$ItemPoolHandler.reset(MegaFile.getEnvironment(mapData.environmentName), getAllItems())
+	$ItemPoolHandler.reset(environment, getAllItems())
 	for enemy in enemies :
 		$DropHandler.reset($ItemPoolHandler.getItemPoolForEnemy(enemy))
 		retVal.append_array($DropHandler.createDropsForEnemy(enemy))
@@ -120,9 +120,8 @@ func createSideEncounter() -> Encounter :
 			retVal.enemies.append(createNormal())
 	elif (randi_range(0,9) == 0) :
 		var enemy = createNormal()
-		enemy.getResourceName()
 		for index in range(0,5) :
-			retVal.enemies.append(enemy.duplicate())
+			retVal.enemies.append(enemy.getAdjustedCopy(enemy.myScalingFactor))
 	else :
 		for index in range(0, randi_range(2,3)) :
 			retVal.enemies.append(createNormal())

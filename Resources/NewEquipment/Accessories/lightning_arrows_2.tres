@@ -15,6 +15,7 @@ isFire = false
 isIce = false
 isEarth = false
 isWater = false
+isSignature = false
 
 [sub_resource type="Resource" id="Resource_1nkak"]
 script = ExtResource("2_dn8c6")

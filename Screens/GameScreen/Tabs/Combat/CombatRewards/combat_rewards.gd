@@ -21,7 +21,7 @@ func initialise(rewards : Array[Equipment]) :
 				return
 		var entry = entryLoader.instantiate()
 		$Content/InventoryPanel/VBoxContainer.add_child(entry)
-		entry.initialise(rewards[index].resource_path.get_file().get_basename())
+		entry.initialise(rewards[index])
 		if (entry.getItemSceneRef().getType() == Definitions.equipmentTypeEnum.currency) :
 			entry.setCount(1)
 		entry.connect("wasSelected", _on_entry_selected)

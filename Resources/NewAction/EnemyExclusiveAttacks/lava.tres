@@ -5,8 +5,8 @@
 [resource]
 script = ExtResource("1_u22mg")
 type = 1
-power = 0.0
+power = 3.3
 text = "Lava Spray"
 mode = 0
-warmup = 1.0
+warmup = 7.0
 metadata/_custom_type_script = "uid://6o4dw2binuis"

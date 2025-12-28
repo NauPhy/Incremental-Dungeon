@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="ActorPreset" load_steps=7 format=3 uid="uid://dufytc4wnyes"]
+[gd_resource type="Resource" script_class="ActorPreset" load_steps=8 format=3 uid="uid://dufytc4wnyes"]
 
 [ext_resource type="Script" uid="uid://7vyskwb74kdn" path="res://Resources/OldAction/action.gd" id="1_quclm"]
 [ext_resource type="Script" uid="uid://dacb4xi1aop5r" path="res://Resources/OldEquipment/equipment.gd" id="2_1u5cc"]
+[ext_resource type="Resource" uid="uid://pkooj6p7km1a" path="res://Resources/NewAction/EnemyExclusiveAttacks/breath_water.tres" id="2_uyinh"]
 [ext_resource type="Script" uid="uid://buo4wm4u476wh" path="res://Resources/OldActor/enemy_grouping.gd" id="3_uyinh"]
 [ext_resource type="Texture2D" uid="uid://d0qqwol870yl" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/dragons/storm_dragon_new.png" id="4_1u5cc"]
 [ext_resource type="Script" uid="uid://ddpkx6a4ixuw2" path="res://Resources/OldActor/actor_preset.gd" id="4_ofcuy"]
@@ -29,7 +30,7 @@ AR = -1.0
 DR = -1.0
 PHYSDEF = -1.0
 MAGDEF = -1.0
-actions = Array[ExtResource("1_quclm")]([])
+actions = Array[ExtResource("1_quclm")]([ExtResource("2_uyinh")])
 drops = Array[ExtResource("2_1u5cc")]([])
 dropChances = Array[float]([])
 enemyGroups = SubResource("Resource_5r5te")

@@ -42,7 +42,7 @@ func _on_level_chosen(emitter, encounter) -> void:
 	for elem in friendlyParty :
 		copy.append(elem.duplicate())
 	$CombatPanel.resetCombat(copy, encounter.enemies)
-	hideMap()
+	hideMapAndUI()
 	$CombatPanel.visible = true
 	
 signal tutorialRequested
@@ -57,7 +57,13 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 		await($NarrativePanel.continueSignal)
 		$NarrativePanel.visible = false	
 	var magicFind = await getMagicFind()
-	await handleCombatRewards(currentRoom.getEncounterRef().getRewards(magicFind))		
+	var rewards
+	## New
+	if (currentFloor.has_method("getEnvironment")) :
+		rewards = $ProceduralGenerationLogic.generateDrops(currentRoom.getEncounterRef().enemies, currentFloor.getEnvironment())
+	else :
+		rewards = currentRoom.getEncounterRef().getRewards(magicFind)
+	await handleCombatRewards(rewards)		
 	currentFloor.completeRoom(currentRoom)
 	if (automaticReset) :
 		friendlyParty[0] = await getPlayerCore()
@@ -68,7 +74,8 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 	else :
 		currentRoom = null
 		$CombatPanel.visible = false
-		showMap()
+		if (!narrativeWorking) :
+			showMapAndUI()
 
 var waitingForMagicFind : bool = false
 signal magicFindDone
@@ -93,10 +100,7 @@ func _on_combat_panel_retreat() -> void:
 	interruptDefeatCoroutine()
 	currentFloor.onCombatRetreat(currentRoom)
 	currentRoom = null
-	showMap()
-	
-func _on_map_container_visibility_changed() -> void:
-	$FloorDisplay.visible = $MapContainer.visible
+	showMapAndUI()
 	
 signal playerClassRequested
 func _on_player_class_requested(emitter) :
@@ -141,7 +145,7 @@ func launchNarrative(title : String, myText : String, buttonText : String, waitT
 	
 func _on_narrative_panel_complete() :
 	$NarrativePanel.visible = false
-	enableUI()
+	showMapAndUI()
 	narrativeWorking = false
 
 const mapLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/Map_Runtime/combat_map_template_runtime.tscn")
@@ -180,12 +184,12 @@ signal shopRequested
 func _on_shop_requested(details) :
 	emit_signal("shopRequested", details)
 	
-func hideMap() :
-	#currentFloor.visible = false
-	$MapContainer.visible = false
-func showMap() :
-	#currentFloor.visible = true
+func showMapAndUI() :
 	$MapContainer.visible = true
+	enableUI()
+func hideMapAndUI() :
+	$MapContainer.visible = false
+	disableUI()
 func disableUI() :
 	currentFloor.disableUI()
 	$FloorDisplay.visible = false

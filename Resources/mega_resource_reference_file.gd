@@ -76,6 +76,7 @@ const NewAction_AttacksDictionary = {
 	"sling" : preload("res://Resources/NewAction/Attacks/sling.tres"),
 	"spear_1h" : preload("res://Resources/NewAction/Attacks/spear_1h.tres"),
 	"spear_2h" : preload("res://Resources/NewAction/Attacks/spear_2h.tres"),
+	"spear_darkness" : preload("res://Resources/NewAction/Attacks/spear_darkness.tres"),
 	"split_man" : preload("res://Resources/NewAction/Attacks/split_man.tres"),
 	"thresh" : preload("res://Resources/NewAction/Attacks/thresh.tres"),
 	"throw_axe" : preload("res://Resources/NewAction/Attacks/throw_axe.tres"),
@@ -363,9 +364,56 @@ func getAllNewActor() -> Array :
 	return retVal
 
 ################################################################################
+const NewEquipment_AccessoriesDictionary = {
+	"apple" : preload("res://Resources/NewEquipment/Accessories/apple.tres"),
+	"bread" : preload("res://Resources/NewEquipment/Accessories/bread.tres"),
+	"coating_divine" : preload("res://Resources/NewEquipment/Accessories/coating_divine.tres"),
+	"coating_earth_1" : preload("res://Resources/NewEquipment/Accessories/coating_earth_1.tres"),
+	"coating_earth_2" : preload("res://Resources/NewEquipment/Accessories/coating_earth_2.tres"),
+	"coating_fire_1" : preload("res://Resources/NewEquipment/Accessories/coating_fire_1.tres"),
+	"coating_fire_2" : preload("res://Resources/NewEquipment/Accessories/coating_fire_2.tres"),
+	"coating_ice_1" : preload("res://Resources/NewEquipment/Accessories/coating_ice_1.tres"),
+	"coating_ice_2" : preload("res://Resources/NewEquipment/Accessories/coating_ice_2.tres"),
+	"coating_water_1" : preload("res://Resources/NewEquipment/Accessories/coating_water_1.tres"),
+	"coating_water_2" : preload("res://Resources/NewEquipment/Accessories/coating_water_2.tres"),
+	"feathered_hat" : preload("res://Resources/NewEquipment/Accessories/feathered_hat.tres"),
+	"guantlets_cyclops_strength" : preload("res://Resources/NewEquipment/Accessories/guantlets_cyclops_strength.tres"),
+	"lich_crown" : preload("res://Resources/NewEquipment/Accessories/lich_crown.tres"),
+	"lightning_arrows_1" : preload("res://Resources/NewEquipment/Accessories/lightning_arrows_1.tres"),
+	"lightning_arrows_2" : preload("res://Resources/NewEquipment/Accessories/lightning_arrows_2.tres"),
+	"mage_hat" : preload("res://Resources/NewEquipment/Accessories/mage_hat.tres"),
+	"mandrake_root_new" : preload("res://Resources/NewEquipment/Accessories/mandrake_root_new.tres"),
+	"pizza" : preload("res://Resources/NewEquipment/Accessories/pizza.tres"),
+	"rampart_agony" : preload("res://Resources/NewEquipment/Accessories/rampart_agony.tres"),
+	"ring_authority" : preload("res://Resources/NewEquipment/Accessories/ring_authority.tres"),
+	"ring_malice" : preload("res://Resources/NewEquipment/Accessories/ring_malice.tres"),
+	"rune_advanced_automation" : preload("res://Resources/NewEquipment/Accessories/rune_advanced_automation.tres"),
+	"shield_1" : preload("res://Resources/NewEquipment/Accessories/shield_1.tres"),
+	"shield_2" : preload("res://Resources/NewEquipment/Accessories/shield_2.tres"),
+	"shield_3" : preload("res://Resources/NewEquipment/Accessories/shield_3.tres"),
+	"shield_4" : preload("res://Resources/NewEquipment/Accessories/shield_4.tres"),
+	"shield_5" : preload("res://Resources/NewEquipment/Accessories/shield_5.tres"),
+	"tome_death_1" : preload("res://Resources/NewEquipment/Accessories/tome_death_1.tres"),
+	"tome_death_2" : preload("res://Resources/NewEquipment/Accessories/tome_death_2.tres"),
+	"tome_earth_1" : preload("res://Resources/NewEquipment/Accessories/tome_earth_1.tres"),
+	"tome_earth_2" : preload("res://Resources/NewEquipment/Accessories/tome_earth_2.tres"),
+	"tome_fire_1" : preload("res://Resources/NewEquipment/Accessories/tome_fire_1.tres"),
+	"tome_fire_2" : preload("res://Resources/NewEquipment/Accessories/tome_fire_2.tres"),
+	"tome_ice_1" : preload("res://Resources/NewEquipment/Accessories/tome_ice_1.tres"),
+	"tome_ice_2" : preload("res://Resources/NewEquipment/Accessories/tome_ice_2.tres"),
+	"tome_water_1" : preload("res://Resources/NewEquipment/Accessories/tome_water_1.tres"),
+	"tome_water_2" : preload("res://Resources/NewEquipment/Accessories/tome_water_2.tres"),
+	"warrior_helm" : preload("res://Resources/NewEquipment/Accessories/warrior_helm.tres")}
+
+
+func getNewEquipment_Accessories(resourceName : String) :
+	return NewEquipment_AccessoriesDictionary.get(resourceName)
+
 const NewEquipment_ArmorDictionary = {
 	"armor_blades" : preload("res://Resources/NewEquipment/Armor/armor_blades.tres"),
+	"armor_cephalopod" : preload("res://Resources/NewEquipment/Armor/armor_cephalopod.tres"),
 	"armor_crab" : preload("res://Resources/NewEquipment/Armor/armor_crab.tres"),
+	"armor_dragonscale" : preload("res://Resources/NewEquipment/Armor/armor_dragonscale.tres"),
 	"armor_earth" : preload("res://Resources/NewEquipment/Armor/armor_earth.tres"),
 	"armor_fire" : preload("res://Resources/NewEquipment/Armor/armor_fire.tres"),
 	"armor_ice" : preload("res://Resources/NewEquipment/Armor/armor_ice.tres"),
@@ -376,7 +424,6 @@ const NewEquipment_ArmorDictionary = {
 	"armor_water" : preload("res://Resources/NewEquipment/Armor/armor_water.tres"),
 	"chainmail" : preload("res://Resources/NewEquipment/Armor/chainmail.tres"),
 	"dragonbone_plate" : preload("res://Resources/NewEquipment/Armor/dragonbone_plate.tres"),
-	"dragonscale_armor" : preload("res://Resources/NewEquipment/Armor/dragonscale_armor.tres"),
 	"enchanted_robes_new" : preload("res://Resources/NewEquipment/Armor/enchanted_robes_new.tres"),
 	"fur_cloak" : preload("res://Resources/NewEquipment/Armor/fur_cloak.tres"),
 	"hellforged_plate" : preload("res://Resources/NewEquipment/Armor/hellforged_plate.tres"),
@@ -393,6 +440,7 @@ func getNewEquipment_Armor(resourceName : String) :
 
 const NewEquipment_WeaponsDictionary = {
 	"adamantium_greataxe" : preload("res://Resources/NewEquipment/Weapons/adamantium_greataxe.tres"),
+	"amelia_wand" : preload("res://Resources/NewEquipment/Weapons/amelia_wand.tres"),
 	"arming_sword" : preload("res://Resources/NewEquipment/Weapons/arming_sword.tres"),
 	"bardiche" : preload("res://Resources/NewEquipment/Weapons/bardiche.tres"),
 	"blade_of_darkness" : preload("res://Resources/NewEquipment/Weapons/blade_of_darkness.tres"),
@@ -472,6 +520,8 @@ func getNewEquipment_Weapons(resourceName : String) :
 	return NewEquipment_WeaponsDictionary.get(resourceName)
 
 func getNewEquipment(resourceName : String) :
+	if (NewEquipment_AccessoriesDictionary.has(resourceName)) :
+		return NewEquipment_AccessoriesDictionary[resourceName]
 	if (NewEquipment_ArmorDictionary.has(resourceName)) :
 		return NewEquipment_ArmorDictionary[resourceName]
 	if (NewEquipment_WeaponsDictionary.has(resourceName)) :
@@ -479,6 +529,8 @@ func getNewEquipment(resourceName : String) :
 	return null
 
 func getNewEquipmentDictionary(type : String) :
+	if type == "NewEquipment_Accessories" : 
+		return NewEquipment_AccessoriesDictionary
 	if type == "NewEquipment_Armor" : 
 		return NewEquipment_ArmorDictionary
 	if type == "NewEquipment_Weapons" : 
@@ -486,6 +538,7 @@ func getNewEquipmentDictionary(type : String) :
 
 func getAllNewEquipment() -> Array :
 	var retVal : Array = []
+	retVal.append_array(NewEquipment_AccessoriesDictionary.values())
 	retVal.append_array(NewEquipment_ArmorDictionary.values())
 	retVal.append_array(NewEquipment_WeaponsDictionary.values())
 	return retVal

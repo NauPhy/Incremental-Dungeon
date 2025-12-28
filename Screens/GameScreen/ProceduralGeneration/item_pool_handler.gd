@@ -33,20 +33,44 @@ func filterItemPool_env() :
 func filterWorkingPool_enemy(preEnemy : ActorPreset) :
 	workingPool = itemPool.duplicate()
 	var enemy = preEnemy.enemyGroups
+	## Dragon ignores all tags
+	if (enemy.equipmentLevel == EnemyGroups.enemyTechEnum.dragon) :
+		return
 	var index = 0
 	while (index < workingPool.size()) :
 		var remove : bool = false
 		var preItem = workingPool[index]
-		var item = workingPool[index].equipmentGroups
-		if (preItem is Armor) :
-			remove = remove || (enemy.droppedArmorClasses.find(item.armorClass) == -1)
-		if (preItem is Weapon) :
-			remove = remove || (enemy.droppedWeaponClasses.find(item.weaponClass) == -1)
-		## All enemies can drop natural and crude accessories
-		if (preItem is Accessory) && (item.technology == EquipmentGroups.technologyEnum.natural || item.technology == EquipmentGroups.technologyEnum.crude) :
+		var item : EquipmentGroups = workingPool[index].equipmentGroups
+		##Technology Tags
+		if (item.technology == EquipmentGroups.technologyEnum.perennial) :
 			pass
+		elif (item.technology == EquipmentGroups.technologyEnum.natural) :
+			remove = remove || !(enemy.equipmentLevel == EnemyGroups.enemyTechEnum.none || enemy.equipmentLevel == EnemyGroups.enemyTechEnum.poor)
+		elif (item.technology == EquipmentGroups.technologyEnum.crude) :
+			remove = remove || !(enemy.equipmentLevel == EnemyGroups.enemyTechEnum.poor)
+		elif (item.technology == EquipmentGroups.technologyEnum.advanced) :
+			remove = remove || !(enemy.equipmentLevel == EnemyGroups.enemyTechEnum.well)
+		elif (item.technology == EquipmentGroups.technologyEnum.superior) :
+			remove = remove || !(enemy.equipmentLevel == EnemyGroups.enemyTechEnum.well || enemy.equipmentLevel == EnemyGroups.enemyTechEnum.elite)
 		else :
-			remove = remove || (enemy.droppedTechnologyClasses.find(item.technology) == -1)
+			return
+		## Offensive (Weapon) tags
+		if (preItem is Weapon) :
+			remove = remove || (item.weaponClass == EquipmentGroups.weaponClassEnum.melee && enemy.enemyRange == EnemyGroups.enemyRangeEnum.ranged)
+			remove = remove || (item.weaponClass == EquipmentGroups.weaponClassEnum.ranged && enemy.enemyRange == EnemyGroups.enemyRangeEnum.melee)
+		## Defensive (Armor) tags
+		if (preItem is Armor) :
+			if (item.armorClass == EquipmentGroups.armorClassEnum.light) :
+				remove = remove || !(enemy.enemyArmor == EnemyGroups.enemyArmorEnum.magical || enemy.enemyArmor == EnemyGroups.enemyArmorEnum.resistant)
+			elif (item.armorClass == EquipmentGroups.armorClassEnum.medium) :
+				remove = remove || !(enemy.enemyArmor == EnemyGroups.enemyArmorEnum.resistant || enemy.enemyArmor == EnemyGroups.enemyArmorEnum.hardened)
+			elif (item.armorClass == EquipmentGroups.armorClassEnum.heavy) :
+				remove = remove || !(enemy.enemyArmor == EnemyGroups.enemyArmorEnum.hardened || enemy.enemyArmor == EnemyGroups.enemyArmorEnum.ironclad)
+			else :
+				return
+		## To catch mistakes I make in the editor....
+		if (item.isSignature) :
+			remove = true
 		if (remove) :
 			workingPool.remove_at(index)
 		else :

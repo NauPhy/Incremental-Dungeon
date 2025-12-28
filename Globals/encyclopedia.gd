@@ -221,7 +221,69 @@ const keywords : Array[String] = [
 	"Scaling",
 	"Strength",
 	"Weapon",
-		]
+	
+	"Physical Damage Dealt",
+	"Magic Damage Dealt",
+	"Physical Conversion",
+	"Magic Conversion",
+	"Physical Damage Taken",
+	"Magic Damage Taken",
+	
+	"Tag",
+	"Equipment tag",
+	"Enemy tag",
+	
+	"Signature",
+	"Boss",
+	"Veteran",
+	
+	"Perennial",
+	"Natural",
+	"Crude",
+	"Advanced",
+	"Superior",
+	"Dragon's Hoard",
+	
+	"Melee",
+	"Ranged",
+	
+	"Anti-Magic",
+	"Balanced",
+	"Anti-Physical",
+	
+	"Magical",
+	"Resistant",
+	"Hardened",
+	"Ironclad",
+	
+	"Unequipped",
+	"Poorly Equipped",
+	"Well Equipped",
+	"Elite",
+	
+	"Vanguard",
+	"Backline",
+	
+	"Element",
+	"Fire",
+	"Earth",
+	"Water",
+	"Ice",
+	
+	"Faction",
+	"Demonic Civilian",
+	"Demonic Military",
+	"Naturekin",
+	"Flamekin",
+	"Greenskin",
+	"Frostkin",
+	"Merfolk",
+	"Wanderkin",
+	"Undead",
+	"Nautikin",
+	
+	"Biome"
+	]
 const keyword_alternates : Dictionary = {
 	"Dexterity" : "DEX",
 	"Durability" : "DUR",
@@ -232,7 +294,12 @@ const keyword_alternates : Dictionary = {
 	"Attack Rating" : "AR",
 	"Damage Rating" : "DR",
 	"Physical Defense" : "PHYSDEF",
-	"Magic Defense" : "MAGDEF"
+	"Magic Defense" : "MAGDEF",
+	"Physical Damage Dealt" : "PDD",
+	"Physical Damage Taken" : "PDT",
+	"Magic Damage Dealt" : "MDD",
+	"Magic Damage Taken" : "MDT",
+	"Miku Miku Dance" : "MMD",
 }
 
 var descriptions : Dictionary = {
@@ -296,7 +363,72 @@ var descriptions : Dictionary = {
 	
 	"Inventory Behaviour" : "Determines whether \"Always Take\" will wait or discard when the inventory is full.",
 	
-	"Scaling" : "Weapons provide a Prebonus to DR based on the Player's Attributes and their Weapon's Scaling for those respective Attributes. Scaling ranges between E and S, with S being the highest. Hover over the letter in game to see the decimal scaling value."
+	"Scaling" : "Weapons provide a Prebonus to DR based on the Player's Attributes and their Weapon's Scaling for those respective Attributes. Scaling ranges between E and S, with S being the highest. Hover over the letter in game to see the decimal scaling value.",
+	
+	################################################################
+	## Tags
+	"Tag" : "Tags determine what equipment an enemy can drop. Both equipment and enemies have Tags, and either can disqualify an item from dropping. See Equipment tags and Enemy tags.",
+	"Equipment tag" : "The 5 technology Equipment tags are Perennial, Natural, Crude, Advanced, and Superior.\n\nThe 2 offensive (Weapon) Equipment tags are Melee and Ranged.\n\nThe 3 defensive (Armor) Equipment tags are Anti-Magic, Balanced, and Anti-Physical.\n\nItems may also have the standalone Signature Tag.",
+	"Enemy tag" : "The 4 technology Enemy tags are Unequipped, Poorly Equipped, Well Equipped, and Elite.\n\nThe 2 offensive (Weapon) Enemy tags are Vanguard and Backline.\n\nThe 4 defensive (Armor) Enemy tags are Magical, Resistant, Hardened, and Ironclad.\n\nEnemies may also have the standalone Boss or Veteran Tags.",
+
+	"Perennial" : "This equipment can only be dropped by enemies with the Unequipped, Poorly Equipped, Well Equipped, or Elite Tags.",
+	"Natural" : "This equipment can only be dropped by enemies with the Unequipped or Poorly Equipped Tags.",
+	"Crude" : "This equipment can only be dropped by enemies with the Poorly Equipped Tag.",
+	"Advanced" : "This equipment can only be dropped by enemies with the Well Equipped Tag.",
+	"Superior" : "This equipment can only be dropped by enemies with the Well Equipped or Elite Tags.",
+	
+	"Unequipped" : "This enemy can only drop equipment with the Perennial or Natural Tags.",
+	"Poorly Equipped" : "This enemy can only drop equipment with the Perennial, Natural, or Crude Tags.",
+	"Well Equipped" : "This enemy can only drop equipment with the Perennial, Advanced, or Superior Tags.",
+	"Elite" : "This enemy can only drop equipment with the Perennial or Superior Tags.",
+	"Dragon's Hoard" : "Dragons can drop anything! Ignore all equipment Tags! The Biome still applies though (let's be reasonable here)",
+	
+	"Melee" : "This Weapon cannot be dropped by enemies with the Backline Tag.",
+	"Ranged" : "This Weapon cannot be dropped by enemies with the Vanguard Tag.",
+	
+	"Vanguard" : "This enemy cannot drop Weapons with the Ranged Tag.",
+	"Backline" : "This enemy cannot drop Weapons with the Melee Tag.",
+	
+	"Anti-Magic" : "This Armor provides high Magic Defense and can only drop from enemies with the Magical or Resistant tags.",
+	"Balanced" : "This Armor provides balanced Magic Defense and Physical Defense and can only drop from enemies with the Resistant or Hardened tags.",
+	"Anti-Physical" : "This Armor provides high Physical Defense and can only drop from enemies with the Hardened or Ironclad tags.",
+	
+	"Magical" : "This enemy has high Magic Defense and can only drop Armor with the Anti-Magic Tag.",
+	"Resistant" : "This enemy has fairly high Magic Defense and can only drop Armor with the Anti-Magic or Balanced Tags.",
+	"Hardened" : "This enemy has fairly high Physical Defense and can only drop Armor with the Anti-Physical or Balanced Tags.",
+	"Ironclad" : "This enemy has high Physical Defense and can only drop Armor with the Anti-Physical Tag.",
+	
+	"Element" : "Some equipment has a particular Element. Elemental equipment can only be dropped in certain biomes (displayed on the top right corner of the Combat Map), but can provide powerful synergies:\n\nWhen the Element of your Weapon and Accessory match, you gain a x1.25 premultiplier to DR.\n\nWhen the Element of your Armor and Accessory match, you gain a x1.25 premultiplier to PHYSDEF and MAGDEF.\n\nThe 4 Elements are Fire, Water, Earth, and Ice.",
+	"Fire" : "Fire is the Element of destruction.",
+	"Ice" : "Ice is the Element of unchange.",
+	"Water" : "Water is the Element of change.",
+	"Earth" : "Earth is the Element of creation.",
+	
+	"Signature" : "This equipment is a Boss' signature drop!",
+	"Boss" : "This enemy is the boss of its floor. It drops 42% more items on average and has a powerful signature drop!",
+	"Veteran" : "This enemy is pretty strong, but drops 27% more items on average.",
+	
+	"Faction" : "Each enemy belongs to a single Faction. A given biome will only contain enemies of permitted factions, displayed on the top right corner of the Combat Map. The 10 Factions are: Flamekin, Frostkin, Naturekin, Nautikin, Demonic Civilian, Demonic Military, Greenskin, Merfolk, Undead, and Wanderkin.",
+	"Demonic Civilian" : "The Demonic Civilian Faction includes Demons too weak, dumb, or unruly to be drafted into the Demonic Military.",
+	"Demonic Military" : "The Demonic Military Faction consists of cannon fodder, elite shock troops, commanders, war machines, and the Demon King.",
+	"Naturekin" : "The Naturekin Faction includes magical beings aligned with earth.",
+	"Flamekin" : "The Flamekin Faction includes magical beings aligned with fire.",
+	"Frostkin" : "The Frostkin Faction includes magical beings aligned with ice.",
+	"Nautikin" : "The Nautikin Faction includes magical beings aligned with water.",
+	"Greenskin" : "The Greenskin Faction includes monstrous surface dwelling humanoids, such as orcs and goblins.",
+	"Wanderkin" : "The Wanderkin Faction includes hermits, travelers, and malfunctioning automotons that go where they please and have allegiance to no one but themselves.",
+	"Undead" : "The Undead Faction includes those that practice necromancy and their creations.",
+	"Merfolk" : "The Merfolk Faction are a proud and powerful race, unbothered by the affairs of surface or underworld dwellers.",
+	
+	"Biome" : "Each floor is generated with a specific Biome. The Biome determines what Elements are eligible to drop and what Factions are eligible to appear. The Biome and its effects can be seen in the top right of the Combat Map.",
+	##################################################################
+	"Physical Damage Dealt" : "Physical Damage Dealt/PDD, applies before Physical Conversion.",
+	"Magic Damage Dealt" : "Magic Damage Dealt/MDD, applies before Magic Conversion.",
+	"Physical Damage Taken" : "Physical Damage Taken, aka PDT",
+	"Magic Damage Taken" : "Magic Damage Taken, aka MDT",
+	"Physical Conversion" : "Applies a portion of physical damage to the enemy's MAGDEF instead of their PHYSDEF.",
+	"Magic Conversion" : "Applies a portion of magic damage to the enemy's PHYSDEF instead of their MAGDEF.",
+	"Miku Miku Dance" : "henlo"
 }
 #func getEncyclopediaEntries() -> Dictionary :
 	#var tempDict : Dictionary = {}

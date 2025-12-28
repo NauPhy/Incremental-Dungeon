@@ -1,0 +1,141 @@
+[gd_scene load_steps=5 format=3 uid="uid://b4ftsw81xc7mm"]
+
+[ext_resource type="Script" uid="uid://ipkh847k1y58" path="res://Graphic Elements/tag_container_enemy.gd" id="1_j35p2"]
+[ext_resource type="PackedScene" uid="uid://cb0xb20pk0mpa" path="res://Images/SpriteSheets/sprite.tscn" id="2_1prmm"]
+[ext_resource type="Texture2D" uid="uid://p6gc2wxqol5o" path="res://Images/Sprites/MeleeWeapons.png" id="3_qt54e"]
+[ext_resource type="Texture2D" uid="uid://bjecslpr0nqg" path="res://Images/CC0 Assets/iron-weapons.png" id="4_7nk85"]
+
+[node name="TagContainerEnemy" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_j35p2")
+
+[node name="Technology" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Unequipped" parent="Technology" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Technology/Unequipped" index="0"]
+texture = ExtResource("3_qt54e")
+region_rect = Rect2(0, 0, 16, 16)
+
+[node name="Poorly Equipped" parent="Technology" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Technology/Poorly Equipped" index="0"]
+texture = ExtResource("4_7nk85")
+region_rect = Rect2(16, 0, 16, 16)
+
+[node name="Well Equipped" parent="Technology" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Technology/Well Equipped" index="0"]
+texture = ExtResource("4_7nk85")
+region_rect = Rect2(32, 0, 16, 16)
+
+[node name="Elite" parent="Technology" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Technology/Elite" index="0"]
+texture = ExtResource("4_7nk85")
+region_rect = Rect2(48, 0, 16, 16)
+
+[node name="Dragon\'s Hoard" parent="Technology" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Technology/Dragon\'s Hoard" index="0"]
+texture = ExtResource("4_7nk85")
+region_rect = Rect2(64, 0, 16, 16)
+
+[node name="Offense" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Vanguard" parent="Offense" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Offense/Vanguard" index="0"]
+texture = ExtResource("3_qt54e")
+region_rect = Rect2(0, 0, 16, 16)
+
+[node name="Backline" parent="Offense" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Offense/Backline" index="0"]
+texture = ExtResource("4_7nk85")
+region_rect = Rect2(32, 0, 16, 16)
+
+[node name="Defense" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Magical" parent="Defense" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Defense/Magical" index="0"]
+texture = ExtResource("3_qt54e")
+region_rect = Rect2(0, 0, 16, 16)
+
+[node name="Resistant" parent="Defense" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Defense/Resistant" index="0"]
+texture = ExtResource("4_7nk85")
+region_rect = Rect2(32, 0, 16, 16)
+
+[node name="Hardened" parent="Defense" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Defense/Hardened" index="0"]
+texture = ExtResource("4_7nk85")
+region_rect = Rect2(48, 0, 16, 16)
+
+[node name="Ironclad" parent="Defense" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Defense/Ironclad" index="0"]
+texture = ExtResource("4_7nk85")
+region_rect = Rect2(64, 0, 16, 16)
+
+[node name="Signature" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Veteran" parent="Signature" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Signature/Veteran" index="0"]
+texture = ExtResource("3_qt54e")
+region_rect = Rect2(16, 0, 16, 16)
+
+[node name="Boss" parent="Signature" instance=ExtResource("2_1prmm")]
+visible = false
+layout_mode = 2
+
+[node name="Icon" parent="Signature/Boss" index="0"]
+texture = ExtResource("3_qt54e")
+region_rect = Rect2(0, 0, 16, 16)
+
+[editable path="Technology/Unequipped"]
+[editable path="Technology/Poorly Equipped"]
+[editable path="Technology/Well Equipped"]
+[editable path="Technology/Elite"]
+[editable path="Technology/Dragon\'s Hoard"]
+[editable path="Offense/Vanguard"]
+[editable path="Offense/Backline"]
+[editable path="Defense/Magical"]
+[editable path="Defense/Resistant"]
+[editable path="Defense/Hardened"]
+[editable path="Defense/Ironclad"]
+[editable path="Signature/Veteran"]
+[editable path="Signature/Boss"]

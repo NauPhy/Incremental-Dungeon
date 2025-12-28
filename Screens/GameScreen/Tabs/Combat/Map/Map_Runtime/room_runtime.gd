@@ -135,16 +135,16 @@ func onLoad(loadDict) :
 	visited = loadDict["visited"]
 	completed = loadDict["completed"]
 	setVisibility(loadDict["visibility"])
-	var enemies = $VBoxContainer.get_children()
-	for index in range(0, enemies.size()) :
-		enemies[index].onLoad(loadDict["enemies"][index])
+	#var enemies = $VBoxContainer.get_children()
+	#for index in range(0, enemies.size()) :
+		#enemies[index].onLoad(loadDict["enemies"][index])
 
 func getSaveDictionary() :
 	var tempDict : Dictionary = {}
 	tempDict["visited"] = visited
 	tempDict["completed"] = completed
 	tempDict["visibility"] = currentVisibility
-	tempDict["enemies"] = []
-	for enemy in $VBoxContainer.get_children() :
-		tempDict["enemies"].append(enemy.getSaveDictionary())
+	#tempDict["enemies"] = []
+	#for enemy in $VBoxContainer.get_children() :
+		#tempDict["enemies"].append(enemy.getSaveDictionary())
 	return tempDict

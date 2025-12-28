@@ -15,8 +15,9 @@ func getItemName() :
 		resourceName = resource_path.get_file().get_basename()
 	return resourceName
 func getAdjustedCopy(scalingFactor : float) -> Equipment :
-	getItemName()
-	return self.duplicate()
+	var retVal = self.duplicate()
+	retVal.resourceName = getItemName()
+	return retVal
 
 func reset() :
 	myPacket = ModifierPacket.new()
