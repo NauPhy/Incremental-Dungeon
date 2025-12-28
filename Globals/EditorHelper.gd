@@ -2,7 +2,7 @@
 extends EditorScript
 
 func _run() :
-	performOnNewEquipmentFiles(func(a):a.resetOtherModsIfWrong)
+	performOnNewEquipmentFiles(func(a):a.resetOtherModsIfWrong())
 	
 func resetAllEquipmentFiles() :
 	performOnEquipmentFiles(func(a):a.reset())
@@ -38,7 +38,7 @@ func performOnEquipmentFiles(toCall : Callable) :
 			filename = dir.get_next()
 			
 func performOnNewEquipmentFiles(toCall : Callable) :
-	performOnResourcesInFolderRecursive("res://Resources/NewEquipment", toCall)
+	performOnResourcesInFolderRecursive("res://Resources/NewEquipment/", toCall)
 			
 func performOnWeaponFiles(toCall : Callable) :
 	var path = Definitions.equipmentPaths[Definitions.equipmentTypeEnum.weapon]
@@ -56,15 +56,18 @@ func performOnResourcesInFolderRecursive(directory : String, toCall : Callable) 
 	var directories = dir.get_directories()
 	var currentIndex = 0
 	while (currentIndex < directories.size()) :
-		performOnResourcesInFolderRecursive(directories[currentIndex], toCall)
+		print ("Entering directory: " + directories[currentIndex])
+		performOnResourcesInFolderRecursive(directory + "/" + directories[currentIndex], toCall)
 		currentIndex += 1
 	var files = dir.get_files()
 	currentIndex = 0
-	while (currentIndex < directories.size()) :
+	while (currentIndex < files.size()) :
 		if (files[currentIndex].get_extension() == "tres") :
+			print("Running on: " + files[currentIndex])
 			var temp : Resource = load(dir.get_current_dir().path_join(files[currentIndex]))
 			toCall.call(temp)
 			ResourceSaver.save(temp, dir.get_current_dir().path_join(files[currentIndex]))
+		currentIndex += 1
 		
 #func syncClassFiles() :
 	#for key in Definitions.equipmentTypeDictionary.keys() :
