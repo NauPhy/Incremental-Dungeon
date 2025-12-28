@@ -8,13 +8,13 @@ func hasScrollContainer() :
 
 func setTitle(newTitle) :
 	if (hasScrollContainer()) :
-		$Panel/CenterContainer/Window/ScrollContainer/VBoxContainer/Title.text = newTitle
+		$Panel/CenterContainer/Window/ScrollContainer/PanelContainer/VBoxContainer/Title.text = newTitle
 	else :
 		$Panel/CenterContainer/Window/VBoxContainer/Title.text = newTitle
 	
 func setText(newText) :
 	if (hasScrollContainer()) :
-		$Panel/CenterContainer/Window/ScrollContainer/VBoxContainer/Text.text = newText
+		$Panel/CenterContainer/Window/ScrollContainer/PanelContainer/VBoxContainer/Text.text = newText
 	else :
 		$Panel/CenterContainer/Window/VBoxContainer/Text.text = newText
 	

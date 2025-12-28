@@ -9,4 +9,5 @@ func _ready() :
 
 func initialise(OtherStatRefs : Array[NumberClass]) :
 	for key in Definitions.otherStatDictionary.keys() :
+		var otherStat = $PanelContainer/OtherStatDisplay.get_child(key).get_node("Number")
 		$PanelContainer/OtherStatDisplay.get_child(key).get_node("Number").setNumberReference(OtherStatRefs[key])

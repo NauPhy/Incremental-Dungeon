@@ -68,7 +68,6 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 offset_left = 8.0
-spriteScale = 12
 
 [node name="InventoryPanel" type="Panel" parent="Content"]
 layout_mode = 1

@@ -18,7 +18,7 @@ isEarth = false
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_8mybv"]
+[sub_resource type="Resource" id="Resource_5w8up"]
 script = ExtResource("2_5w8up")
 attributeMods = {
 "Dexterity": {
@@ -85,7 +85,55 @@ statMods = {
 }
 }
 otherMods = {
+"Magic Conversion": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Magic Damage Dealt": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Magic Damage Taken": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
 "Magic Find": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Conversion": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Damage Dealt": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Damage Taken": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Effect": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed": {
 "Postbonus": 0.0,
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
@@ -107,6 +155,6 @@ basicAttack = ExtResource("1_5w8up")
 isUnarmed = false
 title = "Divine Greatmace"
 description = "This fearsome weapon is powered by your faith in your quest and in yourself. Kind of a positive feedback loop, really. Your unease at the implications of that should hopefully keep it in check."
-myPacket = SubResource("Resource_8mybv")
+myPacket = SubResource("Resource_5w8up")
 equipmentGroups = SubResource("Resource_758kf")
 metadata/_custom_type_script = "uid://6qgd3qugycc1"

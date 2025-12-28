@@ -17,7 +17,7 @@ isEarth = true
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_n8bin"]
+[sub_resource type="Resource" id="Resource_x1k8t"]
 script = ExtResource("2_c5tuu")
 attributeMods = {
 "Dexterity": {
@@ -84,7 +84,55 @@ statMods = {
 }
 }
 otherMods = {
+"Magic Conversion": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Magic Damage Dealt": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Magic Damage Taken": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
 "Magic Find": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Conversion": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Damage Dealt": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Damage Taken": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Effect": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed": {
 "Postbonus": 0.0,
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
@@ -98,6 +146,6 @@ PHYSDEF = 0.0
 MAGDEF = 0.0
 title = "Wooden Plate"
 description = "Carved from the wood of a magical tree, this armor provides good protection against magic and small weapons."
-myPacket = SubResource("Resource_n8bin")
+myPacket = SubResource("Resource_x1k8t")
 equipmentGroups = SubResource("Resource_vhshe")
 metadata/_custom_type_script = "uid://bnh3m73ifmphh"

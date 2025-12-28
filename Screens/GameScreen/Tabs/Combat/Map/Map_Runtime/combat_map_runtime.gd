@@ -52,6 +52,9 @@ func _on_resized() -> void:
 	if (fullyInitialised) :
 		initScroll()
 		setFromMapPosRatio()
+signal addChildRequested
+func _on_add_child_requested(emitter, node : Node) :
+	emit_signal("addChildRequested", emitter, node)
 signal mapCompleted
 func completeRoom(completedRoom) :
 	var firstCompletion = !completedRoom.isCompleted()
@@ -213,6 +216,8 @@ func setupRoomConnections() :
 		child.connect("levelChosen", _on_level_chosen)
 		if (child.has_signal("shopRequested")) :
 			child.connect("shopRequested", _on_shop_requested)
+		if (child.has_signal("addChildRequested")) :
+			child.connect("addChildRequested", _on_add_child_requested)
 			
 ## Intended function call pseudocode from parent class
 ## var mapData = createNewMap()

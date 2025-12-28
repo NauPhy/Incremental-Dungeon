@@ -1,22 +1,31 @@
 extends HBoxContainer
 
+func _ready() :
+	setSpriteSizeRecursive(get_children(), 3)
+	
+func setSpriteSizeRecursive(children : Array[Node], val) :
+	for child in children :
+		if (child.has_method("setScale")) :
+			child.setScale(val)
+		setSpriteSizeRecursive(child.get_children(), val)
+
 func setEquipment(item : Equipment) :
 	var stuff = item.equipmentGroups
 	var tech = $Technology.get_children()
 	for index in range(0, tech.size()) :
-		if (index == stuff.technology as int && (!stuff.isSignature)) :
+		if (index == stuff.technology as int && (!stuff.isSignature) && stuff.isEligible) :
 			tech[index].visible = true
 		else :
 			tech[index].visible = false
 	var off = $Offense.get_children()
 	for index in range(0, off.size()) :
-		if (index == stuff.weaponClass as int && (!stuff.isSignature)) :
+		if (index == stuff.weaponClass as int && (!stuff.isSignature) && stuff.isEligible) :
 			off[index].visible = true
 		else :
 			off[index].visible = false
 	var def = $Defense.get_children()
 	for index in range(0, def.size()) :
-		if (index == stuff.armorClass as int && (!stuff.isSignature)) :
+		if (index == stuff.armorClass as int && (!stuff.isSignature) && stuff.isEligible) :
 			def[index].visible = true
 		else :
 			def[index].visible = false
@@ -43,6 +52,10 @@ func addTooltipsRecursive(children : Array[Node]) :
 			
 const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
 func addTooltip(child : Node) :
+	if (child.get_child_count() == 2) :
+		var oldTooltip = child.get_child(1)
+		child.remove_child(oldTooltip)
+		oldTooltip.queue_free()
 	var title : String = child.name
 	var upperLeft = Vector2(0,0)
 	var bottomRight = Vector2(16,16) * child.getScale()

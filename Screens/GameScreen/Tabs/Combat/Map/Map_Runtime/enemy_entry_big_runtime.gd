@@ -3,55 +3,66 @@ extends "res://Graphic Elements/popups/my_popup_button.gd"
 var placeholderSprite = preload("res://Images/PlaceholderCharacterGraphic.jpg")
 
 func initialise(smallEntry : Node) :
-	## Add pic later
-	getSpriteRef().texture = smallEntry.myEnemy.portrait
-	getTitleRef().text = smallEntry.myEnemy.getName()
-	getTagContainer().setEnemy(smallEntry.getEnemy())
-	#getHBOX().get_node("Star").visible = smallEntry.get_node("Star").visible
-	var killCount = smallEntry.killCount
-	#getHBOX().get_node("Skull").visible = smallEntry.get_node("Skull").visible
+	setEnemy(smallEntry.getEnemy())
+	
+func setEnemy(enemy : ActorPreset) :
+	getSpriteRef().texture = enemy.portrait
+	getTitleRef().text = enemy.getName()
+	getTagContainer().setEnemy(enemy)
+	setFactionSymbol(enemy)
+	var killCount = EnemyDatabase.getKillCount(enemy.getResourceName())
+	writeDescription(enemy, killCount)
+
+func writeDescription(enemy : ActorPreset, killCount) :
 	var description : String = ""
-	description += "\tBase Stats:\n"
-	var baseEnemy = smallEntry.getEnemy().getAdjustedCopy(1)
+	description += "Standard Stats:\n"
+	var baseEnemy = enemy.getAdjustedCopy(1)
 	for key in Definitions.baseStatDictionary.keys() :
-		description += Definitions.baseStatDictionary[key] + ": " + str(Helpers.myRound(baseEnemy.getStat(key),3)) + "\n"
-	description += "Attack - "
-	var attack = smallEntry.getEnemy().actions[0]
+		description += "\t" + Definitions.baseStatDictionary[key] + ": " + str(Helpers.myRound(baseEnemy.getStat(key),3)) + "\n"
+	description += "\nAttack - "
+	var attack = enemy.actions[0]
 	description += attack.getName() + "\n"
 	if (attack is AttackAction) :
 		description += "\t\tType: " + Definitions.damageTypeDictionary[attack.getDamageType()] + "\n"
 		description += "\t\tPower: " + str(Helpers.myRound(attack.getPower(),3)) + "\n"
 	description += "\t\tWarmup: " + str(Helpers.myRound(attack.getWarmup(),3)) + " seconds\n"
 	description += "\nKilled: " + str(int(killCount)) + "\n\n"
-	#description += "Drops\n"
-	#if (smallEntry.myEnemy.drops.is_empty()) :
-		#description += "\t-None-\n"
-	#else :
-		#for index in range(0,smallEntry.myEnemy.drops.size()) :
-				### swap to item encyclopedia later???
-				#var item = smallEntry.myEnemy.drops[index]
-				#if (smallEntry.itemCollection[item.getItemName()]) :
-					#description += EquipmentGroups.colourText(item.equipmentGroups.quality, item.getName(), true) + " - " + str(100*smallEntry.myEnemy.dropChances[index]) + "%\n"
-				#else :
-					#description += EquipmentGroups.colourText(item.equipmentGroups.quality, "??? (" + Definitions.equipmentTypeDictionary[item.type] + ")", true) + " - " + str(100*smallEntry.myEnemy.dropChances[index]) + "%\n"
 	description += "\n"
-	description += smallEntry.myEnemy.getDesc()
+	description += enemy.getDesc()
 	setText(description)
 	
+const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
+func setFactionSymbol(enemy : ActorPreset) :
+	var children = getFactionSymbolContainer().get_children()
+	for index in range(0,children.size()) :
+		if (index == enemy.enemyGroups.faction as int) :
+			children[index].visible = true
+			var upperLeft = Vector2(0,0)
+			var bottomRight = Vector2(16,16)*children[index].getScale()
+			var newTooltip = tooltipLoader.instantiate()
+			children[index].add_child(newTooltip)
+			newTooltip.initialise(EnemyGroups.factionDictionary[index])
+			newTooltip.currentLayer = Helpers.getTopLayer()
+			newTooltip.setPos(upperLeft, bottomRight)
+		else :
+			children[index].visible = false
+	
 func getTitleRef() :
-	return $Panel/CenterContainer/Window/ScrollContainer/VBoxContainer/Title
+	return $Panel/CenterContainer/Window/ScrollContainer/PanelContainer/VBoxContainer/Title
 func getSpriteRef() :
-	return $Panel/CenterContainer/Window/ScrollContainer/VBoxContainer/Art
+	return $Panel/CenterContainer/Window/ScrollContainer/PanelContainer/VBoxContainer/Art/Art
 func getHBOX() :
-	return $Panel/CenterContainer/Window/ScrollContainer/VBoxContainer/HBoxContainer
+	return $Panel/CenterContainer/Window/ScrollContainer/PanelContainer/VBoxContainer/HBoxContainer
 func getTagContainer() :
-	return $Panel/CenterContainer/Window/ScrollContainer/VBoxContainer/TagContainerEnemy
+	return $Panel/CenterContainer/Window/ScrollContainer/PanelContainer/VBoxContainer/TagContainerEnemy
+func getFactionSymbolContainer() :
+	return $Panel/CenterContainer/Window/ScrollContainer/PanelContainer/VBoxContainer/FactionSymbol
 	
 var myReady
 signal myReadySignal
 func _ready() :
 	var myWindow = $Panel/CenterContainer/Window
-	var myContainer : ScrollContainer = myWindow.get_node("ScrollContainer")
+	var myContainer : PanelContainer = myWindow.get_node("ScrollContainer").get_node("PanelContainer")
 	var myVBox = myWindow.get_node("VBoxContainer")
 	myWindow.remove_child(myVBox)
 	myContainer.add_child(myVBox)

@@ -15,9 +15,9 @@ isFire = false
 isIce = false
 isEarth = false
 isWater = false
-isSignature = false
+isSignature = true
 
-[sub_resource type="Resource" id="Resource_gg8yj"]
+[sub_resource type="Resource" id="Resource_aexo8"]
 script = ExtResource("2_20eye")
 attributeMods = {
 "Dexterity": {
@@ -84,7 +84,55 @@ statMods = {
 }
 }
 otherMods = {
+"Magic Conversion": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Magic Damage Dealt": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Magic Damage Taken": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
 "Magic Find": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Conversion": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Damage Dealt": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Damage Taken": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Effect": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed": {
 "Postbonus": 0.0,
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
@@ -97,7 +145,9 @@ script = ExtResource("3_n5g2m")
 PHYSDEF = 0.0
 MAGDEF = 0.0
 title = "Dragonbone Plate"
-description = "Dragon bones are notoriously resistant to all forms of machining and chemical treating. Armor made from dragon bone is therefore very bulky and incredibly effective. "
-myPacket = SubResource("Resource_gg8yj")
+description = "Dragon bones are notoriously resistant to all forms of machining and chemical treating. Armor made from dragon bone is therefore very bulky and incredibly effective. 
+
+(This item can drop from any dragon.)"
+myPacket = SubResource("Resource_aexo8")
 equipmentGroups = SubResource("Resource_nm5k0")
 metadata/_custom_type_script = "uid://bnh3m73ifmphh"

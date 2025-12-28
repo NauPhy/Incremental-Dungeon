@@ -7,25 +7,24 @@ var myText : RichTextLabel = null
 const theme2 = preload("res://Graphic Elements/Themes/subTab.tres")
 
 func initialise(item : Equipment) :
-	var newItem = SceneLoader.createEquipmentScene(item.getItemName())
-	add_child(newItem)
-	newItem.core = item
-	myItemScene = newItem
-	newItem.name = "equip"
+	myItemScene = SceneLoader.createEquipmentScene(item.getItemName())
+	add_child(myItemScene)
+	myItemScene.core = item
+	myItemScene.name = "equip"
 	var newText : RichTextLabel = $SampleTextLabel.duplicate()
-	newItem.addToContainer(newText)
+	myItemScene.addToContainer(newText)
 	myText = newText
 	newText.visible = true
-	if (newItem.getType() == Definitions.equipmentTypeEnum.currency) :
+	if (myItemScene.getType() == Definitions.equipmentTypeEnum.currency) :
 		setCount(0)
 	else :
-		newText.text = newItem.getTitle()
-	newItem.setTheme(theme2)
-	newItem.setContentMargin(15)
-	newItem.setSeparation(30)
-	newItem.setContainerExpandHorizontal()
-	newItem.use48x48()
-	newItem.connect("wasSelected", _on_button_selected)
+		newText.text = myItemScene.getTitle()
+	myItemScene.setTheme(theme2)
+	myItemScene.setContentMargin(15)
+	myItemScene.setSeparation(30)
+	myItemScene.setContainerExpandHorizontal()
+	myItemScene.use48x48()
+	myItemScene.connect("wasSelected", _on_button_selected)
 	
 func getItemSceneRef() :
 	return myItemScene
@@ -34,10 +33,12 @@ signal wasSelected
 func _on_button_selected(itemSceneRef) :
 	emit_signal("wasSelected", itemSceneRef)
 func deselect() :
-	$equip.deselect()
+	myItemScene.deselect()
 func setCount(val) :
 	myItemScene.setCount(val)
-	myText.text = myItemScene.getTitle() + " (" + str(val) + ")"
+	myText.text = myItemScene.getTitle() + " (" + str(val) + ")"#
+func select():
+	myItemScene.select()
 	
 func getCount() :
 	return myItemScene.getCount()

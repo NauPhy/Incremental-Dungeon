@@ -4,22 +4,62 @@ const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.t
 
 var currentItemSceneRef = null
 @export var isInIGOptions : bool = false
-@export var spriteScale : int = 15
+@export var spriteScale : int = 12
 
 func _ready() :
+	if (isInIGOptions) :
+		$VBoxContainer/Text/VBoxContainer/HBoxContainer/EncyclopediaTextLabel.currentLayer = Helpers.getTopLayer() + 1
+		$VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Description.currentLayer = Helpers.getTopLayer() + 1
+	addElementTooltips()
 	resetDetails()
 	
 func setItemSceneRefBase(itemSceneRef) :
 	currentItemSceneRef = itemSceneRef
+	updateElements()
 	if (currentItemSceneRef == null) :
 		resetDetails()
-	if (itemSceneRef == null) :
+	else :
+		$VBoxContainer/Text/VBoxContainer/TagContainerEquipment.setEquipment(currentItemSceneRef.core)
+		setOptionButton(itemSceneRef)
+		updateText()
+	
+func updateElements() :
+	var children = $VBoxContainer/Picture/Elements.get_children()
+	for child in children :
+		child.visible = false
+	if (currentItemSceneRef == null || currentItemSceneRef.core.equipmentGroups == null) :
 		return
-	setOptionButton(itemSceneRef)
-	updateText()
+	if (currentItemSceneRef.core.equipmentGroups.isEarth) :
+		children[0].visible = true
+	if (currentItemSceneRef.core.equipmentGroups.isFire) :
+		children[1].visible = true
+	if (currentItemSceneRef.core.equipmentGroups.isIce) :
+		children[2].visible = true
+	if (currentItemSceneRef.core.equipmentGroups.isWater) :
+		children[3].visible = true
+	
+func addElementTooltips() :
+	var children = $VBoxContainer/Picture/Elements.get_children()
+	for index in range(0,children.size()) :
+		var newTooltip = tooltipLoader.instantiate()
+		children[index].add_child(newTooltip)
+		var upperLeft = Vector2(0,0)
+		var bottomRight = Vector2(16,16) * children[index].getScale()
+		var key
+		if (index == 0) :
+			key = "Earth"
+		elif (index == 1) :
+			key = "Fire"
+		elif (index == 2) :
+			key = "Ice"
+		else :
+			key = "Water"
+		newTooltip.initialise(key)
+		newTooltip.currentLayer = Helpers.getTopLayer()
+		newTooltip.setPos(upperLeft, bottomRight)
 	
 func updateText_sprite() :#
-	var mySprite = $Picture/CenterContainer/Sprite
+	var mySprite = $VBoxContainer/Picture/CenterContainer/Sprite
 	var newSprite = currentItemSceneRef.getSprite()
 	mySprite.is32 = newSprite.is32
 	mySprite.is48 = newSprite.is48
@@ -40,8 +80,10 @@ func updateText_clearChildren(myText) :
 		await get_tree().process_frame
 		
 func updateText_weapon(myText) :
-	$Text/VBoxContainer/Extra.text = ""
-	myText += "Attack Bonus:\n\t" + str(Helpers.myRound(currentItemSceneRef.getAttack(),3)) + "\n\n"
+	$VBoxContainer/Text/VBoxContainer/Extra.text = ""
+	if (isInIGOptions) :
+		myText += "Standard "
+	myText += "DR Bonus:\n\t" + str(Helpers.myRound(currentItemSceneRef.getAttack(),3)) + "\n\n"
 	myText = updateText_weapon_scaling(myText)
 	myText = updateText_weapon_action(myText)
 	myText += "\n"
@@ -72,19 +114,23 @@ func updateText_weapon_action(myText) :
 	return myText
 
 func updateText_armor(myText) :
-	$Text/VBoxContainer/Extra.text = ""
-	myText += "Physical defense:\n    " + str(Helpers.myRound(currentItemSceneRef.getPhysicalDefense(),3)) + "\n"
-	myText = myText + "Magic defense:\n    " + str(Helpers.myRound(currentItemSceneRef.getMagicDefense(),3)) + "\n"
+	$VBoxContainer/Text/VBoxContainer/Extra.text = ""
+	if (isInIGOptions) :
+		myText += "Standard "
+	myText += "Physical Defense Bonus:\n    " + str(Helpers.myRound(currentItemSceneRef.getPhysicalDefense(),3)) + "\n"
+	if (isInIGOptions) :
+		myText += "Standard "
+	myText = myText + "Magic Defense Bonus:\n    " + str(Helpers.myRound(currentItemSceneRef.getMagicDefense(),3)) + "\n"
 	myText = myText + "\n"
 	return myText
 	
 func updateText_accessory(myText) :
-	$Text/VBoxContainer/Extra.text = ""
+	$VBoxContainer/Text/VBoxContainer/Extra.text = ""
 	myText += ""
 	return myText
 	
 func updateText_currency(myText) :
-	$Text/VBoxContainer/Extra.setText("Currency")
+	$VBoxContainer/Text/VBoxContainer/Extra.setText("Currency")
 	myText += ""
 	return myText
 	
@@ -121,7 +167,7 @@ func updateText() :
 			child.queue_free()
 		myTooltips.clear()
 	updateText_sprite()
-	$Text/VBoxContainer/Title.text = currentItemSceneRef.getTitle()
+	$VBoxContainer/Text/VBoxContainer/Title.text = currentItemSceneRef.getTitle()
 	var myText : String = ""
 	myText = "[font_size=22]" + EquipmentGroups.getColouredQualityString(currentItemSceneRef.getQuality(), false) + " " + EquipmentGroups.colourText(currentItemSceneRef.getQuality(), Definitions.equipmentTypeDictionary[currentItemSceneRef.getType()], false)+ "[/font_size]\n"
 	if (currentItemSceneRef.core is Weapon) :
@@ -134,24 +180,24 @@ func updateText() :
 		myText = updateText_currency(myText)
 	else :
 		myText = ""
-		$Text/VBoxContainer/Extra.text = ""
+		$VBoxContainer/Text/VBoxContainer/Extra.text = ""
 	myText = updateText_modifiers(myText)
-	myText = myText + currentItemSceneRef.getDesc()
-	$Text/VBoxContainer.visible = true
-	$Picture/CenterContainer.visible = true
-	$Text/VBoxContainer/Extra.visible = $Text/VBoxContainer/Extra.text != ""
-	await $Text/VBoxContainer/Panel/ScrollContainer/Description.setText(myText)
+	$VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Description2.text = currentItemSceneRef.getDesc()
+	$VBoxContainer/Text/VBoxContainer.visible = true
+	$VBoxContainer/Picture/CenterContainer.visible = true
+	$VBoxContainer/Text/VBoxContainer/Extra.visible = $VBoxContainer/Text/VBoxContainer/Extra.text != ""
+	await $VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Description.setText(myText)
 	if (currentItemSceneRef == null) :
 		return
 	if (currentItemSceneRef.core is Weapon) :
 		addWeaponScalingTooltips()
 
 func resetDetails() :
-	$Text/VBoxContainer.visible = false
-	$Picture/CenterContainer.visible = false
+	$VBoxContainer/Text/VBoxContainer.visible = false
+	$VBoxContainer/Picture/CenterContainer.visible = false
 	
 func setOptionButton(itemSceneRef : Node) :
-	var optionButton = $Text/VBoxContainer/HBoxContainer/OptionButton
+	var optionButton = $VBoxContainer/Text/VBoxContainer/HBoxContainer/OptionButton
 	var chosenItem = IGOptions.getIGOptionsCopy()["individualEquipmentTake"].get(itemSceneRef.getItemName())
 	if (chosenItem == null) :
 		optionButton.select(0)
@@ -173,7 +219,7 @@ func updateFromOptions(optionDict : Dictionary) :
 	var currentEquipSetting = optionDict["individualEquipmentTake"].get(currentItemSceneRef.getItemName())
 	if (currentEquipSetting == null) :
 		currentEquipSetting = 0
-	$Text/VBoxContainer/HBoxContainer/OptionButton.select(currentEquipSetting)
+	$VBoxContainer/Text/VBoxContainer/HBoxContainer/OptionButton.select(currentEquipSetting)
 
 var myTooltips : Array[Node] = []
 ## Attack Bonus
@@ -187,7 +233,7 @@ func addWeaponScalingTooltips() :
 	const intStr : String = "INT: "
 	const strStr : String = "STR: "
 	const fontSize = 18
-	var myText : RichTextLabel = $Text/VBoxContainer/Panel/ScrollContainer/Description
+	var myText : RichTextLabel = $VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Description
 	var scalingStartIndex = myText.get_parsed_text().find(scalingStr)
 	var DEXStartIndex = myText.get_parsed_text().find(dexStr, scalingStartIndex) + dexStr.length()
 	var DEXEndIndex = myText.get_parsed_text().find(" ", DEXStartIndex)
@@ -204,7 +250,7 @@ func addWeaponScalingTooltips() :
 		myText.get_parsed_text().substr(STRStartIndex, STREndIndex-STRStartIndex)
 	]
 	var strWidths = await Helpers.getTextWidthWaitFrameArray(fontSize, strArray)
-	var lineNumber = 5
+	var lineNumber = 6
 	
 	if (currentItemSceneRef == null) :
 		return

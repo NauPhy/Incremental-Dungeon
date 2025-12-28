@@ -12,8 +12,8 @@ func setItemSceneRefBase(itemSceneRef) :
 	super(itemSceneRef)
 	if (itemSceneRef == null) :
 		return
-	var options : OptionButton = $Text/VBoxContainer/HBoxContainer/OptionButton
-	var myButton = $Text/VBoxContainer/HBoxContainer2/CenterContainer2/Discard
+	var options : OptionButton = $VBoxContainer/Text/VBoxContainer/HBoxContainer/OptionButton
+	var myButton = $VBoxContainer/Text/VBoxContainer/HBoxContainer2/CenterContainer2/Discard
 	if (itemSceneRef.getType() == Definitions.equipmentTypeEnum.currency) :
 		myButton.text = " Not Discardable "
 		myButton.set_disabled(true)
@@ -36,7 +36,7 @@ func setItemSceneRefBase(itemSceneRef) :
 		
 func _process(_delta) : 
 	if (currentItemSceneRef != null) :
-		var myButton = $Text/VBoxContainer/HBoxContainer2/CenterContainer/Button
+		var myButton = $VBoxContainer/Text/VBoxContainer/HBoxContainer2/CenterContainer/Button
 		if (!Definitions.isEquippable(currentItemSceneRef)) :
 			myButton.text = " Not equippable "
 			myButton.set_disabled(true) 

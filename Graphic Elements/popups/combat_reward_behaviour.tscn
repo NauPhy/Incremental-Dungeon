@@ -1,25 +1,32 @@
-[gd_scene load_steps=6 format=3 uid="uid://m8v5iavr7s2o"]
+[gd_scene load_steps=7 format=3 uid="uid://m8v5iavr7s2o"]
 
 [ext_resource type="PackedScene" uid="uid://48l2vnrueam4" path="res://Graphic Elements/popups/my_popup.tscn" id="1_57q8b"]
 [ext_resource type="Script" uid="uid://cofpb1aqglkym" path="res://Graphic Elements/popups/combat_reward_behaviour.gd" id="2_y8cdy"]
 [ext_resource type="PackedScene" uid="uid://4o8xwri3b532" path="res://Screens/GameScreen/Tabs/Combat/CombatRewards/combat_reward_entry.tscn" id="3_jyau4"]
 [ext_resource type="PackedScene" uid="uid://b225e88u4powi" path="res://Screens/GameScreen/Tabs/EquipmentTab/equipment_details.tscn" id="4_0rrdc"]
+[ext_resource type="Theme" uid="uid://c8cfcbe6ioxu5" path="res://Graphic Elements/Themes/subTab.tres" id="4_tqdwt"]
 [ext_resource type="PackedScene" uid="uid://c5uhhdm6s5ims" path="res://Graphic Elements/Buttons/my_button.tscn" id="5_jyau4"]
 
 [node name="Combat Reward Behaviour" instance=ExtResource("1_57q8b")]
 script = ExtResource("2_y8cdy")
 
+[node name="Window" parent="Panel/CenterContainer" index="0"]
+custom_minimum_size = Vector2(600, 1000)
+
 [node name="VBoxContainer" parent="Panel/CenterContainer/Window" index="0"]
 theme_override_constants/separation = 15
 
 [node name="Title" parent="Panel/CenterContainer/Window/VBoxContainer" index="0"]
-text = " Combat Reward Behaviour "
+text = "Encyclopedia - Equipment"
 
 [node name="Text" parent="Panel/CenterContainer/Window/VBoxContainer" index="1"]
-text = ""
+visible = false
+text = "Changes Autosaved"
+horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="2"]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/CenterContainer/Window/VBoxContainer/HBoxContainer" index="0"]
 layout_mode = 2
@@ -33,6 +40,14 @@ visible = false
 custom_minimum_size = Vector2(800, 0)
 layout_mode = 2
 
+[node name="Sample2" type="Button" parent="Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/ScrollContainer/VBoxContainer" index="1"]
+visible = false
+layout_mode = 2
+theme = ExtResource("4_tqdwt")
+theme_override_font_sizes/font_size = 20
+disabled = true
+text = " Undiscovered "
+
 [node name="EquipmentDetails" parent="Panel/CenterContainer/Window/VBoxContainer/HBoxContainer" index="1" instance=ExtResource("4_0rrdc")]
 custom_minimum_size = Vector2(800, 600)
 layout_mode = 2
@@ -41,7 +56,7 @@ isInIGOptions = true
 [node name="ReturnButton" parent="Panel/CenterContainer/Window/VBoxContainer" index="3" instance=ExtResource("5_jyau4")]
 layout_mode = 2
 size_flags_horizontal = 4
-text = " Return "
+text = " Save and Return "
 
 [connection signal="individualEquipmentTakeChanged" from="Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/EquipmentDetails" to="." method="_on_equipment_details_individual_equipment_take_changed"]
 [connection signal="pressed" from="Panel/CenterContainer/Window/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]

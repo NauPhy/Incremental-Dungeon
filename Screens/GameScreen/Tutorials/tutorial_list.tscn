@@ -9,11 +9,12 @@
 script = ExtResource("2_am02b")
 
 [node name="Title" parent="Panel/CenterContainer/Window/VBoxContainer" index="0"]
-text = "Tutorials"
+text = "Encyclopedia - Tutorials"
 
 [node name="Text" parent="Panel/CenterContainer/Window/VBoxContainer" index="1"]
 visible = false
-text = ""
+text = "Changes Autosaved"
+horizontal_alignment = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="2"]
 clip_contents = false
@@ -39,8 +40,9 @@ alignment = 2
 
 [node name="ReturnButton" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="0" instance=ExtResource("3_w6h7y")]
 layout_mode = 2
+size_flags_horizontal = 4
 theme = ExtResource("4_am02b")
-theme_override_font_sizes/font_size = 25
-text = "Return"
+theme_override_font_sizes/font_size = 30
+text = " Save and Return "
 
 [connection signal="pressed" from="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]

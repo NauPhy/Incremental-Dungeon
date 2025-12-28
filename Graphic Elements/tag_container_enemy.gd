@@ -1,7 +1,13 @@
 extends HBoxContainer
 
 func _ready() :
-	setEnemy(EnemyDatabase.getEnemy("gold_dragon"))
+	setSpriteSizeRecursive(get_children(), 3)
+	
+func setSpriteSizeRecursive(children : Array[Node], val) :
+	for child in children :
+		if (child.has_method("setScale")) :
+			child.setScale(val)
+		setSpriteSizeRecursive(child.get_children(), val)
 
 func setEnemy(enemy : ActorPreset) :
 	var stuff = enemy.enemyGroups

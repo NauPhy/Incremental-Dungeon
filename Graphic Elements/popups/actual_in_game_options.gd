@@ -2,7 +2,7 @@ extends "res://Graphic Elements/popups/my_popup.gd"
 
 const myCheckBox = preload("res://Graphic Elements/Buttons/my_check_box.tscn")
 const labelLoader = preload("res://Graphic Elements/Tooltips/encyclopedia_text_label.tscn")
-const myOffset : int = 5
+const myOffset : int = 2
 var optionDictCopy : Dictionary = {}
 
 func _ready() :
@@ -52,28 +52,6 @@ signal finished
 func _on_return_pressed() -> void:
 	emit_signal("finished")
 	queue_free()
-
-const tutorialListLoader = preload("res://Screens/GameScreen/Tutorials/tutorial_list.tscn")
-func _on_tutorials_pressed() -> void:
-	var myTutorialList = tutorialListLoader.instantiate()
-	add_child(myTutorialList)
-	myTutorialList.initialise(optionDictCopy["individualTutorialDisable"].duplicate())
-	myTutorialList.connect("tutorialListFinished", _on_tutorial_list_finished)
-	myTutorialList.nestedPopupInit(self)
-	
-func _on_tutorial_list_finished(newDict : Dictionary) :
-	optionDictCopy["individualTutorialDisable"] = newDict
-	
-const combatRewardLoader = preload("res://Graphic Elements/popups/combat_reward_behaviour.tscn")
-func _on_combat_reward_behaviour_my_pressed(_emitter) -> void:
-	var combatRewardSettings = combatRewardLoader.instantiate()
-	add_child(combatRewardSettings)
-	combatRewardSettings.initialise(optionDictCopy["individualEquipmentTake"].duplicate())
-	combatRewardSettings.connect("finished", _on_combat_reward_settings_finished)
-	combatRewardSettings.nestedPopupInit(self)
-
-func _on_combat_reward_settings_finished(newSettings : Dictionary) :
-	optionDictCopy["individualEquipmentTake"] = newSettings
 	
 func getCheckboxValue(key) -> bool :
 		return getOptionsContainer().get_child(1+key).is_pressed()
@@ -87,17 +65,11 @@ func updateOptionDict() :
 		else :
 			pass
 
-const encyclopediaLoader = preload("res://Graphic Elements/Tooltips/encyclopedia_list.tscn")
+const encyclopediaLoader = preload("res://Graphic Elements/popups/encyclopedia.tscn")
 func _on_encyclopedia_pressed() -> void:
 	var encyclopedia = encyclopediaLoader.instantiate()
 	add_child(encyclopedia)
 	encyclopedia.nestedPopupInit(self)
-
-const beastiaryLoader = preload("res://Screens/GameScreen/beastiary.tscn")
-func _on_beastiary_pressed() -> void:
-	var beast = beastiaryLoader.instantiate()
-	add_child(beast)
-	beast.nestedPopupInit(self)
 
 const keybindsLoader = preload("res://Screens/MainOptions/keybinds.tscn")
 func _on_keybinds_pressed() -> void:

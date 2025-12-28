@@ -18,6 +18,8 @@ func getAdjustedCopy(scalingFactor : float) -> Equipment :
 	var retVal = self.duplicate()
 	retVal.resourceName = getItemName()
 	return retVal
+func createSampleCopy() -> Equipment :
+	return getAdjustedCopy(1)
 
 func reset() :
 	myPacket = ModifierPacket.new()

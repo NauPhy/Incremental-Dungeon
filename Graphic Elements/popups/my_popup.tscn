@@ -70,12 +70,11 @@ scroll_active = false
 
 [node name="Background" type="ColorRect" parent="Panel"]
 z_index = -1
-layout_mode = 2
-offset_left = 15.0
-offset_top = 174.0
-offset_right = 176.0
-offset_bottom = 174.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.24, 0.24, 0.24, 0.231373)
+color = Color(0, 0, 0, 0.337255)

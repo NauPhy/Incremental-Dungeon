@@ -81,8 +81,14 @@ func createBigEntry() :
 		var y2 = y1 + child.size.y
 		var mousePos = get_global_mouse_position()
 		if (mousePos.x >= x1 && mousePos.x <= x2 && mousePos.y >= y1 && mousePos.y <= y2) :
+			if (!child.has_connections("addChildRequested")) :
+				child.connect("addChildRequested", _on_add_child_requested)
 			child.createBigEntry()
 			return
+			
+signal addChildRequested
+func _on_add_child_requested(emitter, node : Node) :
+	emit_signal("addChildRequested", emitter, node)
 			
 func enableEnemyList() :
 	$VBoxContainer.visible = true

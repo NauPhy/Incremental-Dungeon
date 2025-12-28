@@ -41,7 +41,7 @@ const tutorialDesc : Dictionary = {
 	#First time rewards screen comes up (presumably before goblins)
 	tutorialName.equipment : "You just found some equipment! Up until now you've been unarmed and unarmored. You can add the item to your inventory from the loot screen and equip it in the Equipment Tab. Try equipping it and see how it changes your Combat Stats.\n\n[i]The Equipment tab has been unlocked[/i]",
 	#End of first floor
-	tutorialName.tutorialFloorEnd : "Congratulations, you've beaten the tutorial floor. The dungeon from here on out will be a bit slower and more challenging.\n\nRemember to explore the side paths and farm drops from weaker monsters. If you feel progress is too slow, get a cup of coffee or pull up a YouTube video. This is not meant to be a terribly active game.\n\nAlternatively, you could spend some time scrutinising your build to try and squeeze a bit more performance out of it!",
+	tutorialName.tutorialFloorEnd : "Congratulations, you've beaten the tutorial floor. The dungeon from here on out will be a bit slower and more challenging.\n\nRemember to explore the side paths and farm drops from weaker monsters. If you feel progress is too slow, get a cup of coffee or pull up a YouTube video. This is not meant to be a terribly active game.\n\nAlternatively, you could spend some time scrutinising your build to try and squeeze a bit more performance out of it!\n\nOh, and you might want to check out the Encyclopedia (F1).",
 	tutorialName.dropIntro : "Most enemies have a chance to drop items on death. After completing a room for the first time, enemies and hints about their drops will be added to the beastiary found in the in-game options (F1) menu.\n\nEnemies will also be listed on the room itself. You can access an enemy's beastiary entry by CTRL-clicking its name in the room's enemy list, but only if you've defeated it at least once.",
 	tutorialName.manticoreKill : "Congratulations on defeating the Manticore! Unfortunately this is the end of content in the current version. I hope you enjoyed the game, and I'd be happy to hear any feedback you have!"
 }
@@ -221,6 +221,9 @@ const keywords : Array[String] = [
 	"Scaling",
 	"Strength",
 	"Weapon",
+	"Standard",
+	"Armor",
+	"Accessory",
 	
 	"Physical Damage Dealt",
 	"Magic Damage Dealt",
@@ -303,31 +306,31 @@ const keyword_alternates : Dictionary = {
 }
 
 var descriptions : Dictionary = {
-	"Class" : "The Player's Class determines their starting Attributes, Attribute Premultipliers, and unarmed Weapon Scaling.",
+	"Class" : "The player's Class determines their starting Attributes, Attribute Premultipliers, and unarmed Weapon Scaling.",
 	
 	"Currency" : "Currency items do not take up inventory space and only exist to be exchanged at shops.", 
 		
-	"Attribute" : "Attributes are a measure of the player's basic ability, and are shown in the Player Panel (left).\n\nAttributes are used to calculate their Combat Stats, which are vital for combat. The 5 Attributes are Dexterity, Durability, Intelligence, Skill, and Strength.",
+	"Attribute" : "Attributes are a measure of the player's basic ability, and are shown in the player Panel (left).\n\nAttributes are used to calculate their Combat Stats, which are vital for combat. The 5 Attributes are Dexterity, Durability, Intelligence, Skill, and Strength.",
 	
-	"Dexterity" : "Dexterity is an Attribute measuring the Player's agility, finnesse, and wit.\n\tWhen a suitable weapon is equipped, Dexterity provides a Prebonus to DR of <DR CONTRIBUTION>.\n\tDexterity provides a Prebonus to Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect the Player's skill at dodging.",
+	"Dexterity" : "Dexterity is an Attribute measuring the player's agility, finnesse, and wit.\n\tWhen a suitable weapon is equipped, Dexterity provides a Prebonus to DR of <DR CONTRIBUTION>.\n\tDexterity provides a Prebonus to Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect the player's skill at dodging.",
 	
-	"Durability" : "Durability is an Attribute measuring the Player's health and resistance to damage.\n\tDurability provides a Prebonus to HP of <MAXHP FORMULA>.\n\tDurability provides a Prebonus to Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect the Player's tenacity and grit.",
+	"Durability" : "Durability is an Attribute measuring the player's health and resistance to damage.\n\tDurability provides a Prebonus to HP of <MAXHP FORMULA>.\n\tDurability provides a Prebonus to Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect the player's tenacity and grit.",
 	
-	"Intelligence" : "Intelligence is an Attribute measuring the Player's quick thinking, learning capacity, and accumulated knowledge, and psionic power.\n\tWhen a suitable weapon is equipped, Intelligence provides a Prebonus to DR of <DR CONTRIBUTION>.\n\tIntelligence provides a Prebonus to Magic Defense of <MAGDEF CONTRIBUTION> to reflect the fortitude of the Player's psyche.",
+	"Intelligence" : "Intelligence is an Attribute measuring the player's quick thinking, learning capacity, and accumulated knowledge, and psionic power.\n\tWhen a suitable weapon is equipped, Intelligence provides a Prebonus to DR of <DR CONTRIBUTION>.\n\tIntelligence provides a Prebonus to Magic Defense of <MAGDEF CONTRIBUTION> to reflect the fortitude of the player's psyche.",
 	
-	"Skill" : "Skill is an Attribute measuring the Player's practice and innate ability in the art of combat.\n\tSkill provides a Prebonus to AR of <AR CONTRIBUTION>.\n\tSkill provides a prebonus to Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect the player's ability to anticipate their opponents' attacks and execute defensive maneuvers",
+	"Skill" : "Skill is an Attribute measuring the player's practice and innate ability in the art of combat.\n\tSkill provides a Prebonus to AR of <AR CONTRIBUTION>.\n\tSkill provides a prebonus to Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect the player's ability to anticipate their opponents' attacks and execute defensive maneuvers",
 	
-	"Strength" : "Strength is an Attribute measuring the Player's raw physical power.\n\tWhen a suitable weapon is equipped, Strength provides a Prebonus to DR of <DR CONTRIBUTION>.\n\tStrength provides a Prebonus to Physical Defense of <PHYSDEF CONTRIBUTION> to reflect the Player's physical health and the hardness of their body.",
+	"Strength" : "Strength is an Attribute measuring the player's raw physical power.\n\tWhen a suitable weapon is equipped, Strength provides a Prebonus to DR of <DR CONTRIBUTION>.\n\tStrength provides a Prebonus to Physical Defense of <PHYSDEF CONTRIBUTION> to reflect the player's physical health and the hardness of their body.",
 	
-	"Combat Stat" : "Combat Statistics measure a combatant's prowess in certain elements of combat, and are shown in the Player Panel (left).\n\nWhile enemies typically have preset Combat Stats, the Player's stats can be improved in a variety of ways. Combat Stats can also be modified during combat by certain effects. The Combat Stats are Max HP, Attack Rating, Damage Rating, Physical Defense, and Magic Defense.",
+	"Combat Stat" : "Combat Statistics measure a combatant's prowess in certain elements of combat, and are shown in the player Panel (left).\n\nWhile enemies typically have preset Combat Stats, the player's stats can be improved in a variety of ways. Combat Stats can also be modified during combat by certain effects. The Combat Stats are Max HP, Attack Rating, Damage Rating, Physical Defense, and Magic Defense.",
 	
-	"Max HP" : "Max HP is a Combat Statistic. A combatant always starts with HP = Max HP. When their HP hits 0 due to Damage, they die\n\tBase Max HP = <MAXHP FORMULA>",
+	"Max HP" : "Max HP is a Combat Statistic. A combatant always starts with HP = Max HP. When their HP hits 0 due to Damage, they die.\n\tBase Max HP = <MAXHP FORMULA>",
 	
-	"Physical Defense" : "A combatant's Physical Defense is a Combat Stat that reduces the Damage Value of incoming damaging physical effects\n\tBase PHYSDEF = <PHYSDEF FORMULA>.",
+	"Physical Defense" : "A combatant's Physical Defense is a Combat Stat that reduces the Damage Value of incoming damaging physical effects.\n\tBase PHYSDEF = <PHYSDEF FORMULA>.",
 	
-	"Magic Defense" : "A combatant's Magic Defense is a Combat Stat that reduces the Damage Value of incoming damaging magic effects\n\tBase MAGDEF = <MAGDEF FORMULA>.",
+	"Magic Defense" : "A combatant's Magic Defense is a Combat Stat that reduces the Damage Value of incoming damaging magic effects.\n\tBase MAGDEF = <MAGDEF FORMULA>.",
 	
-	"Weapon" : "The Player's Weapon determines their AR Scaling, what their basic attack Action is, and provides a Postbonus to their Attack Rating.",
+	"Weapon" : "The player's Weapon determines their AR Scaling, what their basic attack Action is, and provides a Postbonus to their Damage Rating.\n\nYou gain 1.25x to DR premultiplier for each Element shared by your Weapon and Accessory.",
 	
 	"Number" : "Every number in this game is either a Prebonus, Postbonus, Premultiplier, Postmultiplier, Base value, or Final value. Prebonuses and Premultipliers are used to calculate Base values, and Base values, Postbonuses and Postmultipliers are used to calculate Final values.\n\nAll values are Final values unless otherwise specified. So in other words, you don't need to worry about the distinction unless you want to know how something is calculated!",
 	
@@ -355,16 +358,21 @@ var descriptions : Dictionary = {
 	
 	"Combat Reward Behaviour" : "Wait\n\nAlways Take\n\nAlways Discard",
 	
-	"Wait" : "This item must be manually taken or discarded from combat rewards.\nThis setting can be changed later per-item in the in-game options (F1).",
+	"Wait" : "This item must be manually taken or discarded from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).",
 	
-	"Always Take" : "Always take this item from combat rewards.\nThis setting can be changed later per-item in the in-game options (F1).\n\nBehaviour when inventory is full depends on \"Inventory Behaviour\" in the in-game options (F1)",
+	"Always Take" : "Always take this item from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).\n\nBehaviour when inventory is full depends on \"Inventory Behaviour\" in the in-game options (F2)",
 	
-	"Always Discard" : "Always discard this item from combat rewards.\nThis setting can be changed later per-item in the in-game options (F1).",
+	"Always Discard" : "Always discard this item from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).",
 	
-	"Inventory Behaviour" : "Determines whether \"Always Take\" will wait or discard when the inventory is full.",
+	"Inventory Behaviour" : "Determines whether \"Always Take\" will wait or discard when the inventory is full. \"Always Take\" can be set per-item in the Encyclopedia (F1).",
 	
-	"Scaling" : "Weapons provide a Prebonus to DR based on the Player's Attributes and their Weapon's Scaling for those respective Attributes. Scaling ranges between E and S, with S being the highest. Hover over the letter in game to see the decimal scaling value.",
+	"Scaling" : "Weapons provide a Prebonus to DR based on the player's Attributes and their Weapon's Scaling for those respective Attributes. Scaling ranges between E and S, with S being the highest. Hover over the letter in game to see the decimal scaling value.",
 	
+	"Standard" : "Standard indicates a value is listed without progression scaling. If the value is random, this is the average.",
+	
+	"Armor" : "A type of equipment. Armor provides a postbonus to PHYSDEF and MAGDEF.\n\nYou gain x1.25 to PHYSDEF and MAGDEF premultiplier for each Element shared by your Armor and Accessory.",
+	
+	"Accessory" : "A type of equipment. Accessories tend to give postbonuses to Attributes and postmultipliers to Combat Stats.\n\nYou gain 1.25x to DR premultiplier for each Element shared by your Weapon and Accessory.\n\nYou gain x1.25 to PHYSDEF and MAGDEF premultiplier for each Element shared by your Armor and Accessory.",
 	################################################################
 	## Tags
 	"Tag" : "Tags determine what equipment an enemy can drop. Both equipment and enemies have Tags, and either can disqualify an item from dropping. See Equipment tags and Enemy tags.",
@@ -398,7 +406,7 @@ var descriptions : Dictionary = {
 	"Hardened" : "This enemy has fairly high Physical Defense and can only drop Armor with the Anti-Physical or Balanced Tags.",
 	"Ironclad" : "This enemy has high Physical Defense and can only drop Armor with the Anti-Physical Tag.",
 	
-	"Element" : "Some equipment has a particular Element. Elemental equipment can only be dropped in certain biomes (displayed on the top right corner of the Combat Map), but can provide powerful synergies:\n\nWhen the Element of your Weapon and Accessory match, you gain a x1.25 premultiplier to DR.\n\nWhen the Element of your Armor and Accessory match, you gain a x1.25 premultiplier to PHYSDEF and MAGDEF.\n\nThe 4 Elements are Fire, Water, Earth, and Ice.",
+	"Element" : "Some pieces of equipment have a particular Element. Elemental equipment can only be dropped in certain Biomes (displayed on the top right corner of the Combat Map), but can provide powerful synergies:\n\nx1.25 DR premultiplier for each Element shared by your Weapon and Accessory.\n\nx1.25 PHYSDEF and MAGDEF premultiplier for each Element shared by your Armor and Accessory.\n\nThe 4 Elements are Earth, Fire, Ice, and Water",
 	"Fire" : "Fire is the Element of destruction.",
 	"Ice" : "Ice is the Element of unchange.",
 	"Water" : "Water is the Element of change.",
@@ -408,7 +416,7 @@ var descriptions : Dictionary = {
 	"Boss" : "This enemy is the boss of its floor. It drops 42% more items on average and has a powerful signature drop!",
 	"Veteran" : "This enemy is pretty strong, but drops 27% more items on average.",
 	
-	"Faction" : "Each enemy belongs to a single Faction. A given biome will only contain enemies of permitted factions, displayed on the top right corner of the Combat Map. The 10 Factions are: Flamekin, Frostkin, Naturekin, Nautikin, Demonic Civilian, Demonic Military, Greenskin, Merfolk, Undead, and Wanderkin.",
+	"Faction" : "Each enemy belongs to a single Faction. A given Biome will only contain enemies of permitted factions, displayed on the top right corner of the Combat Map. The 10 Factions are: Flamekin, Frostkin, Naturekin, Nautikin, Demonic Civilian, Demonic Military, Greenskin, Merfolk, Undead, and Wanderkin.",
 	"Demonic Civilian" : "The Demonic Civilian Faction includes Demons too weak, dumb, or unruly to be drafted into the Demonic Military.",
 	"Demonic Military" : "The Demonic Military Faction consists of cannon fodder, elite shock troops, commanders, war machines, and the Demon King.",
 	"Naturekin" : "The Naturekin Faction includes magical beings aligned with earth.",

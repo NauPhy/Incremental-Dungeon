@@ -8,10 +8,13 @@
 [node name="TagContainerEquipment" type="HBoxContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
+alignment = 1
 script = ExtResource("1_bh874")
 
 [node name="Technology" type="HBoxContainer" parent="."]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Perennial" parent="Technology" instance=ExtResource("2_tf4cg")]
 visible = false

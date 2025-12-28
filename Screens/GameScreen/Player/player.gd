@@ -81,6 +81,12 @@ func updateDirectModifier(origin : String, val : ModifierPacket) :
 		otherStatObjects[key].setPremultiplier(origin, val.otherMods[tag]["Premultiplier"])
 		otherStatObjects[key].setPostbonus(origin, val.otherMods[tag]["Postbonus"])
 		otherStatObjects[key].setPostmultiplier(origin, val.otherMods[tag]["Postmultiplier"])
+		if (key == Definitions.otherStatEnum.magicFind) :
+			if (otherStatObjects[key].getFinal() == 1) :
+				$ScrollContainer/VBoxContainer/OtherStatPanel/PanelContainer/OtherStatDisplay.get_child(key as int).visible = false
+		else :
+			if (otherStatObjects[key].getFinal() == 0) :
+				$ScrollContainer/VBoxContainer/OtherStatPanel/PanelContainer/OtherStatDisplay.get_child(key as int).visible = false
 ########################################
 func myUpdate() :
 	## Attributes
@@ -143,7 +149,7 @@ func updateDerivedStats() :
 	getDerivedStatList().get_node("DamagePerHit").get_node("Number").text = str(Helpers.myRound(averageAttackRating * equippedWeapon.basicAttack.getPower(),3))
 	
 func getDerivedStatList() :
-	return $VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay
+	return $ScrollContainer/VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay
 	
 #########################################
 ## Setters
@@ -153,11 +159,11 @@ func setClass(character : CharacterClass) :
 	for key in Definitions.attributeDictionary.keys() :
 		attributeObjects[key].setPrebonus("Class", round(character.getBaseAttribute(key)/character.getAttributeScaling(key)*100.0)/100.0)
 		attributeObjects[key].setPremultiplier("Class", character.getAttributeScaling(key))
-	$VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.text = "Class: " + character.getText()
+	$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.text = "Class: " + character.getText()
 	unarmedWeapon = SceneLoader.createEquipmentScene("unarmed_" + Definitions.classDictionary[characterClass.classEnum])
 func setName(val) :
 	characterName = val
-	$VBoxContainer/NameLabel.text = val
+	$ScrollContainer/VBoxContainer/NameLabel.text = val
 	core.text = val
 ###############################
 ## Getters
@@ -196,10 +202,10 @@ func getSaveDictionary() -> Dictionary :
 var myReady : bool = false
 func _ready() :
 	initialiseNumberObjects()
-	$CustomMouseover.initialise($VBoxContainer, $VBoxContainer/DerivedStatPanel/StatTitle, $VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay/AttackSpeed/Number, $VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay/DamagePerHit/Number)
-	$VBoxContainer/CombatStatPanel.initialise(derivedStatObjects)
-	$VBoxContainer/AttributePanel.initialise(attributeObjects)
-	$VBoxContainer/OtherStatPanel.initialise(otherStatObjects)
+	$CustomMouseover.initialise($ScrollContainer/VBoxContainer, $ScrollContainer/VBoxContainer/DerivedStatPanel/StatTitle, $ScrollContainer/VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay/AttackSpeed/Number, $ScrollContainer/VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay/DamagePerHit/Number)
+	$ScrollContainer/VBoxContainer/CombatStatPanel.initialise(derivedStatObjects)
+	$ScrollContainer/VBoxContainer/AttributePanel.initialise(attributeObjects)
+	$ScrollContainer/VBoxContainer/OtherStatPanel.initialise(otherStatObjects)
 	myReady = true
 	
 var humanMan = preload("res://Resources/OldActor/Misc/human.tres")

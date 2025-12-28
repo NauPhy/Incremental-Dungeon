@@ -180,12 +180,19 @@ func getAllNodes_recursive(node : Node, arr : Array[Node]) -> void :
 
 func getTopLayer() -> int :
 	var nodes = getAllNodes()
-	var maxLayer = -99
+	var maxLayer = 0
 	for node in nodes :
 		if (node is CanvasLayer) :
 			if (node.layer > maxLayer) :
 				maxLayer = node.layer
 	return maxLayer
+
+func equipmentIsNew(item : Equipment) :
+	if (item.equipmentGroups == null) :
+		return false
+	if (item.equipmentGroups.isSignature || item.equipmentGroups.isEligible) :
+		return true
+	return false
 
 ## A Dictionary can only contain keys of ONE TYPE OF ENUM. This is true for 
 ## everything, not just this function.
@@ -245,7 +252,7 @@ func myRound(val : float, sigFigs : int) :
 	var base = val/pow(10,magnitude)
 	var roundedBase = round(base*pow(10.0,sigFigs-1))/pow(10.0,sigFigs-1)
 	var finalValue = roundedBase*pow(10,magnitude)
-	if (finalValue > pow(10,sigFigs-1)) :
+	if (finalValue >= pow(10,sigFigs-1)) :
 		return int(finalValue)
 	else :
 		return finalValue

@@ -37,7 +37,7 @@ func setEnemy(enemy : ActorPreset) :
 func getTitleRef() :
 	return $Panel/CenterContainer/Window/ScrollContainer/VBoxContainer/Title
 func getSpriteRef() :
-	return $Panel/CenterContainer/Window/ScrollContainer/VBoxContainer/Art
+	return $Panel/CenterContainer/Window/ScrollContainer/VBoxContainer/Art/Art
 func getHBOX() :
 	return $Panel/CenterContainer/Window/ScrollContainer/VBoxContainer/HBoxContainer
 	

@@ -41,7 +41,7 @@ custom_minimum_size = Vector2(371, 600)
 theme_override_styles/panel = SubResource("StyleBoxFlat_per2i")
 
 [node name="Title" parent="Panel/CenterContainer/Window/VBoxContainer" index="0"]
-text = " Beastiary "
+text = "Encyclopedia - Beastiary"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="1"]
 layout_mode = 2

@@ -12,8 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://c74nurywvrmkl" path="res://Graphic Elements/Buttons/super_button.tscn" id="10_w2hja"]
 [ext_resource type="PackedScene" uid="uid://dktptqvkv2mca" path="res://Screens/GameScreen/Tutorials/tutorial_manager.tscn" id="11_asrge"]
 [ext_resource type="PackedScene" uid="uid://cb0xb20pk0mpa" path="res://Images/SpriteSheets/sprite.tscn" id="11_op3o3"]
-[ext_resource type="Texture2D" uid="uid://60332mc564l6" path="res://Images/CC0 Assets/icon_save.png" id="12_hupum"]
-[ext_resource type="Texture2D" uid="uid://dl2p7nrdp4ie4" path="res://Images/CC0 Assets/icon_gear.png" id="13_4fsfw"]
+[ext_resource type="Texture2D" uid="uid://c208wpo504d75" path="res://Images/SpriteSheets/1-bit_Pixel_Icons/Icons_Software.png" id="13_hupum"]
+[ext_resource type="Texture2D" uid="uid://c4v37w36v2ff3" path="res://Images/SpriteSheets/1-bit_Pixel_Icons/Icons_Tools_Crafting.png" id="14_4fsfw"]
 [ext_resource type="PackedScene" uid="uid://dd4wj7wyb0t2j" path="res://Screens/GameScreen/currency_handler.tscn" id="15_4fsfw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0vvmv"]
@@ -126,8 +126,21 @@ layout_mode = 2
 
 [node name="Icon" parent="TopRibbon/Ribbon/MenuContainer/SaveButton/HBoxContainer/Sprite" index="0"]
 scale = Vector2(3, 3)
-texture = ExtResource("12_hupum")
-region_rect = Rect2(0, 0, 16, 16)
+texture = ExtResource("13_hupum")
+region_rect = Rect2(39, 135, 8, 5)
+
+[node name="EncyclopediaButton" parent="TopRibbon/Ribbon/MenuContainer" instance=ExtResource("10_w2hja")]
+layout_mode = 2
+toggle = false
+contentMargin = 5.0
+
+[node name="Sprite" parent="TopRibbon/Ribbon/MenuContainer/EncyclopediaButton/HBoxContainer" index="0" instance=ExtResource("11_op3o3")]
+layout_mode = 2
+
+[node name="Icon" parent="TopRibbon/Ribbon/MenuContainer/EncyclopediaButton/HBoxContainer/Sprite" index="0"]
+scale = Vector2(3, 3)
+texture = ExtResource("14_4fsfw")
+region_rect = Rect2(52, 133, 9, 8)
 
 [node name="OptionsButton" parent="TopRibbon/Ribbon/MenuContainer" instance=ExtResource("10_w2hja")]
 layout_mode = 2
@@ -139,8 +152,8 @@ layout_mode = 2
 
 [node name="Icon" parent="TopRibbon/Ribbon/MenuContainer/OptionsButton/HBoxContainer/Sprite" index="0"]
 scale = Vector2(3, 3)
-texture = ExtResource("13_4fsfw")
-region_rect = Rect2(0, 0, 16, 16)
+texture = ExtResource("13_hupum")
+region_rect = Rect2(39, 40, 12, 8)
 
 [node name="Currency" parent="TopRibbon/Ribbon" instance=ExtResource("15_4fsfw")]
 layout_mode = 2
@@ -150,10 +163,13 @@ size_flags_horizontal = 3
 [connection signal="addToInventoryRequested" from="MyTabContainer/InnerContainer/Combat" to="." method="_on_combat_add_to_inventory_requested"]
 [connection signal="newFloorCompleted" from="MyTabContainer/InnerContainer/Combat" to="." method="_on_floor_clear"]
 [connection signal="wasSelected" from="TopRibbon/Ribbon/MenuContainer/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="wasSelected" from="TopRibbon/Ribbon/MenuContainer/EncyclopediaButton" to="." method="_on_encyclopedia_button_pressed"]
 [connection signal="wasSelected" from="TopRibbon/Ribbon/MenuContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 
 [editable path="MyTabContainer"]
 [editable path="TopRibbon/Ribbon/MenuContainer/SaveButton"]
 [editable path="TopRibbon/Ribbon/MenuContainer/SaveButton/HBoxContainer/Sprite"]
+[editable path="TopRibbon/Ribbon/MenuContainer/EncyclopediaButton"]
+[editable path="TopRibbon/Ribbon/MenuContainer/EncyclopediaButton/HBoxContainer/Sprite"]
 [editable path="TopRibbon/Ribbon/MenuContainer/OptionsButton"]
 [editable path="TopRibbon/Ribbon/MenuContainer/OptionsButton/HBoxContainer/Sprite"]

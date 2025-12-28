@@ -176,6 +176,10 @@ func _on_floor_display_floor_down() -> void:
 		currentFloor.visible = true
 		$FloorDisplay.setFloor(currentFloorIndex+1)
 		
+signal addChildRequested
+func _on_add_child_requested(emitter, node : Node) :
+	emit_signal("addChildRequested",emitter, node)
+		
 signal routineUnlockRequested
 func _on_routine_unlock_requested(routine : AttributeTraining) :
 	emit_signal("routineUnlockRequested", routine)
@@ -231,6 +235,8 @@ func connectToMapSignals(map : Node) :
 		map.connect("routineUnlockRequested", _on_routine_unlock_requested)
 	if (map.has_signal("shopRequested")) :
 		map.connect("shopRequested", _on_shop_requested)
+	if (map.has_signal("addChildRequested")) :
+		map.connect("addChildRequested", _on_add_child_requested)
 	map.connect("mapCompleted", _on_map_completed)
 
 const combatRewardsLoader = preload("res://Screens/GameScreen/Tabs/Combat/CombatRewards/combat_rewards.tscn")

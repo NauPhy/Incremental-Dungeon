@@ -3,22 +3,34 @@ extends "res://Graphic Elements/popups/my_popup.gd"
 var workingDict : Dictionary = {}
 
 func initialise(startingSettings : Dictionary) :
+	var allItems = EquipmentDatabase.getAllEquipment()
+	allItems.sort_custom(func(a,b):return a.getName()<b.getName())
 	workingDict = startingSettings
 	for item in IGOptions.getIGOptionsCopy()["encounteredItems"] :
 		if (workingDict.get(item) == null) :
 			workingDict[item] = 0
-	for key in workingDict.keys() :
-		var newEntry = getEntries().get_node("Sample").duplicate()
-		getEntries().add_child(newEntry)
-		newEntry.connect("wasSelected", _on_entry_selected)
-		newEntry.visible = true
-		newEntry.initialise(key)
+	for item in allItems :
+		if (workingDict.get(item.getItemName()) == null) :
+			var newEntry = getEntries().get_node("Sample2").duplicate()
+			getEntries().add_child(newEntry)
+			newEntry.visible = true
+		else :
+			var newEntry = getEntries().get_node("Sample").duplicate()
+			getEntries().add_child(newEntry)
+			newEntry.connect("wasSelected", _on_entry_selected)
+			newEntry.visible = true
+			newEntry.initialise(item.createSampleCopy())
 	if (!startingSettings.keys().is_empty()) :
-		getDetails().setItemSceneRefBase(getEntries().get_child(1).getItemSceneRef())
+		var children = getEntries().get_children()
+		for index in range(2, children.size()) :
+			if (!(children[index] is Button)) : 
+				getDetails().setItemSceneRefBase(children[index].getItemSceneRef())
+				children[index].select()
+				break
 
 func _on_entry_selected(emitter) :
 	for child in getEntries().get_children() :
-		if (child.getItemSceneRef() != emitter && child.name != "Sample") :
+		if (!(child is Button) && child.getItemSceneRef() != emitter && child.name != "Sample") :
 			child.deselect()
 	getDetails().setItemSceneRefBase(emitter)
 	

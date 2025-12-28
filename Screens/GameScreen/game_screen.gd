@@ -51,6 +51,11 @@ func _on_options_button_pressed(_emitter) -> void:
 	optionsMenuRef = optionsMenuLoader.instantiate()
 	add_child(optionsMenuRef)
 	
+const encyclopediaLoader = preload("res://Graphic Elements/popups/encyclopedia.tscn")
+func _on_encyclopedia_button_pressed(_emitter) :
+	encyclopediaRef = encyclopediaLoader.instantiate()
+	add_child(encyclopediaRef)
+	
 signal exitToMenu
 func _on_save_button_pressed(_emitter) -> void:
 	saveMenuRef = saveMenuLoader.instantiate()
@@ -169,7 +174,12 @@ func _on_shop_purchase_requested(item, itemPrice : int, currencyType : Currency,
 func _on_magicFind_requested(emitter) :
 	var magicFind = $Player.getOtherStat(Definitions.otherStatEnum.magicFind)
 	emitter.provideMagicFind(magicFind)
-		
+	
+func _on_add_child_requested(emitter, node : Node) :
+	add_child(node)
+	if (emitter.has_method("createBigEntry")) :
+		enemyEntryBigPopup = node
+	emitter.unlockAddChild()
 #func _on_player_attribute_mods_requested(emitter) -> void:
 	#emitter.providePlayerAttributeMods($Player.getAttributeMods())
 	#
@@ -184,8 +194,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if (event.is_action("ui_cancel")) :
 		accept_event()
 		handleEsc(event)
-		
-			
+	if (event.is_action("Options")) :
+		accept_event()
+		handleOptions(event)
+
+var enemyEntryBigPopup : Node = null
 func handleEsc(event) :
 	if (event.is_pressed()) :
 		escWasPressed = true
@@ -197,26 +210,49 @@ func handleEsc(event) :
 				else :
 					saveMenuRef.queue_free()
 					saveMenuRef = null
+			elif (encyclopediaRef != null) :
+				if (encyclopediaRef.hasNestedPopup()) :
+					encyclopediaRef.closeOutermostNestedPopup()
+				else :
+					encyclopediaRef.queue_free()
+					encyclopediaRef = null
 			elif (optionsMenuRef != null) :
 				if (optionsMenuRef.hasNestedPopup()) :
 					optionsMenuRef.closeOutermostNestedPopup()
 				else :
 					optionsMenuRef.queue_free()
 					optionsMenuRef = null
+			elif (enemyEntryBigPopup != null) :
+				enemyEntryBigPopup.queue_free()
+				enemyEntryBigPopup = null
 			else :
 				_on_save_button_pressed(self)
 		escWasPressed = false
 
-func handleMenu(event) :
+var optionsWasPressed = false
+func handleOptions(event) :
 	if (event.is_pressed()) :
-		menuWasPressed = true
+		optionsWasPressed = true
 	else :
-		if (menuWasPressed) :
+		if (optionsWasPressed) :
 			if (optionsMenuRef != null) :
 				optionsMenuRef.queue_free()
 				optionsMenuRef = null
 			else :
 				_on_options_button_pressed(self)
+		optionsWasPressed = false
+
+var encyclopediaRef
+func handleMenu(event) :
+	if (event.is_pressed()) :
+		menuWasPressed = true
+	else :
+		if (menuWasPressed) :
+			if (encyclopediaRef != null) :
+				encyclopediaRef.queue_free()
+				encyclopediaRef = null
+			else :
+				_on_encyclopedia_button_pressed(self)
 		menuWasPressed = false
 			
 ########################################
@@ -249,6 +285,8 @@ func beforeLoad(newSave) :
 			tab.connect("shopRequested", _on_shop_requested)
 		if (tab.has_signal("magicFindRequested")) :
 			tab.connect("magicFindRequested", _on_magicFind_requested)
+		if (tab.has_signal("addChildRequested")) :
+			tab.connect("addChildRequested", _on_add_child_requested)
 		#if (tab.has_signal("playerAttributeModsRequested")) :
 			#tab.connect("playerAttributeModsRequested", _on_player_attribute_mods_requested)
 	if (newSave) :
