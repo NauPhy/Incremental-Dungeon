@@ -60,7 +60,7 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 	var rewards
 	## New
 	if (currentFloor.has_method("getEnvironment")) :
-		rewards = $ProceduralGenerationLogic.generateDrops(currentRoom.getEncounterRef().enemies, currentFloor.getEnvironment())
+		rewards = $ProceduralGenerationLogic.generateDrops(currentRoom, currentFloor.getEnvironment())
 	else :
 		rewards = currentRoom.getEncounterRef().getRewards(magicFind)
 	await handleCombatRewards(rewards)		
@@ -120,8 +120,7 @@ func _on_map_completed(emitter) :
 		maxFloor += 1
 		$FloorDisplay.setMaxFloor(maxFloor)
 		var typicalEnemyDefense = emitter.getTypicalEnemyDefense()
-		if (completedIndex >= 1) :
-			createNewFloor()
+		createNewFloor()
 		if (narrativeWorking) :
 			await $NarrativePanel.continueSignal
 		_on_floor_display_floor_down()
@@ -130,11 +129,12 @@ func _on_map_completed(emitter) :
 			var title = environment.getName()
 			var myText = environment.introText
 			var button = "Continue"
-			launchNarrative(title, myText, button, true)
+			await launchNarrative(title, myText, button, true)
 		emit_signal("newFloorCompleted", typicalEnemyDefense)
 
 var narrativeWorking : bool = false
 func launchNarrative(title : String, myText : String, buttonText : String, waitToFinish : bool) :
+	narrativeWorking = true
 	$NarrativePanel.setTitle(title)
 	$NarrativePanel.setText(myText)
 	$NarrativePanel.setButtonText(buttonText)
@@ -167,6 +167,10 @@ func _on_floor_display_floor_up() -> void:
 		currentFloor = $MapContainer.get_child(currentFloorIndex-1)
 		currentFloor.visible = true
 		$FloorDisplay.setFloor(currentFloorIndex-1)
+	if (currentFloor.has_method("getEnvironment")) :
+		$FloorDisplay.setEnvironment(currentFloor.getEnvironment())
+	else :
+		$FloorDisplay.setTutorialBiome()
 
 func _on_floor_display_floor_down() -> void:
 	var currentFloorIndex = Helpers.findIndexInContainer($MapContainer, currentFloor)
@@ -175,6 +179,10 @@ func _on_floor_display_floor_down() -> void:
 		currentFloor = $MapContainer.get_child(currentFloorIndex+1)
 		currentFloor.visible = true
 		$FloorDisplay.setFloor(currentFloorIndex+1)
+	if (currentFloor.has_method("getEnvironment")) :
+		$FloorDisplay.setEnvironment(currentFloor.getEnvironment())
+	else :
+		$FloorDisplay.setTutorialBiome()
 		
 signal addChildRequested
 func _on_add_child_requested(emitter, node : Node) :
@@ -296,6 +304,7 @@ func beforeLoad(newGame) :
 	if (newGame) :
 		currentFloor = $MapContainer.get_child(0)
 		$FloorDisplay.setFloor(0)
+		$FloorDisplay.setTutorialBiome()
 		currentFloor.visible = true
 		
 func onLoad(loadDict : Dictionary) :
@@ -321,7 +330,12 @@ func onLoad(loadDict : Dictionary) :
 	if (currentFloorIndex is String && currentFloorIndex == "null") :
 		currentFloor = $MapContainer.get_child(0)
 		$FloorDisplay.setFloor(0)
+		$FloorDisplay.setTutorialBiome()
 	else :
 		currentFloor = $MapContainer.get_child(currentFloorIndex)
 		$FloorDisplay.setFloor(currentFloorIndex)
+		if (currentFloorIndex == 0) :
+			$FloorDisplay.setTutorialBiome()
+		else : 
+			$FloorDisplay.setEnvironment(currentFloor.getEnvironment())
 	currentFloor.visible = true

@@ -29,12 +29,12 @@ func getEnvironment() -> MyEnvironment :
 var UIEnabled : bool = true
 func disableUI() :
 	UIEnabled = false
-	$HomeButton.visible = false
-	$TextureRect.visible = false
+	$HBoxContainer/HomeButton.visible = false
+	$HBoxContainer/TextureRect.visible = false
 func enableUI() :
 	UIEnabled = true
-	$HomeButton.visible = true
-	$TextureRect.visible = true
+	$HBoxContainer/HomeButton.visible = true
+	$HBoxContainer/TextureRect.visible = true
 #######################################
 ## Callbacks
 func onCombatLoss(room) :
@@ -125,6 +125,7 @@ func addRow(val : MapData, row : int) :
 		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row-1))
 		newConnection.Room2 = centerRoom
 		if (row == 1) :
+			newConnection.visibilityOnStartup = 1
 			newConnection.setVisibility(1)
 		else :
 			newConnection.setVisibility(0)

@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://otd0777k80on"]
+[gd_scene load_steps=5 format=3 uid="uid://otd0777k80on"]
 
 [ext_resource type="FontFile" uid="uid://dps60a85iv5xv" path="res://Images/CC0 Assets/Kenney Pixel.ttf" id="1_kiyrd"]
 [ext_resource type="Script" uid="uid://10t877mhb37c" path="res://Screens/GameScreen/Tabs/Combat/Map/floor_display.gd" id="1_lmy6j"]
+[ext_resource type="Theme" uid="uid://gq8ni3dxisxy" path="res://Graphic Elements/Themes/pixelTheme.tres" id="2_1pl6g"]
 [ext_resource type="PackedScene" uid="uid://i8pn8xrqvhnh" path="res://Graphic Elements/Buttons/vriska_left_button.tscn" id="2_lmy6j"]
 
 [node name="FloorDisplay" type="HBoxContainer"]
@@ -17,8 +18,7 @@ script = ExtResource("1_lmy6j")
 
 [node name="FloorNumber" type="RichTextLabel" parent="."]
 layout_mode = 2
-theme_override_fonts/normal_font = ExtResource("1_kiyrd")
-theme_override_font_sizes/normal_font_size = 55
+theme = ExtResource("2_1pl6g")
 text = "FLOOR NUMBER"
 fit_content = true
 scroll_active = false

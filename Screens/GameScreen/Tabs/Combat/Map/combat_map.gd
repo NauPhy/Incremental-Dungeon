@@ -6,12 +6,12 @@ signal tutorialRequested
 var UIEnabled : bool = true
 func disableUI() :
 	UIEnabled = false
-	$HomeButton.visible = false
-	$TextureRect.visible = false
+	$HBoxContainer/HomeButton.visible = false
+	$HBoxContainer/TextureRect.visible = false
 func enableUI() :
 	UIEnabled = true
-	$HomeButton.visible = true
-	$TextureRect.visible = true
+	$HBoxContainer/HomeButton.visible = true
+	$HBoxContainer/TextureRect.visible = true
 
 func onCombatLoss(room) :
 	room.onCombatLoss()

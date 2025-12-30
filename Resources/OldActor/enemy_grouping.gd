@@ -59,7 +59,7 @@ const factionDictionary = {
 	factionEnum.ice : "Frostkin",
 	factionEnum.undead : "Undead",
 	factionEnum.demonic_military : "Demonic Military",
-	factionEnum.demonic : "Demon",
+	factionEnum.demonic : "Demonic Civilian",
 	factionEnum.merfolk : "Merfolk",
 	factionEnum.greenskin : "Greenskin",
 	factionEnum.misc : "Wanderkin"

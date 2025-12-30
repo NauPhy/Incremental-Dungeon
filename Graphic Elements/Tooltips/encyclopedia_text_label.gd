@@ -121,7 +121,7 @@ func isBadKey(key) -> bool :
 	return false
 			
 func addHyperlinkAtPos(index, key) :
-	if (text.find(colourString, index-colourString.length()) == index-colourString.length()) :
+	if (index >= colourString.length() && text.find(colourString, index-colourString.length()) == index-colourString.length()) :
 		return
 	var extendedKey = getExtendedKey(index, key,false)
 	text = text.insert(index, colourString)

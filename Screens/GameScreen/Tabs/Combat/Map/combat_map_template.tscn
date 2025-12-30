@@ -62,46 +62,44 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="."]
-texture_filter = 3
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -255.0
-offset_top = -195.0
-offset_right = -255.0
-offset_bottom = -195.0
-scale = Vector2(5, 5)
-texture = ExtResource("5_7x35n")
-
-[node name="HomeButton" parent="." instance=ExtResource("4_7n1xm")]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -280.0
-offset_bottom = -50.0
+offset_right = -15.0
+offset_bottom = -15.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_constants/separation = 15
+
+[node name="HomeButton" parent="HBoxContainer" instance=ExtResource("4_7n1xm")]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+size_flags_vertical = 8
 theme = ExtResource("5_suu3s")
 toggle = false
 
-[node name="Sprite" parent="HomeButton/HBoxContainer" index="0" instance=ExtResource("5_6ikdq")]
+[node name="Sprite" parent="HBoxContainer/HomeButton/HBoxContainer" index="0" instance=ExtResource("5_6ikdq")]
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 
-[node name="Icon" parent="HomeButton/HBoxContainer/Sprite" index="0"]
+[node name="Icon" parent="HBoxContainer/HomeButton/HBoxContainer/Sprite" index="0"]
 texture = ExtResource("6_suu3s")
 region_rect = Rect2(0, 0, 16, 16)
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
+texture_filter = 3
+custom_minimum_size = Vector2(205, 145)
+layout_mode = 2
+texture = ExtResource("5_7x35n")
 
 [connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="resized" from="CombatMap" to="." method="_on_combat_map_resized"]
 [connection signal="resized" from="CombatMap" to="CombatMap" method="_on_resized"]
-[connection signal="wasSelected" from="HomeButton" to="." method="_on_home_button_was_selected"]
+[connection signal="wasSelected" from="HBoxContainer/HomeButton" to="." method="_on_home_button_was_selected"]
 
-[editable path="HomeButton"]
-[editable path="HomeButton/HBoxContainer/Sprite"]
+[editable path="HBoxContainer/HomeButton"]
+[editable path="HBoxContainer/HomeButton/HBoxContainer/Sprite"]

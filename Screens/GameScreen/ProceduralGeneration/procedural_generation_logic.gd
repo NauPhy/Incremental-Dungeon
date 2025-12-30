@@ -3,22 +3,26 @@ extends Node
 ## createX() -> X implies that X.new() or X.duplicate() is called-- it returns a runtime instance
 ## getX() -> X implies that the "readonly" disk version of X is returned- or a reference to a member in another class
 
+var previousMaps : Array[MapData] = []
 func createMap() -> MapData :
 	var environment : MyEnvironment = getEnvironment()
 	$EnemyPoolHandler.reset(environment, getAllEnemies())
 	#$ItemPoolHandler.reset(environment, getAllItems())
-	var encounters : MapData = createEncounters()
-	encounters.environmentName = environment.getFileName()
-	return encounters
+	var newMap : MapData = createEncounters()
+	newMap.environmentName = environment.getFileName()
+	previousMaps.append(newMap)
+	return newMap
 
 
 ## moderately inefficent
-func generateDrops(enemies : Array[ActorPreset], environment : MyEnvironment) -> Array[Equipment]:
+func generateDrops(room : Node, environment : MyEnvironment) -> Array[Equipment]:
 	var retVal : Array[Equipment] = []
 	$ItemPoolHandler.reset(environment, getAllItems())
-	for enemy in enemies :
+	var roomName : String = room.name
+	var row = roomName.substr(1,1) as int
+	for enemy in room.getEncounterRef().enemies :
 		$DropHandler.reset($ItemPoolHandler.getItemPoolForEnemy(enemy))
-		retVal.append_array($DropHandler.createDropsForEnemy(enemy))
+		retVal.append_array($DropHandler.createDropsForEnemy(enemy, getEquipmentScaling(row)))
 	return retVal
 
 func getAllEnemies() :
@@ -52,7 +56,7 @@ func getAllItems() :
 	return list
 	
 func getEnvironment() -> MyEnvironment :
-	if (previousEnvironments.size() == 9) :
+	if (previousMaps.size() == 9) :
 		return MegaFile.getEnvironment("fort_demon")
 	var myRange = MegaFile.Environment_FilesDictionary.size()-1
 	var randKey = MegaFile.Environment_FilesDictionary.keys()[randi_range(0,myRange)]
@@ -60,32 +64,37 @@ func getEnvironment() -> MyEnvironment :
 	while (createdRecently(potentialEnvironment)) :
 		randKey = MegaFile.Environment_FilesDictionary.keys()[randi_range(0,myRange)]
 		potentialEnvironment = MegaFile.getEnvironment(randKey)
-	previousEnvironments.append(randKey)
 	return potentialEnvironment
 	
 func createdRecently(newEnv : MyEnvironment) -> bool :
 	var envName = newEnv.resource_path.get_file().get_basename()
-	if (previousEnvironments.size() < 4) :
-		if (previousEnvironments.find(envName) != -1) :
-			return true
-	var mostRecentPermitted = previousEnvironments.size()-4
-	return (previousEnvironments.find(envName) < mostRecentPermitted)
+	if (previousMaps.size() < 4) :
+		for map in previousMaps :
+			if (map.environmentName == envName) :
+				return true
+		return false
+	else :
+		var mostRecentPermitted = previousMaps.size()-4
+		for index in range(0,previousMaps.size()) :
+			if (previousMaps[index].environmentName == envName) :
+				return index < mostRecentPermitted
+		return false
 	
 func createEncounters() -> MapData :
 	var retVal = MapData.new()
 	var nodeCount = randi_range(4,7)
 	for index in range(0,nodeCount) :
 		var newRow = MapRow.new()
-		newRow.centralEncounter = createCentralEncounter()
+		newRow.centralEncounter = createCentralEncounter(index)
 		var sideNodeCount = randi_range(2,5)
 		var leftNodeCount = randi_range(0,sideNodeCount)
 		var rightNodeCount = sideNodeCount-leftNodeCount
 		for leftIndex in range(0,leftNodeCount) :
-			newRow.leftEncounters.append(createSideEncounter())
+			newRow.leftEncounters.append(createSideEncounter(index))
 		for rightIndex in range(0,rightNodeCount) :
-			newRow.rightEncounters.append(createSideEncounter())
+			newRow.rightEncounters.append(createSideEncounter(index))
 		retVal.rows.append(newRow)
-	retVal.bossEncounter = createBossEncounter()
+	retVal.bossEncounter = createBossEncounter(nodeCount)
 	return retVal
 	
 ## Drops are now added on combat end. Instead of drop lists, beastiary will now show tags indicating what categories can and cannot be dropped.
@@ -101,68 +110,76 @@ func addDrops(encounter : Encounter) -> void :
 		#enemy.drops.append_array(createdDrops)
 		#enemy.dropChances.append_array($DropHandler.getDropChances(newDrops.size()))
 	#
-func createCentralEncounter() -> Encounter :
+func createCentralEncounter(row) -> Encounter :
 	var retVal = Encounter.new()
-	retVal.enemies.append(createVeteran())
+	retVal.enemies.append(createVeteran(row))
 	if (randi_range(0,2) == 0) :
-		retVal.enemies.append(createVeteran())
+		retVal.enemies.append(createVeteran(row))
 	else :
 		for index in range(0,randi_range(2,3)) :
-			retVal.enemies.append(createNormal())
+			retVal.enemies.append(createNormal(row))
 	addDrops(retVal)
 	return retVal
 
-func createSideEncounter() -> Encounter :
+func createSideEncounter(row) -> Encounter :
 	var retVal = Encounter.new()
 	if (randi_range(0,2)==0) :
-		retVal.enemies.append(createVeteran())
+		retVal.enemies.append(createVeteran(row))
 		if (randi_range(0,2) == 0) :
-			retVal.enemies.append(createNormal())
+			retVal.enemies.append(createNormal(row))
 	elif (randi_range(0,9) == 0) :
-		var enemy = createNormal()
+		var enemy = createNormal(row)
 		for index in range(0,5) :
 			retVal.enemies.append(enemy.getAdjustedCopy(enemy.myScalingFactor))
 	else :
 		for index in range(0, randi_range(2,3)) :
-			retVal.enemies.append(createNormal())
+			retVal.enemies.append(createNormal(row))
 	addDrops(retVal)
 	return retVal
 
-func createBossEncounter() -> Encounter :
+func createBossEncounter(row) -> Encounter :
 	var retVal = Encounter.new()
-	retVal.enemies.append(createElite())
+	retVal.enemies.append(createElite(row))
 	if (randi_range(0,1) == 0) :
-		retVal.enemies.append(createVeteran())
+		retVal.enemies.append(createVeteran(row))
 	else :
 		for index in range(0,randi_range(2,3)) :
-			retVal.enemies.append(createNormal())
+			retVal.enemies.append(createNormal(row))
 	addDrops(retVal)
 	return retVal
 		
-func createNormal() -> ActorPreset :
-	#var test = $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal)
-	#if (test == null): 
-		#print("null")
-	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal).getAdjustedCopy(1)
-func createVeteran() -> ActorPreset :
-	#var test = $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran)
-	#if (test == null): 
-		#print("null")
-	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran).getAdjustedCopy(1)
-func createElite() -> ActorPreset :
-	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite).getAdjustedCopy(1)
+func createNormal(row) -> ActorPreset :
+	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal).getAdjustedCopy(getEnemyScaling(row))
+func createVeteran(row) -> ActorPreset :
+	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran).getAdjustedCopy(getEnemyScaling(row))
+func createElite(row) -> ActorPreset :
+	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite).getAdjustedCopy(getEnemyScaling(row))
+	
+func getEnemyScaling(row : int) :
+	var nodes = row
+	for map in previousMaps :
+		nodes += map.rows.size() + 1
+	return pow(1.5,nodes)
+	
+func getEquipmentScaling(row : int) :
+	var nodes = row
+	for map in previousMaps :
+		nodes += map.rows.size() + 1
+	return pow(1.5,nodes/4.0)
 	
 ############# Saving
-var previousEnvironments : Array = []
 var myReady : bool = false
 func _ready() :
 	myReady = true
 func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
-	retVal["previousEnvironments"] = previousEnvironments
+	retVal["previousMaps"] = []
+	for map in previousMaps :
+		retVal["previousMaps"].append(map.getSaveDictionary())
 	return retVal
 func beforeLoad(_newGame) :
 	$EnemyPoolHandler.initialiseMiscPool(getAllMisc())
 func onLoad(loadDict : Dictionary) :
-	if (loadDict.get("previousEnvironments") != null) :
-		previousEnvironments = loadDict["previousEnvironments"]
+	if (loadDict.get("previousMaps") != null) :
+		for map in loadDict.get("previousMaps") :
+			previousMaps.append(MapData.createFromSaveDictionary(map))

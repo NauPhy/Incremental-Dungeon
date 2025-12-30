@@ -29,8 +29,3 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = "Sample Text 1"
-
-[editable path="VBoxContainer/Picture/Elements/Sprite"]
-[editable path="VBoxContainer/Picture/Elements/Sprite2"]
-[editable path="VBoxContainer/Picture/Elements/Sprite3"]
-[editable path="VBoxContainer/Picture/Elements/Sprite4"]

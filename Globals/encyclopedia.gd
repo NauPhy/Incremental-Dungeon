@@ -428,7 +428,7 @@ var descriptions : Dictionary = {
 	"Undead" : "The Undead Faction includes those that practice necromancy and their creations.",
 	"Merfolk" : "The Merfolk Faction are a proud and powerful race, unbothered by the affairs of surface or underworld dwellers.",
 	
-	"Biome" : "Each floor is generated with a specific Biome. The Biome determines what Elements are eligible to drop and what Factions are eligible to appear. The Biome and its effects can be seen in the top right of the Combat Map.",
+	"Biome" : "Each floor beyond the tutorial is generated with a specific Biome. The Biome determines what Elements are eligible to drop and what Factions are eligible to appear. The Biome and its effects can be seen in the top right of the Combat Map.",
 	##################################################################
 	"Physical Damage Dealt" : "Physical Damage Dealt/PDD, applies before Physical Conversion.",
 	"Magic Damage Dealt" : "Magic Damage Dealt/MDD, applies before Magic Conversion.",

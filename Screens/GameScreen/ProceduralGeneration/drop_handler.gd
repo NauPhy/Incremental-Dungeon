@@ -18,7 +18,15 @@ const signatureEquipmentList = {
 	"hellion" : "ring_malice",
 	"hell_sentinel" : "rune_advanced_automation",
 	"champion_of_poesideon" : "aegis",
-	"kraken" : "armor_cephalopod"
+	"kraken" : "armor_cephalopod",
+	"fire_dragon" : "dragonbone_plate",
+	"water_dragon" : "dragonbone_plate",
+	"ice_dragon" : "dragonbone_plate",
+	"gold_dragon" : "dragonbone_plate",
+	"shadow_dragon" : "dragonbone_plate",
+	"swamp_dragon" : "dragonbone_plate",
+	"iron_dragon" : "dragonbone_plate",
+	"bone_dragon" : "dragonbone_plate"
 }
 
 var itemPool : Array
@@ -74,7 +82,7 @@ func getDropCount(enemy : ActorPreset) :
 			dropCount += 1
 	return dropCount
 
-func createDropsForEnemy(enemy : ActorPreset) -> Array[Equipment] :
+func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float) -> Array[Equipment] :
 	var retVal : Array[Equipment] = []
 	var dropCount = getDropCount(enemy)
 	if (dropCount == 0) :
@@ -85,7 +93,7 @@ func createDropsForEnemy(enemy : ActorPreset) -> Array[Equipment] :
 		if (roll < 3) : 
 			signatureDropped = true
 	if (signatureDropped) :
-		retVal.append(getSignature(enemy))
+		retVal.append(getSignature(enemy).getAdjustedCopy(scalingFactor))
 		dropCount -= 1
 	var qualities = getDropQualities(dropCount)
 	for index in range(0,dropCount) :
@@ -95,7 +103,7 @@ func createDropsForEnemy(enemy : ActorPreset) -> Array[Equipment] :
 		var item = getItemOfQuality(actualQuality)
 		if (item == null) :
 			continue
-		retVal.append(item.getAdjustedCopy(1))
+		retVal.append(item.getAdjustedCopy(scalingFactor))
 	return retVal
 	
 func getSignature(enemy : ActorPreset) :
