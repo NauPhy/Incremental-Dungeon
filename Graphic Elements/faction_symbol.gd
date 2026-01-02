@@ -9,8 +9,16 @@ func _ready() :
 		newTooltip.initialise(EnemyGroups.factionDictionary[index as EnemyGroups.factionEnum])
 		newTooltip.currentLayer = Helpers.getTopLayer()
 		var upperLeft = Vector2(0,0)
-		var bottomRight = Vector2(16,16)*children[index].getScale()
+		var bottomRight = Vector2(32,32)*children[index].getScale() + Vector2(10,10)
 		newTooltip.setPos(upperLeft, bottomRight)
+	setSpriteSizeRecursive(get_children(), 5)	
+		
+func setSpriteSizeRecursive(children : Array[Node], val) :
+	for child in children :
+		if (child.has_method("setScale")) :
+			child.setScale(val)
+			child.visible = true
+		setSpriteSizeRecursive(child.get_children(), val)
 
 func setSymbolMutex(val : EnemyGroups.factionEnum) :
 	clearAllSymbols()
@@ -22,3 +30,9 @@ func setSymbol(val : EnemyGroups.factionEnum) :
 func clearAllSymbols() :
 	for child in get_children() :
 		child.visible = false
+		
+func setEnvironment(val : MyEnvironment) :
+	clearAllSymbols()
+	for key in EnemyGroups.factionDictionary.keys() :
+		if (val.permittedFactions.find(key) != -1) :
+			setSymbol(key)

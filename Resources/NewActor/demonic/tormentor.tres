@@ -24,7 +24,7 @@ faction = 6
 script = ExtResource("4_u7cgb")
 portrait = ExtResource("4_unhvx")
 text = "The Tormented"
-description = "Whatever crimes this disgraced demon lord committed to deserve such punishment must be horrors beyond your comprehension.
+description = "Whatever crimes this disgraced Demon lord committed to deserve such punishment must be horrors beyond your comprehension.
 
 Unfortunately for you, they seem to think a misery shared is a misery halved..."
 MAXHP = -1.0

@@ -300,5 +300,5 @@ grow_horizontal = 2
 grow_vertical = 0
 encounter = ExtResource("17_vt8a7")
 
-[editable path="HomeButton"]
-[editable path="HomeButton/HBoxContainer/Sprite"]
+[editable path="HBoxContainer/HomeButton"]
+[editable path="HBoxContainer/HomeButton/HBoxContainer/Sprite"]

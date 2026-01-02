@@ -20,7 +20,7 @@ func createSampleCopy() -> Armor :
 
 const ratioMin = [0.500, 0.741, 1.350]
 const ratioMax = [0.741, 1.350, 2.000]
-const referenceDefense = 186
+const referenceDefense = 15.7426
 func calculateDefenses(scalingFactor, useAverage) :
 	var myQuality = equipmentGroups.quality
 	var myType = equipmentGroups.armorClass
@@ -35,3 +35,18 @@ func calculateDefenses(scalingFactor, useAverage) :
 	MAGDEF *= scalingFactor * qualityFactor
 	PHYSDEF *= scalingFactor * qualityFactor
 	
+func getSaveDictionary() -> Dictionary :
+	var retVal = super()
+	if (!Helpers.equipmentIsNew(self)) :
+		return retVal
+	retVal["PHYSDEF"] = PHYSDEF
+	retVal["MAGDEF"] = MAGDEF
+	return retVal
+	
+static func createFromSaveDictionary(loadDict) -> Armor :
+	var retVal = super(loadDict) as Armor
+	if (!Helpers.equipmentIsNew(retVal)) :
+		return retVal
+	retVal.PHYSDEF = loadDict["PHYSDEF"]
+	retVal.MAGDEF = loadDict["MAGDEF"]
+	return retVal

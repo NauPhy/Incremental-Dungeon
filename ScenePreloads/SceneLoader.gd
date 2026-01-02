@@ -5,6 +5,7 @@ extends Node
 const equipmentSceneDictionary = {
 #Weapon
 	"adamantium_greataxe" : preload("res://ScenePreloads/Equipment_new/Weapon/adamantium_greataxe.tscn"),
+	"amelia_wand" : preload("res://ScenePreloads/Equipment_new/Weapon/amelia_wand.tscn"),
 	"arming_sword" : preload("res://ScenePreloads/Equipment_new/Weapon/arming_sword.tscn"),
 	"bardiche" : preload("res://ScenePreloads/Equipment_new/Weapon/bardiche.tscn"),
 	"blade_of_darkness" : preload("res://ScenePreloads/Equipment_new/Weapon/blade_of_darkness.tscn"),
@@ -69,7 +70,7 @@ const equipmentSceneDictionary = {
 	"spear" : preload("res://ScenePreloads/Equipment_new/Weapon/spear.tscn"),
 	"staff_of_pain" : preload("res://ScenePreloads/Equipment_new/Weapon/staff_of_pain.tscn"),
 	"star_rod" : preload("res://ScenePreloads/Equipment_new/Weapon/star_rod.tscn"),
-	"throwing_axes" : preload("res://ScenePreloads/Equipment_new/Weapon/throwing_axes.tscn"),
+	"throwing_axe" : preload("res://ScenePreloads/Equipment_new/Weapon/throwing_axe.tscn"),
 	"topaz_staff" : preload("res://ScenePreloads/Equipment_new/Weapon/topaz_staff.tscn"),
 	"trident" : preload("res://ScenePreloads/Equipment_new/Weapon/trident.tscn"),
 	"umbral_dagger" : preload("res://ScenePreloads/Equipment_new/Weapon/umbral_dagger.tscn"),

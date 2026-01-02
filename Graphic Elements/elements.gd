@@ -26,3 +26,14 @@ func setSymbol(val : String) :
 func clearAllSymbols() :
 	for child in get_children() :
 		child.visible = false
+		
+func setEnvironment(val : MyEnvironment) :
+	clearAllSymbols()
+	if (val.firePermitted) :
+		setSymbol("Fire")
+	if (val.earthPermitted) :
+		setSymbol("Earth")
+	if (val.waterPermitted) :
+		setSymbol("Water")
+	if (val.icePermitted) :
+		setSymbol("Ice")

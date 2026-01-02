@@ -86,15 +86,6 @@ anchor_bottom = 0.9
 offset_right = -15.0
 spriteScale = 10
 
-[node name="HBoxContainer" parent="detailsRight/Text/VBoxContainer" index="3"]
-visible = false
-
-[node name="Option0" parent="detailsRight/Text/VBoxContainer/HBoxContainer2/CenterContainer0" index="0"]
-text = " Purchase "
-
-[node name="Option1" parent="detailsRight/Text/VBoxContainer/HBoxContainer2/CenterContainer1" index="0"]
-text = " Cancel "
-
 [node name="detailsLeft" parent="." instance=ExtResource("5_juvjr")]
 visible = false
 layout_mode = 1
@@ -104,15 +95,6 @@ anchor_right = 0.5
 anchor_bottom = 0.9
 offset_left = 15.0
 spriteScale = 10
-
-[node name="HBoxContainer" parent="detailsLeft/Text/VBoxContainer" index="3"]
-visible = false
-
-[node name="Option0" parent="detailsLeft/Text/VBoxContainer/HBoxContainer2/CenterContainer0" index="0"]
-text = " Purchase "
-
-[node name="Option1" parent="detailsLeft/Text/VBoxContainer/HBoxContainer2/CenterContainer1" index="0"]
-text = " Cancel "
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
@@ -137,6 +119,4 @@ vertical_alignment = 1
 
 [editable path="VBoxContainer/CurrencyDisplay/HBoxContainer/Icon"]
 [editable path="detailsRight"]
-[editable path="detailsRight/Picture/CenterContainer/Sprite"]
 [editable path="detailsLeft"]
-[editable path="detailsLeft/Picture/CenterContainer/Sprite"]

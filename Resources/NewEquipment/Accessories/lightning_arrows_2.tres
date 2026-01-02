@@ -148,8 +148,8 @@ title = "Thunderstorm Ammo"
 description = "Sample description
 ...
 If using ranged weapon: 
-+0.3 to Physical Damage Dealt Postmultiplier
-+0.231 to Physical Conversion Postmultiplier"
+DR Premuliplier x1.3
+Physical Conversion Postbonus +0.3"
 myPacket = SubResource("Resource_1nkak")
 equipmentGroups = SubResource("Resource_o5u83")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

@@ -24,7 +24,9 @@ faction = 1
 script = ExtResource("4_ofcuy")
 portrait = ExtResource("4_1u5cc")
 text = "Water Dragon"
-description = ""
+description = "These days, the amphibious water dragons rarely venture to the surface, where the events of the Great War have made the air unpalitable to them. They instead inhabit oceans and the lakes of the Underworld, tormenting Merfolk and stealing Demonic magic items. 
+
+Water dragons possess breath of magical water, seething with energy. This super-concentrated mana induces unconciousness, insantiy, and chemical burns in living organisms, while leaving inorganic matter untouched. Their treasure hoards include kraken beaks, Merfolk artifacts, and the occasional hell sentinel corpse. "
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0

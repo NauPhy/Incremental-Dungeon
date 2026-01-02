@@ -3,7 +3,8 @@ extends Resource
 class_name MapData
 @export var rows : Array[MapRow] = []
 @export var bossEncounter : Encounter
-var environmentName : String
+@export var shopName : String = ""
+@export var environmentName : String
 
 static func createFromSaveDictionary(val : Dictionary) :
 	if (val.is_empty()) :
@@ -14,6 +15,7 @@ static func createFromSaveDictionary(val : Dictionary) :
 		retVal.rows.append(MapRow.createFromSaveDictionary(row))
 	retVal.bossEncounter = Encounter.createFromSaveDictionary(val["boss"])
 	retVal.environmentName = val["environmentName"]
+	retVal.shopName = val["shopName"]
 	return retVal
 	
 func getSaveDictionary() -> Dictionary :
@@ -23,4 +25,5 @@ func getSaveDictionary() -> Dictionary :
 		retVal["rows"].append(row.getSaveDictionary())
 	retVal["boss"] = bossEncounter.getSaveDictionary()
 	retVal["environmentName"] = environmentName
+	retVal["shopName"] = shopName
 	return retVal

@@ -22,8 +22,8 @@ script = ExtResource("2_mnrq0")
 attributeMods = {
 "Dexterity": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.05,
-"Prebonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.05,
 "Premultiplier": 1.0
 },
 "Durability": {

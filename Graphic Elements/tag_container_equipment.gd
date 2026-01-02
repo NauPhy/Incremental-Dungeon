@@ -1,12 +1,32 @@
 extends HBoxContainer
 
+const colors = ["#d62910","#57a968","#4566c3", "#d4941c"]
 func _ready() :
+	for child in $Technology.get_children() :
+		putInPanel(child, colors[2])
+	for child in $Defense.get_children() :
+		putInPanel(child, colors[1])
+	for child in $Offense.get_children() :
+		putInPanel(child, colors[0])
+	for child in $Signature.get_children() :
+		putInPanel(child, colors[3])
 	setSpriteSizeRecursive(get_children(), 3)
+	
+func putInPanel(child : Node, color : String):
+	var newPanel = $Panel.duplicate()
+	child.get_parent().add_child(newPanel)
+	child.get_parent().remove_child(child)
+	newPanel.add_child(child)
+	child.position = Vector2(5,5)
+	var panelTheme : StyleBox = newPanel.get_theme_stylebox("panel").duplicate()
+	panelTheme.border_color = Color(color)
+	newPanel.add_theme_stylebox_override("panel", panelTheme)
 	
 func setSpriteSizeRecursive(children : Array[Node], val) :
 	for child in children :
 		if (child.has_method("setScale")) :
 			child.setScale(val)
+			child.visible = true
 		setSpriteSizeRecursive(child.get_children(), val)
 
 func setEquipment(item : Equipment) :
@@ -58,7 +78,7 @@ func addTooltip(child : Node) :
 		oldTooltip.queue_free()
 	var title : String = child.name
 	var upperLeft = Vector2(0,0)
-	var bottomRight = Vector2(16,16) * child.getScale()
+	var bottomRight = Vector2(16,16) * child.getScale() + Vector2(10,10)
 	var newTrigger = tooltipLoader.instantiate()
 	child.add_child(newTrigger)
 	newTrigger.initialise(title)

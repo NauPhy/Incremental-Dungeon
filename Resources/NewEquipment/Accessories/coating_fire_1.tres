@@ -62,7 +62,7 @@ statMods = {
 "Postbonus": 0.0,
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
-"Premultiplier": 1.0
+"Premultiplier": 1.12
 },
 "Magic Defense": {
 "Postbonus": 0.0,
@@ -109,14 +109,14 @@ otherMods = {
 "Premultiplier": 1.0
 },
 "Physical Conversion": {
-"Postbonus": 0.0,
-"Postmultiplier": 0.107,
+"Postbonus": 0.12,
+"Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 },
 "Physical Damage Dealt": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.12,
+"Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 },

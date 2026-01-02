@@ -183,6 +183,7 @@ func loadGameSaveSelection(parent : Node) :
 		menu.nestedPopupInit(parent)
 	menu.connect("loadRequested", _on_load_menu_option_chosen)
 	menu.connect("finished", _on_finished)
+	return menu
 func _on_load_menu_option_chosen(slot : Definitions.saveSlots) :
 	currentSlot = slot
 	emit_signal("loadRequested")
@@ -206,3 +207,4 @@ func newGameSaveSelection() :
 	var menu = newGameMenu.instantiate()
 	add_child(menu)
 	menu.connect("optionChosen", _on_new_game_option_chosen)
+	return menu

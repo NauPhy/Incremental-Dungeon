@@ -145,7 +145,11 @@ script = ExtResource("3_0m8a4")
 boostedAttr1 = 2
 boostedAttr2 = 4
 title = "Breath of the Divine"
-description = "Sample description"
+description = "Sample description
+......
+If melee weapon is equipped:
+DR Premultiplier x1.11
+Physical Conversion Postbonus +0.11"
 myPacket = SubResource("Resource_kt3u3")
 equipmentGroups = SubResource("Resource_4eg27")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

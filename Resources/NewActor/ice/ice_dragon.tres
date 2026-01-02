@@ -24,7 +24,9 @@ faction = 3
 script = ExtResource("4_3rdf0")
 portrait = ExtResource("4_01yy7")
 text = "Ice Dragon"
-description = ""
+description = "Ice dragons are perhaps the least known of all dragons, as they spend most of their time sleeping and they dislike the temperatures away from their frigid mountain peaks. Despite their seemingly barren environment, ice dragons enjoy a year round banquet, using flight and intelligence to easily locate prey, then resting for weeks or months without food, a lifestyle afforded by their slow metabolisms.
+
+Ice dragons  posess breath of frigid cold, and can readily freeze not only water and organic matter, but CO2 and alcohol as well. Their treasure hoards include opium gardens, fine pelts, and the remains of unfortunate ice elementals."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0

@@ -16,9 +16,14 @@ func updatePlayer() :
 	## This is the complete list of "direct" and "specific" modifiers detailed in Player.gd.
 	## Player.gd does not actually need to know the complete list of direct modifiers but I will add it there as comments for clarity
 	## Direct
+	# Permanent
+	for key in permanentMods.keys() :
+		$Player.updateDirectModifier(key, permanentMods[key])
 	#Equipment
 	var equipmentDirect : ModifierPacket = $MyTabContainer/InnerContainer/Equipment.getDirectModifiers()
 	$Player.updateDirectModifier("Equipment", equipmentDirect)
+	var elementDirect : ModifierPacket = $MyTabContainer/InnerContainer/Equipment.getElementalDirectModifiers()
+	$Player.updateDirectModifier("Element Synergy", elementDirect)
 	## Specific
 	#Training
 	var newTrainingLevels : Array[int] = $MyTabContainer/InnerContainer/Training.getAttributeLevels()
@@ -39,6 +44,36 @@ func initialisePlayerName(val) :
 	
 ######################################
 ## Signals
+var permanentMods : Dictionary = {}
+func _shopping_permanent_modifier(value : float, type : String, statEnum : int, source : String, isMultiplicative : bool) :
+	if (permanentMods.get(source) == -1) :
+		permanentMods[source] = ModifierPacket.new()
+	var field
+	if (type == "attribute" && isMultiplicative) :
+		permanentMods[source].attributeMods[statEnum][type] *= value
+	elif (type == "attribute" && !isMultiplicative) :
+		permanentMods[source].attributeMods[statEnum][type] += value
+	elif (type == "stat" && isMultiplicative) :
+		permanentMods[source].statMods[statEnum][type] *= value
+	elif (type == "stat" && !isMultiplicative) :
+		permanentMods[source].statMods[statEnum][type] += value
+	elif (type == "other" && isMultiplicative) :
+		permanentMods[source].otherMods[statEnum][type] *= value
+	elif (type == "other" && !isMultiplicative) :
+		permanentMods[source].otherMods[statEnum][type] += value
+	else :
+		Shopping.provideConfirmation(false)
+	Shopping.provideConfirmation(true)
+		
+func _shopping_upgrade_routine(routine : AttributeTraining) :
+	$MyTabContainer/InnerContainer/Training.upgradeRoutine(routine)
+	Shopping.provideConfirmation(true)
+	
+func _shopping_remove_currency(item : Currency, val : int) :
+	var currentAmount = $TopRibbon/Ribbon/Currency.getCurrencyAmount(item)
+	var newAmount = max(currentAmount-val,0)
+	$TopRibbon/Ribbon/Currency.setCurrencyAmount(item, newAmount)
+
 func _on_tab_pressed(emitter : Button) :
 	for child in $TabContainer.get_children() :
 		if (child.name == emitter.name) :
@@ -96,7 +131,10 @@ func _on_combat_add_to_inventory_requested(itemSceneRef, isAutomatic : bool) -> 
 			$MyTabContainer/InnerContainer/Combat.denyAddToInventory()
 	else :
 		#Does not account for randomly generated bonuses if you ever add that sorry
-		$MyTabContainer/InnerContainer/Equipment.addItemToInventory(SceneLoader.createEquipmentScene(itemSceneRef.getItemName()))
+		## I did add that thank you
+		var newItem = SceneLoader.createEquipmentScene(itemSceneRef.core.getItemName())
+		newItem.core = itemSceneRef.core
+		$MyTabContainer/InnerContainer/Equipment.addItemToInventory(newItem)
 		$MyTabContainer/InnerContainer/Combat.removeCombatRewardEntry(itemSceneRef)
 		
 func _on_tutorial_requested(tutorialName : Encyclopedia.tutorialName, tutorialPos : Vector2) :
@@ -115,8 +153,10 @@ func _on_player_core_requested(emitter) -> void:
 	emitter.providePlayerCore($Player.getCore())
 func _on_player_class_requested(emitter) -> void:
 	emitter.providePlayerClass($Player.getClass())
-func _on_routine_unlock_requested(routine : AttributeTraining) :
+func _on_routine_unlock_requested(emitter, routine : AttributeTraining) :
 	$MyTabContainer/InnerContainer/Training.unlockRoutine(routine)
+	if (emitter == Shopping) :
+		Shopping.provideConfirmation(true)
 func _on_floor_clear(typicalEnemyDefense) :
 	$Player.setTypicalEnemyDefense(typicalEnemyDefense)
 	
@@ -137,7 +177,6 @@ func _on_shop_requested(details : ShopDetails) :
 	$MyTabContainer/InnerContainer/Combat.add_child(newShop)
 	if (!newShop.myReady) :
 		await newShop.myReadySignal
-	newShop.connect("purchaseRequested", _on_shop_purchase_requested)
 	newShop.connect("currencyAmountRequested", _on_currency_amount_requested)
 	newShop.connect("finished", _on_shop_finished)
 	$MyTabContainer/InnerContainer/Combat.disableUI()
@@ -148,28 +187,6 @@ func _on_shop_finished() :
 	
 func _on_currency_amount_requested(item : Currency, emitter : Node) :
 	emitter.provideCurrencyAmount($TopRibbon/Ribbon/Currency.getCurrencyAmount(item))
-	
-func _on_shop_purchase_requested(item, itemPrice : int, currencyType : Currency, emitter) :
-	var currencyAmount = $TopRibbon/Ribbon/Currency.getCurrencyAmount(currencyType)
-	if (currencyAmount < itemPrice) :
-		return
-	##Special purchasables
-	if (item is String) :
-		if (item == "Inventory Space") :
-			$MyTabContainer/InnerContainer/Equipment.expandInventory(1)
-		else : 
-			return
-	##Equipment purchasables
-	elif (item is Equipment) :
-		if (myInventoryFull()) :
-			displayInventoryFull()
-			return
-		$MyTabContainer/InnerContainer/Equipment.addItemToInventory(SceneLoader.createEquipmentScene(item.getItemName()))
-	else : 
-		return
-	currencyAmount -= itemPrice
-	$TopRibbon/Ribbon/Currency.setCurrencyAmount(currencyType, currencyAmount)
-	emitter.setCurrencyAmount(currencyAmount)
 
 func _on_magicFind_requested(emitter) :
 	var magicFind = $Player.getOtherStat(Definitions.otherStatEnum.magicFind)
@@ -180,6 +197,8 @@ func _on_add_child_requested(emitter, node : Node) :
 	if (emitter.has_method("createBigEntry")) :
 		enemyEntryBigPopup = node
 	emitter.unlockAddChild()
+func _on_player_modifier_dictionary_requested(emitter) :
+	emitter.providePlayerModifierDictionary($Player.getModifierDictionary())
 #func _on_player_attribute_mods_requested(emitter) -> void:
 	#emitter.providePlayerAttributeMods($Player.getAttributeMods())
 	#
@@ -262,6 +281,9 @@ var tabsUnlocked : Array
 func getSaveDictionary() -> Dictionary :
 	var tempDict = {}		
 	tempDict["tabsUnlocked"] = tabsUnlocked
+	tempDict["permanentMods"] = {}
+	for key in permanentMods.keys() :
+		tempDict["permanentMods"][key] = permanentMods[key].getSaveDictionary()
 	return tempDict
 		
 var myReady : bool = false
@@ -272,6 +294,13 @@ func beforeLoad(newSave) :
 	## Wait for annoying dependency
 	if (!$MyTabContainer.myReady) :
 		await $MyTabContainer.actuallyReady
+	Shopping.connect("addPermanentModiferRequested", _shopping_permanent_modifier)
+	Shopping.connect("upgradeRoutineRequested", _shopping_upgrade_routine)
+	Shopping.connect("unlockRoutineRequested", _on_routine_unlock_requested)
+	Shopping.connect("currencyAmountRequested", _on_currency_amount_requested)
+	Shopping.connect("removeCurrencyRequested", _shopping_remove_currency)
+	if (newSave) :
+		permanentMods = {}
 	for tab in $MyTabContainer/InnerContainer.get_children() :
 		if (tab.has_signal("tutorialRequested")) :
 			tab.connect("tutorialRequested", _on_tutorial_requested)
@@ -287,6 +316,8 @@ func beforeLoad(newSave) :
 			tab.connect("magicFindRequested", _on_magicFind_requested)
 		if (tab.has_signal("addChildRequested")) :
 			tab.connect("addChildRequested", _on_add_child_requested)
+		if (tab.has_signal("playerModifierDictionaryRequested")) :
+			tab.connect("playerModifierDictionaryRequested", _on_player_modifier_dictionary_requested)
 		#if (tab.has_signal("playerAttributeModsRequested")) :
 			#tab.connect("playerAttributeModsRequested", _on_player_attribute_mods_requested)
 	if (newSave) :
@@ -307,6 +338,8 @@ func onLoad(loadDict : Dictionary) -> void :
 	for index in range(0,tabsUnlocked.size()) :
 		if (!tabsUnlocked[index]) :
 			$MyTabContainer.hideChild($MyTabContainer/InnerContainer.get_child(index))
+	for key in loadDict["permanentMods"].keys() :
+		permanentMods[key] = ModifierPacket.createFromSaveDictionary(loadDict["permanentMods"][key])
 
 func updateFromOptions(optionsCopy : Dictionary) :
 	IGOptions_inventoryBehaviour = optionsCopy[IGOptions.options.inventoryBehaviour] as inventoryBehaviour_local

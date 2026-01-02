@@ -48,6 +48,10 @@ func initialiseNumberObjects() :
 	for key in Definitions.otherStatDictionary.keys() :
 		otherStatObjects.append(NumberClass.new())
 	otherStatObjects[Definitions.otherStatEnum.magicFind].setPrebonus("Base", 1.0)
+	otherStatObjects[Definitions.otherStatEnum.physicalDamageDealt].setPrebonus("Base",1.0)
+	otherStatObjects[Definitions.otherStatEnum.physicalDamageTaken].setPrebonus("Base",1.0)
+	otherStatObjects[Definitions.otherStatEnum.magicDamageDealt].setPrebonus("Base",1.0)
+	otherStatObjects[Definitions.otherStatEnum.magicDamageTaken].setPrebonus("Base",1.0)
 ###############################
 ## Specific Modifiers
 func updateTrainingLevels(newLevels : Array[int]) :
@@ -81,12 +85,17 @@ func updateDirectModifier(origin : String, val : ModifierPacket) :
 		otherStatObjects[key].setPremultiplier(origin, val.otherMods[tag]["Premultiplier"])
 		otherStatObjects[key].setPostbonus(origin, val.otherMods[tag]["Postbonus"])
 		otherStatObjects[key].setPostmultiplier(origin, val.otherMods[tag]["Postmultiplier"])
-		if (key == Definitions.otherStatEnum.magicFind) :
+		var statDisplay = $ScrollContainer/VBoxContainer/OtherStatPanel/PanelContainer/OtherStatDisplay
+		if (otherStatObjects[key].getPrebonuses().get("Base") != null) :
 			if (otherStatObjects[key].getFinal() == 1) :
-				$ScrollContainer/VBoxContainer/OtherStatPanel/PanelContainer/OtherStatDisplay.get_child(key as int).visible = false
+				statDisplay.get_child(key as int).visible = false
+			else :
+				statDisplay.get_child(key as int).visible = true
 		else :
 			if (otherStatObjects[key].getFinal() == 0) :
-				$ScrollContainer/VBoxContainer/OtherStatPanel/PanelContainer/OtherStatDisplay.get_child(key as int).visible = false
+				statDisplay.get_child(key as int).visible = false
+			else :
+				statDisplay.get_child(key as int).visible = true
 ########################################
 func myUpdate() :
 	## Attributes
@@ -103,7 +112,7 @@ func myUpdate() :
 		finalAttributes.append(attributeObjects[key].getFinal())
 	## Combat Stats
 	#equippedWeapon
-	derivedStatObjects[Definitions.baseStatEnum.DR].setPostbonus("Weapon Attack", equippedWeapon.attackBonus)
+	derivedStatObjects[Definitions.baseStatEnum.DR].setPostbonus("Equipped Weapon", equippedWeapon.attackBonus)
 	var LOCAL_weaponArray = equippedWeapon.getScalingArray()
 	#equippedArmor
 	var PHYSDEF_armor
@@ -185,6 +194,19 @@ func getAttributeMods() -> Array[NumberClass] :
 	return retVal
 func getOtherStat(key : Definitions.otherStatEnum) :
 	return otherStatObjects[key].getFinal()
+func getModifierDictionary() -> Dictionary :
+	var retVal : Dictionary = {}
+	retVal["attribute"] = {}
+	retVal["baseStat"] = {}
+	retVal["otherStat"] = {}
+	for key in Definitions.attributeDictionary.keys() :
+		retVal["attribute"][Definitions.attributeDictionary[key]] = attributeObjects[key].getFinal()
+	for key in Definitions.baseStatDictionary.keys() :
+		retVal["baseStat"][Definitions.baseStatDictionary[key]] = derivedStatObjects[key].getFinal()
+	for key in Definitions.otherStatDictionary.keys() :
+		retVal["otherStat"][Definitions.otherStatDictionary[key]] = otherStatObjects[key].getFinal()
+	return retVal
+		
 ##################################################
 ## Saving
 const myLoadDependencyName = Definitions.loadDependencyName.player

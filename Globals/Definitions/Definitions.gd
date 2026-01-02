@@ -168,3 +168,13 @@ const equipmentPaths = {
 	equipmentTypeEnum.accessory : "res://Global Scene Preloads/Equipment/Resources/Accessory",
 	equipmentTypeEnum.currency : "res://Global Scene Preloads/Equipment/Resources/Currency"
 }
+
+enum elementEnum {
+	earth,fire,ice,water
+}
+const elementDictionary = {
+	elementEnum.earth : "Earth",
+	elementEnum.fire : "Fire",
+	elementEnum.ice : "Ice",
+	elementEnum.water : "Water"
+}

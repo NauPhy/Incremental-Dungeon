@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="Weapon" load_steps=6 format=3 uid="uid://c16qcpjfb7ojs"]
+[gd_resource type="Resource" script_class="Weapon" load_steps=7 format=3 uid="uid://c16qcpjfb7ojs"]
 
+[ext_resource type="Resource" uid="uid://m4qa2i0ttkt6" path="res://Resources/NewAction/Attacks/water_jet.tres" id="1_fk52s"]
 [ext_resource type="Script" uid="uid://bjf2usx5yhgpu" path="res://Resources/OldEquipment/equipment_grouping.gd" id="1_s4sls"]
 [ext_resource type="Script" uid="uid://drk1kxvptw3qa" path="res://Screens/GameScreen/Player/modifier_packet.gd" id="2_fk52s"]
 [ext_resource type="Script" uid="uid://6qgd3qugycc1" path="res://Resources/OldEquipment/weapon.gd" id="3_cpa4a"]
@@ -150,6 +151,7 @@ scaling = {
 "Strength": 0.0
 }
 attackBonus = 81.4
+basicAttack = ExtResource("1_fk52s")
 isUnarmed = false
 title = "Staff of Water"
 description = "Hecklers that criticise water mages with, \"water can't hurt people\", or \"what are you gonna do, throw waves at me?\" are usually silenced by the reminder that the damaging power of water magic comes from the weaponised magical energy of the element, not the mechanical impact of matter. Those that aren't are silenced with the sudden arrival of a lot of high pressure, scalding water, as it's a bit of a sore subject for water mages."

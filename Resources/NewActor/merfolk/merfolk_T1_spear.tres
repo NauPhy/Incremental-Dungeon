@@ -24,7 +24,9 @@ faction = 7
 script = ExtResource("6_gqx8r")
 portrait = ExtResource("5_dat4i")
 text = "Merfolk Spearfisher"
-description = ""
+description = "The Merfolk have two prestigeous schools of war, the Academy of Magic and the Academy of Martial Arts. Participation in the Merfolk military is optional, but the prestige and compensation make it a highly competitive field.
+
+While magical aptitude is a genetic lottery, the freshman class of the martial school is mostly made up of spearfishers  and other manual laborers, who have already spent their adolescense honing their bodies and already have experience with tools of war."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0

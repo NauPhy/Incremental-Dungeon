@@ -15,8 +15,10 @@ func getItemPoolForEnemy(newEnemy : ActorPreset) :
 	return workingPool.duplicate()
 
 func filterItemPool_env() :
-	for preItem in itemPool :
+	var index = 0
+	while (index < itemPool.size()) :
 		var remove : bool = false
+		var preItem = itemPool[index]
 		var item = preItem.equipmentGroups
 		remove = remove || (!item.isEligible)
 		## Elemental accessories can be dropped in nonelemental areas with a penalty to raritiy
@@ -28,7 +30,9 @@ func filterItemPool_env() :
 			remove = remove || (item.isEarth && !environment.earthPermitted)
 			remove = remove || (item.isWater && !environment.waterPermitted)
 		if (remove) :
-			itemPool.remove_at(itemPool.find(preItem))
+			itemPool.remove_at(index)
+		else :
+			index += 1
 			
 func filterWorkingPool_enemy(preEnemy : ActorPreset) :
 	workingPool = itemPool.duplicate()

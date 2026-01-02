@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://6dlrgv7rgovn"]
+[gd_scene load_steps=17 format=3 uid="uid://6dlrgv7rgovn"]
 
 [ext_resource type="PackedScene" uid="uid://b0dk8gsoe4wgw" path="res://Screens/GameScreen/Tabs/tab.tscn" id="1_sfv5i"]
 [ext_resource type="Script" uid="uid://h4t80xg2j3yj" path="res://Screens/GameScreen/Tabs/Combat/combat_tab.gd" id="2_d5esk"]
@@ -7,8 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://bg06kottiuyhf" path="res://Graphic Elements/developer_console.tscn" id="5_aly7l"]
 [ext_resource type="Theme" uid="uid://blwnh8rwgc0eh" path="res://Graphic Elements/Themes/mainTab.tres" id="6_hrq1d"]
 [ext_resource type="Script" uid="uid://b5vxubufs31lb" path="res://Graphic Elements/BigTextPanel/big_text_panel_continue.gd" id="7_2lm74"]
+[ext_resource type="PackedScene" uid="uid://cjahgospf76p4" path="res://Graphic Elements/faction_symbol.tscn" id="8_2jio1"]
 [ext_resource type="Theme" uid="uid://toctfm8xh225" path="res://Graphic Elements/Themes/squareSuperButton.tres" id="8_hrq1d"]
 [ext_resource type="PackedScene" uid="uid://c5uhhdm6s5ims" path="res://Graphic Elements/Buttons/my_button.tscn" id="9_n6jna"]
+[ext_resource type="PackedScene" uid="uid://bvpfnn4luxf6o" path="res://Graphic Elements/elements.tscn" id="9_ugwap"]
 [ext_resource type="PackedScene" uid="uid://b8u7rb34016g7" path="res://Graphic Elements/Tooltips/encyclopedia_text_label.tscn" id="10_n6jna"]
 [ext_resource type="PackedScene" uid="uid://cocw3t3fhan13" path="res://Screens/GameScreen/Tabs/Combat/Map/big_floor_display.tscn" id="12_y6o0r"]
 [ext_resource type="PackedScene" uid="uid://c5ntfqwe5yp37" path="res://Screens/GameScreen/ProceduralGeneration/procedural_generation_logic.tscn" id="13_y6o0r"]
@@ -69,7 +71,7 @@ anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 50.0
-offset_top = 50.0
+offset_top = 30.0
 offset_right = -50.0
 offset_bottom = -50.0
 grow_horizontal = 2
@@ -79,7 +81,7 @@ theme_override_constants/separation = 50
 [node name="VBoxContainer" type="VBoxContainer" parent="NarrativePanel/VBoxContainer" index="0"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 30
+theme_override_constants/separation = 10
 
 [node name="Title" type="RichTextLabel" parent="NarrativePanel/VBoxContainer/VBoxContainer" index="0"]
 layout_mode = 2
@@ -89,7 +91,17 @@ fit_content = true
 scroll_active = false
 horizontal_alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="NarrativePanel/VBoxContainer/VBoxContainer" index="1"]
+[node name="FactionSymbol" parent="NarrativePanel/VBoxContainer/VBoxContainer" index="1" instance=ExtResource("8_2jio1")]
+visible = false
+layout_mode = 2
+
+[node name="Elements" parent="NarrativePanel/VBoxContainer/VBoxContainer" index="2" instance=ExtResource("9_ugwap")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 1
+theme_override_constants/separation = 20
+
+[node name="PanelContainer" type="PanelContainer" parent="NarrativePanel/VBoxContainer/VBoxContainer" index="3"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("8_hrq1d")
@@ -125,6 +137,7 @@ grow_horizontal = 0
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="defeat" from="CombatPanel" to="." method="_on_combat_panel_defeat"]
+[connection signal="playerModifierDictionaryRequested" from="CombatPanel" to="." method="_on_combat_panel_player_modifier_dictionary_requested"]
 [connection signal="retreat" from="CombatPanel" to="." method="_on_combat_panel_retreat"]
 [connection signal="victory" from="CombatPanel" to="." method="_on_combat_panel_victory"]
 [connection signal="visibility_changed" from="MapContainer" to="." method="_on_map_container_visibility_changed"]

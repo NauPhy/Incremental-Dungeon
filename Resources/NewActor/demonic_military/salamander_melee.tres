@@ -24,9 +24,9 @@ faction = 5
 script = ExtResource("4_1dphw")
 portrait = ExtResource("4_gd1rd")
 text = "Salamander Skirmisher"
-description = "Resembling a naga from afar, Salamanders have tough natural armor and an innate aptitude with fire magic. Even unarmed, they are formidable opponents.
+description = "Resembling a naga from afar, salamanders have tough natural armor and an innate aptitude with fire magic. Even unarmed, they are formidable opponents.
 
-Salamanders are not true demons, but their bloodline was sold into servitude so many millenia ago that the distinction would be by now forgotten, if not for their biological incompatibility with true demons."
+Salamanders are not true Demons, but their bloodline was sold into servitude so many millenia ago that the distinction would be by now forgotten, if not for their biological incompatibility with true Demons."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0

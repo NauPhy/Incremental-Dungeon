@@ -110,13 +110,12 @@ signal newFloorCompleted
 func _on_map_completed(emitter) :
 	var completedIndex = Helpers.findIndexInContainer($MapContainer, emitter)
 	if (completedIndex == maxFloor) :
-		var isNarrative : bool = false
-		if (currentFloor.has_method("getBossName")) :
-			isNarrative = true
+		## The only boss that starts with Hell Knight is the final boss
+		if (currentFloor.has_method("getBossName") && currentFloor.getBossName() != "Hell Knight") :
 			var outroText = "As the " + currentFloor.getBossName() + " falls, the path forward opens."
 			var title = "Victory!"
 			var button = "Descend"
-			launchNarrative(title, outroText, button, false)
+			launchNarrative(title, outroText, button, false, false)
 		maxFloor += 1
 		$FloorDisplay.setMaxFloor(maxFloor)
 		var typicalEnemyDefense = emitter.getTypicalEnemyDefense()
@@ -129,17 +128,27 @@ func _on_map_completed(emitter) :
 			var title = environment.getName()
 			var myText = environment.introText
 			var button = "Continue"
-			await launchNarrative(title, myText, button, true)
+			await launchNarrative(title, myText, button, true, true)
 		emit_signal("newFloorCompleted", typicalEnemyDefense)
 
 var narrativeWorking : bool = false
-func launchNarrative(title : String, myText : String, buttonText : String, waitToFinish : bool) :
+func launchNarrative(title : String, myText : String, buttonText : String, waitToFinish : bool, isEnvironmentIntro : bool) :
 	narrativeWorking = true
 	$NarrativePanel.setTitle(title)
 	$NarrativePanel.setText(myText)
 	$NarrativePanel.setButtonText(buttonText)
 	disableUI()
 	$NarrativePanel.visible = true
+	var factions = $NarrativePanel/VBoxContainer/VBoxContainer/FactionSymbol
+	var elements = $NarrativePanel/VBoxContainer/VBoxContainer/Elements
+	if (isEnvironmentIntro) :
+		factions.visible = true
+		elements.visible = true
+		factions.setEnvironment(currentFloor.getEnvironment())
+		elements.setEnvironment(currentFloor.getEnvironment())
+	else :
+		factions.visible = false
+		elements.visible = false
 	if (waitToFinish) :
 		await $NarrativePanel.continueSignal
 	
@@ -189,8 +198,8 @@ func _on_add_child_requested(emitter, node : Node) :
 	emit_signal("addChildRequested",emitter, node)
 		
 signal routineUnlockRequested
-func _on_routine_unlock_requested(routine : AttributeTraining) :
-	emit_signal("routineUnlockRequested", routine)
+func _on_routine_unlock_requested(emitter, routine : AttributeTraining) :
+	emit_signal("routineUnlockRequested", emitter, routine)
 	
 signal shopRequested
 func _on_shop_requested(details) :
@@ -339,3 +348,8 @@ func onLoad(loadDict : Dictionary) :
 		else : 
 			$FloorDisplay.setEnvironment(currentFloor.getEnvironment())
 	currentFloor.visible = true
+
+
+signal playerModifierDictionaryRequested
+func _on_combat_panel_player_modifier_dictionary_requested(emitter) -> void:
+	emit_signal("playerModifierDictionaryRequested", emitter)

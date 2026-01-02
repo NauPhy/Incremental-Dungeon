@@ -24,7 +24,9 @@ faction = 7
 script = ExtResource("6_xiciv")
 portrait = ExtResource("5_mx4s0")
 text = "Merfolk Initiate"
-description = ""
+description = "The Merfolk have two prestigeous schools of war, the Academy of Magic and the Academy of Martial Arts. Participation in the Merfolk military is optional, but the prestige and compensation make it a highly competitive field.
+
+This young initiate of the magic school harbors immense psionic potential, though they still have a lot of study ahead of them."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0

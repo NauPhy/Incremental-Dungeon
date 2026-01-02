@@ -43,7 +43,7 @@ func sortTraining(type) :
 	for index in range(0, entries.size()) :
 		$Con.move_child(entries[index], index+3)
 	
-func setCurrentTraining(val : AttributeTraining) :
+func setTrainingGraphic(val : AttributeTraining) :
 	for child in $Con.get_children() :
 		if (child == $Con/Title || child == $Con/Spacer || child == $Con/PanelContainer) :
 			continue
@@ -53,19 +53,29 @@ func setCurrentTraining(val : AttributeTraining) :
 			child.clearButton()
 		
 signal trainingChanged
+var currentTrainingResource : AttributeTraining = null
+var routineUpgradeLevels : Dictionary[String, int] = {}
 func _on_requested_enable(emitter) :
-	for child in $Con.get_children() :
-		if (child == $Con/Title || child == $Con/Spacer || child == $Con/PanelContainer) :
-			continue
-		if (child != emitter) :
-			child.clearButton()
-	emit_signal("trainingChanged", emitter.getResource())
+	setTrainingGraphic(emitter)
+	currentTrainingResource = emitter
+	emit_signal("trainingChanged", createUpgradedTraining(emitter))
 	
 func unlockRoutine(routine : AttributeTraining) :
 	for child in $Con.get_children() :
 		if (child.has_method("getResource") && child.getResource() == routine) :
 			child.visible = true
 			return
+			
+func upgradeRoutine(routine : AttributeTraining) :
+	routineUpgradeLevels[routine.resource_path.get_file().get_basename()] += 1
+	if (routine == currentTrainingResource) :
+		emit_signal("trainingChanged", createUpgradedTraining(currentTrainingResource))
+		
+func createUpgradedTraining(routine : AttributeTraining) :
+	var retVal = routine.duplicate()
+	for key in retVal.scaling.keys() :
+		retVal.scaling[key] = 1 + 0.25*routineUpgradeLevels[routine.resource_path.get_file().get_basename()]
+	return retVal
 
 func _on_requested_disable(_emitter) :
 	emit_signal("trainingChanged", null)
@@ -74,6 +84,9 @@ var myReady : bool = false
 func _ready() :
 	myReady = true
 func beforeLoad(_newGame) :
+	var routineList = MegaFile.getAllRoutine()
+	for routine in routineList :
+		routineUpgradeLevels[routine.resource_path.get_file().get_basename()] = 0
 	## Fill out header
 	for key in Definitions.attributeDictionary.keys() :
 		var newHeader = $Con/PanelContainer/HBoxContainer/HBoxContainer/Sample.duplicate()
@@ -94,6 +107,7 @@ func onLoad(loadDict : Dictionary) :
 	for node in $Con.get_children() :
 		if (node != $Con/Title && node != $Con/Spacer && node != $Con/PanelContainer) :
 			node.visible = loadDict["routineUnlocks"][node.name]
+	routineUpgradeLevels = loadDict["routineUpgrades"]
 func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
 	var routineUnlocks : Dictionary = {}
@@ -101,4 +115,5 @@ func getSaveDictionary() -> Dictionary :
 		if (node != $Con/Title && node != $Con/Spacer && node != $Con/PanelContainer) :
 			routineUnlocks[node.name] = node.visible
 	retVal["routineUnlocks"] = routineUnlocks
+	retVal["routineUpgrades"] = routineUpgradeLevels
 	return retVal

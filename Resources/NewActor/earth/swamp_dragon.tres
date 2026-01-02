@@ -24,7 +24,7 @@ faction = 2
 script = ExtResource("4_xto23")
 portrait = ExtResource("4_vpnyo")
 text = "Swamp Dragon"
-description = "Apart from Demons (whose species takes many shapes), Dragons are the only known sapient non-humanoid, as well as the only known non-social sapient creature. Arrogant and conceited, dragons consider themselves the greatest of all living beings, and given their strength and history, it's hard to argue with their assessment.
+description = "Apart from Demons (whose species takes many shapes), dragons are the only known sapient non-humanoid, as well as the only known non-social sapient creature. Arrogant and conceited, dragons consider themselves the greatest of all living beings, and given their strength and history of dominance, it's hard to argue with their assessment.
 
 Swamp dragons possess breath of poisonous acid, capable of destroying ferrous armours with ease. Their treasure hoards include fossils, gems, and the bones of their largest prey."
 MAXHP = -1.0

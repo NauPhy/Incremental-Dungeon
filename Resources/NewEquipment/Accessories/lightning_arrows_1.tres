@@ -148,8 +148,8 @@ title = "Spark Ammo"
 description = "Sample description
 ...
 If using ranged weapon: 
-+0.11 to Physical Damage Dealt Postmultiplier
-+0.0991 to Physical Conversion Postmultiplier"
+DR Premultiplier x1.11
+Physical Conversion Postbonus +0.11"
 myPacket = SubResource("Resource_s6w72")
 equipmentGroups = SubResource("Resource_7gqv1")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

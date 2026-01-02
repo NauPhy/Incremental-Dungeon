@@ -13,8 +13,11 @@ func addToInventory(itemSceneRef) :
 		return
 	getNextEmptySlot().add_child(itemSceneRef)
 	itemSceneRef.setMouseFilter(Control.MOUSE_FILTER_PASS)
+	itemSceneRef.get_node("SuperButton").contentMargin = 6
+	itemSceneRef.get_node("SuperButton").updatePanel()
 	itemSceneRef.connect("wasSelected", _on_item_selected)
 	itemSceneRef.connect("wasDeselected", _on_item_deselected)
+	
 func discardItem(itemSceneRef) :
 	var itemIndex = findPanelIndex(itemSceneRef)
 	if (itemIndex == null) :
@@ -61,7 +64,35 @@ func getModifierPacket() -> ModifierPacket :
 	for key in Definitions.equipmentTypeDictionary.keys() :
 		if (equippedEntries[key] != null) :
 			retVal = equippedEntries[key].addToModifierPacket(retVal)
+	if (equippedEntries[2] != null && equippedEntries[2].getItemName() == "coating_divine" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.melee) :
+		retVal.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 1.11
+		retVal.otherMods[Definitions.otherStatEnum.physicalConversion]["Postbonus"] += 0.11
+	elif (equippedEntries[2] != null && equippedEntries[2].getItemName() == "lightning_arrows_1" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.ranged) :
+		retVal.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 1.11
+		retVal.otherMods[Definitions.otherStatEnum.physicalConversion]["Postbonus"] += 0.11
+	elif (equippedEntries[2] != null && equippedEntries[2].getItemName() == "lightning_arrows_2" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.ranged) :
+		retVal.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 1.3
+		retVal.otherMods[Definitions.otherStatEnum.physicalConversion]["Postbonus"] += 0.3
 	return retVal
+func getElementalModifierPacket() -> ModifierPacket :
+	var retVal = ModifierPacket.new()
+	var weaponMatches
+	if (equippedEntries[0] == null || equippedEntries[2] == null) :
+		weaponMatches = 0
+	else :
+		weaponMatches = EquipmentGroups.getMatchingElementCount(equippedEntries[0].core.equipmentGroups, equippedEntries[2].core.equipmentGroups)
+		if (equippedEntries[1].getItemName() == "armor_cephalopod" && equippedEntries[2].core.equipmentGroups.isWater && !equippedEntries[0].core.equipmentGroups.isWater) :
+			weaponMatches += 1
+	retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] = pow(1.25, weaponMatches)
+	var armorMatches
+	if (equippedEntries[1] == null || equippedEntries[2] == null) :
+		armorMatches = 0
+	else :
+		armorMatches = EquipmentGroups.getMatchingElementCount(equippedEntries[1].core.equipmentGroups, equippedEntries[2].core.equipmentGroups)
+	retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.PHYSDEF]]["Premultiplier"] = pow(1.25,armorMatches)
+	retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.MAGDEF]]["Premultiplier"] = pow(1.25, armorMatches)
+	return retVal
+	
 func getItemCount(item : Equipment) :
 	if (item is Currency) :
 		return -1

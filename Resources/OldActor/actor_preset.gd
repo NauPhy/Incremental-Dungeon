@@ -37,13 +37,13 @@ func getStat(type : Definitions.baseStatEnum) -> float :
 	else :
 		return -1
 
-const referencePowerLevel = 442000000
+const referencePowerLevel = 919107
 var myScalingFactor : float = -1
 func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 	var retVal = self.duplicate()
 	retVal.resourceName = self.getResourceName()
 	retVal.myScalingFactor = scalingFactor
-	if (!enemyGroups.isEligible) :
+	if (!enemyGroups.isEligible && !(getResourceName() == "apophis")) :
 		return retVal
 	var strengthMultiplier
 	if (enemyGroups.enemyQuality == enemyGroups.enemyQualityEnum.normal) :
@@ -92,9 +92,11 @@ func getDesc() : return description
 
 func getSaveDictionary() -> Dictionary :
 	var retVal = {}
-	if (!enemyGroups.isEligible) :
-		return retVal
+	if (!enemyGroups.isEligible && !(getResourceName() == "apophis")) :
+		return retVal 
 	retVal["resourceName"] = getResourceName()
+	if retVal["resourceName"] == null :
+		print("problem")
 	retVal["myScalingFactor"] = myScalingFactor
 	#if (myScalingFactor != -1) :
 		#retVal["drops"] = []

@@ -141,6 +141,8 @@ func updateText_modifiers(myText) :
 		for subkey in ModifierPacket.StandardModifier.keys() :
 			var modString = modifiers.getModStringOrNull_attr(key, subkey)
 			if (modString != null) :
+				if (isInIGOptions) :
+					myText += "Standard "
 				myText += modString + "\n"
 				addEndl = true
 	for key in Definitions.baseStatDictionary.keys() :

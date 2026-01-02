@@ -29,3 +29,6 @@ size_flags_horizontal = 3
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = "Sample Text 1"
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/CenterContainer0/Option0" to="." method="_on_option_0_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/CenterContainer1/Option1" to="." method="_on_option_1_pressed"]

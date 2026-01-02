@@ -36,7 +36,8 @@ func _ready() :
 	$TitleCard/Title.text = core.text
 	$Graphic.texture = core.portrait
 	setHP(core.MAXHP)
-	takeAction(core.actions[0])
+	var chosenAction = randi_range(0,core.actions.size()-1)
+	takeAction(core.actions[chosenAction])
 	var screenSize : Vector2i = Engine.get_singleton("DisplayServer").screen_get_size()
 	isEnemy = global_position.y < screenSize.y/2
 	

@@ -7,7 +7,24 @@ signal retreat
 const GODPUNCHloader = preload("res://Resources/OldAction/Attacks/godpunch.tres")
 var autoMode : bool = false
 
+signal playerModifierDictionaryRequested
+signal playerModifierDictionaryReceived
+var waitingForPlayerModifierDictionary : bool = false
+var playerModPacket_comm : Dictionary = {}
+func getPlayerModifierDictionary() -> Dictionary :
+	waitingForPlayerModifierDictionary = true
+	emit_signal("playerModifierDictionaryRequested", self)
+	if (waitingForPlayerModifierDictionary) :
+		await playerModifierDictionaryReceived
+	return playerModPacket_comm
+func providePlayerModifierDictionary(val : Dictionary) :
+	playerModPacket_comm = val
+	waitingForPlayerModifierDictionary = false
+	emit_signal("playerModifierDictionaryReceived")
+
+var currentPlayerMods : Dictionary = {}
 func resetCombat(friendlyCores : Array[ActorPreset], enemyCores : Array[ActorPreset]) :
+	currentPlayerMods = await getPlayerModifierDictionary()
 	cleanup()
 	var actorLoader = preload("Actors/combat_actor.tscn")
 	for friend in friendlyCores :
@@ -178,20 +195,48 @@ func executeAction(emitter, action, target) :
 		if (emitter == $FriendlyParty.get_child(0)) :
 			target.setHP(0)
 			return
-	
-	if (target is int && target == -1) :
-		return
+			
 	var AR = emitter.core.AR
 	var DR = emitter.core.DR
-	var defense
-	if (action.type == AttackAction.damageType.PHYS) :
-		defense = target.core.PHYSDEF
-	elif (action.type == AttackAction.damageType.MAG) :
-		defense = target.core.MAGDEF
+	var physicalDefense = target.core.PHYSDEF
+	var magicDefense = target.core.MAGDEF
+	
+	var magicDR : float
+	var physicalDR : float
+	if (target == $FriendlyParty.get_child(0)) :
+		if (action.type == AttackAction.damageType.PHYS) :
+			physicalDR = DR
+			magicDR = 0
+		elif (action.type == AttackAction.damageType.MAG) :
+			physicalDR = 0
+			magicDR = DR
+		else :
+			return
 	else :
-		return
-	var args : Array = [action.power, DR, AR, defense]
-	var damage = Encyclopedia.getFormula("Damage Value", Encyclopedia.formulaAction.getCalculation_full, args)
+		if (action.type == AttackAction.damageType.MAG) :
+			magicDR = DR*(1-currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicConversion])
+			physicalDR = DR*(currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicConversion])
+		elif (action.type == AttackAction.damageType.PHYS) :
+			magicDR = DR*(currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalConversion])
+			physicalDR = DR*(1-currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalConversion])
+		else :
+			return
+
+	var physicalArgs : Array = [action.power, physicalDR, AR, physicalDefense]
+	var physicalDamage = Encyclopedia.getFormula("Damage Value", Encyclopedia.formulaAction.getCalculation_full, physicalArgs)
+	if (target != $FriendlyParty.get_child(0)) :
+		physicalDamage *= currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalDamageDealt]
+	else :
+		physicalDamage *= currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalDamageTaken]
+		
+	var magicArgs : Array = [action.power, magicDR, AR, magicDefense]
+	var magicDamage = Encyclopedia.getFormula("Damage Value", Encyclopedia.formulaAction.getCalculation_full, magicArgs)
+	if (target != $FriendlyParty.get_child(0)) :
+		magicDamage *= currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicDamageDealt]
+	else :
+		magicDamage *= currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicDamageTaken]
+		
+	var damage = magicDamage + physicalDamage
 	if (damage > target.HP) :
 		target.setHP(0)
 	else :

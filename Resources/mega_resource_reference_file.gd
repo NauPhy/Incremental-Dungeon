@@ -166,6 +166,7 @@ func getNewActor_demonic(resourceName : String) :
 	return NewActor_demonicDictionary.get(resourceName)
 
 const NewActor_demonic_militaryDictionary = {
+	"apophis" : preload("res://Resources/NewActor/demonic_military/apophis.tres"),
 	"arch_fiend" : preload("res://Resources/NewActor/demonic_military/arch_fiend.tres"),
 	"balrog" : preload("res://Resources/NewActor/demonic_military/balrog.tres"),
 	"death_knight" : preload("res://Resources/NewActor/demonic_military/death_knight.tres"),
@@ -182,12 +183,12 @@ func getNewActor_demonic_military(resourceName : String) :
 	return NewActor_demonic_militaryDictionary.get(resourceName)
 
 const NewActor_earthDictionary = {
-	"Lindwurm" : preload("res://Resources/NewActor/earth/Lindwurm.tres"),
 	"deathcap" : preload("res://Resources/NewActor/earth/deathcap.tres"),
 	"dryad" : preload("res://Resources/NewActor/earth/dryad.tres"),
 	"faun" : preload("res://Resources/NewActor/earth/faun.tres"),
 	"forest_drake" : preload("res://Resources/NewActor/earth/forest_drake.tres"),
 	"hill_giant" : preload("res://Resources/NewActor/earth/hill_giant.tres"),
+	"lindwurm" : preload("res://Resources/NewActor/earth/lindwurm.tres"),
 	"rock_troll" : preload("res://Resources/NewActor/earth/rock_troll.tres"),
 	"satyr" : preload("res://Resources/NewActor/earth/satyr.tres"),
 	"swamp_dragon" : preload("res://Resources/NewActor/earth/swamp_dragon.tres"),
@@ -245,7 +246,7 @@ func getNewActor_ice(resourceName : String) :
 	return NewActor_iceDictionary.get(resourceName)
 
 const NewActor_merfolkDictionary = {
-	"champion_of_poesideon" : preload("res://Resources/NewActor/merfolk/champion_of_poesideon.tres"),
+	"champion_of_poseidon" : preload("res://Resources/NewActor/merfolk/champion_of_poseidon.tres"),
 	"ilsuiw" : preload("res://Resources/NewActor/merfolk/ilsuiw.tres"),
 	"merfolk_T1_mage" : preload("res://Resources/NewActor/merfolk/merfolk_T1_mage.tres"),
 	"merfolk_T1_spear" : preload("res://Resources/NewActor/merfolk/merfolk_T1_spear.tres"),
@@ -274,6 +275,7 @@ func getNewActor_misc(resourceName : String) :
 	return NewActor_miscDictionary.get(resourceName)
 
 const NewActor_undeadDictionary = {
+	"amelia" : preload("res://Resources/NewActor/undead/amelia.tres"),
 	"bone_dragon" : preload("res://Resources/NewActor/undead/bone_dragon.tres"),
 	"death" : preload("res://Resources/NewActor/undead/death.tres"),
 	"jiangshi_assassin" : preload("res://Resources/NewActor/undead/jiangshi_assassin.tres"),

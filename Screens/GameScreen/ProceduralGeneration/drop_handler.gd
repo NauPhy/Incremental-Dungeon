@@ -7,17 +7,17 @@ const signatureEquipmentList = {
 	"titan" : "crackling_greataxe",
 	"lich1" : "tome_death_2",
 	"lich2" : "lich_crown",
-	"amelia" : "thorns_oglogoth",
+	"amelia" : "amelia_wand",
 	"lindwurm" : "coating_earth_2",
 	"fire_snake" : "coating_fire_2",
 	"ice_hydra" : "tome_ice_2",
-	"archfiend" : "tome_fire_2",
+	"arch_fiend" : "tome_fire_2",
 	"ilsuiw" : "tome_water_2",
 	"balrog" : "ring_authority",
 	"tormentor" : "rampart_agony",
 	"hellion" : "ring_malice",
 	"hell_sentinel" : "rune_advanced_automation",
-	"champion_of_poesideon" : "aegis",
+	"champion_of_poseidon" : "aegis",
 	"kraken" : "armor_cephalopod",
 	"fire_dragon" : "dragonbone_plate",
 	"water_dragon" : "dragonbone_plate",
@@ -26,7 +26,7 @@ const signatureEquipmentList = {
 	"shadow_dragon" : "dragonbone_plate",
 	"swamp_dragon" : "dragonbone_plate",
 	"iron_dragon" : "dragonbone_plate",
-	"bone_dragon" : "dragonbone_plate"
+	"bone_dragon" : "dragonbone_plate",
 }
 
 var itemPool : Array
@@ -82,13 +82,13 @@ func getDropCount(enemy : ActorPreset) :
 			dropCount += 1
 	return dropCount
 
-func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float) -> Array[Equipment] :
+func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float, penaliseElemental : bool) -> Array[Equipment] :
 	var retVal : Array[Equipment] = []
 	var dropCount = getDropCount(enemy)
 	if (dropCount == 0) :
 		return retVal
 	var signatureDropped : bool = false
-	if (enemy.enemyGroups.enemyQuality == EnemyGroups.enemyQualityEnum.elite) :
+	if (enemy.enemyGroups.enemyQuality == EnemyGroups.enemyQualityEnum.elite && !(enemy.getResourceName() == "apophis")) :
 		var roll = randf_range(0,100)
 		if (roll < 3) : 
 			signatureDropped = true
@@ -100,7 +100,11 @@ func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float) -> Array[Eq
 		var actualQuality = reduceToValidQuality(qualities[index])
 		if (actualQuality == null) :
 			continue
-		var item = getItemOfQuality(actualQuality)
+		var item
+		if (penaliseElemental) :
+			item = getItemOfQuality_penaliseElemental(actualQuality)
+		else :
+			item = getItemOfQuality(actualQuality)
 		if (item == null) :
 			continue
 		retVal.append(item.getAdjustedCopy(scalingFactor))
@@ -117,8 +121,6 @@ func getDropQualities(count : int) -> Array[EquipmentGroups.qualityEnum] :
 		for qualityIndex in range(0,qualityThresholds.size()) :
 			if (roll <= qualityThresholds[qualityIndex]) :
 				retVal.append((4-qualityIndex) as EquipmentGroups.qualityEnum)
-				if (roll <= qualityThresholds[0]) :
-					print("Legendary dropped!")
 				break
 	return retVal
 	
@@ -153,6 +155,21 @@ func getItemOfQuality(quality) :
 				return item
 			current += 1
 	return null
+	
+func getItemOfQuality_penaliseElemental(quality) :
+	var poolContainsNonelemental : bool = false
+	for item in itemPool :
+		if (!item.equipmentGroups.isElemental()) :
+			poolContainsNonelemental = true
+			break
+	if (!poolContainsNonelemental) :
+		return getItemOfQuality(quality)
+	
+	var sample = getItemOfQuality(quality)
+	if (sample == null) :
+		return null
+	while (sample.equipmentGroups.isElemental() && randi_range(0,3) != 0) :
+		sample = getItemOfQuality(quality)
 	
 #func getItemsOfQualities(qualities : Array[EquipmentGroups.qualityEnum]) :
 	#var indices : Array[int] = []

@@ -9,7 +9,7 @@
 
 [sub_resource type="Resource" id="Resource_q10cs"]
 script = ExtResource("4_4hk64")
-isEligible = true
+isEligible = false
 glassCannonIndex = 1.0
 HPToDefRatio = 1.0
 defRatio = 1.0

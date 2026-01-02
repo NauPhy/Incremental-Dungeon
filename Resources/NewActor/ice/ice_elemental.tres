@@ -24,7 +24,9 @@ faction = 3
 script = ExtResource("4_m1c5q")
 portrait = ExtResource("4_wsa3g")
 text = "Ice Elemental"
-description = ""
+description = "Ice elementals are the embodiment of unchange, and they seek nothing less than the heat death of the universe. Though they are assured by the belief the universe itself is enforcing their eventual victory, they nonetheless make every effort to help it along. 
+
+Surprisingly, ice elementals quite like fire elementals, and view them as tools for advancing entropy."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0

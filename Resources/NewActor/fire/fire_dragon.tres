@@ -24,7 +24,9 @@ faction = 0
 script = ExtResource("4_qmpwc")
 portrait = ExtResource("4_ihayp")
 text = "Fire Dragon"
-description = ""
+description = "Fire dragons are the most sadistic of all dragons, and frequently decimate armies or burn down villages for the fun of it (and to remind other races who's boss). As a result of their invasive lifestyle, they're much better known than other dragons, and are universally resented by their slightly less malicious cousins.
+
+Fire dragons possess breath of furious flames, and can easily destroy any organic substance. Their treasure hoards include the scorched remains of prey, humanoid livestock and trade goods, and shiny igneous rocks that crows would kill for."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0

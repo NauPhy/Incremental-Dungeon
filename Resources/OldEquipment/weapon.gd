@@ -74,8 +74,22 @@ static func scalingToLetter(scalingVal : float) -> String :
 	else :
 		return "S+"
 
+const referenceValue = 0.3429401
 func getAdjustedCopy(scalingFactor : float) -> Weapon :
 	var retVal = super(scalingFactor) as Weapon##not sure if copies weapon properties
-	retVal.attackBonus *= scalingFactor
+	retVal.attackBonus *= scalingFactor*referenceValue
 	return retVal
 	
+func getSaveDictionary() -> Dictionary :
+	var retVal = super() 
+	if (!Helpers.equipmentIsNew(self)) :
+		return retVal
+	retVal["attack"] = attackBonus
+	return retVal
+
+static func createFromSaveDictionary(loadDict : Dictionary) -> Weapon :
+	var retVal = super(loadDict) as Weapon
+	if (!Helpers.equipmentIsNew(retVal)) :
+		return retVal
+	retVal.attackBonus = loadDict["attack"]
+	return retVal

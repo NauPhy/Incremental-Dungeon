@@ -10,19 +10,32 @@ func createMap() -> MapData :
 	#$ItemPoolHandler.reset(environment, getAllItems())
 	var newMap : MapData = createEncounters()
 	newMap.environmentName = environment.getFileName()
+	if (previousMaps.size() == 0) :
+		newMap.shopName = "routine"
+	elif (previousMaps.size() == 1) :
+		newMap.shopName = "armor"
+	elif (previousMaps.size() == 2) :
+		newMap.shopData = "weapon"
+	elif (previousMaps.size() == 3) :
+		newMap.shopData = "soul"
 	previousMaps.append(newMap)
 	return newMap
-
-
+	
 ## moderately inefficent
 func generateDrops(room : Node, environment : MyEnvironment) -> Array[Equipment]:
 	var retVal : Array[Equipment] = []
 	$ItemPoolHandler.reset(environment, getAllItems())
 	var roomName : String = room.name
 	var row = roomName.substr(1,1) as int
+	var penaliseElemental : bool = !(environment.earthPermitted || environment.firePermitted || environment.icePermitted || environment.waterPermitted)
 	for enemy in room.getEncounterRef().enemies :
 		$DropHandler.reset($ItemPoolHandler.getItemPoolForEnemy(enemy))
-		retVal.append_array($DropHandler.createDropsForEnemy(enemy, getEquipmentScaling(row)))
+		retVal.append_array($DropHandler.createDropsForEnemy(enemy, getEquipmentScaling(row), penaliseElemental))
+	var averageGold = getGoldScaling(row)
+	var goldCount = randi_range(0,round(averageGold))
+	var goldItem = EquipmentDatabase.getEquipment("gold_coin").duplicate()
+	goldItem.setCount(goldCount)
+	retVal.append(goldItem)
 	return retVal
 
 func getAllEnemies() :
@@ -94,11 +107,14 @@ func createEncounters() -> MapData :
 		for rightIndex in range(0,rightNodeCount) :
 			newRow.rightEncounters.append(createSideEncounter(index))
 		retVal.rows.append(newRow)
-	retVal.bossEncounter = createBossEncounter(nodeCount)
+	if (previousMaps.size() == 9) :
+		retVal.bossEncounter = createFinalBossEncounter(nodeCount)
+	else :
+		retVal.bossEncounter = createBossEncounter(nodeCount)
 	return retVal
 	
 ## Drops are now added on combat end. Instead of drop lists, beastiary will now show tags indicating what categories can and cannot be dropped.
-func addDrops(encounter : Encounter) -> void :
+func addDrops(_encounter : Encounter) -> void :
 	return
 	#for enemy in encounter.enemies :
 		#var itemPool = $ItemPoolHandler.getItemPoolForEnemy(enemy)
@@ -147,6 +163,23 @@ func createBossEncounter(row) -> Encounter :
 			retVal.enemies.append(createNormal(row))
 	addDrops(retVal)
 	return retVal
+	
+func createFinalBossEncounter(row) -> Encounter :
+	var retVal = Encounter.new()
+	var hellKnightResource = EnemyDatabase.getEnemy("hell_knight")
+	var archfiendResource = EnemyDatabase.getEnemy("arch_fiend")
+	var apophisResource = EnemyDatabase.getEnemy("apophis")
+	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(row)))
+	retVal.enemies.append(archfiendResource.getAdjustedCopy(getEnemyScaling(row)))
+	retVal.enemies.append(apophisResource.getAdjustedCopy(getEnemyScaling(row+1.71)))
+	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(row)))
+	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(row)))
+	retVal.introTitle = ""
+	retVal.introText = ""
+	retVal.victoryTitle = ""
+	retVal.victoryText = ""
+	addDrops(retVal)
+	return retVal
 		
 func createNormal(row) -> ActorPreset :
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal).getAdjustedCopy(getEnemyScaling(row))
@@ -156,16 +189,27 @@ func createElite(row) -> ActorPreset :
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite).getAdjustedCopy(getEnemyScaling(row))
 	
 func getEnemyScaling(row : int) :
-	var nodes = row
+	var nodes = row + 1
 	for map in previousMaps :
 		nodes += map.rows.size() + 1
-	return pow(1.5,nodes)
+	if (nodes <= 6) :
+		return pow(4.18, nodes)
+	return pow(4.18,6)*pow(2,nodes-6)
 	
 func getEquipmentScaling(row : int) :
+	var nodes = row + 1
+	for index in range(0, previousMaps.size()-1) :
+		nodes += previousMaps[index].rows.size() + 1
+	if (nodes <= 6) :
+		return pow(4.18, nodes/4.0)
+	else :
+		pow(4.18,nodes/4.0)*pow(2,(nodes-6)/4.0)
+
+func getGoldScaling(row : int) :
 	var nodes = row
-	for map in previousMaps :
-		nodes += map.rows.size() + 1
-	return pow(1.5,nodes/4.0)
+	for index in range(0, previousMaps.size()-1) :
+		nodes += previousMaps[index].rows.size() + 1
+	return pow(2,nodes/4.0)
 	
 ############# Saving
 var myReady : bool = false

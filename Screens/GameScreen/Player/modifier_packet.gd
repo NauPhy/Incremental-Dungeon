@@ -17,6 +17,18 @@ func _init() :
 		statMods[Definitions.baseStatDictionary[key]] = StandardModifier.duplicate()
 	for key in Definitions.otherStatDictionary.keys() :
 		otherMods[Definitions.otherStatDictionary[key]] = StandardModifier.duplicate()
+func getSaveDictionary() -> Dictionary :
+	var retVal : Dictionary = {}
+	retVal["attribute"] = attributeMods
+	retVal["stat"] = statMods
+	retVal["other"] = otherMods
+	return retVal
+static func createFromSaveDictionary(loadDict) -> ModifierPacket :
+	var retVal = ModifierPacket.new()
+	retVal.attributeMods = loadDict["attribute"]
+	retVal.statMods = loadDict["stat"]
+	retVal.otherMods = loadDict["other"]
+	return retVal
 static func add(left : ModifierPacket, right : ModifierPacket) -> ModifierPacket :
 	var newPacket = ModifierPacket.new()
 	for key in left.attributeMods.keys() :

@@ -37,13 +37,24 @@ func getRewardBehaviour() -> rewardBehaviour :
 	return myBehaviour
 func getQuality() -> EquipmentGroups.qualityEnum :
 	return core.equipmentGroups.quality
+func getTextureCopy() -> Texture2D :
+	return getSprite().get_node("Icon").texture.duplicate()
 ###################################################################################
 ##This scene is not "saveable" but is explicitly saved by EquipmentTab/Inventory##
 func getSaveDictionary() -> Dictionary :
 	var tempDict = {}
+	if (core == null) :
+		tempDict["core"] = "null"
+	else :
+		tempDict["core"] = core.getSaveDictionary()
 	return tempDict
-func loadSaveDictionary(_loadDict) -> void :
-	pass
+func loadSaveDictionary(loadDict) -> void :
+	if (loadDict.get("core") != null) :
+		if (!(loadDict["core"] is Dictionary) && loadDict["core"] == "null") :
+			core = null
+		else :
+			## If it's old equipment, sets to resource reference rather than creating a duplicates
+			core = Equipment.createFromSaveDictionary(loadDict["core"])
 ##########################################################
 ##SuperButton proxies##
 func setContainerExpandHorizontal() :

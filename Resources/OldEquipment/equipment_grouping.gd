@@ -11,16 +11,16 @@ const qualityDictionary = {
 	qualityEnum.epic : "Epic",
 	qualityEnum.legendary : "Legendary"
 }
-static func getColouredQualityString(quality : qualityEnum, lightBackground : bool) :
-	return colourText(quality, qualityDictionary[quality], lightBackground)
-static func colourText(quality : qualityEnum, myText : String, lightBackground : bool) -> String :
+static func getColouredQualityString(inQuality : qualityEnum, lightBackground : bool) :
+	return colourText(inQuality, qualityDictionary[inQuality], lightBackground)
+static func colourText(inQuality : qualityEnum, myText : String, lightBackground : bool) -> String :
 	const colours = ["#202020", "57a968", "#4566c3", "#a149cc", "#d4941c"]
 	const colours_alt = ["#e5e5e5", "4c945b", "4d70d1", "a149cc", "#efa71f"]
 	var colourStr
 	if (lightBackground) :
-		colourStr = colours[quality]
+		colourStr = colours[inQuality]
 	else :
-		colourStr = colours_alt[quality]
+		colourStr = colours_alt[inQuality]
 	return "[color=" + colourStr + "]" + myText + "[/color]"
 @export var quality : qualityEnum = qualityEnum.common
 enum technologyEnum {perennial,natural,crude,advanced,superior}
@@ -52,3 +52,24 @@ enum armorClassEnum {light,medium,heavy}
 @export var isEarth : bool = false
 @export var isWater : bool = false
 @export var isSignature : bool = false
+
+static func elementMatch(a : EquipmentGroups, b: EquipmentGroups, element : Definitions.elementEnum) -> bool :
+	if (element == Definitions.elementEnum.earth) :
+		return a.isEarth && b.isEarth
+	if (element == Definitions.elementEnum.fire) :
+		return a.isFire && b.isFire
+	if (element == Definitions.elementEnum.water) :
+		return a.isWater && b.isWater
+	if (element == Definitions.elementEnum.ice) :
+		return a.isIce && b.isIce
+	return false
+
+static func getMatchingElementCount(a : EquipmentGroups, b: EquipmentGroups) :
+	var matches = 0
+	for key in Definitions.elementDictionary.keys() :
+		if (elementMatch(a,b,key)) :
+			matches += 1
+	return matches
+
+func isElemental() -> bool :
+	return isIce || isFire || isEarth || isWater

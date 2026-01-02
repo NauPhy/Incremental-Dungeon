@@ -27,6 +27,8 @@ func getDirectModifiers() -> ModifierPacket :
 	return $Inventory.getModifierPacket()
 func getItemCount(item : Equipment) :
 	return $Inventory.getItemCount(item)
+func getElementalDirectModifiers() -> ModifierPacket :
+	return $Inventory.getElementalModifierPacket()
 #####################################
 ##Setters
 func addItemToInventory(itemSceneRef) :

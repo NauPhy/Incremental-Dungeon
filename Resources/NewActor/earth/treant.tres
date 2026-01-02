@@ -24,7 +24,7 @@ faction = 2
 script = ExtResource("4_cwgif")
 portrait = ExtResource("4_xq8es")
 text = "Treant"
-description = "Though the first Treants were created from normal trees by angry druids, Treants reproduce just like normal trees, and thus can be created by other Treants. 
+description = "Though the first treants were created from normal trees by angry druids, treants reproduce just like normal trees, and thus can be created by other treants. 
 
 Treants prefer to spend 100% of their time unmoving, but they are occasionally motivated to move about to secure more sunlight or to deal with intruders reported by their dryad friends."
 MAXHP = -1.0

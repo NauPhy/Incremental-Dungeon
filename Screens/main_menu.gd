@@ -13,14 +13,21 @@ func checkLoadGame() :
 	if (!SaveManager.saveExists()) :
 		$ButtonContainer.get_node("LoadButton").set_disabled(true)
 
+var newMenu : Node = null
 func _on_new_button_pressed() -> void:
-	SaveManager.newGameSaveSelection()
+	newMenu = SaveManager.newGameSaveSelection()
+	newMenu.connect("optionChosen", _on_new_menu_finished)
+	
+func _on_new_menu_finished() :
+	newMenu = null
 	
 func _new_game_ready() :
 	emit_signal("newGame")
 
+var loadMenu : Node = null
 func _on_load_button_pressed() -> void:
-	SaveManager.loadGameSaveSelection(self)
+	loadMenu = SaveManager.loadGameSaveSelection(self)
+	loadMenu.connect("finished", _on_load_menu_finished)
 	await SaveManager.finished
 	checkLoadGame()
 	
@@ -33,3 +40,16 @@ func _on_quit_button_pressed() -> void:
 func _on_options_button_pressed() -> void:
 	emit_signal("swapToMainMenuOptions")
 	
+func _on_load_menu_finished() :
+	loadMenu = null
+	
+func _unhandled_input(event : InputEvent) :
+	if (event.is_action_released("ui_cancel")) :
+		accept_event()
+		if (loadMenu != null) :
+			loadMenu.queue_free()
+			loadMenu = null
+		if (newMenu != null) :
+			newMenu.queue_free()
+			newMenu = null
+		

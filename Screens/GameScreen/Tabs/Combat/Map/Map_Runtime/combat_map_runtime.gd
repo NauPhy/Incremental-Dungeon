@@ -70,7 +70,10 @@ func completeRoom(completedRoom) :
 			#For rooms linked to this one
 			if (adjacentRoom != null) :
 				#Fully reveal
-				adjacentRoom.setVisibility("full")
+				if (adjacentRoom.has_signal("shopRequested")) :
+					adjacentRoom.setVisibility(2)
+				else :
+					adjacentRoom.setVisibility("full")
 				connection.fullReveal()
 				#Find rooms that are 2 links away
 				for potentialLooseConnection in $CombatMap/ConnectionContainer.get_children() :
@@ -80,7 +83,9 @@ func completeRoom(completedRoom) :
 					elif (potentialLooseConnection.Room2 == adjacentRoom) : 
 						overAdjacentRoom = potentialLooseConnection.Room1
 					#Half reveal
-					if (overAdjacentRoom != null && overAdjacentRoom.getVisibility() != 2) :
+					if (overAdjacentRoom != null && overAdjacentRoom.has_signal("shopRequested")) :
+						overAdjacentRoom.setVisibility(1)
+					elif (overAdjacentRoom != null && overAdjacentRoom.getVisibility() != 2) :
 						overAdjacentRoom.setVisibility("partial")
 						potentialLooseConnection.halfReveal()
 		var completedIndex = Helpers.findIndexInContainer($CombatMap/RoomContainer, completedRoom)
@@ -104,31 +109,37 @@ func setFromMapData(val : MapData) :
 	for child in $CombatMap/RoomContainer.get_children() :
 		if (!child.myReady) :
 			await child.myReadySignal
-	
+			
+const shopLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/shop_room_base.tscn")
 func addRow(val : MapData, row : int) :
-	var centerRoom = roomLoader.instantiate()
-	$CombatMap/RoomContainer.add_child(centerRoom)
-	var visibility
-	if (row == 0) :
-		visibility = 2
-	elif (row == 1) :
-		visibility = 1
+	var centerRoom
+	if (val.shopName != "" && row == 6) :
+		centerRoom = shopLoader.instantiate()
+		centerRoom.setShopType(val)
 	else :
-		visibility = 0
-	centerRoom.initialise(val.rows[row].centralEncounter, visibility)
-	centerRoom.name = "N" + str(row)
-	setRoomToOrigin(centerRoom)
-	setRoomPosVertical(centerRoom, row, false)
-	if (row != 0) :
-		var newConnection = connectionLoader.instantiate()
-		$CombatMap/ConnectionContainer.add_child(newConnection)
-		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row-1))
-		newConnection.Room2 = centerRoom
-		if (row == 1) :
-			newConnection.visibilityOnStartup = 1
-			newConnection.setVisibility(1)
+		centerRoom = roomLoader.instantiate()
+		$CombatMap/RoomContainer.add_child(centerRoom)
+		var visibility
+		if (row == 0) :
+			visibility = 2
+		elif (row == 1) :
+			visibility = 1
 		else :
-			newConnection.setVisibility(0)
+			visibility = 0
+		centerRoom.initialise(val.rows[row].centralEncounter, visibility)
+		centerRoom.name = "N" + str(row)
+		setRoomToOrigin(centerRoom)
+		setRoomPosVertical(centerRoom, row, false)
+		if (row != 0) :
+			var newConnection = connectionLoader.instantiate()
+			$CombatMap/ConnectionContainer.add_child(newConnection)
+			newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row-1))
+			newConnection.Room2 = centerRoom
+			if (row == 1) :
+				newConnection.visibilityOnStartup = 1
+				newConnection.setVisibility(1)
+			else :
+				newConnection.setVisibility(0)
 	for index in range(0, val.rows[row].leftEncounters.size()) :
 		addSideRoom(val, row, index, true)
 	for index in range(0, val.rows[row].rightEncounters.size()) :

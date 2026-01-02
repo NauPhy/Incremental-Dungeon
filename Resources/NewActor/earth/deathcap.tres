@@ -24,9 +24,9 @@ faction = 2
 script = ExtResource("4_tdodo")
 portrait = ExtResource("4_t0opr")
 text = "Deathcap"
-description = "Though their ambulatory nature suggests Deathcaps are magical beings, they are in fact entirely biological, and the product of vigorous natural selection. Deathcaps spend most of their lives rooted into decomposing matter, but when it comes time to reproduce (or when their food runs out), they will animate in search of an optimal location to release their spores.
+description = "Though their ambulatory nature suggests deathcaps are magical beings, they are in fact entirely biological, and the product of vigorous natural selection. Deathcaps spend most of their lives rooted into decomposing matter, but when it comes time to reproduce (or when their food runs out), they will animate in search of an optimal location to release their spores.
 
-Ambulatory Deathcaps are no longer capable of eating, but they still hunt prey for the sake of their unsprouted children. Care must be taken when fighting a Deathcap, for they have little sense of self preservation and have been known to explode when in close proximity to prey to guarantee a bounty for their offspring."
+Ambulatory deathcaps are no longer capable of eating, but they still hunt prey for the sake of their unsprouted children. Care must be taken when fighting a deathcap, for they have little sense of self preservation and have been known to explode when in close proximity to prey to guarantee a bounty for their offspring."
 MAXHP = -1.0
 AR = -1.0
 DR = -1.0

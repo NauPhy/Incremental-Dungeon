@@ -14,7 +14,7 @@ func getItemName() :
 	if (resourceName == "") :
 		resourceName = resource_path.get_file().get_basename()
 	return resourceName
-func getAdjustedCopy(scalingFactor : float) -> Equipment :
+func getAdjustedCopy(_scalingFactor : float) -> Equipment :
 	var retVal = self.duplicate()
 	retVal.resourceName = getItemName()
 	return retVal
@@ -31,8 +31,8 @@ func resetNew() :
 	elif (myPacket.statMods.size() != Definitions.baseStatDictionary.keys().size()) :
 		myPacket = ModifierPacket.new()
 func resetOtherModsIfWrong() :
-	var reset : bool = myPacket.otherMods.size() != Definitions.otherStatDictionary.keys().size()
-	if (reset) :
+	var localReset : bool = myPacket.otherMods.size() != Definitions.otherStatDictionary.keys().size()
+	if (localReset) :
 		var oldPacket = myPacket.duplicate()
 		myPacket = ModifierPacket.new()
 		myPacket.attributeMods = oldPacket.attributeMods
@@ -44,3 +44,14 @@ func getName() :
 	return title
 func getType() :
 	return Definitions.equipmentTypeEnum.currency
+func getSaveDictionary() -> Dictionary :
+	var retVal : Dictionary = {}
+	retVal["resourceName"] = resourceName
+	return retVal
+static func createFromSaveDictionary(loadDict : Dictionary) -> Equipment :
+	var resource = EquipmentDatabase.getEquipment(loadDict["resourceName"])
+	if (!Helpers.equipmentIsNew(resource)) :
+		return resource
+	var retVal = resource.duplicate()
+	retVal.resourceName = loadDict["resourceName"]
+	return retVal

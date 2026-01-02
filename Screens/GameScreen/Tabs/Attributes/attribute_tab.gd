@@ -1,14 +1,11 @@
 extends Panel
 
-var currentTraining : AttributeTraining = null
-
 func _process(_delta) :
 	$AttributeMultipliers.myUpdate(playerModsCache)
 	$AttributeBonuses.myUpdate(playerModsCache)
 
-func _on_training_panel_training_changed(newVal) -> void:
-	currentTraining = newVal
-	$AttributeLevels.setMultipliers(currentTraining)
+func _on_training_panel_training_changed(newTraining : AttributeTraining) -> void:
+	$AttributeLevels.setMultipliers(newTraining)
 		
 func getAttributeLevels() -> Array[int] :
 	var retVal : Array[int] = []
@@ -30,10 +27,6 @@ func getSaveDictionary() -> Dictionary :
 		var levelProgressKey : String = str(key) + "attributeLevelProgress"
 		tempDict[attributeLevelKey] = $AttributeLevels.getLevel(key)
 		tempDict[levelProgressKey] = $AttributeLevels.getProgress(key)
-	if (currentTraining == null) :
-		tempDict["currentTraining_scriptName"] = "null"
-	else :
-		tempDict["currentTraining_scriptName"] = currentTraining.get_path()
 	tempDict["firstTimeSelected"] = firstTimeSelected
 	return tempDict
 	
@@ -44,23 +37,11 @@ func _ready() :
 func beforeLoad(newSave : bool) :
 	$AttributeBonuses.setType("bonus")
 	$AttributeMultipliers.setType("multiplier")
-	if (newSave) :
-		currentTraining = null
-		$TrainingPanel.setCurrentTraining(null)
-		$AttributeLevels.setMultipliers(currentTraining)
 	for key in Definitions.attributeEnum.keys() :
 		var attrNum = NumberClass.new()
 		playerModsCache.append(attrNum)
 	
 func onLoad(loadDict) -> void :
-	if (loadDict["currentTraining_scriptName"] == "null") :
-		currentTraining = null
-		$TrainingPanel.setCurrentTraining(null)
-		$AttributeLevels.setMultipliers(currentTraining)
-	else :
-		currentTraining = load(loadDict["currentTraining_scriptName"])
-		$TrainingPanel.setCurrentTraining(currentTraining)
-		$AttributeLevels.setMultipliers(currentTraining)
 	for key in Definitions.attributeDictionary.keys() :
 		var attributeLevelKey : String = str(key) + "attributeLevel"
 		var levelProgressKey : String = str(key) + "attributeLevelProgress"
@@ -78,3 +59,5 @@ func setPlayerMods(newMods : Array[NumberClass]) :
 
 func unlockRoutine(routine) :
 	$TrainingPanel.unlockRoutine(routine)
+func upgradeRoutine(routine) :
+	$TrainingPanel.upgradeRoutine(routine)

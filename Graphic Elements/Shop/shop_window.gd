@@ -1,6 +1,8 @@
 extends Panel
 @export var shopDetails : ShopDetails = null
 @export var shopName : String = ""
+func getName() :
+	return shopName
 
 var myTexture : Texture2D
 var myCurrency : Equipment
@@ -53,7 +55,6 @@ func _on_display_requested(item : Equipment, price : int, column : Node) :
 		$detailsLeft.visible = true
 		$detailsLeft.setItemSceneRefBase(myItemSceneRef)
 
-
 func setFromDetails(det : ShopDetails) :
 	$RichTextLabel.text = (det.shopName).to_upper()
 	setCurrencyTexture(det.shopCurrencyTexture)
@@ -61,6 +62,7 @@ func setFromDetails(det : ShopDetails) :
 	myCurrency = det.shopCurrency
 	for column in det.shopContents :
 		addShopColumn(column)
+	Shopping.addNewShop(self)
 		
 var myReady : bool = false
 signal myReadySignal
