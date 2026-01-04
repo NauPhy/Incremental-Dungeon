@@ -54,11 +54,11 @@ func setTrainingGraphic(val : AttributeTraining) :
 		
 signal trainingChanged
 var currentTrainingResource : AttributeTraining = null
-var routineUpgradeLevels : Dictionary[String, int] = {}
+var routineUpgradeLevels : Dictionary = {}
 func _on_requested_enable(emitter) :
-	setTrainingGraphic(emitter)
-	currentTrainingResource = emitter
-	emit_signal("trainingChanged", createUpgradedTraining(emitter))
+	setTrainingGraphic(emitter.getResource())
+	currentTrainingResource = emitter.getResource()
+	emit_signal("trainingChanged", createUpgradedTraining(emitter.getResource()))
 	
 func unlockRoutine(routine : AttributeTraining) :
 	for child in $Con.get_children() :
@@ -74,7 +74,7 @@ func upgradeRoutine(routine : AttributeTraining) :
 func createUpgradedTraining(routine : AttributeTraining) :
 	var retVal = routine.duplicate()
 	for key in retVal.scaling.keys() :
-		retVal.scaling[key] = 1 + 0.25*routineUpgradeLevels[routine.resource_path.get_file().get_basename()]
+		retVal.scaling[key] *= 1 + 0.25*routineUpgradeLevels[routine.resource_path.get_file().get_basename()]
 	return retVal
 
 func _on_requested_disable(_emitter) :

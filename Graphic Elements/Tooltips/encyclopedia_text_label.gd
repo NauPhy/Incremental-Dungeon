@@ -76,6 +76,7 @@ func updateHyperlinksExceptBadKey() :
 	for child in get_children() :
 		child.queue_free()
 	await get_tree().process_frame
+	#text = get_black_text()
 	##Search through the text to bold/color change keywords
 	for key in Encyclopedia.descriptions.keys() :
 		if (isBadKey(key)) :
@@ -83,6 +84,14 @@ func updateHyperlinksExceptBadKey() :
 		var currentIndex = 0
 		var foundIndex = text.find(key, currentIndex)
 		while (foundIndex != -1) :
+			## Yield to longer keywords
+			if (Encyclopedia.problemDictionary.get(key) != null) :
+				var otherKey = Encyclopedia.problemDictionary[key]
+				var otherIndex = foundIndex + key.length() - otherKey.length()
+				if (text.find(otherKey, otherIndex) == otherIndex) :
+					currentIndex = otherIndex + otherKey.length()
+					foundIndex = text.find(key, currentIndex)
+					continue
 			addHyperlinkAtPos(foundIndex, key)
 			currentIndex = foundIndex + colourString.length() + str2.length() + key.length()
 			foundIndex = text.find(key, currentIndex)
@@ -94,6 +103,14 @@ func updateHyperlinksExceptBadKey() :
 		var currentIndex = 0
 		var foundIndex = get_parsed_text().find(key, currentIndex)
 		while (foundIndex != -1) :
+			## Yield to longer keywords
+			if (Encyclopedia.problemDictionary.get(key) != null) :
+				var otherKey = Encyclopedia.problemDictionary[key]
+				var otherIndex = foundIndex + key.length() - otherKey.length()
+				if (get_parsed_text().find(otherKey, otherIndex) == otherIndex) :
+					currentIndex = otherIndex + otherKey.length()
+					foundIndex = get_parsed_text().find(key, currentIndex)
+					continue
 			addTooltipAtPos(foundIndex, key)
 			currentIndex = foundIndex + key.length()
 			foundIndex = get_parsed_text().find(key, currentIndex)
@@ -122,6 +139,9 @@ func isBadKey(key) -> bool :
 			
 func addHyperlinkAtPos(index, key) :
 	if (index >= colourString.length() && text.find(colourString, index-colourString.length()) == index-colourString.length()) :
+		return
+	#var generalColor = "[color="
+	#if (index >= generalColor.length() && text.find(generalColor, index-generalColor.length() == index-generalColor.length())) :
 		return
 	var extendedKey = getExtendedKey(index, key,false)
 	text = text.insert(index, colourString)
@@ -196,7 +216,8 @@ func addTooltipAtPos(index, key) :
 		emit_signal("coroutinesDone")
 
 func _on_minimum_size_changed() -> void:
-	updateHyperlinksExceptBadKey()
+	if (!self.updateRunning):
+		updateHyperlinksExceptBadKey()
 
 func isOnNestedTooltip() -> bool :
 	if (get_child_count() == 0) :

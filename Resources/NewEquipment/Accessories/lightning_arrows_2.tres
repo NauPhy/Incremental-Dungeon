@@ -9,7 +9,7 @@ script = ExtResource("1_4nhgq")
 isEligible = true
 quality = 3
 technology = 3
-weaponClass = 1
+weaponClass = -1
 armorClass = -1
 isFire = false
 isIce = false
@@ -148,8 +148,8 @@ title = "Thunderstorm Ammo"
 description = "Sample description
 ...
 If using ranged weapon: 
-DR Premuliplier x1.3
-Physical Conversion Postbonus +0.3"
+DR Multiplier x1.3
+Physical Conversion Standard Multiplier +0.3"
 myPacket = SubResource("Resource_1nkak")
 equipmentGroups = SubResource("Resource_o5u83")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

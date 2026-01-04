@@ -8,7 +8,7 @@
 [ext_resource type="FontFile" uid="uid://dps60a85iv5xv" path="res://Images/CC0 Assets/Kenney Pixel.ttf" id="6_juvjr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dv2xx"]
-bg_color = Color(0, 0, 0, 0.380392)
+bg_color = Color(0.3, 0.3, 0.3, 0.87451)
 
 [node name="ShopWindow" type="Panel"]
 anchors_preset = 15
@@ -33,6 +33,7 @@ grow_vertical = 2
 theme_override_constants/separation = 50
 
 [node name="CurrencyDisplay" type="PanelContainer" parent="VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -61,13 +62,18 @@ size_flags_vertical = 4
 [node name="Icon" parent="VBoxContainer/CurrencyDisplay/HBoxContainer/Icon" index="0"]
 scale = Vector2(4, 4)
 texture = ExtResource("4_dv2xx")
-region_rect = Rect2(0, 0, 16, 16)
+region_rect = Rect2(0, 0, 32, 32)
+
+[node name="spacer" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 99)
+layout_mode = 2
 
 [node name="Shop" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme = ExtResource("5_5nuvd")
 theme_override_constants/separation = 15
+alignment = 1
 
 [node name="Exit" type="Button" parent="VBoxContainer"]
 layout_mode = 2

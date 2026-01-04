@@ -128,9 +128,5 @@ grow_horizontal = 2
 grow_vertical = 0
 encounter = ExtResource("9_ulg4h")
 
-[node name="HomeButton" parent="." index="2"]
-offset_left = -350.0
-offset_top = -130.0
-
-[editable path="HomeButton"]
-[editable path="HomeButton/HBoxContainer/Sprite"]
+[editable path="HBoxContainer/HomeButton"]
+[editable path="HBoxContainer/HomeButton/HBoxContainer/Sprite"]

@@ -43,7 +43,7 @@ func getSaveDictionary() -> Dictionary :
 	retVal["MAGDEF"] = MAGDEF
 	return retVal
 	
-static func createFromSaveDictionary(loadDict) -> Armor :
+func createFromSaveDictionary(loadDict) -> Armor :
 	var retVal = super(loadDict) as Armor
 	if (!Helpers.equipmentIsNew(retVal)) :
 		return retVal

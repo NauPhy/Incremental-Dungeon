@@ -37,8 +37,8 @@ func addShopColumn(val : ShopColumn) :
 signal purchaseRequested
 var myItemSceneRef
 var myItemPrice
-func _on_purchase_requested(item, price) :
-	emit_signal("purchaseRequested", item, price, myCurrency, self)
+func _on_purchase_requested(item, price, purchase) :
+	emit_signal("purchaseRequested", item, price, myCurrency, self, purchase)
 func _on_display_requested(item : Equipment, price : int, column : Node) :
 	if (myItemSceneRef != null) :
 		myItemSceneRef.queue_free()
@@ -57,12 +57,17 @@ func _on_display_requested(item : Equipment, price : int, column : Node) :
 
 func setFromDetails(det : ShopDetails) :
 	$RichTextLabel.text = (det.shopName).to_upper()
+	shopName = det.shopName
 	setCurrencyTexture(det.shopCurrencyTexture)
 	setCurrencyAmount(await requestCurrencyAmount(det.shopCurrency))
 	myCurrency = det.shopCurrency
 	for column in det.shopContents :
 		addShopColumn(column)
 	Shopping.addNewShop(self)
+	
+func refreshPrice(itemName, value) :
+	for column in $VBoxContainer/Shop.get_children() :
+		column.refreshPrice(itemName, value)
 		
 var myReady : bool = false
 signal myReadySignal

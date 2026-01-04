@@ -29,7 +29,7 @@ func getSaveDictionary() -> Dictionary :
 		retVal["attrVal1"] = myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr1]]["Postbonus"]
 	return retVal
 	
-static func createFromSaveDictionary(loadDict) -> Accessory :
+func createFromSaveDictionary(loadDict) -> Accessory :
 	var retVal = super(loadDict)
 	if (!Helpers.equipmentIsNew(retVal)) :
 		return retVal

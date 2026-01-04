@@ -22,20 +22,25 @@ func createMap() -> MapData :
 	return newMap
 	
 ## moderately inefficent
-func generateDrops(room : Node, environment : MyEnvironment) -> Array[Equipment]:
-	var retVal : Array[Equipment] = []
+func generateDrops(room : Node, environment : MyEnvironment) -> Dictionary :
+	var retVal1 : Array[Equipment] = []
 	$ItemPoolHandler.reset(environment, getAllItems())
 	var roomName : String = room.name
 	var row = roomName.substr(1,1) as int
 	var penaliseElemental : bool = !(environment.earthPermitted || environment.firePermitted || environment.icePermitted || environment.waterPermitted)
 	for enemy in room.getEncounterRef().enemies :
 		$DropHandler.reset($ItemPoolHandler.getItemPoolForEnemy(enemy))
-		retVal.append_array($DropHandler.createDropsForEnemy(enemy, getEquipmentScaling(row), penaliseElemental))
+		retVal1.append_array($DropHandler.createDropsForEnemy(enemy, getEquipmentScaling(row), penaliseElemental))
 	var averageGold = getGoldScaling(row)
-	var goldCount = randi_range(0,round(averageGold))
-	var goldItem = EquipmentDatabase.getEquipment("gold_coin").duplicate()
-	goldItem.setCount(goldCount)
-	retVal.append(goldItem)
+	var goldRoll = randf_range(0, averageGold)
+	var goldCount : int = round(goldRoll)
+	
+	var retVal2 : Array[int] = [goldCount]
+	
+	var retVal = {
+		"equipment" : retVal1,
+		"currency" : retVal2
+	}
 	return retVal
 
 func getAllEnemies() :
@@ -69,7 +74,7 @@ func getAllItems() :
 	return list
 	
 func getEnvironment() -> MyEnvironment :
-	if (previousMaps.size() == 9) :
+	if (previousMaps.size() == 7) :
 		return MegaFile.getEnvironment("fort_demon")
 	var myRange = MegaFile.Environment_FilesDictionary.size()-1
 	var randKey = MegaFile.Environment_FilesDictionary.keys()[randi_range(0,myRange)]
@@ -95,7 +100,7 @@ func createdRecently(newEnv : MyEnvironment) -> bool :
 	
 func createEncounters() -> MapData :
 	var retVal = MapData.new()
-	var nodeCount = randi_range(4,7)
+	var nodeCount = 10
 	for index in range(0,nodeCount) :
 		var newRow = MapRow.new()
 		newRow.centralEncounter = createCentralEncounter(index)
@@ -107,7 +112,7 @@ func createEncounters() -> MapData :
 		for rightIndex in range(0,rightNodeCount) :
 			newRow.rightEncounters.append(createSideEncounter(index))
 		retVal.rows.append(newRow)
-	if (previousMaps.size() == 9) :
+	if (previousMaps.size() == 7) :
 		retVal.bossEncounter = createFinalBossEncounter(nodeCount)
 	else :
 		retVal.bossEncounter = createBossEncounter(nodeCount)
@@ -196,14 +201,14 @@ func getEnemyScaling(row : int) :
 		return pow(4.18, nodes)
 	return pow(4.18,6)*pow(2,nodes-6)
 	
-func getEquipmentScaling(row : int) :
+func getEquipmentScaling(row : int) -> float :
 	var nodes = row + 1
 	for index in range(0, previousMaps.size()-1) :
 		nodes += previousMaps[index].rows.size() + 1
 	if (nodes <= 6) :
 		return pow(4.18, nodes/4.0)
 	else :
-		pow(4.18,nodes/4.0)*pow(2,(nodes-6)/4.0)
+		return pow(4.18,6/4.0)*pow(2,(nodes-6)/4.0)
 
 func getGoldScaling(row : int) :
 	var nodes = row
@@ -211,6 +216,23 @@ func getGoldScaling(row : int) :
 		nodes += previousMaps[index].rows.size() + 1
 	return pow(2,nodes/4.0)
 	
+func createRandomShopItem(type : Definitions.equipmentTypeEnum, scaling : float) -> Equipment :
+	var items = getAllItems()
+	var index = 0
+	while (index < items.size()) :
+		if (items[index] is Armor && type != Definitions.equipmentTypeEnum.armor) :
+			items.remove_at(index)
+		elif (items[index] is Weapon && type != Definitions.equipmentTypeEnum.weapon) :
+			items.remove_at(index)
+		elif (items[index] is Currency || items[index] is Accessory) :
+			items.remove_at(index)
+		else :
+			index += 1
+	$ItemPoolHandler.reset(MegaFile.getEnvironment("chaos"), items)
+	$DropHandler.reset(items)
+	var quality = $DropHandler.getDropQualities(1)
+	var newItem : Equipment = $DropHandler.getItemOfQuality_penaliseElemental(quality, true)
+	return newItem.getAdjustedCopy(scaling)
 ############# Saving
 var myReady : bool = false
 func _ready() :

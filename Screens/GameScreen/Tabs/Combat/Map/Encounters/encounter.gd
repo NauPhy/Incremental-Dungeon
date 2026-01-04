@@ -30,6 +30,7 @@ func getSaveDictionary() -> Dictionary :
 	retVal["victoryText"] = victoryText
 	return retVal
 
+## Do not make this virtual
 static func createFromSaveDictionary(val : Dictionary) -> Encounter :
 	var retVal = Encounter.new()
 	var tempEnemies = val["enemies"]

@@ -6,9 +6,9 @@
 
 [sub_resource type="Resource" id="Resource_gvsjq"]
 script = ExtResource("1_ytxga")
-isEligible = true
+isEligible = false
 quality = 0
-technology = 1
+technology = 0
 weaponClass = -1
 armorClass = -1
 isFire = false

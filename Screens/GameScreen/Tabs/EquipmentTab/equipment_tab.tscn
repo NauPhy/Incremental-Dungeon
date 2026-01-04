@@ -114,6 +114,7 @@ offset_bottom = -15.0
 [connection signal="equipRequested" from="PagedEquipmentDetails" to="." method="_on_equip_requested_from_details"]
 [connection signal="unequipRequested" from="PagedEquipmentDetails" to="." method="_on_unequip_requested_from_details"]
 [connection signal="getAllItems" from="DeveloperConsole" to="." method="_on_developer_console_get_all_items"]
+[connection signal="isReforgeHoveredRequested" from="Inventory" to="." method="_on_inventory_is_reforge_hovered_requested"]
 [connection signal="itemDeselected" from="Inventory" to="." method="_on_item_deselected"]
 [connection signal="itemEquipped" from="Inventory" to="." method="_on_inventory_equipped_item"]
 [connection signal="itemSelected" from="Inventory" to="." method="_on_item_selected"]

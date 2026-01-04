@@ -6,8 +6,7 @@ var myText : RichTextLabel = null
 #const theme1 = preload("res://Graphic Elements/Themes/mainTab.tres")
 const theme2 = preload("res://Graphic Elements/Themes/subTab.tres")
 
-func initialise(item : Equipment) :
-	myItemScene = SceneLoader.createEquipmentScene(item.getItemName())
+func initialise_internal(item : Equipment) :
 	add_child(myItemScene)
 	myItemScene.core = item
 	myItemScene.name = "equip"
@@ -25,6 +24,16 @@ func initialise(item : Equipment) :
 	myItemScene.setContainerExpandHorizontal()
 	myItemScene.use48x48()
 	myItemScene.connect("wasSelected", _on_button_selected)
+	
+func initialise(item : Equipment) :
+	myItemScene = SceneLoader.createEquipmentScene(item.getItemName())
+	initialise_internal(item)
+	
+const currencyNames = ["gold_coin"]
+func initialise_currency(index, val) :
+	myItemScene = SceneLoader.createEquipmentScene(currencyNames[index])
+	initialise_internal(EquipmentDatabase.getEquipment(currencyNames[index]))
+	setCount(val)
 	
 func getItemSceneRef() :
 	return myItemScene

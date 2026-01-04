@@ -23,7 +23,17 @@ func providePlayerCore(val : ActorPreset) :
 	waitingForPlayerCore = false
 	emit_signal("playerCoreReceived")
 ##########################
-
+func getMostRecentScaling() -> float :
+	if (maxFloor <= 1) :
+		return 0
+	var nodes = 0
+	var floors = $MapContainer.get_children()
+	for index in range(1,floors.size()-1) :
+		nodes += floors[index].getRowTotal()
+	nodes += floors.back().getLastCompletedRow()
+	return $ProceduralGenerationLogic.getEnemyScaling(nodes)
+func createRandomShopItem(type : Definitions.equipmentTypeEnum) -> Equipment :
+	return $ProceduralGenerationLogic.createRandomShopItem(type, getMostRecentScaling())
 func _on_level_chosen(emitter, encounter) -> void:
 	friendlyParty[0] = await getPlayerCore()
 	currentRoom = emitter
@@ -62,7 +72,11 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 	if (currentFloor.has_method("getEnvironment")) :
 		rewards = $ProceduralGenerationLogic.generateDrops(currentRoom, currentFloor.getEnvironment())
 	else :
-		rewards = currentRoom.getEncounterRef().getRewards(magicFind)
+		var rewardsTutorial = currentRoom.getEncounterRef().getRewards(magicFind)
+		rewards = {
+			"equipment" : rewardsTutorial,
+			"currency" : [0]
+		}
 	await handleCombatRewards(rewards)		
 	currentFloor.completeRoom(currentRoom)
 	if (automaticReset) :
@@ -258,8 +272,11 @@ func connectToMapSignals(map : Node) :
 
 const combatRewardsLoader = preload("res://Screens/GameScreen/Tabs/Combat/CombatRewards/combat_rewards.tscn")
 var firstReward : bool = true
-func handleCombatRewards(rewards : Array[Equipment]) :
-	if (rewards.is_empty()) :
+func handleCombatRewards(rewards : Dictionary) :
+	var nullify : bool = rewards["equipment"].is_empty()
+	for index in range(0, rewards["currency"].size()) :
+		nullify = nullify && rewards["currency"][index] == 0
+	if (nullify) :
 		return
 	if (firstReward) :
 		firstReward = false

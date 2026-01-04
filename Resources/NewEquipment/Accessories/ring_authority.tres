@@ -148,7 +148,8 @@ title = "Ring of Authority"
 description = "Sample description
 ...
 Against Demonic Military:
--0.3 to Physical Damage Taken Postmultiplier "
+Physical Damage Taken Standard Multiplier -0.25
+Magic Damage Taken Standard Multiplier -0.25"
 myPacket = SubResource("Resource_qlpbb")
 equipmentGroups = SubResource("Resource_uvp3j")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

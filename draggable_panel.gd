@@ -9,7 +9,7 @@ var clickStartPos : Vector2 = Vector2(-1,-1)
 
 func _input(event: InputEvent) -> void:
 	if (isHovered && event is InputEventMouseButton && event.get_button_index() == 1) :
-		if (event.is_pressed()) :
+		if (event.is_pressed() && !isDragging) :
 			isClicking = true
 			clickStartPos = get_global_mouse_position()
 		else :

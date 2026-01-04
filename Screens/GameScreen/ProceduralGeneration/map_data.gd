@@ -6,6 +6,7 @@ class_name MapData
 @export var shopName : String = ""
 @export var environmentName : String
 
+## Do not make this virtual
 static func createFromSaveDictionary(val : Dictionary) :
 	if (val.is_empty()) :
 		return null

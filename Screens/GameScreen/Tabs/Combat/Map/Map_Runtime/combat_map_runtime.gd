@@ -44,7 +44,8 @@ func onCombatRetreat(room) :
 func _on_level_chosen(emitter) :
 	emit_signal("levelChosen", emitter, emitter.getEncounterRef())
 signal shopRequested
-func _on_shop_requested(details : ShopDetails) :
+func _on_shop_requested(details : ShopDetails, room) :
+	completeRoom(room)
 	emit_signal("shopRequested", details)
 func _on_home_button_was_selected(_emitter) -> void:
 	goHome()
@@ -83,8 +84,9 @@ func completeRoom(completedRoom) :
 					elif (potentialLooseConnection.Room2 == adjacentRoom) : 
 						overAdjacentRoom = potentialLooseConnection.Room1
 					#Half reveal
-					if (overAdjacentRoom != null && overAdjacentRoom.has_signal("shopRequested")) :
+					if (overAdjacentRoom != null && overAdjacentRoom.has_signal("shopRequested") && overAdjacentRoom.getVisibility() != 2) :
 						overAdjacentRoom.setVisibility(1)
+						potentialLooseConnection.halfReveal()
 					elif (overAdjacentRoom != null && overAdjacentRoom.getVisibility() != 2) :
 						overAdjacentRoom.setVisibility("partial")
 						potentialLooseConnection.halfReveal()
@@ -107,7 +109,7 @@ func setFromMapData(val : MapData) :
 		addRow(val, index)
 	addBossRoom(val)
 	for child in $CombatMap/RoomContainer.get_children() :
-		if (!child.myReady) :
+		if (child.has_signal("myReadySignal") && !child.myReady) :
 			await child.myReadySignal
 			
 const shopLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/shop_room_base.tscn")
@@ -115,7 +117,9 @@ func addRow(val : MapData, row : int) :
 	var centerRoom
 	if (val.shopName != "" && row == 6) :
 		centerRoom = shopLoader.instantiate()
-		centerRoom.setShopType(val)
+		$CombatMap/RoomContainer.add_child(centerRoom)
+		centerRoom.setShopType(val.shopName)
+		centerRoom.setName(Shopping.shopNames[val.shopName])
 	else :
 		centerRoom = roomLoader.instantiate()
 		$CombatMap/RoomContainer.add_child(centerRoom)
@@ -127,19 +131,19 @@ func addRow(val : MapData, row : int) :
 		else :
 			visibility = 0
 		centerRoom.initialise(val.rows[row].centralEncounter, visibility)
-		centerRoom.name = "N" + str(row)
-		setRoomToOrigin(centerRoom)
-		setRoomPosVertical(centerRoom, row, false)
-		if (row != 0) :
-			var newConnection = connectionLoader.instantiate()
-			$CombatMap/ConnectionContainer.add_child(newConnection)
-			newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row-1))
-			newConnection.Room2 = centerRoom
-			if (row == 1) :
-				newConnection.visibilityOnStartup = 1
-				newConnection.setVisibility(1)
-			else :
-				newConnection.setVisibility(0)
+	centerRoom.name = "N" + str(row)
+	setRoomToOrigin(centerRoom)
+	setRoomPosVertical(centerRoom, row, false)
+	if (row != 0) :
+		var newConnection = connectionLoader.instantiate()
+		$CombatMap/ConnectionContainer.add_child(newConnection)
+		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row-1))
+		newConnection.Room2 = centerRoom
+		if (row == 1) :
+			newConnection.visibilityOnStartup = 1
+			newConnection.setVisibility(1)
+		else :
+			newConnection.setVisibility(0)
 	for index in range(0, val.rows[row].leftEncounters.size()) :
 		addSideRoom(val, row, index, true)
 	for index in range(0, val.rows[row].rightEncounters.size()) :
@@ -222,10 +226,41 @@ func initialise(val) :
 		return
 	else :
 		initialise(MapData.createFromSaveDictionary(val["mapData"]))
+		
+func getRowTotal() -> int :
+	var highest = 0
+	for room in $CombatMap/RoomContainer.get_children() :
+		var num
+		var strOnes = (room.name as String).substr(1,1)
+		var strTens = (room.name as String).substr(1,2)
+		if (strTens[1] == "L" || strTens[1] == "R") :
+			num = int(strOnes)
+		else :
+			num = int(strTens)
+		if (num > highest) :
+			highest = num
+	return highest
+
+func getLastCompletedRow() -> int :
+	var highest = 0
+	for room in $CombatMap/RoomContainer.get_children() :
+		if (!room.completed) :
+			continue
+		var num
+		var strOnes = (room.name as String).substr(1,1)
+		var strTens = (room.name as String).substr(1,2)
+		if (strTens[1] == "L" || strTens[1] == "R") :
+			num = int(strOnes)
+		else :
+			num = int(strTens)
+		if (num > highest) :
+			highest = num
+	return highest
 	
 func setupRoomConnections() :
 	for child in $CombatMap/RoomContainer.get_children() :
-		child.connect("levelChosen", _on_level_chosen)
+		if (child.has_signal("levelChosen")) :
+			child.connect("levelChosen", _on_level_chosen)
 		if (child.has_signal("shopRequested")) :
 			child.connect("shopRequested", _on_shop_requested)
 		if (child.has_signal("addChildRequested")) :
@@ -252,7 +287,8 @@ func _ready() :
 	
 func beforeLoad() :
 	for room in $CombatMap/RoomContainer.get_children() :
-		room.beforeLoad()
+		if (room.has_signal("myReadySignal")) :
+			room.beforeLoad()
 	for connection in $CombatMap/ConnectionContainer.get_children() :
 		connection.updatePos()
 	

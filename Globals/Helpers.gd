@@ -256,3 +256,45 @@ func myRound(val : float, sigFigs : int) :
 		return int(finalValue)
 	else :
 		return finalValue
+		
+func engineeringNotation(val) -> String :
+	var newVal = val
+	var suffix : String = ""
+	if (val >= pow(10,30)) :
+		newVal = val/pow(10,30)
+		suffix = "No"
+	elif (val >= pow(10,27)) :
+		newVal = val/pow(10,27)
+		suffix = "Oc"
+	elif (val >= pow(10,24)) :
+		newVal = val/pow(10,24)
+		suffix = "Sp"
+	elif (val >= pow(10,21)) :
+		newVal = val/pow(10,21)
+		suffix = "Sx"
+	elif (val >= pow(10,18)) :
+		newVal = val/pow(10,18)
+		suffix = "Qi"
+	elif (val >= pow(10,15)) :
+		newVal = val/pow(10,15)
+		suffix = "Qa"
+	elif (val >= pow(10,12)) :
+		newVal = val/pow(10,12)
+		suffix = "T"
+	elif (val >= pow(10,9)) :
+		newVal = val/pow(10,9)
+		suffix = "B"
+	elif (val >= pow(10,6)) :
+		newVal = val/pow(10,6)
+		suffix = "M"
+	elif (val >= pow(10,3)) :
+		newVal = val/pow(10,3)
+		suffix = "K"
+	if (round(newVal) == newVal) :
+		return str(int(newVal)) + suffix
+	else :
+		return str(newVal) + suffix
+
+func engineeringRound(val, sigFigs : int) -> String :
+	var rounded = myRound(val, sigFigs)
+	return engineeringNotation(val)

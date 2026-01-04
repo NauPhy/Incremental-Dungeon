@@ -87,7 +87,7 @@ func getSaveDictionary() -> Dictionary :
 	retVal["attack"] = attackBonus
 	return retVal
 
-static func createFromSaveDictionary(loadDict : Dictionary) -> Weapon :
+func createFromSaveDictionary(loadDict : Dictionary) -> Weapon :
 	var retVal = super(loadDict) as Weapon
 	if (!Helpers.equipmentIsNew(retVal)) :
 		return retVal

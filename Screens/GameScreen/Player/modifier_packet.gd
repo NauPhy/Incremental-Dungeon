@@ -23,6 +23,7 @@ func getSaveDictionary() -> Dictionary :
 	retVal["stat"] = statMods
 	retVal["other"] = otherMods
 	return retVal
+## Do not make this virtual
 static func createFromSaveDictionary(loadDict) -> ModifierPacket :
 	var retVal = ModifierPacket.new()
 	retVal.attributeMods = loadDict["attribute"]
@@ -71,9 +72,10 @@ func internalGetStrOrNull(type : internalCallType, tag : String, key : String,) 
 		return null
 	if (val == null) :
 		return null
-	if (key != "") :
-		key += " "
-	return getStrOrNull_static(tag, val[tag], key, true)
+	var callKey = key
+	if (callKey != "") :
+		callKey += " "
+	return getStrOrNull_static(tag, val[tag], callKey, true)
 	
 static func getStrOrNull_static(tag : String, val : float, prefix : String, specifyType : bool) :
 	var tempStr : String = ""
@@ -84,7 +86,12 @@ static func getStrOrNull_static(tag : String, val : float, prefix : String, spec
 		symbol = "+"
 	var typeString : String
 	if (specifyType) :
-		typeString = tag + " "
+		if (tag == "Premultiplier") :
+			typeString = "Multiplier "
+		elif (tag == "Prebonus") :
+			typeString = "Base Bonus "
+		elif (tag == "Postmultiplier") :
+			typeString = "Standard Multiplier Bonus "
 	else :
 		typeString = ""
 	if (tag == "Premultiplier") :
@@ -94,7 +101,7 @@ static func getStrOrNull_static(tag : String, val : float, prefix : String, spec
 			tempStr += "[color=red]"
 		else :
 			tempStr += "[color=green]"
-		tempStr += prefix + typeString + "x" + str(Helpers.myRound(val,3))
+		tempStr += prefix + typeString + symbol + str(Helpers.myRound(val,3))
 		tempStr += "[/color]"
 	else :
 		if (val == 0.0) :

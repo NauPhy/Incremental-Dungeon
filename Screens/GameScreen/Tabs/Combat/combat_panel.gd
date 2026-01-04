@@ -17,12 +17,14 @@ func getPlayerModifierDictionary() -> Dictionary :
 	if (waitingForPlayerModifierDictionary) :
 		await playerModifierDictionaryReceived
 	return playerModPacket_comm
-func providePlayerModifierDictionary(val : Dictionary) :
+func providePlayerModifierDictionary(val : Dictionary, demonRing) :
 	playerModPacket_comm = val
+	hasDemonRingEquipped = demonRing
 	waitingForPlayerModifierDictionary = false
 	emit_signal("playerModifierDictionaryReceived")
 
 var currentPlayerMods : Dictionary = {}
+var hasDemonRingEquipped : bool = false
 func resetCombat(friendlyCores : Array[ActorPreset], enemyCores : Array[ActorPreset]) :
 	currentPlayerMods = await getPlayerModifierDictionary()
 	cleanup()
@@ -189,7 +191,8 @@ func searchPartyAlive(party, pos:int) :
 	return null
 
 func executeAction(emitter, action, target) :
-	if (action is AttackAction && Definitions.GODMODE) :
+	## Not that it'll matter in Release, but the third term is to force me to playtest this obscure item effect if I forget.
+	if (action is AttackAction && Definitions.GODMODE && !(hasDemonRingEquipped && emitter.core.enemyGroups.faction == EnemyGroups.factionEnum.demonic_military)) :
 		if (target == $FriendlyParty.get_child(0)) :
 			return
 		if (emitter == $FriendlyParty.get_child(0)) :
@@ -227,14 +230,20 @@ func executeAction(emitter, action, target) :
 	if (target != $FriendlyParty.get_child(0)) :
 		physicalDamage *= currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalDamageDealt]
 	else :
-		physicalDamage *= currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalDamageTaken]
+		var PDT =  currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalDamageTaken]
+		if (hasDemonRingEquipped && emitter.core.enemyGroups.faction == EnemyGroups.factionEnum.demonic_military) :
+			PDT -= 0.25
+		physicalDamage *= PDT
 		
 	var magicArgs : Array = [action.power, magicDR, AR, magicDefense]
 	var magicDamage = Encyclopedia.getFormula("Damage Value", Encyclopedia.formulaAction.getCalculation_full, magicArgs)
 	if (target != $FriendlyParty.get_child(0)) :
 		magicDamage *= currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicDamageDealt]
 	else :
-		magicDamage *= currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicDamageTaken]
+		var MDT = currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicDamageTaken]
+		if (hasDemonRingEquipped && emitter.core.enemyGroups.faction == EnemyGroups.factionEnum.demonic_military) :
+			MDT -= 0.25
+		magicDamage *= MDT
 		
 	var damage = magicDamage + physicalDamage
 	if (damage > target.HP) :

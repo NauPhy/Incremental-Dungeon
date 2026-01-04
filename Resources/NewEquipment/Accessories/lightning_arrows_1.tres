@@ -9,7 +9,7 @@ script = ExtResource("1_gf06t")
 isEligible = true
 quality = 0
 technology = 3
-weaponClass = 1
+weaponClass = -1
 armorClass = -1
 isFire = false
 isIce = false
@@ -148,8 +148,8 @@ title = "Spark Ammo"
 description = "Sample description
 ...
 If using ranged weapon: 
-DR Premultiplier x1.11
-Physical Conversion Postbonus +0.11"
+DR Multiplier x1.11
+Physical Conversion Standard Multiplier +0.11"
 myPacket = SubResource("Resource_s6w72")
 equipmentGroups = SubResource("Resource_7gqv1")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

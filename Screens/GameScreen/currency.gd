@@ -58,6 +58,7 @@ func addNewCurrency(type : Currency) :
 	newEntry.name = newCurrency.getItemName()
 	alphabetise()
 	newCurrency.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	newCurrency.get_node("SuperButton").mouse_filter = Control.MOUSE_FILTER_IGNORE
 	newCurrency.use48x48()
 	updateCurrencyGraphic(type)
 	
@@ -98,4 +99,4 @@ func onLoad(loadDict) :
 	if (loadDict.get("currencyList") != null) :
 		for key in loadDict["currencyList"].keys() :
 			var item = loadDict["currencyList"][key]
-			setCurrencyAmount(SceneLoader.equipmentResourceDictionary[item["name"]],item["count"])
+			setCurrencyAmount(EquipmentDatabase.getEquipment(item["name"]),item["count"])

@@ -82,8 +82,8 @@ func updateText_clearChildren(myText) :
 func updateText_weapon(myText) :
 	$VBoxContainer/Text/VBoxContainer/Extra.text = ""
 	if (isInIGOptions) :
-		myText += "Standard "
-	myText += "DR Bonus:\n\t" + str(Helpers.myRound(currentItemSceneRef.getAttack(),3)) + "\n\n"
+		myText += "Typical "
+	myText += "Bonus to Base DR:\n\t" + str(Helpers.myRound(currentItemSceneRef.getAttack(),3)) + "\n\n"
 	myText = updateText_weapon_scaling(myText)
 	myText = updateText_weapon_action(myText)
 	myText += "\n"
@@ -109,18 +109,18 @@ func updateText_weapon_action(myText) :
 	var attack = currentItemSceneRef.getBasicAttack()
 	myText += attack.getName() + "\n"
 	myText += "\t\tType: " + Definitions.damageTypeDictionary[attack.getDamageType()] + "\n"
-	myText += "\t\tPower: " + str(Helpers.myRound(attack.getPower(),3)) + "\n"
+	myText += "\t\tAction Power: " + str(Helpers.myRound(attack.getPower(),3)) + "\n"
 	myText += "\t\tWarmup: " + str(Helpers.myRound(attack.getWarmup(),3)) + " seconds\n"
 	return myText
 
 func updateText_armor(myText) :
 	$VBoxContainer/Text/VBoxContainer/Extra.text = ""
 	if (isInIGOptions) :
-		myText += "Standard "
-	myText += "Physical Defense Bonus:\n    " + str(Helpers.myRound(currentItemSceneRef.getPhysicalDefense(),3)) + "\n"
+		myText += "Typical "
+	myText += "Bonus to Base Physical Defense:\n    " + str(Helpers.myRound(currentItemSceneRef.getPhysicalDefense(),3)) + "\n"
 	if (isInIGOptions) :
-		myText += "Standard "
-	myText = myText + "Magic Defense Bonus:\n    " + str(Helpers.myRound(currentItemSceneRef.getMagicDefense(),3)) + "\n"
+		myText += "Typical "
+	myText = myText + "Bonus to Base Magic Defense:\n    " + str(Helpers.myRound(currentItemSceneRef.getMagicDefense(),3)) + "\n"
 	myText = myText + "\n"
 	return myText
 	
@@ -130,7 +130,7 @@ func updateText_accessory(myText) :
 	return myText
 	
 func updateText_currency(myText) :
-	$VBoxContainer/Text/VBoxContainer/Extra.setText("Currency")
+	$VBoxContainer/Text/VBoxContainer/Extra.setText("")
 	myText += ""
 	return myText
 	
@@ -142,7 +142,7 @@ func updateText_modifiers(myText) :
 			var modString = modifiers.getModStringOrNull_attr(key, subkey)
 			if (modString != null) :
 				if (isInIGOptions) :
-					myText += "Standard "
+					myText += "Typical "
 				myText += modString + "\n"
 				addEndl = true
 	for key in Definitions.baseStatDictionary.keys() :
@@ -171,7 +171,7 @@ func updateText() :
 	updateText_sprite()
 	$VBoxContainer/Text/VBoxContainer/Title.text = currentItemSceneRef.getTitle()
 	var myText : String = ""
-	myText = "[font_size=22]" + EquipmentGroups.getColouredQualityString(currentItemSceneRef.getQuality(), false) + " " + EquipmentGroups.colourText(currentItemSceneRef.getQuality(), Definitions.equipmentTypeDictionary[currentItemSceneRef.getType()], false)+ "[/font_size]\n"
+	myText = "[font_size=22]" + EquipmentGroups.getColouredQualityString(currentItemSceneRef.getQuality(), false) + " " + Definitions.equipmentTypeDictionary[currentItemSceneRef.getType()] + "[/font_size]\n"
 	if (currentItemSceneRef.core is Weapon) :
 		myText = updateText_weapon(myText)
 	elif (currentItemSceneRef.core is Armor) :

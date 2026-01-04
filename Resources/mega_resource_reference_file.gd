@@ -440,6 +440,13 @@ const NewEquipment_ArmorDictionary = {
 func getNewEquipment_Armor(resourceName : String) :
 	return NewEquipment_ArmorDictionary.get(resourceName)
 
+const NewEquipment_CurrencyDictionary = {
+	"gold_coin" : preload("res://Resources/NewEquipment/Currency/gold_coin.tres")}
+
+
+func getNewEquipment_Currency(resourceName : String) :
+	return NewEquipment_CurrencyDictionary.get(resourceName)
+
 const NewEquipment_WeaponsDictionary = {
 	"adamantium_greataxe" : preload("res://Resources/NewEquipment/Weapons/adamantium_greataxe.tres"),
 	"amelia_wand" : preload("res://Resources/NewEquipment/Weapons/amelia_wand.tres"),
@@ -526,6 +533,8 @@ func getNewEquipment(resourceName : String) :
 		return NewEquipment_AccessoriesDictionary[resourceName]
 	if (NewEquipment_ArmorDictionary.has(resourceName)) :
 		return NewEquipment_ArmorDictionary[resourceName]
+	if (NewEquipment_CurrencyDictionary.has(resourceName)) :
+		return NewEquipment_CurrencyDictionary[resourceName]
 	if (NewEquipment_WeaponsDictionary.has(resourceName)) :
 		return NewEquipment_WeaponsDictionary[resourceName]
 	return null
@@ -535,6 +544,8 @@ func getNewEquipmentDictionary(type : String) :
 		return NewEquipment_AccessoriesDictionary
 	if type == "NewEquipment_Armor" : 
 		return NewEquipment_ArmorDictionary
+	if type == "NewEquipment_Currency" : 
+		return NewEquipment_CurrencyDictionary
 	if type == "NewEquipment_Weapons" : 
 		return NewEquipment_WeaponsDictionary
 
@@ -542,6 +553,7 @@ func getAllNewEquipment() -> Array :
 	var retVal : Array = []
 	retVal.append_array(NewEquipment_AccessoriesDictionary.values())
 	retVal.append_array(NewEquipment_ArmorDictionary.values())
+	retVal.append_array(NewEquipment_CurrencyDictionary.values())
 	retVal.append_array(NewEquipment_WeaponsDictionary.values())
 	return retVal
 

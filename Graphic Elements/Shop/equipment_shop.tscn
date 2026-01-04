@@ -1,0 +1,58 @@
+[gd_scene load_steps=6 format=3 uid="uid://cc50ymhgbfcp1"]
+
+[ext_resource type="PackedScene" uid="uid://cw10gr4g2ksl1" path="res://Graphic Elements/Shop/shop_window.tscn" id="1_3bhyw"]
+[ext_resource type="Script" uid="uid://ci8m6ld3jips5" path="res://Graphic Elements/Shop/equipment_shop.gd" id="2_wkw6c"]
+[ext_resource type="FontFile" uid="uid://dps60a85iv5xv" path="res://Images/CC0 Assets/Kenney Pixel.ttf" id="3_wkw6c"]
+[ext_resource type="PackedScene" uid="uid://c77w5pwarx82n" path="res://Graphic Elements/Tooltips/tooltip_trigger.tscn" id="4_786k7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_si1te"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="ShopWindow" instance=ExtResource("1_3bhyw")]
+script = ExtResource("2_wkw6c")
+
+[node name="Timer" type="PanelContainer" parent="." index="4"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_top = 15.0
+offset_right = -15.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_si1te")
+
+[node name="Timer" type="HBoxContainer" parent="Timer" index="0"]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="Title" type="RichTextLabel" parent="Timer/Timer" index="0"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("3_wkw6c")
+theme_override_font_sizes/normal_font_size = 110
+bbcode_enabled = true
+text = "[color=#baa1e6]RESET[/color]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Time" type="RichTextLabel" parent="Timer/Timer" index="1"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("3_wkw6c")
+theme_override_font_sizes/normal_font_size = 110
+text = "XX:XX"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TooltipTrigger" parent="Timer" index="1" instance=ExtResource("4_786k7")]
+layout_mode = 2
+tooltipTitle = "[Shop Reset"
+tooltipText = "Every 30 minutes, equipment shops refresh, with the following effects:\\n\\t-The nominal prices of the equipment for sale, random equipment, and reforging purchasables are set proportional to the strength of your strongest defeated enemy.\\n\\t-The strength of the items from the random equipment purchasable is set proportional to the strength of your strongest defeated enemy.\\n\\t-Price increases to random equipment due to purchases in the last 30 minutes are reset to 0.\\n\\t-Equipment for sale refreshes with new items from the random equipment purchasable."
+
+[editable path="VBoxContainer/CurrencyDisplay/HBoxContainer/Icon"]
+[editable path="detailsRight"]
+[editable path="detailsLeft"]

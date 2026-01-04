@@ -39,6 +39,12 @@ func getQuality() -> EquipmentGroups.qualityEnum :
 	return core.equipmentGroups.quality
 func getTextureCopy() -> Texture2D :
 	return getSprite().get_node("Icon").texture.duplicate()
+var reforges : int = 0
+func reforge(scalingVal) :
+	core = core.getAdjustedCopy(scalingVal)
+	reforges += 1
+func getReforges() -> int :
+	return reforges
 ###################################################################################
 ##This scene is not "saveable" but is explicitly saved by EquipmentTab/Inventory##
 func getSaveDictionary() -> Dictionary :
@@ -54,7 +60,8 @@ func loadSaveDictionary(loadDict) -> void :
 			core = null
 		else :
 			## If it's old equipment, sets to resource reference rather than creating a duplicates
-			core = Equipment.createFromSaveDictionary(loadDict["core"])
+			var temp = EquipmentDatabase.getEquipment(loadDict["core"]["resourceName"])
+			core = temp.createFromSaveDictionary(loadDict["core"])
 ##########################################################
 ##SuperButton proxies##
 func setContainerExpandHorizontal() :

@@ -34,9 +34,9 @@ attributeMods = {
 },
 "Intelligence": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.075,
+"Postmultiplier": 0.0,
 "Prebonus": 0.0,
-"Premultiplier": 1.0
+"Premultiplier": 1.075
 },
 "Skill": {
 "Postbonus": 0.0,
@@ -66,9 +66,9 @@ statMods = {
 },
 "Magic Defense": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.025,
+"Postmultiplier": 0.0,
 "Prebonus": 0.0,
-"Premultiplier": 1.0
+"Premultiplier": 1.025
 },
 "Max HP": {
 "Postbonus": 0.0,

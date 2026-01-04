@@ -46,9 +46,9 @@ attributeMods = {
 },
 "Strength": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.025,
+"Postmultiplier": 0.0,
 "Prebonus": 0.0,
-"Premultiplier": 1.0
+"Premultiplier": 1.025
 }
 }
 statMods = {
@@ -78,9 +78,9 @@ statMods = {
 },
 "Physical Defense": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.075,
+"Postmultiplier": 0.0,
 "Prebonus": 0.0,
-"Premultiplier": 1.0
+"Premultiplier": 1.075
 }
 }
 otherMods = {

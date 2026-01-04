@@ -21,9 +21,16 @@ func setVisibility(val : myVisibilityEnum) :
 	elif (val == myVisibilityEnum.fullVisible) :
 		set_disabled(false)
 		visible = true
-		text = " " + myName + " "
+		text = " Unexplored "
 func getVisibility() :
 	return currentVisibility
+	
+func getSaveDictionary() -> Dictionary :
+	var retVal : Dictionary
+	retVal["vis"] = currentVisibility
+	return retVal
+func onLoad(loadDict) :
+	setVisibility(loadDict["vis"])
 	
 signal shopRequested
 var shopType : String = ""
@@ -31,5 +38,15 @@ func setShopType(val) :
 	shopType = val
 func getShopType() :
 	return shopType
+var completed : bool = false
 func _on_pressed() -> void:
-	emit_signal("shopRequested", Shopping.createShop(shopType))
+	emit_signal("shopRequested", await Shopping.createShop(shopType), self)
+func isCompleted() :
+	return completed
+func onCombatComplete() :
+	completed = true
+	$ShopSymbol.visible = true
+	text = " " + myName + " "
+
+func _ready() :
+	remove_from_group("Saveable")

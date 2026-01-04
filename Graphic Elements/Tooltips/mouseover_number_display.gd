@@ -1,7 +1,7 @@
 extends RichTextLabel
 
 var myNumberRef : NumberClass = null
-const templateText = "[b]Prebonuses[/b]\n<PREBONUSES>\n[b]Premultipliers[/b]\n<PREMULTIPLIERS>\n[b]Postbonuses[/b]\n<POSTBONUSES>\n[b]Postmultipliers[/b]\n<POSTMULTIPLIERS>\n\n[<PREBONUSFORMULA><PREMULTIPLIERFORMULA>]<POSTMULTIPLIERFORMULA><POSTBONUSFORMULA> = "
+const templateText = "Bonuses to Base\n\t<PREBONUSES>\nBonuses to Standard Multiplier\n\t<POSTMULTIPLIERS>\nNon-Standard Multipliers\n\t<PREMULTIPLIERS>\n\n<PREBONUSFORMULA><PREMULTIPLIERFORMULA><POSTMULTIPLIERFORMULA> = "
 
 var myText : String
 func setText(val) :
@@ -14,11 +14,11 @@ func setNumberReference(val : NumberClass) :
 	myNumberRef = val
 	
 func createNumberList(items : Dictionary) -> String :
-	var retVal : String = ""
+	var retVal : String = ""	
 	var keys = items.keys()
 	for index in range(0,keys.size()) :
 		if (index != 0) :
-			retVal += "\n"
+			retVal += "\n\t"
 		retVal += keys[index] + ": " + str(Helpers.myRound(items[keys[index]], 3))
 	return retVal
 	
@@ -79,32 +79,40 @@ func _process(_delta) :
 	if (myNumberRef == null) :
 		return
 	setText(str(Helpers.myRound(myNumberRef.getFinal(),3)))
+	#if ($TooltipTrigger.spawned) :
+		#return
 	if (!$TooltipTrigger.isOnNestedTooltip()) :
 		return
 	var prebonuses = myNumberRef.getPrebonuses()
 	var premultipliers = myNumberRef.getPremultipliers()
-	var postbonuses = myNumberRef.getPostbonuses()
+	#var postbonuses = myNumberRef.getPostbonuses()
 	var postmultipliers = myNumberRef.getPostmultipliers()
 	
 	var prebonusText = createNumberList(prebonuses)
 	var premultiplierText = createNumberList(premultipliers)
-	var postbonusText = createNumberList(postbonuses)
+	#var postbonusText = createNumberList(postbonuses)
 	var postmultiplierText = createNumberList(postmultipliers)
+	if (postmultiplierText == "") :
+		postmultiplierText = "--None--"
+	if (prebonusText == "") :
+		prebonusText = "--None--"
+	if (premultiplierText == "") :
+		premultiplierText = "--None--"
 	
 	var tooltipText = templateText
 	tooltipText = tooltipText.replace("<PREBONUSES>", prebonusText)
 	tooltipText = tooltipText.replace("<PREMULTIPLIERS>", premultiplierText)
-	tooltipText = tooltipText.replace("<POSTBONUSES>", postbonusText)
+	#tooltipText = tooltipText.replace("<POSTBONUSES>", postbonusText)
 	tooltipText = tooltipText.replace("<POSTMULTIPLIERS>", postmultiplierText)
 	
 	var prebonusFormula : String = createFormulaString(prebonuses, number_createFormulaString_type.prebonus)
 	var premultiplierFormula : String = createFormulaString(premultipliers, number_createFormulaString_type.premultiplier)
-	var postbonusFormula : String = createFormulaString(postbonuses, number_createFormulaString_type.postbonus)
+	#var postbonusFormula : String = createFormulaString(postbonuses, number_createFormulaString_type.postbonus)
 	var postmultiplierFormula : String = createFormulaString(postmultipliers, number_createFormulaString_type.postmultiplier)
 	
 	tooltipText = tooltipText.replace("<PREBONUSFORMULA>", prebonusFormula)
 	tooltipText = tooltipText.replace("<PREMULTIPLIERFORMULA>", premultiplierFormula)
-	tooltipText = tooltipText.replace("<POSTBONUSFORMULA>", postbonusFormula)
+	#tooltipText = tooltipText.replace("<POSTBONUSFORMULA>", postbonusFormula)
 	tooltipText = tooltipText.replace("<POSTMULTIPLIERFORMULA>", postmultiplierFormula)
 	## This is the final value
 	tooltipText += getText()

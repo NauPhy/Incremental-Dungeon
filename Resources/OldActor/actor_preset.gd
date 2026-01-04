@@ -106,6 +106,7 @@ func getSaveDictionary() -> Dictionary :
 			#retVal["dropChances"].append(dropChances[index])
 	return retVal
 	
+## If you ever make this virtual you have to remove static and use the stupid pattern
 static func createFromSaveDictionary(val : Dictionary) -> ActorPreset :
 	if (val.is_empty()) :
 		return ActorPreset.new()

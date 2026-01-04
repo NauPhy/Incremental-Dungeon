@@ -148,8 +148,8 @@ title = "Breath of the Divine"
 description = "Sample description
 ......
 If melee weapon is equipped:
-DR Premultiplier x1.11
-Physical Conversion Postbonus +0.11"
+DR Multiplier x1.11
+Physical Conversion Standard Multiplier +0.11"
 myPacket = SubResource("Resource_kt3u3")
 equipmentGroups = SubResource("Resource_4eg27")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

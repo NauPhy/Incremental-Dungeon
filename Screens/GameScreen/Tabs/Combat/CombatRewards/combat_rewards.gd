@@ -11,19 +11,19 @@ func _ready() :
 
 var initialisationPending : bool = false
 signal initialisationComplete
-func initialise(rewards : Array[Equipment]) :
+func initialise(rewards : Dictionary) :
 	initialisationPending = true
-	for index in range(0,rewards.size()) :
-		if (rewards[index].getType() == Definitions.equipmentTypeEnum.currency) :
-			var existingEntry = findItem(rewards[index])
-			if (existingEntry != null) :
-				existingEntry.setCount(existingEntry.getCount()+1)
-				return
+	for index in range(0, rewards["currency"].size()) :
+		if (rewards["currency"][index] == 0) :
+			continue
 		var entry = entryLoader.instantiate()
 		$Content/InventoryPanel/VBoxContainer.add_child(entry)
-		entry.initialise(rewards[index])
-		if (entry.getItemSceneRef().getType() == Definitions.equipmentTypeEnum.currency) :
-			entry.setCount(1)
+		entry.initialise_currency(index, rewards["currency"][index])
+		entry.connect("wasSelected", _on_entry_selected)
+	for index in range(0,rewards["equipment"].size()) :
+		var entry = entryLoader.instantiate()
+		$Content/InventoryPanel/VBoxContainer.add_child(entry)
+		entry.initialise(rewards["equipment"][index])
 		entry.connect("wasSelected", _on_entry_selected)
 	var changed : bool = false
 	var optionsCopy = IGOptions.getIGOptionsCopy()

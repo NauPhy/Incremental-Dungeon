@@ -45,26 +45,49 @@ func initialisePlayerName(val) :
 ######################################
 ## Signals
 var permanentMods : Dictionary = {}
-func _shopping_permanent_modifier(value : float, type : String, statEnum : int, source : String, isMultiplicative : bool) :
-	if (permanentMods.get(source) == -1) :
+func _shopping_permanent_modifier(value : Array[float], type : String, statEnum : Array[int], source : String, modType, isMultiplicative : bool) :
+	if (permanentMods.get(source) == null) :
 		permanentMods[source] = ModifierPacket.new()
-	var field
-	if (type == "attribute" && isMultiplicative) :
-		permanentMods[source].attributeMods[statEnum][type] *= value
-	elif (type == "attribute" && !isMultiplicative) :
-		permanentMods[source].attributeMods[statEnum][type] += value
-	elif (type == "stat" && isMultiplicative) :
-		permanentMods[source].statMods[statEnum][type] *= value
-	elif (type == "stat" && !isMultiplicative) :
-		permanentMods[source].statMods[statEnum][type] += value
-	elif (type == "other" && isMultiplicative) :
-		permanentMods[source].otherMods[statEnum][type] *= value
-	elif (type == "other" && !isMultiplicative) :
-		permanentMods[source].otherMods[statEnum][type] += value
-	else :
-		Shopping.provideConfirmation(false)
+	for index in range(0,value.size()) :
+		if (type == "attribute" && isMultiplicative) :
+			permanentMods[source].attributeMods[Definitions.attributeDictionary[statEnum[index]]][modType] *= value[index]
+		elif (type == "attribute" && !isMultiplicative) :
+			permanentMods[source].attributeMods[Definitions.attributeDictionary[statEnum[index]]][modType] += value[index]
+		elif (type == "stat" && isMultiplicative) :
+			permanentMods[source].statMods[Definitions.baseStatDictionary[statEnum[index]]][modType] *= value[index]
+		elif (type == "stat" && !isMultiplicative) :
+			permanentMods[source].statMods[Definitions.baseStatDictionary[statEnum[index]]][modType] += value[index]
+		elif (type == "otherStat" && isMultiplicative) :
+			permanentMods[source].otherMods[Definitions.otherStatDictionary[statEnum[index]]][modType] *= value[index]
+		elif (type == "otherStat" && !isMultiplicative) :
+			permanentMods[source].otherMods[Definitions.otherStatDictionary[statEnum[index]]][modType] += value[index]
+		else :
+			Shopping.provideConfirmation(false)
 	Shopping.provideConfirmation(true)
-		
+	
+func _shopping_node_scaling_requested() :
+	Shopping.provideNodeScaling($MyTabContainer/InnerContainer/Combat/ProceduralGenerationLogic.getNodeScaling())
+	
+func _shopping_random_item_requested(type : Definitions.equipmentTypeEnum) :
+	var item = $MyTabContainer/InnerContainer/Combat/ProceduralGenerationLogic.createShopRandomItem(type)
+	Shopping.provideRandomItem(item)
+	
+func _shopping_add_to_inventory(item : Equipment) :
+	if ($MyTabContainer/InnerContainer/Equipment.isInventoryFull()) :
+		Shopping.provideConfirmation(false)
+	else :
+		var itemName = item.getItemName()
+		var itemSceneRef = SceneLoader.createEquipmentScene(EquipmentDatabase.getEquipment(itemName))
+		itemSceneRef.core = item
+		$MyTabContainer/InnerContainer/Equipment.addItemToInventory(itemSceneRef)
+
+func _shopping_reforge_item_requested(type : Definitions.equipmentTypeEnum) :
+	var equipped = $MyTabContainer/InnerContainer/Equipment.getEquippedItem(type)
+	if (equipped == null) :
+		Shopping.provideConfirmation(false)
+	equipped.reforge()
+	Shopping.provideConfirmation(true)
+	
 func _shopping_upgrade_routine(routine : AttributeTraining) :
 	$MyTabContainer/InnerContainer/Training.upgradeRoutine(routine)
 	Shopping.provideConfirmation(true)
@@ -172,9 +195,15 @@ func _on_floor_clear(typicalEnemyDefense) :
 ## ...
 ## ...
 const shopLoader = preload("res://Graphic Elements/Shop/shop_window.tscn")
+const equipmentShopLoader = preload("res://Graphic Elements/Shop/equipment_shop.tscn")
 func _on_shop_requested(details : ShopDetails) :
-	var newShop = shopLoader.instantiate()
+	var newShop
+	if (details.shopName == Shopping.shopNames["armor"] || details.shopName == Shopping.shopNames["weapon"]) :
+		newShop = equipmentShopLoader.instantiate()
+	else :
+		newShop = shopLoader.instantiate()
 	$MyTabContainer/InnerContainer/Combat.add_child(newShop)
+	newShop.name = "Shop"
 	if (!newShop.myReady) :
 		await newShop.myReadySignal
 	newShop.connect("currencyAmountRequested", _on_currency_amount_requested)
@@ -187,6 +216,15 @@ func _on_shop_finished() :
 	
 func _on_currency_amount_requested(item : Currency, emitter : Node) :
 	emitter.provideCurrencyAmount($TopRibbon/Ribbon/Currency.getCurrencyAmount(item))
+	
+#func _on_reforge_hovered_requested(emitter) :
+	#var shop = $MyTabContainer/InnerContainer/Combat.get_node("Shop")
+	#if (shop == null) :
+		#emitter.provideIsReforgeHovered(false)
+	#elif (!shop.has_method("getReforgeHovered")) :
+		#emitter.provideIsReforgeHovered(false)
+	#else :
+		#emitter.provideIsReforgeHovered(shop.getReforgeHovered())
 
 func _on_magicFind_requested(emitter) :
 	var magicFind = $Player.getOtherStat(Definitions.otherStatEnum.magicFind)
@@ -198,7 +236,8 @@ func _on_add_child_requested(emitter, node : Node) :
 		enemyEntryBigPopup = node
 	emitter.unlockAddChild()
 func _on_player_modifier_dictionary_requested(emitter) :
-	emitter.providePlayerModifierDictionary($Player.getModifierDictionary())
+	var currentAccessory = $MyTabContainer/InnerContainer/Equipment.getCurrentAccessory()
+	emitter.providePlayerModifierDictionary($Player.getModifierDictionary(), currentAccessory != null && currentAccessory.getItemName() == "ring_authority")
 #func _on_player_attribute_mods_requested(emitter) -> void:
 	#emitter.providePlayerAttributeMods($Player.getAttributeMods())
 	#
@@ -294,13 +333,18 @@ func beforeLoad(newSave) :
 	## Wait for annoying dependency
 	if (!$MyTabContainer.myReady) :
 		await $MyTabContainer.actuallyReady
-	Shopping.connect("addPermanentModiferRequested", _shopping_permanent_modifier)
+	Shopping.connect("addPermanentModifierRequested", _shopping_permanent_modifier)
 	Shopping.connect("upgradeRoutineRequested", _shopping_upgrade_routine)
 	Shopping.connect("unlockRoutineRequested", _on_routine_unlock_requested)
 	Shopping.connect("currencyAmountRequested", _on_currency_amount_requested)
 	Shopping.connect("removeCurrencyRequested", _shopping_remove_currency)
+	Shopping.connect("addToInventoryRequested", _shopping_add_to_inventory)
+	Shopping.connect("randomItemRequested", _shopping_random_item_requested)
+	Shopping.connect("reforgeItemRequested", _shopping_reforge_item_requested)
+	Shopping.connect("nodeScalingRequested", _shopping_node_scaling_requested)
 	if (newSave) :
 		permanentMods = {}
+		Shopping.resetItemPrices()
 	for tab in $MyTabContainer/InnerContainer.get_children() :
 		if (tab.has_signal("tutorialRequested")) :
 			tab.connect("tutorialRequested", _on_tutorial_requested)
@@ -318,6 +362,8 @@ func beforeLoad(newSave) :
 			tab.connect("addChildRequested", _on_add_child_requested)
 		if (tab.has_signal("playerModifierDictionaryRequested")) :
 			tab.connect("playerModifierDictionaryRequested", _on_player_modifier_dictionary_requested)
+		#if (tab.has_signal("isReforgedHoveredRequested")) :
+			#tab.connect("isReforgedHoveredRequested", _on_reforge_hovered_requested)
 		#if (tab.has_signal("playerAttributeModsRequested")) :
 			#tab.connect("playerAttributeModsRequested", _on_player_attribute_mods_requested)
 	if (newSave) :

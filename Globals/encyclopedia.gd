@@ -164,10 +164,10 @@ var formulas : Dictionary = {
 				return 0.6*args[1]
 			else :
 				return 0},
-	"Damage Value" : {
+	"Damage" : {
 		"between" : "",
-		formulaAction.getString_array : func(_args) : return ["source power * source's DR * (source's AR/defender's PHYSDEF or MAGDEF)"],
-		formulaAction.getString_partial : func(_args) : return "source power * source's DR * (source's AR/defender's PHYSDEF or MAGDEF)",
+		formulaAction.getString_array : func(_args) : return ["Action Power * attacker's DR * (attacker's AR/defender's PHYSDEF or MAGDEF)"],
+		formulaAction.getString_partial : func(_args) : return "Action Power * attacker's DR * (attacker's AR/defender's PHYSDEF or MAGDEF)",
 		formulaAction.getCalculation_array : func(args) : #args[0] = power, args[1] = DR, args[2] = AR, args[3] = DEF
 			return [args[0]*args[1]*args[2]/args[3]],
 		formulaAction.getCalculation_partial : func (args) :
@@ -192,6 +192,13 @@ func getFormula(formulaKey : String, action : formulaAction, args) :
 		return formulas[formulaKey][action].call(args)
 ## Because I've chosen to use enum keys 
 	
+	
+const problemDictionary = {
+	"Damage" : "Damage Rating",
+	"Multiplier" : "Standard Multiplier",
+	"Routine Growth" : "Routine Growth Ratio",
+	"Routine" : "Routine Growth"
+}
 const keywords : Array[String] = [
 	"Action Power",
 	"Always Discard",
@@ -204,26 +211,28 @@ const keywords : Array[String] = [
 	"Combat Stat",
 	"Currency",
 	"Damage Rating",
-	"Damage Value",
+	"Damage",
 	"Dexterity",
 	"Durability",
 	"Final",
 	"Intelligence",
 	"Max HP",
 	"Magic Defense",
-	"Number",
 	"Physical Defense",
-	"Prebonus",
-	"Premultiplier",
-	"Postbonus",
-	"Postmultiplier",
 	"Routine",
 	"Scaling",
 	"Strength",
 	"Weapon",
-	"Standard",
+	"Standard Multiplier",
+	"Typical",
+	"Bonus",
+	"Multiplier",
 	"Armor",
 	"Accessory",
+	"Routine Growth Ratio",
+	"Routine Growth",
+	"Cumulative Routine Level",
+	"Player Panel",
 	
 	"Physical Damage Dealt",
 	"Magic Damage Dealt",
@@ -303,58 +312,65 @@ const keyword_alternates : Dictionary = {
 	"Magic Damage Dealt" : "MDD",
 	"Magic Damage Taken" : "MDT",
 	"Miku Miku Dance" : "MMD",
+	"Routine Growth Ratio" : "RGR"
 }
 
 var descriptions : Dictionary = {
-	"Class" : "The player's Class determines their starting Attributes, Attribute Premultipliers, and unarmed Weapon Scaling.",
+	"Class" : "Your Class determines their starting Attributes, Attribute multipliers, and unarmed Weapon Scaling. Fighter is the tankiest, Mage is the highest damage, and Rogue is balanced. You can respec about halfway through the game at the cost of half of your Cumulative Routine Levels",
 	
 	"Currency" : "Currency items do not take up inventory space and only exist to be exchanged at shops.", 
 		
-	"Attribute" : "Attributes are a measure of the player's basic ability, and are shown in the player Panel (left).\n\nAttributes are used to calculate their Combat Stats, which are vital for combat. The 5 Attributes are Dexterity, Durability, Intelligence, Skill, and Strength.",
+	"Attribute" : "Attributes are a measure of your basic ability, and are shown in the Player Panel.\n\nAttributes are used to calculate your Combat Stats, which are vital for combat. The 5 Attributes are Dexterity, Durability, Intelligence, Skill, and Strength.\n\tBase Attribute = Class Bonus + Routine Effect * Cumulative Routine Level",
 	
-	"Dexterity" : "Dexterity is an Attribute measuring the player's agility, finnesse, and wit.\n\tWhen a suitable weapon is equipped, Dexterity provides a Prebonus to DR of <DR CONTRIBUTION>.\n\tDexterity provides a Prebonus to Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect the player's skill at dodging.",
+	"Dexterity" : "Dexterity is an Attribute measuring your agility, finnesse, and wit.\n\tWhen a suitable weapon is equipped, Dexterity provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\tDexterity provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your skill at dodging.",
 	
-	"Durability" : "Durability is an Attribute measuring the player's health and resistance to damage.\n\tDurability provides a Prebonus to HP of <MAXHP FORMULA>.\n\tDurability provides a Prebonus to Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect the player's tenacity and grit.",
+	"Durability" : "Durability is an Attribute measuring your health and resistance to damage.\n\tDurability provides a Bonus to Base HP of <MAXHP FORMULA>.\n\tDurability provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your tenacity and grit.",
 	
-	"Intelligence" : "Intelligence is an Attribute measuring the player's quick thinking, learning capacity, and accumulated knowledge, and psionic power.\n\tWhen a suitable weapon is equipped, Intelligence provides a Prebonus to DR of <DR CONTRIBUTION>.\n\tIntelligence provides a Prebonus to Magic Defense of <MAGDEF CONTRIBUTION> to reflect the fortitude of the player's psyche.",
+	"Intelligence" : "Intelligence is an Attribute measuring your quick thinking, learning capacity, and accumulated knowledge, and psionic power.\n\tWhen a suitable weapon is equipped, Intelligence provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\tIntelligence provides a Bonus to Base Magic Defense of <MAGDEF CONTRIBUTION> to reflect the fortitude of your psyche.",
 	
-	"Skill" : "Skill is an Attribute measuring the player's practice and innate ability in the art of combat.\n\tSkill provides a Prebonus to AR of <AR CONTRIBUTION>.\n\tSkill provides a prebonus to Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect the player's ability to anticipate their opponents' attacks and execute defensive maneuvers",
+	"Skill" : "Skill is an Attribute measuring your practice and innate ability in the art of combat.\n\tSkill provides a Bonus to Base AR of <AR CONTRIBUTION>.\n\tSkill provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your ability to anticipate their opponents' attacks and execute defensive maneuvers",
 	
-	"Strength" : "Strength is an Attribute measuring the player's raw physical power.\n\tWhen a suitable weapon is equipped, Strength provides a Prebonus to DR of <DR CONTRIBUTION>.\n\tStrength provides a Prebonus to Physical Defense of <PHYSDEF CONTRIBUTION> to reflect the player's physical health and the hardness of their body.",
+	"Strength" : "Strength is an Attribute measuring your raw physical power.\n\tWhen a suitable weapon is equipped, Strength provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\tStrength provides a Bonus to Base Physical Defense of <PHYSDEF CONTRIBUTION> to reflect your physical health and the hardness of their body.",
 	
-	"Combat Stat" : "Combat Statistics measure a combatant's prowess in certain elements of combat, and are shown in the player Panel (left).\n\nWhile enemies typically have preset Combat Stats, the player's stats can be improved in a variety of ways. Combat Stats can also be modified during combat by certain effects. The Combat Stats are Max HP, Attack Rating, Damage Rating, Physical Defense, and Magic Defense.",
+	"Combat Stat" : "Combat Stats measure a combatant's prowess in certain elements of combat, and yours are displayed in the Player Panel.\n\nWhile enemies typically have preset Combat Stats (scaling with dungeon depth), your stats can be improved in a variety of ways. The five Combat Stats are Max HP, Attack Rating, Damage Rating, Physical Defense, and Magic Defense.",
 	
-	"Max HP" : "Max HP is a Combat Statistic. A combatant always starts with HP = Max HP. When their HP hits 0 due to Damage, they die.\n\tBase Max HP = <MAXHP FORMULA>",
+	"Max HP" : "A combatant's Max HP is a Combat Stat measuring their optimal proximity to death. A combatant always starts with HP = Max HP. When their HP hits 0 due to Damage, they die.\n\tBase Max HP = <MAXHP FORMULA>",
 	
-	"Physical Defense" : "A combatant's Physical Defense is a Combat Stat that reduces the Damage Value of incoming damaging physical effects.\n\tBase PHYSDEF = <PHYSDEF FORMULA>.",
+	"Physical Defense" : "A combatant's Physical Defense is a Combat Stat that reduces the Damage of incoming damaging physical attacks.\n\tBase PHYSDEF = <PHYSDEF FORMULA>.",
 	
-	"Magic Defense" : "A combatant's Magic Defense is a Combat Stat that reduces the Damage Value of incoming damaging magic effects.\n\tBase MAGDEF = <MAGDEF FORMULA>.",
+	"Magic Defense" : "A combatant's Magic Defense is a Combat Stat that reduces the Damage of incoming damaging magic attacks.\n\tBase MAGDEF = <MAGDEF FORMULA>.",
 	
-	"Weapon" : "The player's Weapon determines their AR Scaling, what their basic attack Action is, and provides a Postbonus to their Damage Rating.\n\nYou gain 1.25x to DR premultiplier for each Element shared by your Weapon and Accessory.",
+	"Weapon" : "Your Weapon determines your DR Attribute Scaling, what your basic attack action is, and provides a Bonus to Base Damage Rating.\n\nYou gain a DR Multiplier of 1.25x for each Element shared by your Weapon and Accessory.",
 	
-	"Number" : "Every number in this game is either a Prebonus, Postbonus, Premultiplier, Postmultiplier, Base value, or Final value. Prebonuses and Premultipliers are used to calculate Base values, and Base values, Postbonuses and Postmultipliers are used to calculate Final values.\n\nAll values are Final values unless otherwise specified. So in other words, you don't need to worry about the distinction unless you want to know how something is calculated!",
+	"Base" : "A Base value is a value before any multipliers are applied. This is an important distinction, because if you've got 10 Base DR and x1000 DR Multiplier, getting another +10 to Base DR will double your damage!\n\nBase values have no direct effect on gameplay (see Final values) though the Final value can be equal to the Base if the product of all multipliers is 1.",
 	
-	"Base" : "A Base value is a Number that is calculated using Prebonuses and Premultipliers, and is used to calculate the Final value.\nBase = (sum of Prebonuses) * (product of Premultipliers).",
+	"Bonus" : "Bonus is a term indicating an additive change. It has 2 use cases:\n\t\"Bonus to Base X of Y\" or \n\t\"X Base Bonus +Y\"\n\t\tindicates a flat increase Y to the Base of X.\n\t\"Bonus to X Standard Multiplier of Y\" or\n\t\"X Standard Multiplier Bonus +Y\"\n\t\tindicates an additive multiplier to X of value Y(see Final)",
 	
-	"Final" : "A Final value is a Number that is calculated using a Base value, Postbonuses, and Postmultipliers.\nFinal = Base * (sum of Postmultipliers) + sum of Postbonuses. Unless otherwise specified, all Numbers are Final values.",
+	"Final" : "A final value is the value after all multipliers have been applied. In practice, the Final value of X is always used in any formula containing X, such as DR in the Damage formula.\n\tFinal = Base * product of Multipliers.\n\tOr, with the Standard Multiplier factored out,\n\tFinal = Base * (product of non-standard Multipliers) * (1+sum of bonuses to Standard Multiplier)",
 	
-	"Prebonus" : "A Prebonus is an additive Number that is used to calculate a Base value.\nBase value = (sum of Prebonuses) * (product of Premultipliers).",
+	"Standard Multiplier" : "The Standard Multiplier for a Final value is a multiplicative multiplier consisting of the sum of all additive multipliers.\n\tStandard Multiplier = (1+sum of Bonuses to Standard Multiplier).\n\nThe Standard Multiplier is always included in the Final value formula, though in the absence of any Bonuses its value is 1.0x.\n\nAn additive multiplier in math theory is a multiplier that does not multiply the effects of other multipliers (including itself), so 2 additive multipliers of 3x give a total of 6x, not 9x.",
 	
-	"Premultiplier" : "A Premultiplier is a multiplicative Number that is used to calculate a Base value.\nBase value = (sum of Prebonuses) * (product of Premultipliers).",
+	"Multiplier" : "A Multiplier multiplies a Base value to obtain a Final value. All Multipliers stack multiplicatively; additive multipliers are contained in the Standard Multiplier and are referred to as Bonuses.",
 	
-	"Postbonus" : "A Postbonus is an additive Number that is used to calculate a Final value.\nFinal value = Base * (1 + sum of Postmultipliers) + (sum of Postbonuses).",
+	"Attack Rating" : "A combatant's Attack Rating is a Combat Stat measuring their accuracy and ability to circumvent their opponent's defenses.\nThe Damage of an attack is proportional to the attacker's Attack Rating.\n\tBase AR = <AR FORMULA>.",
 	
-	"Postmultiplier" : "A Postmultiplier is a multiplicative Number that is used to calculate a Final value.\nFinal value = Base * (sum of Postmultipliers) + (sum of Postbonuses).",
+	"Damage Rating" : "A combatant's Damage Rating is a Combat Stat measuring the power of their weapon and how well they can use it. The Damage of an attack is proportional to the attacker's Damage Rating.\n\tBase DR = <DR FORMULA>.",
 	
-	"Attack Rating" : "A combatant's Attack Rating is a Combat Stat measuring their accuracy and ability to circumvent their opponent's defenses.\nThe Damage Value of a damaging effect is proportional to the source's Attack Rating.\n\tBase AR = <AR FORMULA>.",
+	"Damage" : "A Damage is damage dealt to a combatant by an attack.\n\tBase Damage = <DAMAGE VALUE FORMULA>.",
 	
-	"Damage Rating" : "A combatant's Damage Rating is a Combat Stat measuring the power of their weapon and how well they can use it. The Damage Value of an effect is proportional to the source's Damage Rating.\n\tBase DR = <DR FORMULA>.",
-	
-	"Damage Value" : "The damage dealt to a combatant by an attack or other effect.\n\tBase Damage Value = <DAMAGE VALUE FORMULA>.\n\tIf the damaging effect is an attack, the source power is the Action Power of the attack.",
-	
-	"Action Power" : "The fundamental strength of a combat action, independent of the power of the weapon or its user. Typically used to calculate damage dealt or healing provided. ",
+	"Action Power" : "The fundamental strength of a combat action, independent of the power of the weapon or its user. Can be seen in the Beastiary (F1) or the Equipment tab for enemies or your weapon, respectively.",
 
-	"Routine" : "Routines can be used to increase Attributes over time. Each Routine improves Attributes at different rates, and more Routines can be acquired from sources such as Quests. To view and use Routines, see the \"Training\" tab.",
+	"Routine" : "Routines passively increase your Cumulative Routine Levels over time, which in turn increases your Attributes. Each Routine improves Cumulative Routine Levels at different rates, and more Routines can be acquired from shops. To view and use Routines, see the Training tab.",
+	
+	"Cumulative Routine Level" : "There are six Cumulative Routine Levels, one for each Attribute. They can be found under \"Routine Levels\" in the Training tab. Cumulative Routine Levels increase constantly at a rate equal to your Routine Growth Rates.\n\tCumulative Routine Levels provide a Bonus to the Base of your corresponding Attributes equal to Routine Effect*respective level.",
+	
+	"Routine Growth": "Routine Growth is the amount of levels you gain in Cumulative Routine Levels per second. There are six Routine Growth Rates, one for each Attribute. They can be found at the bottom of the \"Routines\" panel in the Training Tab.\n\tFor a given Attribute, the corresponding Base Routine Growth Rate = RGR*Routine Speed.",
+	
+	"Routine Speed" : "Listed under \"Other Stats\" in the Player Panel, Routine Speed provides a Multiplier to all Routine Growth Rates of x<Routine Speed>.\n\tBase Routine Speed = 1.0\n\nRoutine Speed is capped at 100.0.",
+	
+	"Routine Effect" : "Listed under \"Other Stats\" in the Player Panel. Routine Effect multiplies the Bonus to Base Attributes given by Cumulative Routine Levels.\n\tBase Routine Effect = 1.0",
+	
+	"Routine Growth Ratio" : "The Routine Growth Ratio (RGR) is the Numbers displayed underneath each Routine under \"Routines\" in the Training tab. A Routine's RGR provides a Bonus to Base Routine Growth Rate of RGR*Routine Speed. Base RGR varies by Routine, and Bonuses to their Standard Multipliers can be bought in shops.",
 	
 	"Combat Reward Behaviour" : "Wait\n\nAlways Take\n\nAlways Discard",
 	
@@ -366,13 +382,15 @@ var descriptions : Dictionary = {
 	
 	"Inventory Behaviour" : "Determines whether \"Always Take\" will wait or discard when the inventory is full. \"Always Take\" can be set per-item in the Encyclopedia (F1).",
 	
-	"Scaling" : "Weapons provide a Prebonus to DR based on the player's Attributes and their Weapon's Scaling for those respective Attributes. Scaling ranges between E and S, with S being the highest. Hover over the letter in game to see the decimal scaling value.",
+	"Scaling" : "Weapons provide a Bonus to Base DR based on your Attributes and your Weapon's Scaling for those respective Attributes. Scaling ranges between E and S+, with S+ being the highest. Hover over the letter in game to see the decimal scaling value.",
 	
-	"Standard" : "Standard indicates a value is listed without progression scaling. If the value is random, this is the average.",
+	"Typical" : "Typical indicates a value is listed without progression scaling. If the value is random, this is the average.",
 	
-	"Armor" : "A type of equipment. Armor provides a postbonus to PHYSDEF and MAGDEF.\n\nYou gain x1.25 to PHYSDEF and MAGDEF premultiplier for each Element shared by your Armor and Accessory.",
+	"Armor" : "A type of equipment. Armor provides a Bonus to Base PHYSDEF and MAGDEF.\n\nYou gain a PHYSDEF and MAGDEF Multiplier of 1.25x for each Element shared by your Armor and Accessory.",
 	
-	"Accessory" : "A type of equipment. Accessories tend to give postbonuses to Attributes and postmultipliers to Combat Stats.\n\nYou gain 1.25x to DR premultiplier for each Element shared by your Weapon and Accessory.\n\nYou gain x1.25 to PHYSDEF and MAGDEF premultiplier for each Element shared by your Armor and Accessory.",
+	"Accessory" : "A type of equipment. Accessories tend to give Bonuses to Base Attributes and Multipliers to Combat Stats.\n\nYou gain a DR Multiplier of 1.25x for each Element shared by your Weapon and Accessory.\n\nYou gain a PHYSDEF and MAGDEF Multiplier of 1.25x for each Element shared by your Armor and Accessory.",
+	
+	"Player Panel" : "Located on the left side of the game screen, the Player Panel lists important stats for your character. Hover over the stats to see all of the Bonuses to the Base and Standard Multiplier as well as all non-Standard multipliers.",
 	################################################################
 	## Tags
 	"Tag" : "Tags determine what equipment an enemy can drop. Both equipment and enemies have Tags, and either can disqualify an item from dropping. See Equipment tags and Enemy tags.",
@@ -406,7 +424,7 @@ var descriptions : Dictionary = {
 	"Hardened" : "This enemy has fairly high Physical Defense and can only drop Armor with the Anti-Physical or Balanced defense Tags.",
 	"Ironclad" : "This enemy has high Physical Defense and can only drop Armor with the Anti-Physical defense Tag.",
 	
-	"Element" : "Some pieces of equipment have a particular Element. Elemental equipment is typically only dropped in certain Biomes (displayed on the top right corner of the Combat Map), but can provide powerful synergies:\n\nx1.25 DR premultiplier for each Element shared by your Weapon and Accessory.\n\nx1.25 PHYSDEF and MAGDEF premultiplier for each Element shared by your Armor and Accessory.\n\nThe 4 Elements are Earth, Fire, Ice, and Water",
+	"Element" : "Some pieces of equipment have a particular Element. Elemental equipment is typically only dropped in certain Biomes (displayed on the top right corner of the Combat Map), but can provide powerful synergies:\n\nYou gain a DR Multiplier of 1.25x for each Element shared by your Weapon and Accessory.\n\nYou gain a PHYSDEF and MAGDEF Multiplier of 1.25x for each Element shared by your Armor and Accessory.",
 	"Fire" : "Fire is the Element of destruction.",
 	"Ice" : "Ice is the Element of unchange.",
 	"Water" : "Water is the Element of change.",
@@ -430,12 +448,12 @@ var descriptions : Dictionary = {
 	
 	"Biome" : "Each floor beyond the tutorial is generated with a specific Biome. The Biome determines what Elements are eligible to drop and what Factions are eligible to appear.\n\nThe Biome and its effects can be seen in the top right of the Combat Map.\n\nIf no elements are listed for a biome, equipment from any element can drop, but is 4x as rare (75% chance to be rerolled).",
 	##################################################################
-	"Physical Damage Dealt" : "Physical Damage Dealt/PDD, applies after Physical Conversion.",
-	"Magic Damage Dealt" : "Magic Damage Dealt/MDD, applies after Magic Conversion.",
-	"Physical Damage Taken" : "Physical Damage Taken, aka PDT",
-	"Magic Damage Taken" : "Magic Damage Taken, aka MDT",
-	"Physical Conversion" : "Applies a portion of physical damage to the enemy's MAGDEF instead of their PHYSDEF.",
-	"Magic Conversion" : "Applies a portion of magic damage to the enemy's PHYSDEF instead of their MAGDEF.",
+	"Physical Damage Dealt" : "Physical Damage Dealt/PDD, applies after Physical Conversion.\n\tBase PDD = 1.0",
+	"Magic Damage Dealt" : "Magic Damage Dealt/MDD, applies after Magic Conversion.\n\tBase MDD = 1.0",
+	"Physical Damage Taken" : "Physical Damage Taken, aka PDT.\n\tBase PDT = 1.0",
+	"Magic Damage Taken" : "Magic Damage Taken, aka MDT.\n\tBase MDT = 1.0",
+	"Physical Conversion" : "Applies a portion of physical damage to the enemy's MAGDEF instead of their PHYSDEF.\n\tBase Physical Conversion = 0.0",
+	"Magic Conversion" : "Applies a portion of magic damage to the enemy's PHYSDEF instead of their MAGDEF.\n\tBase Magic Conversion = 0.0",
 	"Miku Miku Dance" : "henlo"
 }
 #func getEncyclopediaEntries() -> Dictionary :
@@ -467,6 +485,6 @@ func addFormulasToDescriptions() :
 		descriptions[key] = descriptions[key].replace("<MAXHP FORMULA>", getFormula("MAXHP", formulaAction.getString_full, null))
 		descriptions[key] = descriptions[key].replace("<AR FORMULA>", getFormula("AR", formulaAction.getString_full, null))
 		descriptions[key] = descriptions[key].replace("<DR FORMULA>", getFormula("DR", formulaAction.getString_full, null))
-		descriptions[key] = descriptions[key].replace("<DAMAGE VALUE FORMULA>", getFormula("Damage Value", formulaAction.getString_full,null))
+		descriptions[key] = descriptions[key].replace("<DAMAGE VALUE FORMULA>", getFormula("Damage", formulaAction.getString_full,null))
 		descriptions[key] = descriptions[key].replace("<PHYSDEF FORMULA>", getFormula("PHYSDEF", formulaAction.getString_full, null))
 		descriptions[key] = descriptions[key].replace("<MAGDEF FORMULA>", getFormula("MAGDEF", formulaAction.getString_full, null))

@@ -10,14 +10,14 @@ size_flags_vertical = 0
 alignment = 1
 script = ExtResource("1_437bh")
 
-[node name="Sprite" parent="." instance=ExtResource("1_ype6o")]
+[node name="Sprite4" parent="." instance=ExtResource("1_ype6o")]
 visible = false
 layout_mode = 2
 
-[node name="Icon" parent="Sprite" index="0"]
+[node name="Icon" parent="Sprite4" index="0"]
 scale = Vector2(3, 3)
 texture = ExtResource("3_ktwhp")
-region_rect = Rect2(66, 38, 11, 5)
+region_rect = Rect2(39, 57, 10, 12)
 
 [node name="Sprite2" parent="." instance=ExtResource("1_ype6o")]
 visible = false
@@ -37,16 +37,16 @@ scale = Vector2(3, 3)
 texture = ExtResource("3_ktwhp")
 region_rect = Rect2(55, 39, 6, 7)
 
-[node name="Sprite4" parent="." instance=ExtResource("1_ype6o")]
+[node name="Sprite" parent="." instance=ExtResource("1_ype6o")]
 visible = false
 layout_mode = 2
 
-[node name="Icon" parent="Sprite4" index="0"]
+[node name="Icon" parent="Sprite" index="0"]
 scale = Vector2(3, 3)
 texture = ExtResource("3_ktwhp")
-region_rect = Rect2(72, 40, 19, 12)
+region_rect = Rect2(66, 38, 11, 5)
 
-[editable path="Sprite"]
+[editable path="Sprite4"]
 [editable path="Sprite2"]
 [editable path="Sprite3"]
-[editable path="Sprite4"]
+[editable path="Sprite"]

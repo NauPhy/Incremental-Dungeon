@@ -34,7 +34,7 @@ var myReady : bool = false
 func _ready() :
 	myReady = true
 		
-func beforeLoad(newSave : bool) :
+func beforeLoad(_newSave : bool) :
 	$AttributeBonuses.setType("bonus")
 	$AttributeMultipliers.setType("multiplier")
 	for key in Definitions.attributeEnum.keys() :

@@ -102,7 +102,7 @@ func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float, penaliseEle
 			continue
 		var item
 		if (penaliseElemental) :
-			item = getItemOfQuality_penaliseElemental(actualQuality)
+			item = getItemOfQuality_penaliseElemental(actualQuality, false)
 		else :
 			item = getItemOfQuality(actualQuality)
 		if (item == null) :
@@ -156,7 +156,7 @@ func getItemOfQuality(quality) :
 			current += 1
 	return null
 	
-func getItemOfQuality_penaliseElemental(quality) :
+func getItemOfQuality_penaliseElemental(quality, isHalved : bool) :
 	var poolContainsNonelemental : bool = false
 	for item in itemPool :
 		if (!item.equipmentGroups.isElemental()) :
@@ -168,7 +168,12 @@ func getItemOfQuality_penaliseElemental(quality) :
 	var sample = getItemOfQuality(quality)
 	if (sample == null) :
 		return null
-	while (sample.equipmentGroups.isElemental() && randi_range(0,3) != 0) :
+	var maxVal
+	if (isHalved) :
+		maxVal = 1
+	else :
+		maxVal = 3
+	while (sample.equipmentGroups.isElemental() && randi_range(0,maxVal) != 0) :
 		sample = getItemOfQuality(quality)
 	
 #func getItemsOfQualities(qualities : Array[EquipmentGroups.qualityEnum]) :

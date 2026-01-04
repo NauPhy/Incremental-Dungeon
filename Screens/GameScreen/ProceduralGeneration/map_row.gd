@@ -16,6 +16,7 @@ func getSaveDictionary() -> Dictionary :
 		retVal["right"].append(encounter.getSaveDictionary())
 	return retVal
 	
+## Do not make this virtual
 static func createFromSaveDictionary(val : Dictionary) -> MapRow :
 	var retVal = MapRow.new()
 	retVal.centralEncounter = Encounter.createFromSaveDictionary(val["central"])

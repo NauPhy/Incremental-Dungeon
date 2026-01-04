@@ -2,7 +2,7 @@ extends Control
 
 var currentLevel : int = 0
 const baseGrowth = 10
-var growthMultiplier = 1
+var growthMultiplier = 0
 const maxGrowth = 10000
 var currentGrowth = baseGrowth
 var actualProgress = 0

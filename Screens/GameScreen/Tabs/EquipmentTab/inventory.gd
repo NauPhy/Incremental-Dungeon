@@ -65,14 +65,14 @@ func getModifierPacket() -> ModifierPacket :
 		if (equippedEntries[key] != null) :
 			retVal = equippedEntries[key].addToModifierPacket(retVal)
 	if (equippedEntries[2] != null && equippedEntries[2].getItemName() == "coating_divine" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.melee) :
-		retVal.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 1.11
-		retVal.otherMods[Definitions.otherStatEnum.physicalConversion]["Postbonus"] += 0.11
+		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.11
+		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Postmultiplier"] += 0.11
 	elif (equippedEntries[2] != null && equippedEntries[2].getItemName() == "lightning_arrows_1" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.ranged) :
-		retVal.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 1.11
-		retVal.otherMods[Definitions.otherStatEnum.physicalConversion]["Postbonus"] += 0.11
+		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.11
+		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Postmultiplier"] += 0.11
 	elif (equippedEntries[2] != null && equippedEntries[2].getItemName() == "lightning_arrows_2" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.ranged) :
-		retVal.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 1.3
-		retVal.otherMods[Definitions.otherStatEnum.physicalConversion]["Postbonus"] += 0.3
+		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.3
+		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Postmutliplier"] += 0.3
 	return retVal
 func getElementalModifierPacket() -> ModifierPacket :
 	var retVal = ModifierPacket.new()
@@ -165,6 +165,13 @@ func getInventory() -> Node :
 	return $ScrollContainer/CenterContainer/GridContainer
 ##################################
 ##Internal
+var currentReforgeItem : Node = null
+func reforgeItem(newScalingVal) -> bool :
+	if (currentReforgeItem == null) :
+		return false
+	currentReforgeItem.reforge(newScalingVal)
+	return true
+	
 func findPanel(item) :
 	var equipment
 	if (item is Equipment) :
@@ -244,7 +251,24 @@ func _on_draggable_drag(emitter) :
 	updateDraggingSiblings()
 	draggingPanel = emitter
 	
+var waitingForReforgeHovered : bool = false
+var reforgeHovered_comm : bool = false
+signal isReforgeHoveredRequested
+signal isReforgeHoveredReceived
+func getReforgeHovered() :
+	waitingForReforgeHovered = true
+	emit_signal("isReforgeHoveredRequested", self)
+	if (waitingForReforgeHovered) :
+		await isReforgeHoveredReceived
+	return reforgeHovered_comm
+func provideIsReforgedHovered(val) :
+	reforgeHovered_comm = val
+	waitingForReforgeHovered = false
+	emit_signal("isReforgeHoveredReceived")
+	
 func _on_draggable_release(_emitter) :
+	## Inventory actually does not need to know if reforge is hovered. The player drags the item to the reforge window
+	#var reforgeHovered = await getReforgeHovered()
 	getInventory().remove_child(ghostPanel)
 	ghostPanel.queue_free()
 	ghostPanel = null

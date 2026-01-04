@@ -23,6 +23,14 @@ func getCurrentArmor() -> Armor :
 		return null
 	else :
 		return itemSceneRef.core.duplicate()
+func getCurrentAccessory() -> Accessory :
+	var itemSceneRef = $Inventory.getEquippedItem(Definitions.equipmentTypeEnum.accessory)
+	if (itemSceneRef == null) :
+		return null
+	else :
+		return itemSceneRef.core.duplicate()
+func getEquippedItem(type) :
+	return $Inventory.getEquippedItem(type)
 func getDirectModifiers() -> ModifierPacket :
 	return $Inventory.getModifierPacket()
 func getItemCount(item : Equipment) :
@@ -68,3 +76,7 @@ func _on_item_deselected(_itemSceneRef) -> void:
 	$PagedEquipmentDetails.setItemSceneRefBase(null)
 
 #####################################
+
+signal isReforgeHoveredRequested
+func _on_inventory_is_reforge_hovered_requested(emitter) -> void:
+	emit_signal("isReforgeHoveredRequested", emitter)

@@ -6,6 +6,11 @@ func setCurrency(val : Texture2D) :
 	for child in $VBoxContainer.get_children() :
 		if (valid(child)) :
 			child.setCurrency(val)
+			
+func refreshPrice(itemName, value) :
+	for child in $VBoxContainer.get_children() :
+		if (valid(child) && child.getName() == itemName) :
+			child.setPrice(value)
 
 func setCategoryName(val : String) :
 	$VBoxContainer/CategoryName.text = " " + val + " "
@@ -20,7 +25,7 @@ func addPurchasable(val : Purchasable) :
 	newEntry.setFromDetails(val)
 	newEntry.connect("wasSelected", _on_purchasable_selected)
 	
-const entryLoader = preload("res://Graphic Elements/Shop/purchasable_scene.tscn")
+const entryLoader = preload("res://Graphic Elements/Shop/purchasable_wrapper.tscn")
 func setFromDetails(val : ShopColumn) :
 	setCategoryName(val.columnName)
 	for purchasable in val.purchasables :
@@ -44,7 +49,7 @@ func _on_purchasable_selected(emitter) :
 	if (emitter.getEquipment() != null) :
 		emit_signal("displayRequested", emitter.getEquipment(), emitter.getPrice(), self)
 	else :
-		emit_signal("purchaseRequested", emitter.getName(), emitter.getPrice())
+		emit_signal("purchaseRequested", emitter.getName(), emitter.getPrice(), emitter.getCore())
 	
 func valid(val) :
 	return (val != $VBoxContainer/CategoryName && val != $VBoxContainer/Spacer)

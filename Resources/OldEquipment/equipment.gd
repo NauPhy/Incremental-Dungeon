@@ -48,7 +48,7 @@ func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
 	retVal["resourceName"] = resourceName
 	return retVal
-static func createFromSaveDictionary(loadDict : Dictionary) -> Equipment :
+func createFromSaveDictionary(loadDict : Dictionary) -> Equipment :
 	var resource = EquipmentDatabase.getEquipment(loadDict["resourceName"])
 	if (!Helpers.equipmentIsNew(resource)) :
 		return resource

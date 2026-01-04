@@ -109,8 +109,8 @@ otherMods = {
 "Premultiplier": 1.0
 },
 "Physical Conversion": {
-"Postbonus": 0.22,
-"Postmultiplier": 0.0,
+"Postbonus": 0.0,
+"Postmultiplier": 0.22,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 },

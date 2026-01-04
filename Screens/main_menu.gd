@@ -18,7 +18,7 @@ func _on_new_button_pressed() -> void:
 	newMenu = SaveManager.newGameSaveSelection()
 	newMenu.connect("optionChosen", _on_new_menu_finished)
 	
-func _on_new_menu_finished() :
+func _on_new_menu_finished(_val) :
 	newMenu = null
 	
 func _new_game_ready() :

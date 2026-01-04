@@ -1,7 +1,5 @@
 extends "res://Graphic Elements/Buttons/super_button.gd"
-var myName = ""
-var myPrice : int = -1
-var myEquipment : Equipment
+var core : Purchasable = null
 
 var myReady : bool = false
 signal myReadySignal
@@ -12,22 +10,21 @@ func _ready() :
 
 func setCurrency(val : Texture2D) :
 	$HBoxContainer/HBoxContainer2/CurrencySprite.setTexture(val)
-func setPrice(val : int) :
-	myPrice = val
-	$HBoxContainer/HBoxContainer2/Price.text = " " + str(val) + " "
-func setName(val : String) :
-	myName = val
-	$HBoxContainer/HBoxContainer/PurchaseableName.text = " " + val + " "
+func setPrice(val) :
+	core.purchasablePrice = val
+	$HBoxContainer/HBoxContainer2/Price.text = " " + Helpers.engineeringRound(val.purchasablePrice, 3) + " "
+
+	
 func setFromDetails(val : Purchasable) :
-	setName(val.purchasableName)
-	setPrice(val.purchasablePrice)
-	myEquipment = val.equipment_optional
-	if (myEquipment != null) :
+	core = val
+	$HBoxContainer/HBoxContainer/PurchaseableName.text = " " + val.purchasableName + " "
+	$HBoxContainer/HBoxContainer2/Price.text = " " + Helpers.engineeringRound(val.purchasablePrice, 3) + " "
+	if (val.equipment_optional != null) :
 		self.toggle = true
 
 func getName() :
-	return myName
+	return core.purchasableName
 func getPrice() :
-	return myPrice
+	return core.purchasablePrice
 func getEquipment() :
-	return myEquipment
+	return core.equipment_optional

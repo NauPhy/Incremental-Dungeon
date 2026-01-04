@@ -47,11 +47,13 @@ func initialiseNumberObjects() :
 		derivedStatObjects.append(NumberClass.new())
 	for key in Definitions.otherStatDictionary.keys() :
 		otherStatObjects.append(NumberClass.new())
-	otherStatObjects[Definitions.otherStatEnum.magicFind].setPrebonus("Base", 1.0)
-	otherStatObjects[Definitions.otherStatEnum.physicalDamageDealt].setPrebonus("Base",1.0)
-	otherStatObjects[Definitions.otherStatEnum.physicalDamageTaken].setPrebonus("Base",1.0)
-	otherStatObjects[Definitions.otherStatEnum.magicDamageDealt].setPrebonus("Base",1.0)
-	otherStatObjects[Definitions.otherStatEnum.magicDamageTaken].setPrebonus("Base",1.0)
+	otherStatObjects[Definitions.otherStatEnum.magicFind].setPrebonus("Humanoid", 1.0)
+	otherStatObjects[Definitions.otherStatEnum.physicalDamageDealt].setPrebonus("Humanoid",1.0)
+	otherStatObjects[Definitions.otherStatEnum.physicalDamageTaken].setPrebonus("Humanoid",1.0)
+	otherStatObjects[Definitions.otherStatEnum.magicDamageDealt].setPrebonus("Humanoid",1.0)
+	otherStatObjects[Definitions.otherStatEnum.magicDamageTaken].setPrebonus("Humanoid",1.0)
+	otherStatObjects[Definitions.otherStatEnum.routineSpeed].setPrebonus("Humanoid",1.0)
+	otherStatObjects[Definitions.otherStatEnum.routineEffect].setPrebonus("Humanoid",1.0)
 ###############################
 ## Specific Modifiers
 func updateTrainingLevels(newLevels : Array[int]) :
@@ -86,7 +88,7 @@ func updateDirectModifier(origin : String, val : ModifierPacket) :
 		otherStatObjects[key].setPostbonus(origin, val.otherMods[tag]["Postbonus"])
 		otherStatObjects[key].setPostmultiplier(origin, val.otherMods[tag]["Postmultiplier"])
 		var statDisplay = $ScrollContainer/VBoxContainer/OtherStatPanel/PanelContainer/OtherStatDisplay
-		if (otherStatObjects[key].getPrebonuses().get("Base") != null) :
+		if (otherStatObjects[key].getPrebonuses().get("Humanoid") != null) :
 			if (otherStatObjects[key].getFinal() == 1) :
 				statDisplay.get_child(key as int).visible = false
 			else :
@@ -105,14 +107,14 @@ func myUpdate() :
 	pass
 	#trainingLevels
 	for key in Definitions.attributeDictionary.keys() :
-		attributeObjects[key].setPrebonus("Training", trainingLevels[key])
+		attributeObjects[key].setPrebonus("Training", otherStatObjects[Definitions.otherStatEnum.routineEffect].getFinal()*trainingLevels[key])
 	#Final
 	var finalAttributes : Array[float]
 	for key in Definitions.attributeDictionary.keys() :
 		finalAttributes.append(attributeObjects[key].getFinal())
 	## Combat Stats
 	#equippedWeapon
-	derivedStatObjects[Definitions.baseStatEnum.DR].setPostbonus("Equipped Weapon", equippedWeapon.attackBonus)
+	derivedStatObjects[Definitions.baseStatEnum.DR].setPrebonus("Equipped Weapon", equippedWeapon.attackBonus)
 	var LOCAL_weaponArray = equippedWeapon.getScalingArray()
 	#equippedArmor
 	var PHYSDEF_armor
@@ -123,8 +125,8 @@ func myUpdate() :
 	else :
 		PHYSDEF_armor = equippedArmor.PHYSDEF
 		MAGDEF_armor = equippedArmor.MAGDEF
-	derivedStatObjects[Definitions.baseStatEnum.PHYSDEF].setPostbonus("Equipped Armor", PHYSDEF_armor)
-	derivedStatObjects[Definitions.baseStatEnum.MAGDEF].setPostbonus("Equipped Armor", MAGDEF_armor)
+	derivedStatObjects[Definitions.baseStatEnum.PHYSDEF].setPrebonus("Equipped Armor", PHYSDEF_armor)
+	derivedStatObjects[Definitions.baseStatEnum.MAGDEF].setPrebonus("Equipped Armor", MAGDEF_armor)
 	#trainingLevels
 	pass
 	#Attributes
