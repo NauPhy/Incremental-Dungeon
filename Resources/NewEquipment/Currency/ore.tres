@@ -6,8 +6,8 @@
 
 [sub_resource type="Resource" id="Resource_iwj32"]
 script = ExtResource("1_nq23y")
-isEligible = true
-quality = 0
+isEligible = false
+quality = 1
 technology = 1
 weaponClass = -1
 armorClass = -1

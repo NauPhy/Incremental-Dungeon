@@ -29,6 +29,7 @@ var characterName : String = "Undefined"
 var attributeObjects : Array[NumberClass] = []
 var derivedStatObjects : Array[NumberClass] = []
 var otherStatObjects : Array[NumberClass] = []
+var mySubclass : Definitions.subclass = -1
 ## Direct Modifiers (not explicitly ackgnowledged in Player.gd)
 #Equipment
 ## Specific Modifiers
@@ -36,6 +37,7 @@ var unarmedWeapon : Node = null
 
 var equippedWeapon : Weapon = null
 var equippedArmor : Armor = null
+var equippedAccessory : Accessory = null
 var trainingLevels : Array[int] = []
 
 ###############################
@@ -66,6 +68,8 @@ func updateWeapon(val : Weapon) :
 	core.actions[0] = equippedWeapon.basicAttack
 func updateArmor(val : Armor) :
 	equippedArmor = val
+func updateAccessory(val : Accessory) :
+	equippedAccessory = val
 ###############################
 ## Direct modifiers
 func updateDirectModifier(origin : String, val : ModifierPacket) :
@@ -98,8 +102,62 @@ func updateDirectModifier(origin : String, val : ModifierPacket) :
 				statDisplay.get_child(key as int).visible = false
 			else :
 				statDisplay.get_child(key as int).visible = true
+				
+func getSubclassModPacket() -> ModifierPacket :
+	var subclassMod : ModifierPacket = ModifierPacket.new()
+	if (mySubclass == -1) :
+		pass
+	elif (mySubclass == Definitions.subclass.barb) :
+		subclassMod.statMods[Definitions.baseStatEnum.PHYSDEF]["Premultiplier"] *= 0.8
+		subclassMod.statMods[Definitions.baseStatEnum.MAGDEF]["Premultiplier"] *= 0.8
+		subclassMod.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 1.25
+	elif (mySubclass == Definitions.subclass.knight) :
+		subclassMod.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 0.75
+		var armorVal
+		if (equippedArmor == null) :
+			armorVal = 0
+		else :
+			armorVal = (equippedArmor.MAGDEF + equippedArmor.PHYSDEF)/2.0
+		subclassMod.statMods[Definitions.baseStatEnum.DR]["Prebonus"] += 1.9*armorVal
+	elif (mySubclass == Definitions.subclass.ammo) :
+		subclassMod.statMods[Definitions.baseStatEnum.MAXHP]["Premultiplier"] *= 0.9
+		if (equippedWeapon != null && equippedWeapon.equipmentGroups.weaponClass != EquipmentGroups.weaponClassEnum.melee) :
+			subclassMod.statMods[Definitions.baseStatEnum.AR]["Premultiplier"] *= 1.35
+	elif (mySubclass == Definitions.subclass.whirl) :
+		if (equippedWeapon != null && equippedWeapon.equipmentGroups.weaponClass != EquipmentGroups.weaponClassEnum.ranged) :
+			subclassMod.statMods[Definitions.baseStatEnum.PHYSDEF]["Premultiplier"] *= 1.08
+			subclassMod.statMods[Definitions.baseStatEnum.MAGDEF]["Premultiplier"] *= 1.08
+	elif (mySubclass == Definitions.subclass.enchant) :
+		if (equippedWeapon != null && equippedWeapon.equipmentGroups.isElemental()) :
+			subclassMod.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 1.1
+		if (equippedArmor != null && equippedArmor.equipmentGroups.isElemental()) :
+			subclassMod.statMods[Definitions.baseStatEnum.PHYSDEF]["Premultiplier"] *= 1.1
+			subclassMod.statMods[Definitions.baseStatEnum.MAGDEF]["Premultiplier"] *= 1.1
+		if (equippedAccessory != null && equippedAccessory.equipmentGroups.isElemental()) :
+			subclassMod.attributeMods[Definitions.attributeEnum.SKI]["Premultiplier"] *= 1.05
+	elif (mySubclass == Definitions.subclass.soul) :
+		subclassMod.statMods[Definitions.baseStatEnum.MAXHP]["Premultiplier"] *= 0.85
+		var souls = EnemyDatabase.getSoulCount()
+		var val = -4.0*pow(10.0,-5.0)*pow(souls,2.0)+0.0105*souls-0.25
+		if (val < 0) :
+			val = 0
+		subclassMod.statMods[Definitions.baseStatEnum.MAXHP]["Postmultiplier"] += val
+		subclassMod.statMods[Definitions.baseStatEnum.DR]["Postmultiplier"] += val
+	return subclassMod
+		
+func getSubclassName() -> String :
+	return Definitions.subclassDictionary[mySubclass]
+func getSubclass() :
+	return mySubclass
+func setSubclass(val : Definitions.subclass) :
+	mySubclass = val
+	
 ########################################
 func myUpdate() :
+	####################################################
+	## Subclass ##
+	if (mySubclass != -1) :
+		updateDirectModifier(Definitions.subclassDictionary[mySubclass], getSubclassModPacket())
 	## Attributes
 	#equippedWeapon
 	pass
@@ -150,6 +208,7 @@ func myUpdate() :
 	pass
 	##Derived stats
 	updateDerivedStats()
+
 	
 func setTypicalEnemyDefense(val) :
 	typicalEnemyDefense = val
@@ -221,6 +280,7 @@ func getSaveDictionary() -> Dictionary :
 	tempDict["playerClass"] = characterClass.resource_path
 	tempDict["playerName"] = characterName
 	tempDict["typicalEnemyDefense"] = typicalEnemyDefense
+	tempDict["subclass"] = mySubclass
 	return tempDict
 	
 var myReady : bool = false
@@ -241,3 +301,4 @@ func onLoad(loadDict) -> void :
 	setName(loadDict["playerName"])
 	if (loadDict.get(typicalEnemyDefense) != null) :
 		typicalEnemyDefense = loadDict["typicalEnemyDefense"]
+	mySubclass = loadDict["subclass"]

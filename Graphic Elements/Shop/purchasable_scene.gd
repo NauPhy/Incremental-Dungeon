@@ -12,12 +12,15 @@ func setCurrency(val : Texture2D) :
 	$HBoxContainer/HBoxContainer2/CurrencySprite.setTexture(val)
 func setPrice(val) :
 	core.purchasablePrice = val
-	$HBoxContainer/HBoxContainer2/Price.text = " " + Helpers.engineeringRound(val.purchasablePrice, 3) + " "
+	$HBoxContainer/HBoxContainer2/Price.text = " " + str(Helpers.engineeringRound(val, 3)) + " "
 
 	
 func setFromDetails(val : Purchasable) :
 	core = val
-	$HBoxContainer/HBoxContainer/PurchaseableName.text = " " + val.purchasableName + " "
+	if ((val.equipment_optional) != null) :
+		$HBoxContainer/HBoxContainer/PurchaseableName.text = " " + val.equipment_optional.getName() + " "
+	else :
+		$HBoxContainer/HBoxContainer/PurchaseableName.text = " " + val.purchasableName + " "
 	$HBoxContainer/HBoxContainer2/Price.text = " " + Helpers.engineeringRound(val.purchasablePrice, 3) + " "
 	if (val.equipment_optional != null) :
 		self.toggle = true
@@ -28,3 +31,5 @@ func getPrice() :
 	return core.purchasablePrice
 func getEquipment() :
 	return core.equipment_optional
+func getPurchasable() :
+	return core

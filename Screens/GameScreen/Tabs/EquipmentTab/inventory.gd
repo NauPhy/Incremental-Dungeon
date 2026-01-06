@@ -74,7 +74,12 @@ func getModifierPacket() -> ModifierPacket :
 		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.3
 		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Postmutliplier"] += 0.3
 	return retVal
-func getElementalModifierPacket() -> ModifierPacket :
+func getElementalModifierPacket(subclass) -> ModifierPacket :
+	var mult
+	if (subclass == Definitions.subclass.enchant) :
+		mult = 1.3125
+	else :
+		mult = 1.25
 	var retVal = ModifierPacket.new()
 	var weaponMatches
 	if (equippedEntries[0] == null || equippedEntries[2] == null) :
@@ -83,14 +88,14 @@ func getElementalModifierPacket() -> ModifierPacket :
 		weaponMatches = EquipmentGroups.getMatchingElementCount(equippedEntries[0].core.equipmentGroups, equippedEntries[2].core.equipmentGroups)
 		if (equippedEntries[1].getItemName() == "armor_cephalopod" && equippedEntries[2].core.equipmentGroups.isWater && !equippedEntries[0].core.equipmentGroups.isWater) :
 			weaponMatches += 1
-	retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] = pow(1.25, weaponMatches)
+	retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] = pow(mult, weaponMatches)
 	var armorMatches
 	if (equippedEntries[1] == null || equippedEntries[2] == null) :
 		armorMatches = 0
 	else :
 		armorMatches = EquipmentGroups.getMatchingElementCount(equippedEntries[1].core.equipmentGroups, equippedEntries[2].core.equipmentGroups)
-	retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.PHYSDEF]]["Premultiplier"] = pow(1.25,armorMatches)
-	retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.MAGDEF]]["Premultiplier"] = pow(1.25, armorMatches)
+	retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.PHYSDEF]]["Premultiplier"] = pow(mult,armorMatches)
+	retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.MAGDEF]]["Premultiplier"] = pow(mult, armorMatches)
 	return retVal
 	
 func getItemCount(item : Equipment) :
@@ -165,11 +170,10 @@ func getInventory() -> Node :
 	return $ScrollContainer/CenterContainer/GridContainer
 ##################################
 ##Internal
-var currentReforgeItem : Node = null
-func reforgeItem(newScalingVal) -> bool :
-	if (currentReforgeItem == null) :
+func reforge(type, newScalingVal) -> bool :
+	if (equippedEntries[type] == null) :
 		return false
-	currentReforgeItem.reforge(newScalingVal)
+	equippedEntries[type].reforge(newScalingVal)
 	return true
 	
 func findPanel(item) :

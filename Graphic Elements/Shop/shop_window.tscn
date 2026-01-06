@@ -92,6 +92,12 @@ anchor_bottom = 0.9
 offset_right = -15.0
 spriteScale = 10
 
+[node name="Option0" parent="detailsRight/VBoxContainer/HBoxContainer2/CenterContainer0" index="0"]
+text = " Purchase "
+
+[node name="Option1" parent="detailsRight/VBoxContainer/HBoxContainer2/CenterContainer1" index="0"]
+text = " Cancel "
+
 [node name="detailsLeft" parent="." instance=ExtResource("5_juvjr")]
 visible = false
 layout_mode = 1
@@ -101,6 +107,12 @@ anchor_right = 0.5
 anchor_bottom = 0.9
 offset_left = 15.0
 spriteScale = 10
+
+[node name="Option0" parent="detailsLeft/VBoxContainer/HBoxContainer2/CenterContainer0" index="0"]
+text = " Purchase "
+
+[node name="Option1" parent="detailsLeft/VBoxContainer/HBoxContainer2/CenterContainer1" index="0"]
+text = " Cancel "
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 1

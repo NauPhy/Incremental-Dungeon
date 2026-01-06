@@ -175,6 +175,7 @@ func getItemOfQuality_penaliseElemental(quality, isHalved : bool) :
 		maxVal = 3
 	while (sample.equipmentGroups.isElemental() && randi_range(0,maxVal) != 0) :
 		sample = getItemOfQuality(quality)
+	return sample
 	
 #func getItemsOfQualities(qualities : Array[EquipmentGroups.qualityEnum]) :
 	#var indices : Array[int] = []

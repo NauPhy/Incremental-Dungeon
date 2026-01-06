@@ -3,6 +3,8 @@ extends Panel
 const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
 
 var currentItemSceneRef = null
+func getItemSceneRef() :
+	return currentItemSceneRef
 @export var isInIGOptions : bool = false
 @export var spriteScale : int = 12
 
@@ -184,6 +186,8 @@ func updateText() :
 		myText = ""
 		$VBoxContainer/Text/VBoxContainer/Extra.text = ""
 	myText = updateText_modifiers(myText)
+	if (currentItemSceneRef.getType() == Definitions.equipmentTypeEnum.weapon || currentItemSceneRef.getType() == Definitions.equipmentTypeEnum.armor) :
+		myText += "Times reforged: " + str(currentItemSceneRef.getReforges()) + "\n\n"
 	$VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Description2.text = currentItemSceneRef.getDesc()
 	$VBoxContainer/Text/VBoxContainer.visible = true
 	$VBoxContainer/Picture/CenterContainer.visible = true
@@ -310,3 +314,7 @@ func addWeaponScalingTooltips() :
 		#lineStartIndex = charIndex + 1
 	#textArray.append(" ")
 	#return await Helpers.getTextWidthWaitFrameArray(myText.get_theme_font_size("font_size", "Button"), textArray)
+
+
+func _on_visibility_changed() -> void:
+	updateText()

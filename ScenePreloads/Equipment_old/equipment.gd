@@ -53,6 +53,7 @@ func getSaveDictionary() -> Dictionary :
 		tempDict["core"] = "null"
 	else :
 		tempDict["core"] = core.getSaveDictionary()
+	tempDict["reforges"] = reforges
 	return tempDict
 func loadSaveDictionary(loadDict) -> void :
 	if (loadDict.get("core") != null) :
@@ -62,6 +63,7 @@ func loadSaveDictionary(loadDict) -> void :
 			## If it's old equipment, sets to resource reference rather than creating a duplicates
 			var temp = EquipmentDatabase.getEquipment(loadDict["core"]["resourceName"])
 			core = temp.createFromSaveDictionary(loadDict["core"])
+	reforges = loadDict["reforges"]
 ##########################################################
 ##SuperButton proxies##
 func setContainerExpandHorizontal() :

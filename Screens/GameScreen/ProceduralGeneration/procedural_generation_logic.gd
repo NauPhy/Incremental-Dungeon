@@ -11,13 +11,17 @@ func createMap() -> MapData :
 	var newMap : MapData = createEncounters()
 	newMap.environmentName = environment.getFileName()
 	if (previousMaps.size() == 0) :
-		newMap.shopName = "routine"
+		newMap.shopName = ""
 	elif (previousMaps.size() == 1) :
-		newMap.shopName = "armor"
+		newMap.shopName = "routine"
 	elif (previousMaps.size() == 2) :
-		newMap.shopData = "weapon"
+		newMap.shopName = "armor"
 	elif (previousMaps.size() == 3) :
-		newMap.shopData = "soul"
+		newMap.shopName = "weapon"
+	elif (previousMaps.size() == 4) :
+		newMap.shopName = "soul"
+	else :
+		newMap.shopData = "empty"
 	previousMaps.append(newMap)
 	return newMap
 	
@@ -26,17 +30,19 @@ func generateDrops(room : Node, environment : MyEnvironment) -> Dictionary :
 	var retVal1 : Array[Equipment] = []
 	$ItemPoolHandler.reset(environment, getAllItems())
 	var roomName : String = room.name
-	var row = roomName.substr(1,1) as int
+	var currentRow = roomName.substr(1,1) as int
 	var penaliseElemental : bool = !(environment.earthPermitted || environment.firePermitted || environment.icePermitted || environment.waterPermitted)
 	for enemy in room.getEncounterRef().enemies :
 		$DropHandler.reset($ItemPoolHandler.getItemPoolForEnemy(enemy))
-		retVal1.append_array($DropHandler.createDropsForEnemy(enemy, getEquipmentScaling(row), penaliseElemental))
-	var averageGold = getGoldScaling(row)
+		retVal1.append_array($DropHandler.createDropsForEnemy(enemy, getEquipmentScaling(getScalingRows_mapFinished(currentRow)), penaliseElemental))
+	var averageGold = getGoldScaling(getScalingRows_mapFinished(currentRow))
 	var goldRoll = randf_range(0, averageGold)
 	var goldCount : int = round(goldRoll)
-	
 	var retVal2 : Array[int] = [goldCount]
-	
+	var averageOre = getOreScaling(getScalingRows_mapFinished(currentRow))
+	var oreRoll = randf_range(0,averageOre)
+	var oreCount : int = round(oreRoll)
+	retVal2.append(oreCount)
 	var retVal = {
 		"equipment" : retVal1,
 		"currency" : retVal2
@@ -100,8 +106,8 @@ func createdRecently(newEnv : MyEnvironment) -> bool :
 	
 func createEncounters() -> MapData :
 	var retVal = MapData.new()
-	var nodeCount = 10
-	for index in range(0,nodeCount) :
+	var rowCount = 5
+	for index in range(0,rowCount) :
 		var newRow = MapRow.new()
 		newRow.centralEncounter = createCentralEncounter(index)
 		var sideNodeCount = randi_range(2,5)
@@ -113,9 +119,9 @@ func createEncounters() -> MapData :
 			newRow.rightEncounters.append(createSideEncounter(index))
 		retVal.rows.append(newRow)
 	if (previousMaps.size() == 7) :
-		retVal.bossEncounter = createFinalBossEncounter(nodeCount)
+		retVal.bossEncounter = createFinalBossEncounter(rowCount+1)
 	else :
-		retVal.bossEncounter = createBossEncounter(nodeCount)
+		retVal.bossEncounter = createBossEncounter(rowCount+1)
 	return retVal
 	
 ## Drops are now added on combat end. Instead of drop lists, beastiary will now show tags indicating what categories can and cannot be dropped.
@@ -133,6 +139,9 @@ func addDrops(_encounter : Encounter) -> void :
 	#
 func createCentralEncounter(row) -> Encounter :
 	var retVal = Encounter.new()
+	var hasEnemies = previousMaps.size() == 0 || (row != 0)
+	if (!hasEnemies) :
+		return retVal
 	retVal.enemies.append(createVeteran(row))
 	if (randi_range(0,2) == 0) :
 		retVal.enemies.append(createVeteran(row))
@@ -169,16 +178,17 @@ func createBossEncounter(row) -> Encounter :
 	addDrops(retVal)
 	return retVal
 	
-func createFinalBossEncounter(row) -> Encounter :
+func createFinalBossEncounter(currentRow) -> Encounter :
 	var retVal = Encounter.new()
 	var hellKnightResource = EnemyDatabase.getEnemy("hell_knight")
 	var archfiendResource = EnemyDatabase.getEnemy("arch_fiend")
 	var apophisResource = EnemyDatabase.getEnemy("apophis")
-	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(row)))
-	retVal.enemies.append(archfiendResource.getAdjustedCopy(getEnemyScaling(row)))
-	retVal.enemies.append(apophisResource.getAdjustedCopy(getEnemyScaling(row+1.71)))
-	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(row)))
-	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(row)))
+	var scalingRows = getScalingRows_mapInProgress(currentRow)
+	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(scalingRows)))
+	retVal.enemies.append(archfiendResource.getAdjustedCopy(getEnemyScaling(scalingRows)))
+	retVal.enemies.append(apophisResource.getAdjustedCopy(getEnemyScaling(scalingRows+1)))
+	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(scalingRows)))
+	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(scalingRows)))
 	retVal.introTitle = ""
 	retVal.introText = ""
 	retVal.victoryTitle = ""
@@ -186,35 +196,64 @@ func createFinalBossEncounter(row) -> Encounter :
 	addDrops(retVal)
 	return retVal
 		
-func createNormal(row) -> ActorPreset :
-	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal).getAdjustedCopy(getEnemyScaling(row))
-func createVeteran(row) -> ActorPreset :
-	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran).getAdjustedCopy(getEnemyScaling(row))
-func createElite(row) -> ActorPreset :
-	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite).getAdjustedCopy(getEnemyScaling(row))
-	
-func getEnemyScaling(row : int) :
-	var nodes = row + 1
-	for map in previousMaps :
-		nodes += map.rows.size() + 1
-	if (nodes <= 6) :
-		return pow(4.18, nodes)
-	return pow(4.18,6)*pow(2,nodes-6)
-	
-func getEquipmentScaling(row : int) -> float :
-	var nodes = row + 1
-	for index in range(0, previousMaps.size()-1) :
-		nodes += previousMaps[index].rows.size() + 1
-	if (nodes <= 6) :
-		return pow(4.18, nodes/4.0)
-	else :
-		return pow(4.18,6/4.0)*pow(2,(nodes-6)/4.0)
+func createNormal(currentRow) -> ActorPreset :
+	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.normal).getAdjustedCopy(getEnemyScaling(getScalingRows_mapInProgress(currentRow)))
+func createVeteran(currentRow) -> ActorPreset :
+	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.veteran).getAdjustedCopy(getEnemyScaling(getScalingRows_mapInProgress(currentRow)))
+func createElite(currentRow) -> ActorPreset :
+	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite).getAdjustedCopy(getEnemyScaling(getScalingRows_mapInProgress(currentRow)))
 
-func getGoldScaling(row : int) :
-	var nodes = row
-	for index in range(0, previousMaps.size()-1) :
-		nodes += previousMaps[index].rows.size() + 1
-	return pow(2,nodes/4.0)
+##currentRow starts at 0
+func getScalingRows_mapFinished(currentRow) -> int :
+	if (previousMaps.size() == 0): 
+		return 0
+	if (previousMaps.size() == 1) :
+		return currentRow
+	if (previousMaps.size() == 2) :
+		return 6 + currentRow-1
+	var scalingRows = 6
+	for index in range(1, previousMaps.size()-1) :
+		scalingRows += 5
+	return scalingRows - 1
+
+##currentRow starts at 0
+func getScalingRows_mapInProgress(currentRow) -> int :
+	var scalingRows = 0
+	if (previousMaps.size() == 0): 
+		return currentRow
+	if (previousMaps.size() == 1) :
+		return 6 + currentRow-1
+	scalingRows = 6
+	for index in range(1, previousMaps.size()) :
+		scalingRows += 5
+	return scalingRows - 1
+	
+func getEnemyScaling(scalingRows) :
+	if (scalingRows <= 6) :
+		return pow(4.18,scalingRows)
+	return pow(4.18,6)*pow(2,scalingRows-6)
+func getEquipmentScaling(scalingRows) :
+	if (scalingRows <= 6) :
+		return pow(4.18,scalingRows/4.0)
+	return pow(4.18,6/4.0)*pow(2,(scalingRows-6)/4.0)
+func getGoldScaling(scalingRows) :
+	return pow(2,(scalingRows-1)/4.0)
+func getOreScaling(scalingRows) :
+	if (scalingRows < 7) :
+		return 0
+	return pow(2,(scalingRows - 8)/4.0)
+func getSoulScaling(scalingRows) :
+	if (scalingRows < 17) :
+		return 0
+	return pow(2,(scalingRows-18)/4.0)
+	
+func getScalingRowsInFloor(floorIndex) :
+	if (floorIndex == 0) :
+		return 0
+	elif (floorIndex == 1) :
+		return 6
+	else :
+		return 5
 	
 func createRandomShopItem(type : Definitions.equipmentTypeEnum, scaling : float) -> Equipment :
 	var items = getAllItems()
@@ -228,10 +267,10 @@ func createRandomShopItem(type : Definitions.equipmentTypeEnum, scaling : float)
 			items.remove_at(index)
 		else :
 			index += 1
-	$ItemPoolHandler.reset(MegaFile.getEnvironment("chaos"), items)
+	#$ItemPoolHandler.reset(MegaFile.getEnvironment("chaos"), items)
 	$DropHandler.reset(items)
 	var quality = $DropHandler.getDropQualities(1)
-	var newItem : Equipment = $DropHandler.getItemOfQuality_penaliseElemental(quality, true)
+	var newItem : Equipment = $DropHandler.getItemOfQuality_penaliseElemental(quality[0], true)
 	return newItem.getAdjustedCopy(scaling)
 ############# Saving
 var myReady : bool = false

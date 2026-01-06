@@ -20,3 +20,6 @@ func _process(delta) :
 func setAction(val : Action) :
 	warmup = 0.01*val.warmup
 	currentAction = val
+
+func modifyActionWarmup(val : float) :
+	warmup *= val

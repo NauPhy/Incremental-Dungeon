@@ -23,17 +23,25 @@ func providePlayerCore(val : ActorPreset) :
 	waitingForPlayerCore = false
 	emit_signal("playerCoreReceived")
 ##########################
-func getMostRecentScaling() -> float :
-	if (maxFloor <= 1) :
+func getMostRecentEquipmentScaling() -> float :
+	var currentRow = $MapContainer.get_children().back().getFurthestProgression()
+	var scalingRows = $ProceduralGenerationLogic.getScalingRows_mapFinished(currentRow)
+	return $ProceduralGenerationLogic.getEquipmentScaling(scalingRows)
+func getMostRecentCurrencyScaling(type) -> float :
+	var currentRow = $MapContainer.get_children().back().getFurthestProgression()
+	var scalingRows = $ProceduralGenerationLogic.getScalingRows_mapFinished(currentRow)
+	if (type == "routine") :
+		return $ProceduralGenerationLogic.getGoldScaling(scalingRows)
+	elif (type == "armor" || type == "weapon") :
+		return $ProceduralGenerationLogic.getOreScaling(scalingRows)
+	elif (type == "soul") :
+		return $ProceduralGenerationLogic.getSoulScaling(scalingRows)
+	else :
 		return 0
-	var nodes = 0
-	var floors = $MapContainer.get_children()
-	for index in range(1,floors.size()-1) :
-		nodes += floors[index].getRowTotal()
-	nodes += floors.back().getLastCompletedRow()
-	return $ProceduralGenerationLogic.getEnemyScaling(nodes)
+func getFurthestProgression() :
+	return $MapContainer.get_children().back().getFurthestProgression()
 func createRandomShopItem(type : Definitions.equipmentTypeEnum) -> Equipment :
-	return $ProceduralGenerationLogic.createRandomShopItem(type, getMostRecentScaling())
+	return $ProceduralGenerationLogic.createRandomShopItem(type, getMostRecentEquipmentScaling())
 func _on_level_chosen(emitter, encounter) -> void:
 	friendlyParty[0] = await getPlayerCore()
 	currentRoom = emitter
@@ -370,3 +378,11 @@ func onLoad(loadDict : Dictionary) :
 signal playerModifierDictionaryRequested
 func _on_combat_panel_player_modifier_dictionary_requested(emitter) -> void:
 	emit_signal("playerModifierDictionaryRequested", emitter)
+
+signal playerSubclassRequested
+func _on_combat_panel_player_subclass_requested(emitter) -> void:
+	emit_signal("playerSubclassRequested", emitter)
+	
+signal weaponResourceRequested
+func _on_combat_panel_weapon_resource_requested(emitter) -> void:
+	emit_signal("weaponResourceRequested", emitter)

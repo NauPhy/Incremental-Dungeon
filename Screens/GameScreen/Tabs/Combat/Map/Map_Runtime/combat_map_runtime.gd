@@ -8,9 +8,10 @@ signal tutorialRequested
 func getTypicalEnemyDefense() :
 	var numArr : Array[float] = []
 	for room in $CombatMap/RoomContainer.get_children() :
-		for enemy in room.getEncounterRef().enemies :
-			numArr.append(enemy.PHYSDEF)
-			numArr.append(enemy.MAGDEF)
+		if (room.has_method("getEncounterRef")) :
+			for enemy in room.getEncounterRef().enemies :
+				numArr.append(enemy.PHYSDEF)
+				numArr.append(enemy.MAGDEF)
 	if (numArr.size()%2 != 0) :
 		return numArr[(numArr.size()-1)/2]
 	else :
@@ -29,12 +30,10 @@ func getEnvironment() -> MyEnvironment :
 var UIEnabled : bool = true
 func disableUI() :
 	UIEnabled = false
-	$HBoxContainer/HomeButton.visible = false
-	$HBoxContainer/TextureRect.visible = false
+	$HBoxContainer.visible = false
 func enableUI() :
 	UIEnabled = true
-	$HBoxContainer/HomeButton.visible = true
-	$HBoxContainer/TextureRect.visible = true
+	$HBoxContainer.visible = true
 #######################################
 ## Callbacks
 func onCombatLoss(room) :
@@ -60,7 +59,7 @@ signal mapCompleted
 func completeRoom(completedRoom) :
 	var firstCompletion = !completedRoom.isCompleted()
 	completedRoom.onCombatComplete()
-	if (firstCompletion) :
+	if (firstCompletion || completedRoom.has_method("isEmpty") && completedRoom.isEmpty()) :
 		#For all rooms, find rooms linked to this one
 		for connection in $CombatMap/ConnectionContainer.get_children() :
 			var adjacentRoom = null
@@ -111,15 +110,22 @@ func setFromMapData(val : MapData) :
 	for child in $CombatMap/RoomContainer.get_children() :
 		if (child.has_signal("myReadySignal") && !child.myReady) :
 			await child.myReadySignal
-			
+	if ($CombatMap/RoomContainer.get_node("N0").has_method("isEmpty") && $CombatMap/RoomContainer.get_node("N0").isEmpty()) :
+		completeRoom($CombatMap/RoomContainer.get_node("N0"))
 const shopLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/shop_room_base.tscn")
+const emptyLoader = preload("res://Screens/GameScreen/Tabs/Combat/Map/Map_Runtime/emptyRoom_runtime.tscn")
 func addRow(val : MapData, row : int) :
 	var centerRoom
-	if (val.shopName != "" && row == 6) :
-		centerRoom = shopLoader.instantiate()
-		$CombatMap/RoomContainer.add_child(centerRoom)
-		centerRoom.setShopType(val.shopName)
-		centerRoom.setName(Shopping.shopNames[val.shopName])
+	## Either an empty row or a shop
+	if (val.shopName != "" && row == 0) :
+		if (val.shopName == "empty") :
+			centerRoom = emptyLoader.instantiate()
+			$CombatMap/RoomContainer.add_child(centerRoom)
+		else :
+			centerRoom = shopLoader.instantiate()
+			$CombatMap/RoomContainer.add_child(centerRoom)
+			centerRoom.setShopType(val.shopName)
+			centerRoom.setName(Shopping.shopNames[val.shopName])
 	else :
 		centerRoom = roomLoader.instantiate()
 		$CombatMap/RoomContainer.add_child(centerRoom)
@@ -230,29 +236,19 @@ func initialise(val) :
 func getRowTotal() -> int :
 	var highest = 0
 	for room in $CombatMap/RoomContainer.get_children() :
-		var num
-		var strOnes = (room.name as String).substr(1,1)
-		var strTens = (room.name as String).substr(1,2)
-		if (strTens[1] == "L" || strTens[1] == "R") :
-			num = int(strOnes)
-		else :
-			num = int(strTens)
+		if ((room.name as String).find("L") != -1 || (room.name as String).find("R") != -1) :
+			continue
+		var num = int((room.name as String).substr(1))
 		if (num > highest) :
 			highest = num
 	return highest
-
-func getLastCompletedRow() -> int :
+	
+func getFurthestProgression() -> int :
 	var highest = 0
 	for room in $CombatMap/RoomContainer.get_children() :
-		if (!room.completed) :
+		if (!room.isCompleted() || (room.name as String).find("L") != -1 || (room.name as String).find("R") != -1) :
 			continue
-		var num
-		var strOnes = (room.name as String).substr(1,1)
-		var strTens = (room.name as String).substr(1,2)
-		if (strTens[1] == "L" || strTens[1] == "R") :
-			num = int(strOnes)
-		else :
-			num = int(strTens)
+		var num = int((room.name as String).substr(1))
 		if (num > highest) :
 			highest = num
 	return highest

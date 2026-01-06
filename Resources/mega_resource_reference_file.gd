@@ -429,7 +429,7 @@ const NewEquipment_ArmorDictionary = {
 	"enchanted_robes_new" : preload("res://Resources/NewEquipment/Armor/enchanted_robes_new.tres"),
 	"fur_cloak" : preload("res://Resources/NewEquipment/Armor/fur_cloak.tres"),
 	"hellforged_plate" : preload("res://Resources/NewEquipment/Armor/hellforged_plate.tres"),
-	"mithril plate" : preload("res://Resources/NewEquipment/Armor/mithril plate.tres"),
+	"mithril_plate" : preload("res://Resources/NewEquipment/Armor/mithril_plate.tres"),
 	"moonstone_plate" : preload("res://Resources/NewEquipment/Armor/moonstone_plate.tres"),
 	"scale_mail" : preload("res://Resources/NewEquipment/Armor/scale_mail.tres"),
 	"silk_robes" : preload("res://Resources/NewEquipment/Armor/silk_robes.tres"),
@@ -441,7 +441,8 @@ func getNewEquipment_Armor(resourceName : String) :
 	return NewEquipment_ArmorDictionary.get(resourceName)
 
 const NewEquipment_CurrencyDictionary = {
-	"gold_coin" : preload("res://Resources/NewEquipment/Currency/gold_coin.tres")}
+	"gold_coin" : preload("res://Resources/NewEquipment/Currency/gold_coin.tres"),
+	"ore" : preload("res://Resources/NewEquipment/Currency/ore.tres")}
 
 
 func getNewEquipment_Currency(resourceName : String) :

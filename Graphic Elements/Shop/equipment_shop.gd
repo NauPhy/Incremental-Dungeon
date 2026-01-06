@@ -13,6 +13,18 @@ func setFromDetails(det : ShopDetails) :
 	
 func _process(_delta) :
 	var remaining = Shopping.getEquipmentTime(shopType)
+	var timestamp = Helpers.getTimestampString(remaining)
+	var noHours = timestamp.substr(3)
+	$Timer/Timer/Time.text = noHours
+	var reforgePrice = Shopping.getReforgePrice(shopType)
+	var itemName
+	if (shopType == Definitions.equipmentTypeEnum.armor) :
+		itemName = Shopping.armorPurchasableDictionary[Shopping.armorPurchasable.reforge]
+	elif (shopType == Definitions.equipmentTypeEnum.weapon) :
+		itemName = Shopping.weaponPurchasableDictionary[Shopping.weaponPurchasable.reforge]
+	else :
+		return
+	refreshPrice(itemName, reforgePrice)
 #
 #func getReforgeHovered() :
 	#return $VBoxContainer/Shop/ReforgeColumn.getReforgeHovered()

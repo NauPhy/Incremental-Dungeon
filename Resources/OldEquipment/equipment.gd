@@ -15,7 +15,7 @@ func getItemName() :
 		resourceName = resource_path.get_file().get_basename()
 	return resourceName
 func getAdjustedCopy(_scalingFactor : float) -> Equipment :
-	var retVal = self.duplicate()
+	var retVal = EquipmentDatabase.getEquipment(getItemName()).duplicate()
 	retVal.resourceName = getItemName()
 	return retVal
 func createSampleCopy() -> Equipment :

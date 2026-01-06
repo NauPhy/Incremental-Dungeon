@@ -8,13 +8,13 @@ var type = Definitions.equipmentTypeEnum.armor
 
 func getAdjustedCopy(scalingFactor : float) -> Armor :
 	var retVal = super(scalingFactor) as Armor
-	if (PHYSDEF == 0 && MAGDEF == 0) :
+	if (Helpers.equipmentIsNew(self)) :
 		retVal.calculateDefenses(scalingFactor, false)
 	return retVal
 	
 func createSampleCopy() -> Armor :
 	var retVal = super() as Armor
-	if (PHYSDEF == 0 && MAGDEF == 0) :
+	if (Helpers.equipmentIsNew(self)) :
 		retVal.calculateDefenses(1, true)
 	return retVal
 

@@ -23,6 +23,7 @@ func updateSprites() :
 			mySprite.setRegionRect(actualSprite.getRegionRect()) 
 			mySprite.setScale(actualSprite.getScale() * 4.0/5.0)
 			mySprite.setIs32(actualSprite.isIs32())
+			mySprite.setFlipped(actualSprite.getFlipped())
 			getText(key).text = currentEquipment[key].getTitle()
 		
 func getSprite(type : Definitions.equipmentTypeEnum) :

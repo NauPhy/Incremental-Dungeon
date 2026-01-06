@@ -24,6 +24,7 @@ func addPurchasable(val : Purchasable) :
 		newEntry.setCurrency(myCurrency)
 	newEntry.setFromDetails(val)
 	newEntry.connect("wasSelected", _on_purchasable_selected)
+	newEntry.connect("wasDeselected", _on_purchasable_deselected)
 	
 const entryLoader = preload("res://Graphic Elements/Shop/purchasable_wrapper.tscn")
 func setFromDetails(val : ShopColumn) :
@@ -47,12 +48,32 @@ signal purchaseRequested
 signal displayRequested
 func _on_purchasable_selected(emitter) :
 	if (emitter.getEquipment() != null) :
-		emit_signal("displayRequested", emitter.getEquipment(), emitter.getPrice(), self)
+		emit_signal("displayRequested", emitter.getPurchasable(), self)
+		for child in $VBoxContainer.get_children() :
+			if (child != emitter && child.has_method("deselect")) :
+				child.deselect()
 	else :
 		emit_signal("purchaseRequested", emitter.getName(), emitter.getPrice(), emitter.getCore())
+		
+signal hideDisplayIfEmitter
+func _on_purchasable_deselected(emitter) :
+	if (emitter.getEquipment() != null) :
+		emit_signal("hideDisplayIfEmitter", emitter.getEquipment())
 	
 func valid(val) :
 	return (val != $VBoxContainer/CategoryName && val != $VBoxContainer/Spacer)
+	
+func onEquipmentSold() :
+	var purchased : Node = null
+	for child in $VBoxContainer.get_children() :
+		if (child.has_method("isSelected") && child.isSelected()) :
+			purchased = child
+			break
+	if (purchased == null) :
+		return
+	$VBoxContainer.remove_child(purchased)
+	purchased.queue_free()
+	purchased = null
 
 var myReady : bool = false
 signal myReadySignal

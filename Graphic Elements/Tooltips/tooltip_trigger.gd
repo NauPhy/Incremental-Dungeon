@@ -1,7 +1,7 @@
 extends Control
 
 @export var tooltipTitle : String = ""
-@export var tooltipText : String = ""
+@export_multiline var tooltipText : String = ""
 
 var spawned : bool = false
 var extended : bool = false

@@ -22,7 +22,7 @@ func updatePlayer() :
 	#Equipment
 	var equipmentDirect : ModifierPacket = $MyTabContainer/InnerContainer/Equipment.getDirectModifiers()
 	$Player.updateDirectModifier("Equipment", equipmentDirect)
-	var elementDirect : ModifierPacket = $MyTabContainer/InnerContainer/Equipment.getElementalDirectModifiers()
+	var elementDirect : ModifierPacket = $MyTabContainer/InnerContainer/Equipment.getElementalDirectModifiers($Player.getSubclass())
 	$Player.updateDirectModifier("Element Synergy", elementDirect)
 	## Specific
 	#Training
@@ -33,6 +33,8 @@ func updatePlayer() :
 	$Player.updateWeapon(newWeapon)
 	var newArmor : Armor = $MyTabContainer/InnerContainer/Equipment.getCurrentArmor()
 	$Player.updateArmor(newArmor)
+	var newAccessory : Accessory = $MyTabContainer/InnerContainer/Equipment.getCurrentAccessory()
+	$Player.updateAccessory(newAccessory)
 	
 	$Player.myUpdate()
 #############################################
@@ -65,11 +67,35 @@ func _shopping_permanent_modifier(value : Array[float], type : String, statEnum 
 			Shopping.provideConfirmation(false)
 	Shopping.provideConfirmation(true)
 	
-func _shopping_node_scaling_requested() :
-	Shopping.provideNodeScaling($MyTabContainer/InnerContainer/Combat/ProceduralGenerationLogic.getNodeScaling())
+func _on_equip_item(itemSceneRef) :
+	var type
+	if (itemSceneRef.getType() == Definitions.equipmentTypeEnum.armor) :
+		type = "armor"
+	elif (itemSceneRef.getType() == Definitions.equipmentTypeEnum.weapon) :
+		type = "weapon"
+	else :
+		return
+	var reforges = itemSceneRef.getReforges()
+	Shopping.onEquippedItem(type, reforges)
+	
+func _on_unequip_item(itemSceneRef) :
+	var type
+	if (itemSceneRef.getType() == Definitions.equipmentTypeEnum.armor) :
+		type = "armor"
+	elif (itemSceneRef.getType() == Definitions.equipmentTypeEnum.weapon) :
+		type = "weapon"
+	else :
+		return
+	Shopping.onUnequippedItem(type)
+	
+func _shopping_equipment_scaling_requested() :
+	Shopping.provideEquipmentScaling($MyTabContainer/InnerContainer/Combat.getMostRecentEquipmentScaling())
+	
+func _shopping_currency_scaling_requested(type) :
+	Shopping.provideCurrencyScaling($MyTabContainer/InnerContainer/Combat.getMostRecentCurrencyScaling(type))
 	
 func _shopping_random_item_requested(type : Definitions.equipmentTypeEnum) :
-	var item = $MyTabContainer/InnerContainer/Combat/ProceduralGenerationLogic.createShopRandomItem(type)
+	var item = $MyTabContainer/InnerContainer/Combat.createRandomShopItem(type)
 	Shopping.provideRandomItem(item)
 	
 func _shopping_add_to_inventory(item : Equipment) :
@@ -77,16 +103,14 @@ func _shopping_add_to_inventory(item : Equipment) :
 		Shopping.provideConfirmation(false)
 	else :
 		var itemName = item.getItemName()
-		var itemSceneRef = SceneLoader.createEquipmentScene(EquipmentDatabase.getEquipment(itemName))
+		var itemSceneRef = SceneLoader.createEquipmentScene(itemName)
 		itemSceneRef.core = item
 		$MyTabContainer/InnerContainer/Equipment.addItemToInventory(itemSceneRef)
+		Shopping.provideConfirmation(true)
 
 func _shopping_reforge_item_requested(type : Definitions.equipmentTypeEnum) :
-	var equipped = $MyTabContainer/InnerContainer/Equipment.getEquippedItem(type)
-	if (equipped == null) :
-		Shopping.provideConfirmation(false)
-	equipped.reforge()
-	Shopping.provideConfirmation(true)
+	var newScalingVal = $MyTabContainer/InnerContainer/Combat.getMostRecentEquipmentScaling()
+	Shopping.provideConfirmation($MyTabContainer/InnerContainer/Equipment.reforge(type, newScalingVal))
 	
 func _shopping_upgrade_routine(routine : AttributeTraining) :
 	$MyTabContainer/InnerContainer/Training.upgradeRoutine(routine)
@@ -176,6 +200,10 @@ func _on_player_core_requested(emitter) -> void:
 	emitter.providePlayerCore($Player.getCore())
 func _on_player_class_requested(emitter) -> void:
 	emitter.providePlayerClass($Player.getClass())
+func _on_player_subclass_requested(emitter) -> void :
+	emitter.providePlayerSubclass($Player.getSubclass())
+func _on_weapon_resource_requested(emitter) -> void :
+	emitter.provideWeaponResource(EquipmentDatabase.getEquipment($MyTabContainer/InnerContainer/Equipment.getCurrentWeapon().getItemName()))
 func _on_routine_unlock_requested(emitter, routine : AttributeTraining) :
 	$MyTabContainer/InnerContainer/Training.unlockRoutine(routine)
 	if (emitter == Shopping) :
@@ -341,7 +369,8 @@ func beforeLoad(newSave) :
 	Shopping.connect("addToInventoryRequested", _shopping_add_to_inventory)
 	Shopping.connect("randomItemRequested", _shopping_random_item_requested)
 	Shopping.connect("reforgeItemRequested", _shopping_reforge_item_requested)
-	Shopping.connect("nodeScalingRequested", _shopping_node_scaling_requested)
+	Shopping.connect("equipmentScalingRequested", _shopping_equipment_scaling_requested)
+	Shopping.connect("currencyScalingRequested", _shopping_currency_scaling_requested)
 	if (newSave) :
 		permanentMods = {}
 		Shopping.resetItemPrices()
@@ -362,6 +391,14 @@ func beforeLoad(newSave) :
 			tab.connect("addChildRequested", _on_add_child_requested)
 		if (tab.has_signal("playerModifierDictionaryRequested")) :
 			tab.connect("playerModifierDictionaryRequested", _on_player_modifier_dictionary_requested)
+		if (tab.has_signal("equippedItem")) :
+			tab.connect("equippedItem", _on_equip_item)
+		if (tab.has_signal("unequippedItem")) :
+			tab.connect("unequippedItem", _on_unequip_item)
+		if (tab.has_signal("playerSubclassRequested")) :
+			tab.connect("playerSubclassRequested", _on_player_subclass_requested)
+		if (tab.has_signal("weaponResourceRequested")) :
+			tab.connect("weaponResourceRequested", _on_weapon_resource_requested)
 		#if (tab.has_signal("isReforgedHoveredRequested")) :
 			#tab.connect("isReforgedHoveredRequested", _on_reforge_hovered_requested)
 		#if (tab.has_signal("playerAttributeModsRequested")) :

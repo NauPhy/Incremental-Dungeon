@@ -38,18 +38,18 @@ func updateCurrencyGraphic(equip : Currency) :
 	var index = findCurrencyIndex(equip)
 	if (index == null) :
 		return
-	$HBoxContainer.get_child(index).get_node("Number").text = " " + str($HBoxContainer.get_child(index).get_child(0).getCount()) + " "
+	$VBoxContainer/HBoxContainer.get_child(index).get_node("Number").text = " " + str($VBoxContainer/HBoxContainer.get_child(index).get_child(0).getCount()) + " "
 func alphabetise() :
 	currencyList.sort_custom(func(a,b):a.name<b.name)
 	for index in range(0,currencyList.size()) :
 		var entry : Node = null
-		for child in $HBoxContainer.get_children() :
+		for child in $VBoxContainer/HBoxContainer.get_children() :
 			if (child.get_child(0) == currencyList[index]) :
 				entry = child
-		$HBoxContainer.move_child(entry,index)
+		$VBoxContainer/HBoxContainer.move_child(entry,index)
 func addNewCurrency(type : Currency) :
 	var newEntry = $Sample.duplicate()
-	$HBoxContainer.add_child(newEntry)
+	$VBoxContainer/HBoxContainer.add_child(newEntry)
 	newEntry.visible = true
 	currencyList.append(SceneLoader.createEquipmentScene(type.getItemName()))
 	newEntry.add_child(currencyList.back())
@@ -76,7 +76,7 @@ func findCurrency(type : Currency) :
 	return null
 func findCurrencyIndex(type : Currency) :
 	for index in range(0,currencyList.size()) :
-		if (currencyList[index].core == type) :
+		if (currencyList[index].core.getItemName() == type.getItemName()) :
 			return index
 	return null
 
@@ -94,9 +94,21 @@ var myReady : bool = false
 func _ready() :
 	myReady = true
 func beforeLoad(_newGame) :
-	pass
+	if (Definitions.DEVMODE) :
+		$VBoxContainer/DevOptions.visible = true
 func onLoad(loadDict) :
 	if (loadDict.get("currencyList") != null) :
 		for key in loadDict["currencyList"].keys() :
 			var item = loadDict["currencyList"][key]
 			setCurrencyAmount(EquipmentDatabase.getEquipment(item["name"]),item["count"])
+
+
+func _on_line_edit_text_submitted(new_text: String) -> void:
+	if (!Definitions.DEVMODE) :
+		return
+	setCurrencyAmount(EquipmentDatabase.getEquipment("gold_coin"), int(new_text))
+
+func _on_line_edit_2_text_submitted(new_text: String) -> void:
+	if (!Definitions.DEVMODE) :
+		return
+	setCurrencyAmount(EquipmentDatabase.getEquipment("ore"), int(new_text))

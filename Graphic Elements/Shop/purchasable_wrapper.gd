@@ -13,10 +13,12 @@ func _ready() :
 
 signal wasSelected
 signal wasDeselected
-func _on_purchasable_scene_was_deselected() -> void:
-	emit_signal("wasDeselected")
-func _on_purchasable_scene_was_selected() -> void:
-	emit_signal("wasSelected")
+func _on_purchasable_scene_was_deselected(emitter) -> void:
+	emit_signal("wasDeselected", self)
+func _on_purchasable_scene_was_selected(emitter) -> void:
+	emit_signal("wasSelected", self)
+func getPurchasable() :
+	return $PurchasableScene.getPurchasable()
 	
 func setCurrency(val : Texture2D) :
 	$PurchasableScene.setCurrency(val)
@@ -39,3 +41,5 @@ func select() :
 	$PurchasableScene.select()
 func getCore() :
 	return $PurchasableScene.core
+func isSelected() :
+	return $PurchasableScene.selected

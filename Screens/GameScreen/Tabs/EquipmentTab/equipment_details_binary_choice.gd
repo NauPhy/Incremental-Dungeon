@@ -11,3 +11,5 @@ func setOption0(val : String) :
 	$VBoxContainer/HBoxContainer2/CenterContainer0/Option0.text = val
 func setOption1(val : String) :
 	$VBoxContainer/HBoxContainer2/CenterContainer1/Option1.text = val
+func setItemSceneRef(val) :
+	setItemSceneRefBase(val)

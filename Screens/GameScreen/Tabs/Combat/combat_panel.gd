@@ -6,6 +6,11 @@ signal retreat
 
 const GODPUNCHloader = preload("res://Resources/OldAction/Attacks/godpunch.tres")
 var autoMode : bool = false
+func _on_player_subclass_requested(emitter) :
+	emit_signal("playerSubclassRequested", emitter)
+signal weaponResourceRequested
+func _on_weapon_resource_requested(emitter) :
+	emit_signal("weaponResourceRequested", emitter)
 
 signal playerModifierDictionaryRequested
 signal playerModifierDictionaryReceived
@@ -22,6 +27,23 @@ func providePlayerModifierDictionary(val : Dictionary, demonRing) :
 	hasDemonRingEquipped = demonRing
 	waitingForPlayerModifierDictionary = false
 	emit_signal("playerModifierDictionaryReceived")
+	
+signal playerSubclassRequested
+signal playerSubclassReceived
+var waitingForPlayerSubclass : bool = false
+var playerSubclass_comm = -1
+func getPlayerSubclass() -> Definitions.subclass :
+	if (playerSubclass_comm != -1) :
+		return playerSubclass_comm as Definitions.subclass
+	waitingForPlayerSubclass = true
+	emit_signal("playerSubclassRequested", self)
+	if (waitingForPlayerSubclass) :
+		await playerSubclassReceived
+	return playerSubclass_comm
+func providePlayerSubclass(val) :
+	playerSubclass_comm = val
+	waitingForPlayerSubclass = false
+	emit_signal("playerSubclassReceived")
 
 var currentPlayerMods : Dictionary = {}
 var hasDemonRingEquipped : bool = false
@@ -36,7 +58,9 @@ func resetCombat(friendlyCores : Array[ActorPreset], enemyCores : Array[ActorPre
 		newActor.core = friend
 		newActor.HP = newActor.core.MAXHP
 		$FriendlyParty.add_child(newActor)
+		newActor.connect("playerSubclassRequested", _on_player_subclass_requested)
 		newActor.connect("actionTaken", _on_friend_action_taken)
+		newActor.connect("weaponResourceRequested", _on_weapon_resource_requested)
 		newActor.size_flags_horizontal = 0
 		newActor.size_flags_vertical = Control.SIZE_SHRINK_END
 	for enemy in enemyCores :
@@ -216,14 +240,20 @@ func executeAction(emitter, action, target) :
 		else :
 			return
 	else :
-		if (action.type == AttackAction.damageType.MAG) :
-			magicDR = DR*(1-currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicConversion])
-			physicalDR = DR*(currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicConversion])
-		elif (action.type == AttackAction.damageType.PHYS) :
-			magicDR = DR*(currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalConversion])
-			physicalDR = DR*(1-currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalConversion])
+		if (await getPlayerSubclass() == Definitions.subclass.ammo) :
+			if (physicalDefense > magicDefense) :
+				magicDR = DR
+			else :
+				physicalDR = DR
 		else :
-			return
+			if (action.type == AttackAction.damageType.MAG) :
+				magicDR = DR*(1-currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicConversion])
+				physicalDR = DR*(currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicConversion])
+			elif (action.type == AttackAction.damageType.PHYS) :
+				magicDR = DR*(currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalConversion])
+				physicalDR = DR*(1-currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalConversion])
+			else :
+				return
 
 	var physicalArgs : Array = [action.power, physicalDR, AR, physicalDefense]
 	var physicalDamage = Encyclopedia.getFormula("Damage Value", Encyclopedia.formulaAction.getCalculation_full, physicalArgs)

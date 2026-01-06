@@ -35,8 +35,8 @@ func getDirectModifiers() -> ModifierPacket :
 	return $Inventory.getModifierPacket()
 func getItemCount(item : Equipment) :
 	return $Inventory.getItemCount(item)
-func getElementalDirectModifiers() -> ModifierPacket :
-	return $Inventory.getElementalModifierPacket()
+func getElementalDirectModifiers(subclass) -> ModifierPacket :
+	return $Inventory.getElementalModifierPacket(subclass)
 #####################################
 ##Setters
 func addItemToInventory(itemSceneRef) :
@@ -66,11 +66,15 @@ func _on_current_equips_select_requested(itemSceneRef, type : Definitions.equipm
 		$Inventory.selectItem(itemSceneRef)
 func _on_discard_requested_from_details(itemSceneRef) -> void:
 	$Inventory.discardItem(itemSceneRef)
+signal unequippedItem
 func _on_inventory_unequipped_item(itemSceneRef) -> void :
 	$CurrentEquips.setItemSceneRef(null, itemSceneRef.getType())
+	emit_signal("unequippedItem", itemSceneRef)
 	#$PagedEquipmentDetails.setItemSceneRef(null, itemSceneRef.getType())
+signal equippedItem
 func _on_inventory_equipped_item(itemSceneRef) -> void:
 	$CurrentEquips.setItemSceneRef(itemSceneRef, itemSceneRef.getType())
+	emit_signal("equippedItem", itemSceneRef)
 	#$PagedEquipmentDetails.setItemSceneRef(itemSceneRef, itemSceneRef.getType())
 func _on_item_deselected(_itemSceneRef) -> void:
 	$PagedEquipmentDetails.setItemSceneRefBase(null)
@@ -80,3 +84,5 @@ func _on_item_deselected(_itemSceneRef) -> void:
 signal isReforgeHoveredRequested
 func _on_inventory_is_reforge_hovered_requested(emitter) -> void:
 	emit_signal("isReforgeHoveredRequested", emitter)
+func reforge(type, newScalingVal) :
+	return $Inventory.reforge(type, newScalingVal)

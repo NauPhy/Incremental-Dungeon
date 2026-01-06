@@ -29,23 +29,35 @@ func addShopColumn(val : ShopColumn) :
 	newEntry.setFromDetails(val)
 	newEntry.connect("purchaseRequested", _on_purchase_requested)
 	newEntry.connect("displayRequested", _on_display_requested)
+	newEntry.connect("hideDisplayIfEmitter", _on_hide_display)
 	
 #func setShopContents(val : Dictionary) :
 	#for key in val.keys() :
 		#await addShopColumn(val[key])
+		
+func _on_hide_display(emitter : Equipment) :
+	## Does NOT work if there are duplicates in the store. Maybe.
+	if ($detailsRight.visible && $detailsRight.getItemSceneRef() != null && $detailsRight.getItemSceneRef().core.getItemName() == emitter.getItemName()) :
+		$detailsRight.setItemSceneRef(null)
+		$detailsRight.visible = false
+	elif ($detailsLeft.visible && $detailsLeft.getItemSceneRef() != null && $detailsLeft.getItemSceneRef().core.getItemName() == emitter.getItemName()) :
+		$detailsLeft.setItemSceneRef(null)
+		$detailsLeft.visible = false
 	
 signal purchaseRequested
 var myItemSceneRef
-var myItemPrice
+var myPurchasableRef
 func _on_purchase_requested(item, price, purchase) :
 	emit_signal("purchaseRequested", item, price, myCurrency, self, purchase)
-func _on_display_requested(item : Equipment, price : int, column : Node) :
+func _on_display_requested(purchase : Purchasable, column : Node) :
 	if (myItemSceneRef != null) :
 		myItemSceneRef.queue_free()
-	myItemPrice = price
-	myItemSceneRef = SceneLoader.createEquipmentScene(item.getItemName())
+		myItemSceneRef = null
+	myItemSceneRef = SceneLoader.createEquipmentScene(purchase.equipment_optional.getItemName())
 	add_child(myItemSceneRef)
 	myItemSceneRef.visible = false
+	myItemSceneRef.core = purchase.equipment_optional
+	myPurchasableRef = purchase
 	var middleOfColumn = column.global_position.x+column.size.x/2.0
 	var middleOfContainer = $VBoxContainer.global_position.x+$VBoxContainer.size.x/2.0
 	if (middleOfColumn < middleOfContainer) :
@@ -68,6 +80,10 @@ func setFromDetails(det : ShopDetails) :
 func refreshPrice(itemName, value) :
 	for column in $VBoxContainer/Shop.get_children() :
 		column.refreshPrice(itemName, value)
+		
+func onEquipmentSold() :
+	$VBoxContainer/Shop.get_child(0).onEquipmentSold()
+	_on_details_option_pressed(myItemSceneRef, 1)
 		
 var myReady : bool = false
 signal myReadySignal
@@ -99,7 +115,7 @@ func _on_exit_pressed() -> void:
 
 func _on_details_option_pressed(_itemSceneRef : Node, choice : int) -> void:
 	if (choice == 0) :
-		emit_signal("purchaseRequested", myItemSceneRef.core, myItemPrice, myCurrency, self)
+		emit_signal("purchaseRequested", myPurchasableRef.purchasableName, myPurchasableRef.purchasablePrice, myCurrency, self, myPurchasableRef)
 	else :
 		$detailsRight.visible = false
 		$detailsRight.setItemSceneRefBase(null)
@@ -107,7 +123,7 @@ func _on_details_option_pressed(_itemSceneRef : Node, choice : int) -> void:
 		$detailsLeft.setItemSceneRefBase(null)
 		myItemSceneRef.queue_free()
 		myItemSceneRef = null
-		myItemPrice = -1
+		myPurchasableRef = null
 		deselectAll()
 		
 func deselectAll() :
