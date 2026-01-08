@@ -94,6 +94,7 @@ static func getStrOrNull_static(tag : String, val : float, prefix : String, spec
 			typeString = "Standard Multiplier Bonus "
 	else :
 		typeString = ""
+	tempStr += prefix + typeString
 	if (tag == "Premultiplier") :
 		if (val == 1.0) :
 			return null
@@ -101,8 +102,6 @@ static func getStrOrNull_static(tag : String, val : float, prefix : String, spec
 			tempStr += "[color=red]"
 		else :
 			tempStr += "[color=green]"
-		tempStr += prefix + typeString + symbol + str(Helpers.myRound(val,3))
-		tempStr += "[/color]"
 	else :
 		if (val == 0.0) :
 			return null
@@ -110,6 +109,70 @@ static func getStrOrNull_static(tag : String, val : float, prefix : String, spec
 			tempStr += "[color=red]"
 		else :
 			tempStr += "[color=green]"
-		tempStr += prefix + typeString + symbol + str(Helpers.myRound(val,3))
-		tempStr += "[/color]"
+	tempStr += symbol + str(Helpers.myRound(val,3))
+	tempStr += "[/color]"
 	return tempStr
+		
+func addMod(statType, statIndex, modType, val : float) :
+	var parsedStatType = parseStatType(statType)
+	var parsedStatIndex = parseStatIndex(parsedStatType, statIndex)
+	var parsedModType = parseModType(modType)
+	var oldVal = getMod(statType, statIndex, modType)
+	var newVal
+	if (parsedModType == "Premultiplier") :
+		newVal = oldVal * val
+	else :
+		newVal = oldVal + val
+	if (parsedStatType == "attr") :
+		attributeMods[parsedStatIndex][parsedModType] = newVal
+	elif (parsedStatType == "stat") :
+		statMods[parsedStatIndex][parsedModType] = newVal 
+	elif (parsedStatType == "otherStat") :
+		otherMods[parsedStatIndex][parsedModType] = newVal
+		
+func getMod(statType, statIndex, modType) -> float :
+	var parsedStatType = parseStatType(statType)
+	var parsedStatIndex = parseStatIndex(parsedStatType, statIndex)
+	var parsedModType = parseModType(modType)
+	if (parsedStatType == "attr") :
+		return attributeMods[parsedStatIndex][parsedModType]
+	elif (parsedStatType == "stat") :
+		return statMods[parsedStatIndex][parsedModType]
+	elif (parsedStatType == "otherStat") :
+		return otherMods[parsedStatIndex][parsedModType]
+	else :
+		return 0
+	
+func parseStatType(statType) -> String :
+	var parsedStatType
+	if (statType == "attribute") :
+		parsedStatType = "attr"
+	else :
+		parsedStatType = statType
+	return parsedStatType
+func parseStatIndex(type : String, val) -> String :
+	if (val is String) :
+		return val
+	else :
+		if (type == "attr") :
+			return Definitions.attributeDictionary[val]
+		elif (type == "stat") :
+			return Definitions.baseStatDictionary[val]
+		elif (type == "otherStat") :
+			return Definitions.otherStatDictionary[val]
+		else :
+			return ""
+			
+func parseModType(val) -> String :
+	if (val is String) :
+		return val
+	elif (val == 0) :
+		return "Prebonus"
+	elif (val == 1) :
+		return "Premultiplier"
+	elif (val == 2) :
+		return "Postbonus"
+	elif (val == 3) :
+		return "Postmultiplier"
+	else :
+		return ""

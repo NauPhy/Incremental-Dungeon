@@ -57,6 +57,7 @@ func _on_add_child_requested(emitter, node : Node) :
 	emit_signal("addChildRequested", emitter, node)
 signal mapCompleted
 func completeRoom(completedRoom) :
+	checkHerophile(completedRoom)
 	var firstCompletion = !completedRoom.isCompleted()
 	completedRoom.onCombatComplete()
 	if (firstCompletion || completedRoom.has_method("isEmpty") && completedRoom.isEmpty()) :
@@ -409,3 +410,11 @@ func setFromMapPosRatio() :
 		$CombatMap.position.y = size.y/2-$CombatMap.size.y/2
 	else :
 		$CombatMap.position.y = (maxY-minY)*mapPosRatio.y
+
+func checkHerophile(room) :
+	if (room.has_method("getEncounterRef")) :
+		var encounter : Encounter = room.getEncounterRef()
+		for enemy in encounter.enemies :
+			if (enemy.getResourceName() == "champion_of_poseidon") :
+				emit_signal("tutorialRequested", Encyclopedia.tutorialName.herophile, Vector2(0,0))
+				return

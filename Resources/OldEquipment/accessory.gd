@@ -13,10 +13,10 @@ func getAdjustedCopy(scalingFactor : float) -> Accessory :
 		return retVal
 	var qualityModifier = pow(1.08,equipmentGroups.quality as int)
 	if (boostedAttr2 != -1 && boostedAttr1 != -1) :
-		retVal.myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr1]]["Postbonus"] = qualityModifier*scalingFactor*referenceValue/2.0
-		retVal.myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr2]]["Postbonus"] = qualityModifier*scalingFactor*referenceValue/2.0
+		retVal.myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr1]]["Prebonus"] = qualityModifier*scalingFactor*referenceValue/2.0
+		retVal.myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr2]]["Prebonus"] = qualityModifier*scalingFactor*referenceValue/2.0
 	elif (boostedAttr1 != -1) :
-		retVal.myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr1]]["Postbonus"] = qualityModifier*scalingFactor*referenceValue
+		retVal.myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr1]]["Prebonus"] = qualityModifier*scalingFactor*referenceValue
 	return retVal
 
 func getSaveDictionary() -> Dictionary :

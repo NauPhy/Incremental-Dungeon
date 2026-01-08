@@ -26,6 +26,7 @@ func makeAllTextBlack() :
 	
 func useLightMode() :
 	text = text.replace(colourString, str1_d)
+	text = text.replace("[color=green]", "[color=#006d00]")
 	colourString = str1_d
 	updateHyperlinksExceptBadKey()
 	add_theme_color_override("default_color", Color(0,0,0))
@@ -86,11 +87,16 @@ func updateHyperlinksExceptBadKey() :
 		while (foundIndex != -1) :
 			## Yield to longer keywords
 			if (Encyclopedia.problemDictionary.get(key) != null) :
-				var otherKey = Encyclopedia.problemDictionary[key]
-				var otherIndex = foundIndex + key.length() - otherKey.length()
-				if (text.find(otherKey, otherIndex) == otherIndex) :
-					currentIndex = otherIndex + otherKey.length()
-					foundIndex = text.find(key, currentIndex)
+				var outerContinue : bool = false
+				for otherKey in Encyclopedia.problemDictionary[key] :
+					var nestedPos = otherKey.find(key)
+					var otherIndex = foundIndex - nestedPos
+					if (otherIndex != -1 && text.find(otherKey, otherIndex) == otherIndex) :
+						currentIndex = otherIndex + otherKey.length()
+						foundIndex = text.find(key, currentIndex)
+						outerContinue = true
+						break
+				if (outerContinue) :
 					continue
 			addHyperlinkAtPos(foundIndex, key)
 			currentIndex = foundIndex + colourString.length() + str2.length() + key.length()
@@ -105,11 +111,15 @@ func updateHyperlinksExceptBadKey() :
 		while (foundIndex != -1) :
 			## Yield to longer keywords
 			if (Encyclopedia.problemDictionary.get(key) != null) :
-				var otherKey = Encyclopedia.problemDictionary[key]
-				var otherIndex = foundIndex + key.length() - otherKey.length()
-				if (get_parsed_text().find(otherKey, otherIndex) == otherIndex) :
-					currentIndex = otherIndex + otherKey.length()
-					foundIndex = get_parsed_text().find(key, currentIndex)
+				var outerContinue : bool = false
+				for otherKey in Encyclopedia.problemDictionary[key] :
+					var otherIndex = foundIndex + key.length() - otherKey.length()
+					if (otherIndex != -1 && get_parsed_text().find(otherKey, otherIndex) == otherIndex) :
+						currentIndex = otherIndex + otherKey.length()
+						foundIndex = get_parsed_text().find(key, currentIndex)
+						outerContinue = true
+						break
+				if (outerContinue) :
 					continue
 			addTooltipAtPos(foundIndex, key)
 			currentIndex = foundIndex + key.length()
@@ -139,9 +149,6 @@ func isBadKey(key) -> bool :
 			
 func addHyperlinkAtPos(index, key) :
 	if (index >= colourString.length() && text.find(colourString, index-colourString.length()) == index-colourString.length()) :
-		return
-	#var generalColor = "[color="
-	#if (index >= generalColor.length() && text.find(generalColor, index-generalColor.length() == index-generalColor.length())) :
 		return
 	var extendedKey = getExtendedKey(index, key,false)
 	text = text.insert(index, colourString)
@@ -185,6 +192,11 @@ func addTooltipAtPos(index, key) :
 	newTooltip.initialise(key)
 	newTooltip.currentLayer = currentLayer
 	var lineNumber = get_character_line(index)
+	if (lineNumber == -1) :
+		coroutineSemaphore -= 1
+		if (coroutineSemaphore == 0) :
+			emit_signal("coroutinesDone")
+		return
 	var temp = get_line_range(lineNumber)
 	var firstCharInLine = temp.x
 	var lastCharInLine = temp.y

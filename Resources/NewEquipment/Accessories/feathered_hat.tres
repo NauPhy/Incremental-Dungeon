@@ -145,7 +145,8 @@ script = ExtResource("3_dum0o")
 boostedAttr1 = 0
 boostedAttr2 = -1
 title = "Feathered Hat"
-description = "Sample description"
+description = "No fledgling marksman would be complete without a feathered hat.
+(The feather makes you go faster)"
 myPacket = SubResource("Resource_usxak")
 equipmentGroups = SubResource("Resource_3lbcc")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

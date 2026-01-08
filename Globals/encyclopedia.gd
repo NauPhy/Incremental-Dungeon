@@ -13,7 +13,8 @@ enum tutorialName {
 	equipment,
 	tutorialFloorEnd,
 	dropIntro,
-	manticoreKill
+	manticoreKill,
+	herophile
 }
 const tutorialTitles : Dictionary = {
 	tutorialName.tutorial : "A Tutorial About Tutorials",
@@ -25,7 +26,8 @@ const tutorialTitles : Dictionary = {
 	tutorialName.equipment : "Equipment",
 	tutorialName.tutorialFloorEnd : "Floor Exit",
 	tutorialName.dropIntro : "Drops Introduction",
-	tutorialName.manticoreKill : "Manticore Defeated"
+	tutorialName.manticoreKill : "Manticore Defeated",
+	tutorialName.herophile : "Training with Herophile"
 }
 const tutorialDesc : Dictionary = {
 	tutorialName.tutorial : "Tutorial popups can be disabled in the in-game options (F1) menu. There you will also find a list of all encountered tutorials, even if they were suppressed. Remember that tutorials may show up even in the late game!",
@@ -43,7 +45,8 @@ const tutorialDesc : Dictionary = {
 	#End of first floor
 	tutorialName.tutorialFloorEnd : "Congratulations, you've beaten the tutorial floor. The dungeon from here on out will be a bit slower and more challenging.\n\nRemember to explore the side paths and farm drops from weaker monsters. If you feel progress is too slow, get a cup of coffee or pull up a YouTube video. This is not meant to be a terribly active game.\n\nAlternatively, you could spend some time scrutinising your build to try and squeeze a bit more performance out of it!\n\nOh, and you might want to check out the Encyclopedia (F1).",
 	tutorialName.dropIntro : "Most enemies have a chance to drop items on death. After completing a room for the first time, enemies and hints about their drops will be added to the beastiary found in the in-game options (F1) menu.\n\nEnemies will also be listed on the room itself. You can access an enemy's beastiary entry by CTRL-clicking its name in the room's enemy list, but only if you've defeated it at least once.",
-	tutorialName.manticoreKill : "Congratulations on defeating the Manticore! Unfortunately this is the end of content in the current version. I hope you enjoyed the game, and I'd be happy to hear any feedback you have!"
+	tutorialName.manticoreKill : "Congratulations on defeating the Manticore! Unfortunately this is the end of content in the current version. I hope you enjoyed the game, and I'd be happy to hear any feedback you have!",
+	tutorialName.herophile : "\"I am no match for you. I yield to your strength.\" Herophile says, kneeling. You turn towards the exit.\n\n\"However\"\n\nYou turn back towards the demigoddess, eyebrow raised.\n\n\"Your skill is clearly lacking.\" she says, grinning. \"I believe a mutually beneficial arrangement can be made.\"\n\n[i]The \"Spar with Herophile\" Routine has been unlocked![/i]"
 }
 const tutorialPointers : Dictionary = {
 }
@@ -58,7 +61,8 @@ const oneOffTutorials : Array = [
 	tutorialName.equipment,
 	tutorialName.tutorialFloorEnd,
 	tutorialName.dropIntro,
-	tutorialName.manticoreKill
+	tutorialName.manticoreKill,
+	tutorialName.herophile
 ]
 
 ## I tried my damndest, but I could not figure out an elegant way to do this. Oh well, it's decent. All formulas in the game that are exposed to the player are in
@@ -194,10 +198,10 @@ func getFormula(formulaKey : String, action : formulaAction, args) :
 	
 	
 const problemDictionary = {
-	"Damage" : "Damage Rating",
-	"Multiplier" : "Standard Multiplier",
-	"Routine Growth" : "Routine Growth Ratio",
-	"Routine" : "Routine Growth"
+	"Damage" : ["Damage Rating"],
+	"Multiplier" : ["Standard Multiplier"],
+	"Routine Growth" : ["Routine Growth Ratio"],
+	"Routine" : ["Routine Growth", "Cumulative Routine Levels", "Routine Growth Ratio"]
 }
 const keywords : Array[String] = [
 	"Action Power",
@@ -294,7 +298,10 @@ const keywords : Array[String] = [
 	"Undead",
 	"Nautikin",
 	
-	"Biome"
+	"Biome",
+	
+	"Learning Curve",
+	"Softcap"
 	]
 const keyword_alternates : Dictionary = {
 	"Dexterity" : "DEX",
@@ -316,59 +323,63 @@ const keyword_alternates : Dictionary = {
 }
 
 var descriptions : Dictionary = {
+	"Learning Curve" : "This stuff is easy! As a bright young adventurer, you're still learning quickly. 3.0x Routine Speed for all attributes, linearly decaying to 1.0x as the attribute's Base value approaches 63.",
+	
+	"Softcap" : "Every time the Bonus provided to an attribute by Cumulative Routine Levels reaches a new power of 10 (starting at 100), your Routine Speed for that attribute halves permanently!.",
+	
 	"Class" : "Your Class determines their starting Attributes, Attribute multipliers, and unarmed Weapon Scaling. Fighter is the tankiest, Mage is the highest damage, and Rogue is balanced. You can respec about halfway through the game at the cost of half of your Cumulative Routine Levels",
 	
 	"Currency" : "Currency items do not take up inventory space and only exist to be exchanged at shops.", 
 		
-	"Attribute" : "Attributes are a measure of your basic ability, and are shown in the Player Panel.\n\nAttributes are used to calculate your Combat Stats, which are vital for combat. The 5 Attributes are Dexterity, Durability, Intelligence, Skill, and Strength.\n\tBase Attribute = Class Bonus + Routine Effect * Cumulative Routine Level",
+	"Attribute" : "Attributes are a measure of your basic ability, and are shown in the Player Panel.\n\nAttributes are used to calculate your Combat Stats, which are vital for combat. The 5 Attributes are Dexterity, Durability, Intelligence, Skill, and Strength.\n\t-Base Attribute = Class Bonus + Routine Effect * Cumulative Routine Level",
 	
-	"Dexterity" : "Dexterity is an Attribute measuring your agility, finnesse, and wit.\n\tWhen a suitable weapon is equipped, Dexterity provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\tDexterity provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your skill at dodging.",
+	"Dexterity" : "Dexterity is an Attribute measuring your agility, finnesse, and wit.\n\t-When a suitable weapon is equipped, Dexterity provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\t-Dexterity provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your skill at dodging.",
 	
-	"Durability" : "Durability is an Attribute measuring your health and resistance to damage.\n\tDurability provides a Bonus to Base HP of <MAXHP FORMULA>.\n\tDurability provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your tenacity and grit.",
+	"Durability" : "Durability is an Attribute measuring your health and resistance to damage.\n\t-Durability provides a Bonus to Base HP of <MAXHP FORMULA>.\n\t-Durability provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your tenacity and grit.",
 	
-	"Intelligence" : "Intelligence is an Attribute measuring your quick thinking, learning capacity, and accumulated knowledge, and psionic power.\n\tWhen a suitable weapon is equipped, Intelligence provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\tIntelligence provides a Bonus to Base Magic Defense of <MAGDEF CONTRIBUTION> to reflect the fortitude of your psyche.",
+	"Intelligence" : "Intelligence is an Attribute measuring your quick thinking, learning capacity, and accumulated knowledge, and psionic power.\n\t-When a suitable weapon is equipped, Intelligence provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\t-Intelligence provides a Bonus to Base Magic Defense of <MAGDEF CONTRIBUTION> to reflect the fortitude of your psyche.",
 	
-	"Skill" : "Skill is an Attribute measuring your practice and innate ability in the art of combat.\n\tSkill provides a Bonus to Base AR of <AR CONTRIBUTION>.\n\tSkill provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your ability to anticipate their opponents' attacks and execute defensive maneuvers",
+	"Skill" : "Skill is an Attribute measuring your practice and innate ability in the art of combat.\n\t-Skill provides a Bonus to Base AR of <AR CONTRIBUTION>.\n\t-Skill provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your ability to anticipate their opponents' attacks and execute defensive maneuvers",
 	
-	"Strength" : "Strength is an Attribute measuring your raw physical power.\n\tWhen a suitable weapon is equipped, Strength provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\tStrength provides a Bonus to Base Physical Defense of <PHYSDEF CONTRIBUTION> to reflect your physical health and the hardness of their body.",
+	"Strength" : "Strength is an Attribute measuring your raw physical power.\n\t-When a suitable weapon is equipped, Strength provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\t-Strength provides a Bonus to Base Physical Defense of <PHYSDEF CONTRIBUTION> to reflect your physical health and the hardness of their body.",
 	
 	"Combat Stat" : "Combat Stats measure a combatant's prowess in certain elements of combat, and yours are displayed in the Player Panel.\n\nWhile enemies typically have preset Combat Stats (scaling with dungeon depth), your stats can be improved in a variety of ways. The five Combat Stats are Max HP, Attack Rating, Damage Rating, Physical Defense, and Magic Defense.",
 	
-	"Max HP" : "A combatant's Max HP is a Combat Stat measuring their optimal proximity to death. A combatant always starts with HP = Max HP. When their HP hits 0 due to Damage, they die.\n\tBase Max HP = <MAXHP FORMULA>",
+	"Max HP" : "A combatant's Max HP is a Combat Stat measuring their optimal proximity to death. A combatant always starts with HP = Max HP. When their HP hits 0 due to Damage, they die.\n\t-Base Max HP = <MAXHP FORMULA>",
 	
-	"Physical Defense" : "A combatant's Physical Defense is a Combat Stat that reduces the Damage of incoming damaging physical attacks.\n\tBase PHYSDEF = <PHYSDEF FORMULA>.",
+	"Physical Defense" : "A combatant's Physical Defense is a Combat Stat that reduces the Damage of incoming damaging physical attacks.\n\t-Base PHYSDEF = <PHYSDEF FORMULA>.",
 	
-	"Magic Defense" : "A combatant's Magic Defense is a Combat Stat that reduces the Damage of incoming damaging magic attacks.\n\tBase MAGDEF = <MAGDEF FORMULA>.",
+	"Magic Defense" : "A combatant's Magic Defense is a Combat Stat that reduces the Damage of incoming damaging magic attacks.\n\t-Base MAGDEF = <MAGDEF FORMULA>.",
 	
 	"Weapon" : "Your Weapon determines your DR Attribute Scaling, what your basic attack action is, and provides a Bonus to Base Damage Rating.\n\nYou gain a DR Multiplier of 1.25x for each Element shared by your Weapon and Accessory.",
 	
 	"Base" : "A Base value is a value before any multipliers are applied. This is an important distinction, because if you've got 10 Base DR and x1000 DR Multiplier, getting another +10 to Base DR will double your damage!\n\nBase values have no direct effect on gameplay (see Final values) though the Final value can be equal to the Base if the product of all multipliers is 1.",
 	
-	"Bonus" : "Bonus is a term indicating an additive change. It has 2 use cases:\n\t\"Bonus to Base X of Y\" or \n\t\"X Base Bonus +Y\"\n\t\tindicates a flat increase Y to the Base of X.\n\t\"Bonus to X Standard Multiplier of Y\" or\n\t\"X Standard Multiplier Bonus +Y\"\n\t\tindicates an additive multiplier to X of value Y(see Final)",
+	"Bonus" : "Bonus is a term indicating an additive change. It has 2 use cases:\n\t-\"Bonus to Base X of Y\" or \n\t-\"X Base Bonus +Y\"\n\t-\tindicates a flat increase Y to the Base of X.\n\t-\"Bonus to X Standard Multiplier of Y\" or\n\t-\"X Standard Multiplier Bonus +Y\"\n\t-\tindicates an additive multiplier to X of value Y(see Final)",
 	
-	"Final" : "A final value is the value after all multipliers have been applied. In practice, the Final value of X is always used in any formula containing X, such as DR in the Damage formula.\n\tFinal = Base * product of Multipliers.\n\tOr, with the Standard Multiplier factored out,\n\tFinal = Base * (product of non-standard Multipliers) * (1+sum of bonuses to Standard Multiplier)",
+	"Final" : "A final value is the value after all multipliers have been applied. In practice, the Final value of X is always used in any formula containing X, such as DR in the Damage formula.\n\t-Final = Base * product of Multipliers.\n\t-Or, with the Standard Multiplier factored out,\n\t-Final = Base * (product of non-standard Multipliers) * (1+sum of bonuses to Standard Multiplier)",
 	
-	"Standard Multiplier" : "The Standard Multiplier for a Final value is a multiplicative multiplier consisting of the sum of all additive multipliers.\n\tStandard Multiplier = (1+sum of Bonuses to Standard Multiplier).\n\nThe Standard Multiplier is always included in the Final value formula, though in the absence of any Bonuses its value is 1.0x.\n\nAn additive multiplier in math theory is a multiplier that does not multiply the effects of other multipliers (including itself), so 2 additive multipliers of 3x give a total of 6x, not 9x.",
+	"Standard Multiplier" : "The Standard Multiplier for a Final value is a multiplicative multiplier consisting of the sum of all additive multipliers.\n\t-Standard Multiplier = (1+sum of Bonuses to Standard Multiplier).\n\nThe Standard Multiplier is always included in the Final value formula, though in the absence of any Bonuses its value is 1.0x.\n\nAn additive multiplier in math theory is a multiplier that does not multiply the effects of other multipliers (including itself), so 2 additive multipliers of 3x give a total of 6x, not 9x.",
 	
 	"Multiplier" : "A Multiplier multiplies a Base value to obtain a Final value. All Multipliers stack multiplicatively; additive multipliers are contained in the Standard Multiplier and are referred to as Bonuses.",
 	
-	"Attack Rating" : "A combatant's Attack Rating is a Combat Stat measuring their accuracy and ability to circumvent their opponent's defenses.\nThe Damage of an attack is proportional to the attacker's Attack Rating.\n\tBase AR = <AR FORMULA>.",
+	"Attack Rating" : "A combatant's Attack Rating is a Combat Stat measuring their accuracy and ability to circumvent their opponent's defenses.\nThe Damage of an attack is proportional to the attacker's Attack Rating.\n\t-Base AR = <AR FORMULA>.",
 	
-	"Damage Rating" : "A combatant's Damage Rating is a Combat Stat measuring the power of their weapon and how well they can use it. The Damage of an attack is proportional to the attacker's Damage Rating.\n\tBase DR = <DR FORMULA>.",
+	"Damage Rating" : "A combatant's Damage Rating is a Combat Stat measuring the power of their weapon and how well they can use it. The Damage of an attack is proportional to the attacker's Damage Rating.\n\t-Base DR = <DR FORMULA>.",
 	
-	"Damage" : "A Damage is damage dealt to a combatant by an attack.\n\tBase Damage = <DAMAGE VALUE FORMULA>.",
+	"Damage" : "A Damage is damage dealt to a combatant by an attack.\n\t-Base Damage = <DAMAGE VALUE FORMULA>.",
 	
 	"Action Power" : "The fundamental strength of a combat action, independent of the power of the weapon or its user. Can be seen in the Beastiary (F1) or the Equipment tab for enemies or your weapon, respectively.",
 
 	"Routine" : "Routines passively increase your Cumulative Routine Levels over time, which in turn increases your Attributes. Each Routine improves Cumulative Routine Levels at different rates, and more Routines can be acquired from shops. To view and use Routines, see the Training tab.",
 	
-	"Cumulative Routine Level" : "There are six Cumulative Routine Levels, one for each Attribute. They can be found under \"Routine Levels\" in the Training tab. Cumulative Routine Levels increase constantly at a rate equal to your Routine Growth Rates.\n\tCumulative Routine Levels provide a Bonus to the Base of your corresponding Attributes equal to Routine Effect*respective level.",
+	"Cumulative Routine Level" : "There are six Cumulative Routine Levels, one for each Attribute. They can be found under \"Routine Levels\" in the Training tab. Cumulative Routine Levels increase constantly at a rate equal to your Routine Growth Rates.\n\t-Cumulative Routine Levels provide a Bonus to the Base of your corresponding Attributes equal to Routine Effect*respective level.",
 	
-	"Routine Growth": "Routine Growth is the amount of levels you gain in Cumulative Routine Levels per second. There are six Routine Growth Rates, one for each Attribute. They can be found at the bottom of the \"Routines\" panel in the Training Tab.\n\tFor a given Attribute, the corresponding Base Routine Growth Rate = RGR*Routine Speed.",
+	"Routine Growth": "Routine Growth is the amount of levels you gain in Cumulative Routine Levels per second. There are six Routine Growth Rates, one for each Attribute. They can be found at the bottom of the \"Routines\" panel in the Training Tab.\n\t-For a given Attribute, the corresponding Base Routine Growth Rate = RGR*Routine Speed.",
 	
-	"Routine Speed" : "Listed under \"Other Stats\" in the Player Panel, Routine Speed provides a Multiplier to all Routine Growth Rates of x<Routine Speed>.\n\tBase Routine Speed = 1.0\n\nRoutine Speed is capped at 100.0.",
+	"Routine Speed" : "Listed under \"Other Stats\" in the Player Panel, Routine Speed provides a Multiplier to all Routine Growth Rates of x<Routine Speed>.\n\t-Base Routine Speed = 1.0\n\nRoutine Speed is capped at 100.0.",
 	
-	"Routine Effect" : "Listed under \"Other Stats\" in the Player Panel. Routine Effect multiplies the Bonus to Base Attributes given by Cumulative Routine Levels.\n\tBase Routine Effect = 1.0",
+	"Routine Effect" : "Listed under \"Other Stats\" in the Player Panel. Routine Effect multiplies the Bonus to Base Attributes given by Cumulative Routine Levels.\n\t-Base Routine Effect = 1.0",
 	
 	"Routine Growth Ratio" : "The Routine Growth Ratio (RGR) is the Numbers displayed underneath each Routine under \"Routines\" in the Training tab. A Routine's RGR provides a Bonus to Base Routine Growth Rate of RGR*Routine Speed. Base RGR varies by Routine, and Bonuses to their Standard Multipliers can be bought in shops.",
 	
@@ -448,12 +459,12 @@ var descriptions : Dictionary = {
 	
 	"Biome" : "Each floor beyond the tutorial is generated with a specific Biome. The Biome determines what Elements are eligible to drop and what Factions are eligible to appear.\n\nThe Biome and its effects can be seen in the top right of the Combat Map.\n\nIf no elements are listed for a biome, equipment from any element can drop, but is 4x as rare (75% chance to be rerolled).",
 	##################################################################
-	"Physical Damage Dealt" : "Physical Damage Dealt/PDD, applies after Physical Conversion.\n\tBase PDD = 1.0",
-	"Magic Damage Dealt" : "Magic Damage Dealt/MDD, applies after Magic Conversion.\n\tBase MDD = 1.0",
-	"Physical Damage Taken" : "Physical Damage Taken, aka PDT.\n\tBase PDT = 1.0",
-	"Magic Damage Taken" : "Magic Damage Taken, aka MDT.\n\tBase MDT = 1.0",
-	"Physical Conversion" : "Applies a portion of physical damage to the enemy's MAGDEF instead of their PHYSDEF.\n\tBase Physical Conversion = 0.0",
-	"Magic Conversion" : "Applies a portion of magic damage to the enemy's PHYSDEF instead of their MAGDEF.\n\tBase Magic Conversion = 0.0",
+	"Physical Damage Dealt" : "Physical Damage Dealt/PDD, applies after Physical Conversion.\n\t-Base PDD = 1.0",
+	"Magic Damage Dealt" : "Magic Damage Dealt/MDD, applies after Magic Conversion.\n\t-Base MDD = 1.0",
+	"Physical Damage Taken" : "Physical Damage Taken, aka PDT.\n\t-Base PDT = 1.0",
+	"Magic Damage Taken" : "Magic Damage Taken, aka MDT.\n\t-Base MDT = 1.0",
+	"Physical Conversion" : "Applies a portion of physical damage to the enemy's MAGDEF instead of their PHYSDEF.\n\t-Base Physical Conversion = 0.0",
+	"Magic Conversion" : "Applies a portion of magic damage to the enemy's PHYSDEF instead of their MAGDEF.\n\t-Base Magic Conversion = 0.0",
 	"Miku Miku Dance" : "henlo"
 }
 #func getEncyclopediaEntries() -> Dictionary :

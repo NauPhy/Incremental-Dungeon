@@ -11,6 +11,7 @@ var individualTutorialDisable : Dictionary
 ## Other
 const tutorialCreatorLoader = preload("res://Screens/GameScreen/Tutorials/tutorial_creator.gd")
 func createTutorial(myName : Encyclopedia.tutorialName, myPosition : Vector2) :
+	#updateFromOptions(IGOptions.getIGOptionsCopy())
 	IGOptions.addToTutorialListNoSignal(myName)
 	var individual = individualTutorialDisable.get(myName)
 	if (!tutorialsEnabled || (individual != null && individual == true)) :
@@ -51,14 +52,14 @@ func _on_set_tutorials_enabled(val) :
 ## Internal
 func updateIGOptions() :
 	var tempDict = IGOptions.getIGOptionsCopy()
-	tempDict["individualTutorialDisable"] = individualTutorialDisable
+	tempDict["individualTutorialDisable"] = individualTutorialDisable.duplicate()
 	tempDict[IGOptions.options.tutorialsEnabled] = tutorialsEnabled
 	IGOptions.saveIGOptionsNoUpdate(tempDict)
 ##############################################
 ## IGOptions
 func updateFromOptions(changeDict : Dictionary) :
 	tutorialsEnabled = changeDict[IGOptions.options.tutorialsEnabled]
-	individualTutorialDisable = changeDict["individualTutorialDisable"]
+	individualTutorialDisable = changeDict["individualTutorialDisable"].duplicate()
 ###############################################
 ## Saving
 ## IGOptions is responsible for saving data to disk

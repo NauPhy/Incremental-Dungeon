@@ -145,7 +145,9 @@ script = ExtResource("3_pr5pm")
 boostedAttr1 = 1
 boostedAttr2 = -1
 title = "Tome of Cataclysms"
-description = "Sample description"
+description = "This tome features a single page of acid-etched basalt beneath a window of sapphire glass. Its cover is multilayered, featuring materials such as aluminum oxide and CrCoNi. 
+
+The page features spells such as inducing earthquakes, summoning earth elementals, and growing forests."
 myPacket = SubResource("Resource_rt1qk")
 equipmentGroups = SubResource("Resource_v04tl")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

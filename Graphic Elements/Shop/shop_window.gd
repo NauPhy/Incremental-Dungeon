@@ -68,7 +68,8 @@ func _on_display_requested(purchase : Purchasable, column : Node) :
 		$detailsLeft.setItemSceneRefBase(myItemSceneRef)
 
 func setFromDetails(det : ShopDetails) :
-	$RichTextLabel.text = (det.shopName).to_upper()
+	shopDetails = det
+	$VBoxContainer/RichTextLabel.text = (det.shopName).to_upper()
 	shopName = det.shopName
 	setCurrencyTexture(det.shopCurrencyTexture)
 	setCurrencyAmount(await requestCurrencyAmount(det.shopCurrency))
@@ -76,6 +77,10 @@ func setFromDetails(det : ShopDetails) :
 	for column in det.shopContents :
 		addShopColumn(column)
 	Shopping.addNewShop(self)
+	
+func softNotification(purchasable) :
+	for column in $VBoxContainer/Shop.get_children() :
+		column.softNotification(purchasable)
 	
 func refreshPrice(itemName, value) :
 	for column in $VBoxContainer/Shop.get_children() :

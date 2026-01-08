@@ -108,56 +108,90 @@ func getSubclassModPacket() -> ModifierPacket :
 	if (mySubclass == -1) :
 		pass
 	elif (mySubclass == Definitions.subclass.barb) :
-		subclassMod.statMods[Definitions.baseStatEnum.PHYSDEF]["Premultiplier"] *= 0.8
-		subclassMod.statMods[Definitions.baseStatEnum.MAGDEF]["Premultiplier"] *= 0.8
-		subclassMod.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 1.25
+		subclassMod.addMod("stat",Definitions.baseStatEnum.PHYSDEF,"Premultiplier",0.8)
+		subclassMod.addMod("stat",Definitions.baseStatEnum.MAGDEF,"Premultiplier", 0.8)
+		subclassMod.addMod("stat",Definitions.baseStatEnum.DR,"Premultiplier", 1.25)
 	elif (mySubclass == Definitions.subclass.knight) :
-		subclassMod.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 0.75
+		subclassMod.addMod("stat",Definitions.baseStatEnum.DR,"Premultiplier", 0.75)
 		var armorVal
 		if (equippedArmor == null) :
 			armorVal = 0
 		else :
 			armorVal = (equippedArmor.MAGDEF + equippedArmor.PHYSDEF)/2.0
-		subclassMod.statMods[Definitions.baseStatEnum.DR]["Prebonus"] += 1.9*armorVal
+		subclassMod.addMod("stat",Definitions.baseStatEnum.DR,"Prebonus", 1.9*armorVal)
 	elif (mySubclass == Definitions.subclass.ammo) :
-		subclassMod.statMods[Definitions.baseStatEnum.MAXHP]["Premultiplier"] *= 0.9
+		subclassMod.addMod("stat",Definitions.baseStatEnum.MAXHP,"Premultiplier", 0.9)
 		if (equippedWeapon != null && equippedWeapon.equipmentGroups.weaponClass != EquipmentGroups.weaponClassEnum.melee) :
-			subclassMod.statMods[Definitions.baseStatEnum.AR]["Premultiplier"] *= 1.35
+			subclassMod.addMod("stat",Definitions.baseStatEnum.AR,"Premultiplier",  1.35)
 	elif (mySubclass == Definitions.subclass.whirl) :
 		if (equippedWeapon != null && equippedWeapon.equipmentGroups.weaponClass != EquipmentGroups.weaponClassEnum.ranged) :
-			subclassMod.statMods[Definitions.baseStatEnum.PHYSDEF]["Premultiplier"] *= 1.08
-			subclassMod.statMods[Definitions.baseStatEnum.MAGDEF]["Premultiplier"] *= 1.08
+			subclassMod.addMod("stat",Definitions.baseStatEnum.PHYSDEF,"Premultiplier",  1.08)
+			subclassMod.addMod("stat",Definitions.baseStatEnum.MAGDEF,"Premultiplier",  1.08)
 	elif (mySubclass == Definitions.subclass.enchant) :
 		if (equippedWeapon != null && equippedWeapon.equipmentGroups.isElemental()) :
-			subclassMod.statMods[Definitions.baseStatEnum.DR]["Premultiplier"] *= 1.1
+			subclassMod.addMod("stat",Definitions.baseStatEnum.DR,"Premultiplier",  1.1)
 		if (equippedArmor != null && equippedArmor.equipmentGroups.isElemental()) :
-			subclassMod.statMods[Definitions.baseStatEnum.PHYSDEF]["Premultiplier"] *= 1.1
-			subclassMod.statMods[Definitions.baseStatEnum.MAGDEF]["Premultiplier"] *= 1.1
+			subclassMod.addMod("stat",Definitions.baseStatEnum.PHYSDEF,"Premultiplier",  1.1)
+			subclassMod.addMod("stat",Definitions.baseStatEnum.MAGDEF,"Premultiplier",  1.1)
 		if (equippedAccessory != null && equippedAccessory.equipmentGroups.isElemental()) :
-			subclassMod.attributeMods[Definitions.attributeEnum.SKI]["Premultiplier"] *= 1.05
+			subclassMod.addMod("attr",Definitions.attributeEnum.SKI,"Premultiplier",  1.05)
 	elif (mySubclass == Definitions.subclass.soul) :
-		subclassMod.statMods[Definitions.baseStatEnum.MAXHP]["Premultiplier"] *= 0.85
+		subclassMod.addMod("stat",Definitions.baseStatEnum.MAXHP,"Premultiplier",  0.85)
 		var souls = EnemyDatabase.getSoulCount()
 		var val = -4.0*pow(10.0,-5.0)*pow(souls,2.0)+0.0105*souls-0.25
 		if (val < 0) :
 			val = 0
-		subclassMod.statMods[Definitions.baseStatEnum.MAXHP]["Postmultiplier"] += val
-		subclassMod.statMods[Definitions.baseStatEnum.DR]["Postmultiplier"] += val
+		subclassMod.addMod("stat",Definitions.baseStatEnum.MAXHP,"Postmultiplier", val)
+		subclassMod.addMod("stat",Definitions.baseStatEnum.DR,"Postmultiplier", val)
 	return subclassMod
 		
 func getSubclassName() -> String :
 	return Definitions.subclassDictionary[mySubclass]
 func getSubclass() :
 	return mySubclass
+
+const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
+var subclassTooltip
 func setSubclass(val : Definitions.subclass) :
 	mySubclass = val
+	if (subclassTooltip != null) :
+		$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.remove_child(subclassTooltip)
+		subclassTooltip.queue_free()
+		subclassTooltip = null
+	if (mySubclass != -1) :
+		$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.text = "Class: " + Definitions.subclassDictionary[mySubclass]
+		var newTooltip = tooltipLoader.instantiate()
+		$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.add_child(newTooltip)
+		newTooltip.setTitle("Subclass: " + Definitions.subclassDictionary[mySubclass])
+		newTooltip.setDesc(Definitions.subclassDescriptions[mySubclass])
+		var upperLeft = Vector2(0,0)
+		## might not work :(
+		var bottomRight = $ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.size
+		newTooltip.setPos(upperLeft, bottomRight)
+		subclassTooltip = newTooltip
 	
 ########################################
 func myUpdate() :
+	###################################################
+	## Learning Curve
+	if (learningCurveEnabled) :
+		var learningCurveMod = getLearningCurveMod()
+		updateDirectModifier("Learning Curve", learningCurveMod)
+	updateDirectModifier("Softcap", getSoftcapMod())
 	####################################################
 	## Subclass ##
 	if (mySubclass != -1) :
 		updateDirectModifier(Definitions.subclassDictionary[mySubclass], getSubclassModPacket())
+		
+	var capModifier : ModifierPacket = ModifierPacket.new()
+	updateDirectModifier("Hard cap", capModifier)
+	#capModifier.addMod("otherStat", Definitions.otherStatEnum.routineSpeed, "Premultiplier", 1)
+	var routineSpeed = otherStatObjects[Definitions.otherStatEnum.routineSpeed].getFinal()
+
+	if (routineSpeed > 100) :
+		capModifier.addMod("otherStat", Definitions.otherStatEnum.routineSpeed,"Premultiplier",100.0/routineSpeed)
+		updateDirectModifier("Hard cap", capModifier)
+
 	## Attributes
 	#equippedWeapon
 	pass
@@ -165,7 +199,7 @@ func myUpdate() :
 	pass
 	#trainingLevels
 	for key in Definitions.attributeDictionary.keys() :
-		attributeObjects[key].setPrebonus("Training", otherStatObjects[Definitions.otherStatEnum.routineEffect].getFinal()*trainingLevels[key])
+		attributeObjects[key].setPrebonus("Cumulative Routine Levels*Routine Effect", otherStatObjects[Definitions.otherStatEnum.routineEffect].getFinal()*trainingLevels[key])
 	#Final
 	var finalAttributes : Array[float]
 	for key in Definitions.attributeDictionary.keys() :
@@ -205,10 +239,9 @@ func myUpdate() :
 			derivedStatObjects[key].setPrebonus(strings[index], values[index])
 		core.setStat(key, derivedStatObjects[key].getFinal())
 	##Other stats
-	pass
+
 	##Derived stats
 	updateDerivedStats()
-
 	
 func setTypicalEnemyDefense(val) :
 	typicalEnemyDefense = val
@@ -281,6 +314,7 @@ func getSaveDictionary() -> Dictionary :
 	tempDict["playerName"] = characterName
 	tempDict["typicalEnemyDefense"] = typicalEnemyDefense
 	tempDict["subclass"] = mySubclass
+	tempDict["learningCurveEnabled"] = learningCurveEnabled
 	return tempDict
 	
 var myReady : bool = false
@@ -301,4 +335,53 @@ func onLoad(loadDict) -> void :
 	setName(loadDict["playerName"])
 	if (loadDict.get(typicalEnemyDefense) != null) :
 		typicalEnemyDefense = loadDict["typicalEnemyDefense"]
-	mySubclass = loadDict["subclass"]
+	setSubclass(loadDict["subclass"])
+	learningCurveEnabled = loadDict["learningCurveEnabled"]
+	
+func getSoftcapMod() -> ModifierPacket :
+	var retVal = ModifierPacket.new()
+	for key in Definitions.attributeDictionary.keys() :
+		var allBonuses = attributeObjects[key].getPrebonusesRaw()
+		var bonus = allBonuses.get("Cumulative Routine Levels*Routine Effect")
+		if (bonus == null) :
+			continue
+		var thresholds = log(bonus)-1
+		var mult
+		if (thresholds > 0) :
+			mult = pow(0.5,thresholds)
+		else :
+			mult = 1
+		retVal.addMod("otherStat", Definitions.otherStatEnum.routineSpeed_0 + key, "Premultiplier",mult)
+	return retVal
+		
+
+var learningCurveEnabled : bool = false
+func enableLearningCurve() :
+	learningCurveEnabled = true
+func getLearningCurveMod() -> ModifierPacket :
+	if (!learningCurveEnabled) :
+		return ModifierPacket.new()
+	const minMult = 1
+	const maxMult = 3
+	const minLevel = 7
+	const maxLevel = 63
+	var learningCurveMod = ModifierPacket.new()
+	var disable = true
+	for key in Definitions.attributeDictionary.keys() :
+		var currentBonuses = attributeObjects[key].getPrebonuses()
+		var currentLevel = 0
+		for val in currentBonuses : 
+			currentLevel += val
+		var attributeMult
+		if (currentLevel <= minLevel) :
+			attributeMult = maxMult
+			disable = false
+		elif (currentLevel >= maxLevel) :
+			continue
+		else :
+			attributeMult = 1 + (maxMult-1)*(1 - (currentLevel-minLevel)/(maxLevel-minLevel))
+			disable = false
+		learningCurveMod.addMod("otherStat",Definitions.otherStatEnum.routineSpeed_0 + key,"Premultiplier",attributeMult)
+	if (disable) :
+		learningCurveEnabled = false
+	return learningCurveMod

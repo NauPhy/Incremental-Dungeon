@@ -15,6 +15,7 @@ alignment = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="0"]
 layout_mode = 2
 size_flags_vertical = 8
+theme_override_constants/separation = 15
 alignment = 1
 
 [node name="Option0" type="HBoxContainer" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/HBoxContainer" index="0"]

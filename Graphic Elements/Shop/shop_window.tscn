@@ -27,10 +27,21 @@ anchor_bottom = 1.0
 offset_left = 15.0
 offset_top = 15.0
 offset_right = -15.0
-offset_bottom = -15.0
+offset_bottom = -80.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 50
+theme_override_constants/separation = 15
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("6_juvjr")
+theme_override_font_sizes/normal_font_size = 130
+text = "THE CROW'S NEST"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CurrencyDisplay" type="PanelContainer" parent="VBoxContainer"]
 visible = false
@@ -65,6 +76,7 @@ texture = ExtResource("4_dv2xx")
 region_rect = Rect2(0, 0, 32, 32)
 
 [node name="spacer" type="Control" parent="VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 99)
 layout_mode = 2
 
@@ -75,8 +87,17 @@ theme = ExtResource("5_5nuvd")
 theme_override_constants/separation = 15
 alignment = 1
 
-[node name="Exit" type="Button" parent="VBoxContainer"]
-layout_mode = 2
+[node name="Exit" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -15.0
+offset_bottom = -15.0
+grow_horizontal = 0
+grow_vertical = 0
 size_flags_horizontal = 8
 theme = ExtResource("5_5nuvd")
 theme_override_font_sizes/font_size = 30
@@ -91,6 +112,9 @@ anchor_top = 0.12
 anchor_bottom = 0.9
 offset_right = -15.0
 spriteScale = 10
+
+[node name="Description2" parent="detailsRight/VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer" index="1"]
+bbcode_enabled = false
 
 [node name="Option0" parent="detailsRight/VBoxContainer/HBoxContainer2/CenterContainer0" index="0"]
 text = " Purchase "
@@ -108,30 +132,16 @@ anchor_bottom = 0.9
 offset_left = 15.0
 spriteScale = 10
 
+[node name="Description2" parent="detailsLeft/VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer" index="1"]
+bbcode_enabled = false
+
 [node name="Option0" parent="detailsLeft/VBoxContainer/HBoxContainer2/CenterContainer0" index="0"]
 text = " Purchase "
 
 [node name="Option1" parent="detailsLeft/VBoxContainer/HBoxContainer2/CenterContainer1" index="0"]
 text = " Cancel "
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.025
-anchor_right = 0.5
-anchor_bottom = 0.025
-grow_horizontal = 2
-theme_override_fonts/normal_font = ExtResource("6_juvjr")
-theme_override_font_sizes/normal_font_size = 130
-text = "THE CROW'S NEST"
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[connection signal="pressed" from="VBoxContainer/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="Exit" to="." method="_on_exit_pressed"]
 [connection signal="optionPressed" from="detailsRight" to="." method="_on_details_option_pressed"]
 [connection signal="optionPressed" from="detailsLeft" to="." method="_on_details_option_pressed"]
 

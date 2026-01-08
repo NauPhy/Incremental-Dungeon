@@ -1,7 +1,5 @@
 extends "res://Graphic Elements/Buttons/super_button.gd"
 
-var disabled : bool = false
-
 func setSlot(val : Definitions.saveSlots) :
 	$HBoxContainer/SlotLabel.text = "Slot " + str(val as int)
 func setName(val : String) :
@@ -14,6 +12,7 @@ func showExtra() :
 func hideExtra() :
 	$HBoxContainer/Extra.visible = false
 	$HBoxContainer/Empty.visible = true
+var disabled : bool = false
 func set_disabled(val : bool) :
 	disabled = val
 	if (val) :

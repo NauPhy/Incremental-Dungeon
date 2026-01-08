@@ -43,6 +43,10 @@ func generateDrops(room : Node, environment : MyEnvironment) -> Dictionary :
 	var oreRoll = randf_range(0,averageOre)
 	var oreCount : int = round(oreRoll)
 	retVal2.append(oreCount)
+	var averageSouls = getSoulScaling(getScalingRows_mapFinished(currentRow))
+	var soulRoll = randf_range(0,averageSouls)
+	var soulCount : int = round(soulRoll)
+	retVal2.append(soulCount)
 	var retVal = {
 		"equipment" : retVal1,
 		"currency" : retVal2

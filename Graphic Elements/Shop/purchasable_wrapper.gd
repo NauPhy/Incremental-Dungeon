@@ -1,4 +1,5 @@
 extends VBoxContainer
+const otherTheme = preload("res://Graphic Elements/Themes/subTab.tres")
 
 func setDesc(val) :
 	$PanelContainer/EncyclopediaTextLabel.setText(val)
@@ -13,9 +14,9 @@ func _ready() :
 
 signal wasSelected
 signal wasDeselected
-func _on_purchasable_scene_was_deselected(emitter) -> void:
+func _on_purchasable_scene_was_deselected(_emitter) -> void:
 	emit_signal("wasDeselected", self)
-func _on_purchasable_scene_was_selected(emitter) -> void:
+func _on_purchasable_scene_was_selected(_emitter) -> void:
 	emit_signal("wasSelected", self)
 func getPurchasable() :
 	return $PurchasableScene.getPurchasable()
@@ -28,6 +29,10 @@ func setPrice(val : int) :
 	#$PurchasableScene.setName(val)
 func setFromDetails(val : Purchasable) :
 	setDesc(val.description)
+	if ($PanelContainer/EncyclopediaTextLabel.text == "") :
+		$PanelContainer.visible = false
+		$PurchasableScene.theme = otherTheme
+		$PurchasableScene.updatePanel()
 	$PurchasableScene.setFromDetails(val)
 func getName() :
 	return $PurchasableScene.getName()
@@ -43,3 +48,11 @@ func getCore() :
 	return $PurchasableScene.core
 func isSelected() :
 	return $PurchasableScene.selected
+func set_disabled(val) :
+	$PurchasableScene.set_disabled(val)
+	if (val) :
+		var disabledBackground : StyleBox = $PanelContainer.get_theme_stylebox("panel").duplicate()
+		disabledBackground.bg_color = Color("bababa")
+		#$PanelContainer/EncyclopediaTextLabel.add_theme_color_override("default color", Color("ffffff"))
+		$PanelContainer.add_theme_stylebox_override("panel", disabledBackground)
+		$PanelContainer/EncyclopediaTextLabel.useLightMode()

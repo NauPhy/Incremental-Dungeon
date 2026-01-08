@@ -93,7 +93,11 @@ enum otherStatEnum {
 	magicConversion,
 	physicalConversion,
 	magicFind,
-	routineSpeed,
+	routineSpeed_0,
+	routineSpeed_1,
+	routineSpeed_2,
+	routineSpeed_3,
+	routineSpeed_4,
 	routineEffect
 }
 const otherStatDictionary = {
@@ -104,7 +108,11 @@ const otherStatDictionary = {
 	otherStatEnum.magicConversion : "Magic Conversion",
 	otherStatEnum.physicalConversion : "Physical Conversion",
 	otherStatEnum.magicFind : "Magic Find",
-	otherStatEnum.routineSpeed : "Routine Speed",
+	otherStatEnum.routineSpeed_0 : "Routine Speed",
+	otherStatEnum.routineSpeed_1 : "Routine Speed",
+	otherStatEnum.routineSpeed_2 : "Routine Speed",
+	otherStatEnum.routineSpeed_3 : "Routine Speed",
+	otherStatEnum.routineSpeed_4 : "Routine Speed",
 	otherStatEnum.routineEffect : "Routine Effect"
 }
 enum classEnum {
@@ -195,10 +203,10 @@ const subclassDictionary= {
 	subclass.soul : "Soul Collector"
 }
 const subclassDescriptions = {
-	subclass.barb : "\t-MAGDEF Multiplier [color=red]x0.8[/color].\n\t-PHYSDEF Multiplier [color=red]x0.8[/color].\n\tAttack speed Multiplier [color=green]x1.2[/color].\n\nAH-KLORAAAA!",
-	subclass.knight : "\t-DR Multiplier [color=red]x0.75[/color].\n\t-Bonus to Base DR of [color=green]+N[/color], where N = 190% of the average of your PHYSDEF and MAGDEF.\n\nYou feel naked in any less than full plate.",
-	subclass.ammo : "While a ranged (or neither) weapon is equipped:\n\t-AR Multiplier [color=green]x1.35[/color].\n\t-All damage is dealt to the lower of your enemy's resistances.\n\nYour custom ammunition always hits the enemy where it's weakest.",
-	subclass.whirl : "While a melee (or neither) weapon is equipped:\n\t-Attack speed Multiplier [color=green]x1.16[/color]\n\t-PHYSDEF Multiplier [color=green]x1.08[/color]\n\t-MAGDEF Multiplier [color=green]x1.08[/color]\n\nYou fight with such ferocity that no opponent can get within arms reach unharmed.",
-	subclass.enchant : "While an elemental weapon is equipped:\n\t-DR Multiplier [color=green]x1.1[/color].\nWhile an elemental armor is equipped:\n\t-MAGDEF Multiplier [color=green]x1.1[/color].\n\t-PHYSDEF Multiplier [color=green]x1.1[/color].\nWhile an elemental accessory is equipped:\n\t-Skill Multiplier [color=green]x1.05[/color].\n\nThe effect of Elemental synergy is increased from [color=green]1.25x[/color] to [color=green]1.3125x[/color]\n\nYou've spent countless hours studying and attuning to enchanted equipment, and can use it expertly.",
-	subclass.soul : "\t-HP Multiplier [color=red]x0.85[/color]\n\t-Bonus to HP Standard Multiplier of [color=green]+N[/color]\n\t-Bonus to DR Standard Multiplier of [color=green]+N[/color]\n\t-N=-0.00004x^2+0.0105x-0.25\n\nYou performed a ritual that allows your body to gain power from the souls of your enemies. Your heart stopped for a couple seconds and now you have jaundice, but it's probably nothing to worry about."
+	subclass.barb : "-MAGDEF Multiplier [color=red]x0.8[/color].\n-PHYSDEF Multiplier [color=red]x0.8[/color].\n-Attack speed Multiplier [color=green]x1.25[/color].\n-DR Multiplier [color=green]x1.25[/color]\n\nAH-KLORAAAA!",
+	subclass.knight : "-DR Multiplier [color=red]x0.75[/color].\n-Bonus to Base DR of [color=green]+N[/color], where N = 190% of the average of your equipped Armor's PHYSDEF and MAGDEF.\n\nYou feel naked in anything less than full plate.",
+	subclass.ammo : "While a ranged (or neither) weapon is equipped:\n-AR Multiplier [color=green]x1.35[/color].\n-All damage is dealt to the lower of your enemy's resistances.\n\nYour custom ammunition always hits the enemy where it's weakest.",
+	subclass.whirl : "While a melee (or neither) weapon is equipped:\n-Attack speed Multiplier [color=green]x1.16[/color]\n-PHYSDEF Multiplier [color=green]x1.08[/color]\n-MAGDEF Multiplier [color=green]x1.08[/color]\n\nYou fight with such ferocity that no opponent can get within arms reach unharmed.",
+	subclass.enchant : "While an elemental weapon is equipped:\n-DR Multiplier [color=green]x1.1[/color].\nWhile an elemental armor is equipped:\n-MAGDEF Multiplier [color=green]x1.1[/color].\n-PHYSDEF Multiplier [color=green]x1.1[/color].\nWhile an elemental accessory is equipped:\n-Skill Multiplier [color=green]x1.05[/color].\n\nThe effect of Elemental synergy is increased from [color=green]1.25x[/color] to [color=green]1.3125x[/color]\n\nYou've spent countless hours studying and attuning to enchanted equipment, and can use it expertly.",
+	subclass.soul : "-HP Multiplier [color=red]x0.85[/color]\n-Bonus to HP Standard Multiplier of [color=green]+N[/color]\n-Bonus to DR Standard Multiplier of [color=green]+N[/color]\n-N=-0.00004x^2+0.0105x-0.25\n\nYou performed a ritual that allows your body to gain power from the souls of your enemies. Your heart stopped for a couple seconds and now you have jaundice, but it's probably nothing to worry about."
 }

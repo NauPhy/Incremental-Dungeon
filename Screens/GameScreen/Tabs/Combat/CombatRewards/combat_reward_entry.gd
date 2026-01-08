@@ -29,7 +29,7 @@ func initialise(item : Equipment) :
 	myItemScene = SceneLoader.createEquipmentScene(item.getItemName())
 	initialise_internal(item)
 	
-const currencyNames = ["gold_coin", "ore"]
+const currencyNames = ["gold_coin", "ore", "soul"]
 func initialise_currency(index, val) :
 	myItemScene = SceneLoader.createEquipmentScene(currencyNames[index])
 	initialise_internal(EquipmentDatabase.getEquipment(currencyNames[index]))

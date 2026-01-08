@@ -53,3 +53,23 @@ func getDeepestNestedPopup() :
 func closeOutermostNestedPopup() :
 	getDeepestNestedPopup().queue_free()
 	
+func addButtonContainer() :
+	var newContainer = VBoxContainer.new()
+	$Panel/CenterContainer/Window/VBoxContainer.add_child(newContainer)
+	newContainer.name = "VBoxContainer"
+	
+const myButtonLoader = preload("res://Graphic Elements/Buttons/my_button.tscn")
+func addButton(textVal) :
+	var newButton = myButtonLoader.instantiate()
+	$Panel/CenterContainer/Window/VBoxContainer/VBoxContainer.add_child(newButton)
+	newButton.add_theme_font_size_override("font_size", 20)
+	newButton.text = " " + textVal + " "
+	newButton.connect("myPressed", _on_my_button_pressed)
+	
+signal buttonPressed
+func _on_my_button_pressed(emitter) :
+	var children = $Panel/CenterContainer/Window/VBoxContainer/VBoxContainer.get_children()
+	for index in range(0, children.size()) :
+		if (children[index] == emitter) :
+			emit_signal("buttonPressed", index)
+			return

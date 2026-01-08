@@ -145,11 +145,11 @@ script = ExtResource("3_0m8a4")
 boostedAttr1 = 2
 boostedAttr2 = 4
 title = "Breath of the Divine"
-description = "Sample description
-......
-If melee weapon is equipped:
-DR Multiplier x1.11
-Physical Conversion Standard Multiplier +0.11"
+description = "If melee weapon is equipped:
+DR Multiplier [color=green]x1.11[/color]
+Physical Conversion Standard Multiplier +0.11
+
+This magical weapon coating is created during religious rituals, and is seen as a blessing from the Gods. Whether it is truly divine or merely the product of the priest's magic is up for debate."
 myPacket = SubResource("Resource_kt3u3")
 equipmentGroups = SubResource("Resource_4eg27")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

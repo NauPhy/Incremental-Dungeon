@@ -54,7 +54,7 @@ func _on_return_pressed() -> void:
 	queue_free()
 	
 func getCheckboxValue(key) -> bool :
-		return getOptionsContainer().get_child(1+key).is_pressed()
+		return getOptionsContainer().get_child(myOffset+key).is_pressed()
 
 func updateOptionDict() :
 	for key in IGOptions.optionNameDictionary.keys() :

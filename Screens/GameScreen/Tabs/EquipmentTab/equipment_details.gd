@@ -173,7 +173,7 @@ func updateText() :
 	updateText_sprite()
 	$VBoxContainer/Text/VBoxContainer/Title.text = currentItemSceneRef.getTitle()
 	var myText : String = ""
-	myText = "[font_size=22]" + EquipmentGroups.getColouredQualityString(currentItemSceneRef.getQuality(), false) + " " + Definitions.equipmentTypeDictionary[currentItemSceneRef.getType()] + "[/font_size]\n"
+	myText = EquipmentGroups.getColouredQualityString(currentItemSceneRef.getQuality(), false) + " " + Definitions.equipmentTypeDictionary[currentItemSceneRef.getType()] + "\n"
 	if (currentItemSceneRef.core is Weapon) :
 		myText = updateText_weapon(myText)
 	elif (currentItemSceneRef.core is Armor) :
@@ -188,7 +188,16 @@ func updateText() :
 	myText = updateText_modifiers(myText)
 	if (currentItemSceneRef.getType() == Definitions.equipmentTypeEnum.weapon || currentItemSceneRef.getType() == Definitions.equipmentTypeEnum.armor) :
 		myText += "Times reforged: " + str(currentItemSceneRef.getReforges()) + "\n\n"
-	$VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Description2.text = currentItemSceneRef.getDesc()
+	var description : String = currentItemSceneRef.getDesc()
+	var usedDescription
+	var iname = currentItemSceneRef.getItemName()
+	if (iname == "coating_divine" || iname == "lightning_arrows_1" || iname == "lightning_arrows_2" || iname == "ring_authority") :
+		var endPos = description.find("\n\n")
+		myText += description.substr(0, endPos)
+		usedDescription = description.substr(endPos+1)
+	else :
+		usedDescription = description
+	$VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Description2.text = usedDescription
 	$VBoxContainer/Text/VBoxContainer.visible = true
 	$VBoxContainer/Picture/CenterContainer.visible = true
 	$VBoxContainer/Text/VBoxContainer/Extra.visible = $VBoxContainer/Text/VBoxContainer/Extra.text != ""

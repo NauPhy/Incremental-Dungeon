@@ -5,6 +5,19 @@ const trainingEntry = preload("res://Screens/GameScreen/Tabs/Attributes/Training
 		
 func _on_alphabetical_sort_pressed() -> void:
 	sortTraining(null)
+	
+var cachedRoutineSpeed : float = 1
+var cachedMultipliers : Array[float] = [0,0,0,0,0]
+func cacheRoutineSpeed(val : float) :
+	cachedRoutineSpeed = val
+func cacheMultipliers(val : Array[float]) :
+	cachedMultipliers = val
+func _process(_delta) :
+	var grid = $RoutineGrowth/PanelContainer/GridContainer
+	for key in Definitions.attributeDictionary.keys() :
+		var textBox = grid.get_child(Definitions.attributeDictionary.keys().size() + key)
+		var newText = str(Helpers.engineeringRound(cachedMultipliers[key] * cachedRoutineSpeed / 10.0,3))
+		textBox.text = newText
 
 func _on_header_button_pressed(emitter) :
 	var type : Definitions.attributeEnum
@@ -34,7 +47,7 @@ func sortTraining(type) :
 		if(index > 2) :
 			entries.append(children[index])
 	if (currentSort == sortType.alphabetical) :
-		entries.sort_custom(func(a,b):return a.name<b.name)
+		entries.sort_custom(func(a,b):return a.getResource().text<b.getResource().text)
 	else :
 		entries.sort_custom(func(a,b):
 			var aScaling = a.getResource().scaling[Definitions.attributeDictionary[currentSortAttribute]]
@@ -108,6 +121,15 @@ func onLoad(loadDict : Dictionary) :
 		if (node != $Con/Title && node != $Con/Spacer && node != $Con/PanelContainer) :
 			node.visible = loadDict["routineUnlocks"][node.name]
 	routineUpgradeLevels = loadDict["routineUpgrades"]
+	if (loadDict["currentTraining"] == "null") :
+		currentTrainingResource = null
+	else :
+		currentTrainingResource = MegaFile.getRoutine(loadDict["currentTraining"])
+		for child in $Con.get_children() :
+			if (child.has_method("getResource") && child.getResource().getResourceName() == loadDict["currentTraining"]) :
+				child.setButton()
+				break
+		emit_signal("trainingChanged", createUpgradedTraining(currentTrainingResource))
 func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
 	var routineUnlocks : Dictionary = {}
@@ -116,4 +138,8 @@ func getSaveDictionary() -> Dictionary :
 			routineUnlocks[node.name] = node.visible
 	retVal["routineUnlocks"] = routineUnlocks
 	retVal["routineUpgrades"] = routineUpgradeLevels
+	if (currentTrainingResource == null) :
+		retVal["currentTraining"] = "null"
+	else :
+		retVal["currentTraining"] = currentTrainingResource.getResourceName()
 	return retVal

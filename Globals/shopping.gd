@@ -6,8 +6,38 @@ func _ready() :
 	self.add_to_group("Saveable")
 	myReady = true
 	
+var lastBought = {
+	"boughtRoutine" : null,
+	"upgradedRoutine" : null,
+	"equipmentBought" : null,
+	"equipmentReforged" : null,
+	"statsBought" : null
+}
+func getLastUnlockedRoutine() -> AttributeTraining :
+	if (lastBought["boughtRoutine"] == null) :
+		return AttributeTraining.new()
+	return lastBought["boughtRoutine"]
+func getLastUpgradedRoutine() -> AttributeTraining :
+	if (lastBought["upgradedRoutine"] == null) :
+		return AttributeTraining.new()
+	return lastBought["upgradedRoutine"]
+func getLastCreatedItem() -> Equipment :
+	if (lastBought["equipmentBought"] == null) :
+		return Equipment.new()
+	return lastBought["equipmentBought"]
+func getLastReforgedItem() -> Equipment :
+	if (lastBought["equipmentReforged"] == null) :
+		return Equipment.new()
+	return lastBought["equipmentReforged"]
+func getLastUpgradedString() -> Array[String] :
+	if (lastBought["statsBought"] == null) :
+		return [""]
+	else :
+		return lastBought["statsBought"]
+	
 func getSaveDictionary() -> Dictionary :
 	var retVal = {}
+	retVal["allRoutines"] = allRoutinesPurchased
 	retVal["unlockedRoutines"] = unlockedRoutines
 	retVal["itemPrices"] = itemPrices
 	retVal["armorUnlocked"] = armorUnlocked
@@ -34,6 +64,7 @@ func getSaveDictionary() -> Dictionary :
 		else :
 			retVal["myWeapons"].append(weapon.getItemName())
 	retVal["weaponScaling"] = weaponScaling
+	retVal["subclassPurchased"] = subclassPurchased
 	return retVal
 
 func beforeLoad(newGame) :
@@ -42,15 +73,16 @@ func beforeLoad(newGame) :
 	setupTimers()
 	if (newGame) :
 		var routineList = MegaFile.Routine_FilesDictionary.keys()
-		unlockedRoutines.append(routineList.find("lift_weights"))
-		unlockedRoutines.append(routineList.find("pickpocket_goblins"))
-		unlockedRoutines.append(routineList.find("punch_walls"))
-		unlockedRoutines.append(routineList.find("read_novels"))
-		unlockedRoutines.append(routineList.find("spar"))
+		unlockedRoutines.append("lift_weightss")
+		unlockedRoutines.append("pickpocket_goblins")
+		unlockedRoutines.append("hug_cacti")
+		unlockedRoutines.append("read_novels")
+		unlockedRoutines.append("spar")
 
 var armorUnlocked : bool = false
 var weaponUnlocked : bool = false
 func onLoad(loadDict) :
+	allRoutinesPurchased = loadDict["allRoutines"]
 	if (loadDict.get("unlockedRoutines") != null) :
 		unlockedRoutines = loadDict["unlockedRoutines"]
 	if (loadDict.get("itemPrices") != null) :
@@ -83,11 +115,17 @@ func onLoad(loadDict) :
 			myArmor.append(null)
 		else :
 			myArmor.append(EquipmentDatabase.getEquipment(armor).getAdjustedCopy(armorScaling))
+	subclassPurchased = loadDict["subclassPurchased"]
 		
 ###################################################################################
 ## General
-
+var subclassPurchased : bool = false
+func resetSubclass() :
+	subclassPurchased = false
+func getSubclassPurchased() :
+	return subclassPurchased
 func resetSaveSpecificVariants() :
+	allRoutinesPurchased = false
 	armorUnlocked = false
 	weaponUnlocked = false
 	waitingOnEquipmentScaling = false
@@ -95,7 +133,7 @@ func resetSaveSpecificVariants() :
 	awaitingConfirmation = false
 	waitingForCurrencyAmount = false
 	waitingForRandomItem = false
-	itemPrices = itemPriceBase.duplicate()
+	resetItemPrices()
 	unlockedRoutines = []
 	if (armorTimer != null) :
 		armorTimer.queue_free()
@@ -108,15 +146,18 @@ func resetSaveSpecificVariants() :
 	armorScaling = 0
 	weaponScaling = 0
 	routineDescriptionDictionary = {}
+	subclassPurchased = false
 	
 signal removeCurrencyRequested
-const requestPurchase_currencyNames = ["gold_coin", "ore"]
+const requestPurchase_currencyNames = ["gold_coin", "ore", "soul"]
 func purchaseItem(type : String, item : int, purchase : Purchasable) -> bool:
 	var currency : Currency
 	if (type == "routine") :
 		currency = EquipmentDatabase.getEquipment(requestPurchase_currencyNames[0])
 	elif (type == "armor" || type == "weapon") :
 		currency = EquipmentDatabase.getEquipment(requestPurchase_currencyNames[1])
+	elif (type == "soul") :
+		currency = EquipmentDatabase.getEquipment(requestPurchase_currencyNames[2])
 	else :
 		return false
 	var currencyCount = await getCurrencyAmount(currency)
@@ -170,9 +211,9 @@ func getNextItemPrice_routine(item) -> int :
 		return currentVal * standardScale
 	elif (item == routinePurchasable.mixed) :
 		return currentVal * 10
-	## It's 25x more expensive (5000) at the end of floor 5
+	## It's 25x more expensive (5000) at the end of floor 5, after 9 purchases
 	elif (item == routinePurchasable.randomRoutine) :
-		return currentVal * 1.5838
+		return currentVal * 1.43
 	elif (item == routinePurchasable.upgradeRoutine) :
 		return currentVal * standardScale
 	else :
@@ -215,8 +256,11 @@ func getNextItemPrice_soul(item) -> int :
 		return currentVal
 	elif (item == soulPurchasable.respec) :
 		return currentVal
-	## Sould be able to use it 12 times before the final boss.
+	## arbitrary
 	elif (item == soulPurchasable.inventorySpace) :
+		return currentVal * 1.2
+	## Sould be able to use it 12 times before the final boss.
+	elif (item == soulPurchasable.randomStat) :
 		return currentVal * 1.59
 	else :
 		return -1
@@ -277,8 +321,9 @@ func provideCurrencyAmount(val) :
 	waitingForCurrencyAmount = false
 	emit_signal("currencyAmountReceived")
 	
-func addNewShop(emitter) :
-	emitter.connect("purchaseRequested", _on_purchase_requested)
+func addNewShop(emitter : Node) :
+	if (!emitter.has_connections("purchaseRequested")) :
+		emitter.connect("purchaseRequested", _on_purchase_requested)
 	
 func _on_purchase_requested(item, _price, myCurrency, emitter, purchase : Purchasable) :
 	var type = shopNames.find_key(emitter.getName())
@@ -289,6 +334,8 @@ func _on_purchase_requested(item, _price, myCurrency, emitter, purchase : Purcha
 		index = armorPurchasableDictionary.find_key(item)
 	elif (type == "weapon") :
 		index = weaponPurchasableDictionary.find_key(item)
+	elif (type == "soul") :
+		index = soulPurchasableDictionary.find_key(item)
 	else :
 		return
 	if (await purchaseItem(type, index, purchase)) :
@@ -296,8 +343,20 @@ func _on_purchase_requested(item, _price, myCurrency, emitter, purchase : Purcha
 		if (purchase.equipment_optional != null) :
 			emitter.onEquipmentSold()
 			onEquipmentSold(type, purchase)
+		elif (type == "soul" && soulPurchasable.fighterSubclass_1 <= index && index <= soulPurchasable.mageSubclass_2) :
+			subclassPurchased = true
+			emitter.onSubclassPurchased()
+		elif (type == "soul" && index == soulPurchasable.respec) :
+			emitter.reset()
+		elif (type == "routine" && index == routinePurchasable.randomRoutine && unlockedRoutines.size() == 15) :
+			allRoutinesPurchased = true
 		else :
 			emitter.refreshPrice(item, itemPrices[type][index])
+		emitter.softNotification(purchase)
+
+var allRoutinesPurchased : bool = false
+func getAllRoutinesPurchased() :
+	return allRoutinesPurchased
 			
 func onEquipmentSold(type, purchase : Purchasable) :
 	if (type == "armor") :
@@ -315,10 +374,10 @@ func onEquippedItem(type, reforges) :
 	var currencyScaling = await getCurrencyScaling("armor")
 	if (type == "armor") :
 		currencyScaling /= pow(2,5.0/4.0)
-		itemPrices["armor"][armorPurchasable.reforge] = itemPriceBase["armor"][armorPurchasable.reforge] * currencyScaling * pow(1.5,reforges)
+		itemPrices["armor"][armorPurchasable.reforge]= itemPriceBase.duplicate(true)["armor"][armorPurchasable.reforge] * currencyScaling * pow(1.5,reforges)
 	elif (type == "weapon") :
 		currencyScaling /= pow(2,5.0/4.0)
-		itemPrices["weapon"][weaponPurchasable.reforge] = itemPriceBase["weapon"][weaponPurchasable.reforge] * currencyScaling * pow(1.5,reforges)
+		itemPrices["weapon"][weaponPurchasable.reforge]= itemPriceBase.duplicate(true)["weapon"][weaponPurchasable.reforge] * currencyScaling * pow(1.5,reforges)
 	else :
 		return
 	
@@ -392,7 +451,7 @@ const weaponPurchasableDictionary = {
 	weaponPurchasable.reforge : "Reforge",
 	weaponPurchasable.statUpgrade_DR : "Upgrade DR"
 }
-var itemPriceBase : Dictionary = {
+const itemPriceBase : Dictionary = {
 	"routine" : {
 		routinePurchasable.speed : 40,
 		routinePurchasable.effect : 51,
@@ -414,7 +473,7 @@ var itemPriceBase : Dictionary = {
 		weaponPurchasable.premadeWeapon : 60,
 		weaponPurchasable.newWeapon : 50,
 		weaponPurchasable.reforge : 40,
-		weaponPurchasable.statUpgrade_DR : 40
+		weaponPurchasable.statUpgrade_DR : 80
 	},
 	"soul" : {
 		soulPurchasable.fighterSubclass_1 : 1,
@@ -484,7 +543,7 @@ func _on_equipment_shop_launched(type : Definitions.equipmentTypeEnum) :
 var itemPrices : Dictionary = {}
 func resetItemPrices() :
 	for key in itemPriceBase.keys() :
-		itemPrices[key] = itemPriceBase[key]
+		itemPrices[key] = itemPriceBase.duplicate(true)[key]
 const shopNames = {
 	"routine" : "Training Instructor",
 	"armor" : "Armory",
@@ -552,7 +611,7 @@ func createArmorShop() :
 		column1.purchasables.append(newItem)
 		
 	var column2 : ShopColumn = ShopColumn.new()
-	column2.columnName = "Forge New Armor"
+	column2.columnName = "Forge Armor"
 	column2.purchasables = []
 	var col2Item : Purchasable = Purchasable.new()
 	col2Item.equipment_optional = null
@@ -560,16 +619,13 @@ func createArmorShop() :
 	col2Item.description = "Get a random armor! Price increases each purchase, but is reset on shop refresh. Elemental equipment has a 0.5x drop rate penalty."
 	col2Item.purchasablePrice = itemPrices["armor"][armorPurchasable.newArmor]
 	column2.purchasables.append(col2Item)
-	
-	var column3 : ShopColumn = ShopColumn.new()
-	column3.columnName = "Reforge Armor"
-	column3.purchasables = []
+
 	var col3Item : Purchasable = Purchasable.new()
 	col3Item.equipment_optional = null
 	col3Item.purchasableName = armorPurchasableDictionary[armorPurchasable.reforge]
 	col3Item.description = "Upgrade the stats of your currently equipped Armor to be as if dropped by your strongest defeated enemy! Price increases per-item with every use."
 	col3Item.purchasablePrice = itemPrices["armor"][armorPurchasable.reforge]
-	column3.purchasables.append(col3Item)
+	column2.purchasables.append(col3Item)
 	
 	var column4 : ShopColumn = ShopColumn.new()
 	column4.columnName = "Stat Upgrades"
@@ -587,7 +643,7 @@ func createArmorShop() :
 	col4Mag.purchasablePrice = itemPrices["armor"][armorPurchasable.statUpgrade_mag]
 	column4.purchasables.append(col4Mag)
 	
-	var columnArr : Array[ShopColumn] = [column1, column2, column3, column4]
+	var columnArr : Array[ShopColumn] = [column1, column2, column4]
 	retVal.shopContents = columnArr
 	return retVal
 	
@@ -612,7 +668,7 @@ func createWeaponShop():
 		column1.purchasables.append(newItem)
 		
 	var column2 : ShopColumn = ShopColumn.new()
-	column2.columnName = "Forge New Weapon"
+	column2.columnName = "Forge Weapons"
 	column2.purchasables = []
 	var col2Item : Purchasable = Purchasable.new()
 	col2Item.equipment_optional = null
@@ -621,15 +677,12 @@ func createWeaponShop():
 	col2Item.purchasablePrice = itemPrices["weapon"][weaponPurchasable.newWeapon]
 	column2.purchasables.append(col2Item)
 	
-	var column3 : ShopColumn = ShopColumn.new()
-	column3.columnName = "Reforge Weapon"
-	column3.purchasables = []
 	var col3Item : Purchasable = Purchasable.new()
 	col3Item.equipment_optional = null
 	col3Item.purchasableName = weaponPurchasableDictionary[weaponPurchasable.reforge]
 	col3Item.description = "Upgrade the stats of your currently equipped Weapon to be as if dropped by your strongest defeated enemy! Price increases per-item with every use."
 	col3Item.purchasablePrice = itemPrices["weapon"][weaponPurchasable.reforge]
-	column3.purchasables.append(col3Item)
+	column2.purchasables.append(col3Item)
 	
 	var column4 : ShopColumn = ShopColumn.new()
 	column4.columnName = "Stat Upgrades"
@@ -641,7 +694,7 @@ func createWeaponShop():
 	col4Phys.purchasablePrice = itemPrices["weapon"][weaponPurchasable.statUpgrade_DR]
 	column4.purchasables.append(col4Phys)
 	
-	var columnArr : Array[ShopColumn] = [column1, column2, column3, column4]
+	var columnArr : Array[ShopColumn] = [column1, column2, column4]
 	retVal.shopContents = columnArr
 	return retVal
 
@@ -664,7 +717,7 @@ func createSoulShop() :
 	var respecItem = Purchasable.new()
 	respecItem.equipment_optional = null
 	respecItem.purchasableName = soulPurchasableDictionary[soulPurchasable.respec]
-	respecItem.description = "Remove your subclass and choose a new class! [color=red]You will lose half of your [/color]Cumulative Routine Levels[color=red].[/color]"
+	respecItem.description = "Remove your subclass (if any) and choose a new class! [color=red]You will lose half of your [/color]Cumulative Routine Levels[color=red].[/color]"
 	respecItem.purchasablePrice = -1
 	column1.purchasables.append(respecItem)
 	
@@ -683,7 +736,7 @@ func createSoulShop() :
 	rouletteItem.purchasableName = soulPurchasableDictionary[soulPurchasable.randomStat]
 	rouletteItem.description = "Spend an outrageous sum to permanently increase a random stat! No refunds."
 	rouletteItem.purchasablePrice = itemPrices["soul"][soulPurchasable.randomStat]
-	column2.purchasables.append(spaceItem)
+	column2.purchasables.append(rouletteItem)
 	
 	var columnArr : Array[ShopColumn] = [column1, column2]
 	retVal.shopContents = columnArr
@@ -723,29 +776,39 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 		isMultiplicative = true
 		awaitingConfirmation = true
 		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+
 	elif (item == routinePurchasable.randomRoutine) :
 		var routineList = MegaFile.getAllRoutine()
-		if (unlockedRoutines.size() >= routineList.size()) :
-			return
-		var roll = randi_range(0,routineList.size()-unlockedRoutines.size()-1)
+		var optionCount = routineList.size()-1-unlockedRoutines.size()
+		var roll = randi_range(0, optionCount-1)
 		var count = 0
 		for index in range(0,routineList.size()) :
-			if (unlockedRoutines.find(index) == -1) :
+			if (unlockedRoutines.find(routineList[index].getResourceName()) != -1) :
 				continue
 			elif (count != roll) :
 				count += 1
+			elif (routineList[index] == MegaFile.getRoutine("spar_herophile")) :
+				unlockedRoutines.append(routineList[index+1].getResourceName())
 			else :
-				unlockedRoutines.append(index)
+				unlockedRoutines.append(routineList[index].getResourceName())
 				break
+		lastBought["boughtRoutine"] = MegaFile.getRoutine(unlockedRoutines.back())
 		awaitingConfirmation = true
-		emit_signal("unlockRoutineRequested", MegaFile.getRoutine(routineList[unlockedRoutines.back()]))
+		emit_signal("unlockRoutineRequested", self, lastBought["boughtRoutine"])
 	elif (item == routinePurchasable.upgradeRoutine) :
 		var routineList = MegaFile.getAllRoutine()
+		var upgraded = routineList[randi_range(0,routineList.size()-1)]
+		if (!unlockedRoutines.find("spar_herophile")) :
+			while (upgraded == MegaFile.getRoutine("spar_herophile")) :
+				upgraded = routineList[randi_range(0,routineList.size()-1)]
+		lastBought["upgradedRoutine"] = upgraded
 		awaitingConfirmation = true
-		emit_signal("upgradeRoutineRequested", MegaFile.getRoutine(routineList[randi_range(0,routineList.size()-1)]))
+		emit_signal("upgradeRoutineRequested", upgraded)
 	else :
 		return
 
+func unlockHerophile() :
+	unlockedRoutines.append(MegaFile.getRoutine("spar_herophile"))
 signal addToInventoryRequested
 signal reforgeItemRequested
 func givePurchaseBenefit_armor(item : armorPurchasable, purchase : Purchasable) :
@@ -754,6 +817,7 @@ func givePurchaseBenefit_armor(item : armorPurchasable, purchase : Purchasable) 
 		emit_signal("addToInventoryRequested", purchase.equipment_optional)
 	elif (item == armorPurchasable.newArmor) :
 		var newArmor = await createRandomArmor()
+		lastBought["equipmentBought"] = newArmor
 		awaitingConfirmation = true
 		emit_signal("addToInventoryRequested", newArmor)
 	elif (item == armorPurchasable.reforge) :
@@ -804,6 +868,7 @@ func givePurchaseBenefit_weapon(item : weaponPurchasable, purchase : Purchasable
 
 signal setSubclassRequested
 signal respecRequested
+signal increaseInventorySizeRequested
 func givePurchaseBenefitSoul(item : soulPurchasable, purchase : Purchasable) :
 	if ((soulPurchasable.fighterSubclass_1 as int) <= (item as int) && (item as int) <= (soulPurchasable.mageSubclass_2 as int)) :
 		awaitingConfirmation = true
@@ -842,10 +907,29 @@ func givePurchaseBenefitSoul(item : soulPurchasable, purchase : Purchasable) :
 		else :
 			type = "otherStat"
 			var roll = randi_range(0,otherCount-1)
+			while (roll == Definitions.otherStatEnum.physicalConversion || roll == Definitions.otherStatEnum.magicConversion) :
+				roll = randi_range(0,otherCount-1)
 			value.append(getOtherStatUpgrade(roll as Definitions.otherStatEnum, false))
 			statEnum.append(roll)
 		awaitingConfirmation = true
+		var statName
+		if (type == "attribute") :
+			statName = Definitions.attributeDictionary[statEnum[0]]
+		elif (type == "stat") :
+			statName = Definitions.baseStatDictionary[statEnum[0]]
+		else :
+			statName = Definitions.otherStatDictionary[statEnum[0]]
+		var symbol
+		if (value[0] < 0) :
+			symbol = ""
+		else :
+			symbol = "+"
+		var ret : Array[String] = [statName + " Mult " + symbol + str(value[0])]
+		lastBought["statsBought"] = ret
 		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+	elif (item == soulPurchasable.inventorySpace) :
+		awaitingConfirmation = true
+		emit_signal("increaseInventorySizeRequested")
 	else :
 		return
 
@@ -856,10 +940,15 @@ func upgradeAllStats() :
 	var source = soulPurchasableDictionary[soulPurchasable.randomStat]
 	var modType = "Postmultiplier"
 	var isMultiplicative = false
+	var statName
+	var temp : Array[String] = []
+	lastBought["statsBought"] = temp
 	type = "attribute"
 	for key in Definitions.attributeDictionary.keys() :
 		value.append(0.005)
 		statEnum.append(key)
+		statName = Definitions.attributeDictionary[key]
+		lastBought["statsBought"].append([statName + " Mult +0.005"])
 	awaitingConfirmation = true
 	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
 	if (awaitingConfirmation) :
@@ -872,6 +961,8 @@ func upgradeAllStats() :
 	for key in Definitions.baseStatDictionary.keys() :
 		value.append(0.01)
 		statEnum.append(key)
+		statName = Definitions.baseStatDictionary[key]
+		lastBought["statsBought"].append([statName + " Mult +0.01"])
 	awaitingConfirmation = true
 	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
 	if (awaitingConfirmation) :
@@ -882,8 +973,18 @@ func upgradeAllStats() :
 	statEnum = []
 	type = "otherStat"
 	for key in Definitions.otherStatDictionary.keys() :
+		if (key == Definitions.otherStatEnum.physicalConversion || key == Definitions.otherStatEnum.magicConversion) :
+			continue
 		value.append(getOtherStatUpgrade(key, true))
 		statEnum.append(key)
+		statName = Definitions.otherStatDictionary[key]
+		var symbol
+		if (value.back() < 0) :
+			symbol = ""
+		else :
+			symbol = "+"
+		var temp2 : String = statName + " Mult " + symbol + str(value.back())
+		lastBought["statsBought"].append(temp2)
 	awaitingConfirmation = true
 	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
 	
@@ -941,9 +1042,9 @@ func _on_armor_timeout() :
 	armorScaling = await getEquipmentScaling()
 	var currencyScaling = await getCurrencyScaling("armor")
 	currencyScaling /= pow(2,5.0/4.0)
-	var var1 =  itemPriceBase["armor"][armorPurchasable.premadeArmor]
-	var var2 =  itemPriceBase["armor"][armorPurchasable.newArmor]
-	var var3 = itemPriceBase["armor"][armorPurchasable.reforge]
+	var var1 = itemPriceBase.duplicate(true)["armor"][armorPurchasable.premadeArmor]
+	var var2 = itemPriceBase.duplicate(true)["armor"][armorPurchasable.newArmor]
+	var var3= itemPriceBase.duplicate(true)["armor"][armorPurchasable.reforge]
 	itemPrices["armor"][armorPurchasable.premadeArmor] = var1 * currencyScaling
 	itemPrices["armor"][armorPurchasable.newArmor] = var2 * currencyScaling
 	itemPrices["armor"][armorPurchasable.reforge] = var3 * currencyScaling
@@ -957,9 +1058,9 @@ func _on_weapon_timeout() :
 	weaponScaling = await getEquipmentScaling()
 	var currencyScaling = await getCurrencyScaling("weapon")
 	currencyScaling /= pow(2,5.0/4.0)
-	var var1 =  itemPriceBase["weapon"][weaponPurchasable.premadeWeapon]
-	var var2 =  itemPriceBase["weapon"][weaponPurchasable.newWeapon]
-	var var3 = itemPriceBase["weapon"][weaponPurchasable.reforge]
+	var var1 = itemPriceBase.duplicate(true)["weapon"][weaponPurchasable.premadeWeapon]
+	var var2 = itemPriceBase.duplicate(true)["weapon"][weaponPurchasable.newWeapon]
+	var var3= itemPriceBase.duplicate(true)["weapon"][weaponPurchasable.reforge]
 	itemPrices["weapon"][weaponPurchasable.premadeWeapon] = var1 * currencyScaling
 	itemPrices["weapon"][weaponPurchasable.newWeapon] = var2 * currencyScaling
 	itemPrices["weapon"][weaponPurchasable.reforge] = var3 * currencyScaling

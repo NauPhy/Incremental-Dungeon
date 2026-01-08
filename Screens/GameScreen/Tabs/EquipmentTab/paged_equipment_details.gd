@@ -9,7 +9,7 @@ signal unequipRequested
 		#currentItemSceneRefs[key] = null
 		
 func setItemSceneRefBase(itemSceneRef) :
-	super(itemSceneRef)
+	await super(itemSceneRef)
 	if (itemSceneRef == null) :
 		return
 	var options : OptionButton = $VBoxContainer/Text/VBoxContainer/HBoxContainer/OptionButton

@@ -66,13 +66,13 @@ func getModifierPacket() -> ModifierPacket :
 			retVal = equippedEntries[key].addToModifierPacket(retVal)
 	if (equippedEntries[2] != null && equippedEntries[2].getItemName() == "coating_divine" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.melee) :
 		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.11
-		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Postmultiplier"] += 0.11
+		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Prebonus"] += 0.11
 	elif (equippedEntries[2] != null && equippedEntries[2].getItemName() == "lightning_arrows_1" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.ranged) :
 		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.11
-		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Postmultiplier"] += 0.11
+		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Prebonus"] += 0.11
 	elif (equippedEntries[2] != null && equippedEntries[2].getItemName() == "lightning_arrows_2" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.ranged) :
 		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.3
-		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Postmutliplier"] += 0.3
+		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Prebonus"] += 0.3
 	return retVal
 func getElementalModifierPacket(subclass) -> ModifierPacket :
 	var mult

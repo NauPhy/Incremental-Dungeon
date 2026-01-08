@@ -26,3 +26,12 @@ func _get_property_list() -> Array :
 
 func getScaling(type : Definitions.attributeEnum) :
 	return scaling[Definitions.attributeDictionary[type]]
+
+func getMultipliers() -> Array[float] :
+	var retVal : Array[float] = []
+	for key in Definitions.attributeDictionary.keys() :
+		retVal.append(getScaling(key))
+	return retVal
+
+func getResourceName() :
+	return resource_path.get_file().get_basename()

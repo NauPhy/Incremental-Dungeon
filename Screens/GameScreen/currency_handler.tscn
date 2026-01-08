@@ -39,9 +39,6 @@ layout_mode = 2
 [node name="LineEdit3" type="LineEdit" parent="VBoxContainer/DevOptions"]
 layout_mode = 2
 
-[node name="LineEdit4" type="LineEdit" parent="VBoxContainer/DevOptions"]
-layout_mode = 2
-
 [node name="Sample" type="HBoxContainer" parent="."]
 visible = false
 layout_mode = 0
@@ -60,3 +57,4 @@ vertical_alignment = 1
 
 [connection signal="text_submitted" from="VBoxContainer/DevOptions/LineEdit" to="." method="_on_line_edit_text_submitted"]
 [connection signal="text_submitted" from="VBoxContainer/DevOptions/LineEdit2" to="." method="_on_line_edit_2_text_submitted"]
+[connection signal="text_submitted" from="VBoxContainer/DevOptions/LineEdit3" to="." method="_on_line_edit_3_text_submitted"]

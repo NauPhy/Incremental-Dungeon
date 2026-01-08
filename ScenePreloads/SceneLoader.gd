@@ -177,6 +177,7 @@ const equipmentSceneDictionary = {
 #Currency
 	"gold_coin" : preload("res://ScenePreloads/Equipment_new/Currency/gold_coin.tscn"),
 	"ore" : preload("res://ScenePreloads/Equipment_new/Currency/ore.tscn"),
+	"soul" : preload("res://ScenePreloads/Equipment_new/Currency/soul.tscn"),
 	"pebble" : preload("res://ScenePreloads/Equipment_old/Currency/pebble.tscn")}
 
 func createEquipmentScene(itemName : String) :

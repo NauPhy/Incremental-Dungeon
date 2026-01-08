@@ -144,12 +144,12 @@ otherMods = {
 script = ExtResource("3_fos2q")
 boostedAttr1 = 0
 boostedAttr2 = 3
-title = "Thunderstorm Ammo"
-description = "Sample description
-...
-If using ranged weapon: 
-DR Multiplier x1.3
-Physical Conversion Standard Multiplier +0.3"
+title = "Thunderstorm Arrows"
+description = "If using ranged weapon: 
+DR Multiplier [color=green]x1.3[/color]
+Physical Conversion Standard Multiplier +0.3
+
+The Dwarves of Zzyzx claim to have \"perfected\" Syzygy's spark arrows (mostly by adding more of every ingredient), but their designs never saw widespread use due to their tendency to detonate during transport or launch."
 myPacket = SubResource("Resource_1nkak")
 equipmentGroups = SubResource("Resource_o5u83")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

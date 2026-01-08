@@ -11,10 +11,10 @@ func _on_button_0_pressed() -> void:
 	queue_free()
 
 func setButton0Name(newName) :
-	$Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/Option0/Button0.text = newName
+	$Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/HBoxContainer/Option0/Button0.text = newName
 	
 func setButton1Name(newName) :
-	$Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/Option1/Button1.text = newName
+	$Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/HBoxContainer/Option1/Button1.text = newName
 	
 func setTheme(val) :
 	for child in get_children() :

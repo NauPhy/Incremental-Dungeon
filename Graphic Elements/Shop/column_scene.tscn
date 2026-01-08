@@ -7,10 +7,12 @@
 custom_minimum_size = Vector2(400, 0)
 offset_right = 200.0
 offset_bottom = 54.0
+size_flags_horizontal = 3
 script = ExtResource("2_fnnms")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="CategoryName" parent="VBoxContainer" instance=ExtResource("3_bejwq")]
 custom_minimum_size = Vector2(0, 0)
@@ -21,5 +23,6 @@ autowrap_mode = 0
 horizontal_alignment = 1
 
 [node name="Spacer" type="Control" parent="VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 15)
 layout_mode = 2

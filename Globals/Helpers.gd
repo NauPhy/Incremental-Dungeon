@@ -296,5 +296,7 @@ func engineeringNotation(val) -> String :
 		return str(newVal) + suffix
 
 func engineeringRound(val, sigFigs : int) -> String :
+	if (abs(val) < 1) :
+		return str(val).substr(0,2+sigFigs)
 	var rounded = myRound(val, sigFigs)
 	return engineeringNotation(val)

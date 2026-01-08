@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dhgncd5iv1pc2"]
+
+[ext_resource type="PackedScene" uid="uid://cw10gr4g2ksl1" path="res://Graphic Elements/Shop/shop_window.tscn" id="1_x874p"]
+[ext_resource type="Script" uid="uid://bbb17egxjiwxl" path="res://Graphic Elements/Shop/soul_shop.gd" id="2_swrd0"]
+
+[node name="ShopWindow" instance=ExtResource("1_x874p")]
+script = ExtResource("2_swrd0")
+
+[editable path="VBoxContainer/CurrencyDisplay/HBoxContainer/Icon"]
+[editable path="detailsRight"]
+[editable path="detailsLeft"]

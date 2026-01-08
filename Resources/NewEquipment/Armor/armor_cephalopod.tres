@@ -145,9 +145,9 @@ script = ExtResource("3_baidp")
 PHYSDEF = 0.0
 MAGDEF = 0.0
 title = "Armor of Cephalopods"
-description = "Sample description
-...
-Gives equipped weapon the Water tag."
+description = "Gives your equipped weapon the Water tag.
+
+This odd armor gives the wearer many magical abilities, such as active camouflage, the ability to squeeze through gaps, and the ability to drink sea water. "
 myPacket = SubResource("Resource_pmohv")
 equipmentGroups = SubResource("Resource_iyltx")
 metadata/_custom_type_script = "uid://bnh3m73ifmphh"

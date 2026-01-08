@@ -142,10 +142,12 @@ otherMods = {
 
 [resource]
 script = ExtResource("3_x4p6g")
-boostedAttr1 = -1
-boostedAttr2 = -1
+boostedAttr1 = 2
+boostedAttr2 = 3
 title = "Tome of Forbidden Incantations"
-description = "Sample description"
+description = "Posession of this tome would have you burned at the stake by some of the more zealous righteous types... it features the true names of certain archfiends, rituals for summoning Avatars of Death and constructing bone dragons, spells for dominating the free will of other creatures, you name it. 
+
+Nothing about becoming a lich, though. No lich would commit that to paper."
 myPacket = SubResource("Resource_eoyyg")
 equipmentGroups = SubResource("Resource_lq8of")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

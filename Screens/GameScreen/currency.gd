@@ -112,3 +112,8 @@ func _on_line_edit_2_text_submitted(new_text: String) -> void:
 	if (!Definitions.DEVMODE) :
 		return
 	setCurrencyAmount(EquipmentDatabase.getEquipment("ore"), int(new_text))
+
+func _on_line_edit_3_text_submitted(new_text: String) -> void:
+	if (!Definitions.DEVMODE) :
+		return
+	setCurrencyAmount(EquipmentDatabase.getEquipment("soul"), int(new_text))

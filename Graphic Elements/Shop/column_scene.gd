@@ -11,6 +11,70 @@ func refreshPrice(itemName, value) :
 	for child in $VBoxContainer.get_children() :
 		if (valid(child) && child.getName() == itemName) :
 			child.setPrice(value)
+			
+func softNotification(purchasable) :
+	for child in $VBoxContainer.get_children() :
+		if (valid(child) && child.getPurchasable() == purchasable) :
+			createSoftNotification(child)
+			
+const notificationLoader = preload("res://Graphic Elements/soft_notification.tscn")
+func createSoftNotification(child : Node) :
+	var purchase : Purchasable = child.getPurchasable()
+	var iname = purchase.purchasableName
+	var text
+	if (iname == Shopping.routinePurchasableDictionary[Shopping.routinePurchasable.randomRoutine]) :
+		var newRoutine : AttributeTraining = Shopping.getLastUnlockedRoutine()
+		text = newRoutine.getText()
+		text = text.substr(0,1).to_lower() + text.substr(1)
+		text = "Unlocked " + text
+	elif (iname == Shopping.routinePurchasableDictionary[Shopping.routinePurchasable.upgradeRoutine]) :
+		var upgraded : AttributeTraining = Shopping.getLastUpgradedRoutine()
+		text = upgraded.getText()
+		text = text.substr(0,1).to_lower() + text.substr(1)
+		text = "Upgraded " + text
+	elif (iname == Shopping.armorPurchasableDictionary[Shopping.armorPurchasable.newArmor] || iname == Shopping.weaponPurchasableDictionary[Shopping.weaponPurchasable.newWeapon]) :
+		var newItem : Equipment = Shopping.getLastCreatedItem()
+		text = EquipmentGroups.colourText(newItem.equipmentGroups.quality, "Forged " + newItem.getName(), true)
+	elif (iname == Shopping.armorPurchasableDictionary[Shopping.armorPurchasable.reforge] || iname == Shopping.weaponPurchasableDictionary[Shopping.weaponPurchasable.reforge]) :
+		var reforged : Equipment = Shopping.getLastReforgedItem()
+		text = EquipmentGroups.colourText(reforged.equipmentGroups.quality, "Reforged" + reforged.getName(), true)
+	elif (iname == Shopping.soulPurchasableDictionary[Shopping.soulPurchasable.randomStat]) :
+		var upgraded : Array[String] = Shopping.getLastUpgradedString()
+		if (upgraded.size() == 1) :
+			text = upgraded[0]
+		else :
+			spamNotifications(child, upgraded)
+			return
+	else : 
+		return
+	var newNotif = notificationLoader.instantiate()
+	get_parent().get_parent().get_parent().add_child(newNotif)
+	getSoftPos(text, newNotif)
+
+func getSoftPos(text, newNotif) :
+	var estimatedSize = Vector2(0,20)
+	var mousePos = get_global_mouse_position()
+	estimatedSize.x = await Helpers.getTextWidthWaitFrame(null, 35, text) + 50
+	var screenSize : Vector2i = Engine.get_singleton("DisplayServer").screen_get_size()
+	var X0 = clamp(mousePos.x - 150, 0, screenSize.x-estimatedSize.x)
+	var X1 = clamp(mousePos.x + 150,0,screenSize.x-estimatedSize.x)
+	var Y0 = clamp(mousePos.y - 150,100,screenSize.y-estimatedSize.y)
+	var Y1 = mousePos.y-estimatedSize.y
+	newNotif.initialiseAndRun(text,X0,X1,Y0,Y1)
+	
+func spamNotifications(child, upgraded : Array[String]) :
+	var myTimer = Timer.new()
+	add_child(myTimer)
+	myTimer.one_shot = false
+	myTimer.wait_time = 0.1
+	myTimer.start()
+	for item in upgraded :
+		await myTimer.timeout
+		var newNotif = notificationLoader.instantiate()
+		get_parent().get_parent().get_parent().add_child(newNotif)
+		getSoftPos(item, newNotif)
+	remove_child(myTimer)
+	myTimer.queue_free()
 
 func setCategoryName(val : String) :
 	$VBoxContainer/CategoryName.text = " " + val + " "

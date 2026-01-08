@@ -24,6 +24,8 @@ func addModSet(sourceName : String) :
 	var rightMod = modEntryLoader.instantiate()
 	getRightCol().add_child(rightMod)
 	rightMod.setType("Post" + myType)
+	if (myType == "bonus") :
+		rightMod.visible = false
 	
 func getSourceCol() :
 	return $PanelContainer/HBoxContainer/Source
@@ -46,7 +48,8 @@ func setMods(source : String, val : Array[float]) :
 	index = findEntryIndex(source)
 	for key in Definitions.attributeDictionary.keys() :
 		getLeftCol().get_child(index).setMod(key, val[key])
-		getRightCol().get_child(index).setMod(key, val[Definitions.attributeCount+key])
+		if (myType != "bonus") :
+			getRightCol().get_child(index).setMod(key, val[Definitions.attributeCount+key])
 		
 #func setBonusSingle(entryReference, type : Definitions.attributeEnum, val : float) :
 	#entryReference.setBonus(type, val)
@@ -69,32 +72,61 @@ func setMods(source : String, val : Array[float]) :
 	#waitingForPlayerClass = false
 	#emit_signal("playerClassReceived")
 var myType : String = ""
+var catPic = preload("res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/felids/cat_1.png")
 ##########################
 func setType(type : String) :
 	if (type == "bonus") :
-		$Title.text = "Attribute Bonuses"
+		$Title.text = "Base Attributes"
 	elif (type == "multiplier") :
 		$Title.text = "Attribute Multipliers"
 	else :
 		return
 	myType = type
 	var leftChildren = getLeftCol().get_children()
-	var pluralSuffix : String = ""
-	if (type == "bonus") :
-		pluralSuffix = "es"
-	else :
-		pluralSuffix = "s"
 	for index in range(0,leftChildren.size()) :
-		if (index == 0) :
-			leftChildren[index].setText("Pre" + type + pluralSuffix)
+		if (index == 0 && type == "multiplier") :
+			leftChildren[index].setText("Multipliers")
+		elif (index == 0 && type == "bonus") :
+			leftChildren[index].setText ("Bonuses")
 		else :
-			leftChildren[index].makeTitle("Pre"+ type)
+			leftChildren[index].makeTitle("hello")
 	var rightChildren = getRightCol().get_children()
 	for index in range(0,rightChildren.size()) :
-		if (index == 0) :
-			rightChildren[index].setText("Post"+type + pluralSuffix)
+		if (index == 0 && type == "multiplier") :
+			rightChildren[index].setText("Standard Multiplier")
+		elif (type == "bonus") :
+			rightChildren[index].visible = false
 		else :
-			rightChildren[index].makeTitle("Post"+type)
+			rightChildren[index].makeTitle("hello")
+	if (type == "bonus") :
+		#getRightCol().size_flags_horizontal = SIZE_SHRINK_END
+		var newPic = TextureRect.new()
+		getRightCol().add_child(newPic)
+		newPic.texture = catPic
+		newPic.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
+		newPic.expand_mode = TextureRect.EXPAND_FIT_WIDTH
+		newPic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		newPic.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		newPic.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		#var newPic2 = newPic.duplicate()
+		#getRightCol().add_child(newPic2)
+		
+	#var pluralSuffix : String = ""
+	#if (type == "bonus") :
+		#pluralSuffix = "es"
+	#else :
+		#pluralSuffix = "s"
+	#for index in range(0,leftChildren.size()) :
+		#if (index == 0) :
+			#leftChildren[index].setText("Pre" + type + pluralSuffix)
+		#else :
+			#leftChildren[index].makeTitle("Pre"+ type)
+	#var rightChildren = getRightCol().get_children()
+	#for index in range(0,rightChildren.size()) :
+		#if (index == 0) :
+			#rightChildren[index].setText("Post"+type + pluralSuffix)
+		#else :
+			#rightChildren[index].makeTitle("Post"+type)
 
 #func getEntryReference(type : bonusType, myName : String) :
 	#if (myName == "Subtitle" || myName == "Title") :

@@ -8,7 +8,7 @@ const binaryPopup = preload("res://Graphic Elements/popups/binary_decision.tscn"
 ## Other
 var firstProcess : bool = true
 func _process(_delta) :
-	$MyTabContainer/InnerContainer/Training.setPlayerMods($Player.getAttributeMods())
+	$MyTabContainer/InnerContainer/Training.setPlayerMods($Player.getAttributeMods(), $Player.getModifierDictionary()["otherStat"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed]])
 	updatePlayer()
 
 func updatePlayer() :
@@ -109,8 +109,75 @@ func _shopping_add_to_inventory(item : Equipment) :
 		Shopping.provideConfirmation(true)
 
 func _shopping_reforge_item_requested(type : Definitions.equipmentTypeEnum) :
+	if (type == Definitions.equipmentTypeEnum.weapon) :
+		Shopping.lastBought["equipmentReforged"] = $MyTabContainer/InnerContainer/Equipment.getCurrentWeapon()
+	else :
+		Shopping.lastBought["equipmentReforged"] = $MyTabContainer/InnerContainer/Equipment.getCurrentArmor()
 	var newScalingVal = $MyTabContainer/InnerContainer/Combat.getMostRecentEquipmentScaling()
 	Shopping.provideConfirmation($MyTabContainer/InnerContainer/Equipment.reforge(type, newScalingVal))
+	
+func _shopping_set_subclass_requested(subclass : Definitions.subclass) :
+	var confirmationPopup = binaryPopupLoader.instantiate()
+	add_child(confirmationPopup)
+	confirmationPopup.setTitle("Purchasing Subclass: " + Definitions.subclassDictionary[subclass])
+	confirmationPopup.setText("Are you sure you want to choose this subclass? You cannot change it later without respeccing (which is expensive).")
+	confirmationPopup.setButton0Name("GIVE ME THE STATS")
+	confirmationPopup.setButton1Name("Never mind")
+	var choice = await confirmationPopup.binaryChosen
+	if (choice == 0) :
+		$Player.setSubclass(subclass)
+		Shopping.provideConfirmation(true)
+	else :
+		Shopping.provideConfirmation(false)
+	remove_child(confirmationPopup)
+	confirmationPopup.queue_free()
+	
+func _shopping_inventory_size_requested() :
+	$MyTabContainer/InnerContainer/Equipment.expandInventory(1)
+	Shopping.provideConfirmation(true)
+	
+const binaryPopupLoader = preload("res://Graphic Elements/popups/binary_decision.tscn")
+const popupLoader2 = preload("res://Graphic Elements/popups/my_popup.tscn")
+const fighterClass = preload("res://Globals/Definitions/Classes/fighter.tres")
+const rogueClass = preload("res://Globals/Definitions/Classes/rogue.tres")
+const mageClass = preload("res://Globals/Definitions/Classes/mage.tres")
+func _shopping_respec_requested() :
+	var confirmationPopup = binaryPopupLoader.instantiate()
+	add_child(confirmationPopup)
+	confirmationPopup.setTitle("Change Class")
+	confirmationPopup.setText("Are you sure you want to change your class? You will lose half your Cumulative Training Levels, but you may select a different class or subclass.")
+	confirmationPopup.setButton0Name("I'm ready")
+	confirmationPopup.setButton1Name("I changed my mind")
+	var choice = await confirmationPopup.binaryChosen
+	if (choice == 1) :
+		Shopping.provideConfirmation(false)
+		return
+	var classPopup = popupLoader2.instantiate()
+	add_child(classPopup)
+	classPopup.setText("")
+	classPopup.setTitle("Choose Your Class")
+	classPopup.addButtonContainer()
+	classPopup.addButton("Fighter")
+	classPopup.addButton("Rogue")
+	classPopup.addButton("Mage")
+	classPopup.addButton("Cancel")
+	choice = await classPopup.buttonPressed
+	if (choice == 3) :
+		Shopping.provideConfirmation(false)
+	else :
+		$MyTabContainer/InnerContainer/Training.onRespec()
+		var newClass
+		if (choice == 0) :
+			newClass = fighterClass
+		elif (choice == 1) :
+			newClass = rogueClass
+		else :
+			newClass = mageClass
+		$Player.setClass(newClass)
+		$Player.setSubclass(-1)
+		Shopping.resetSubclass()
+		Shopping.provideConfirmation(true)
+	classPopup.queue_free()
 	
 func _shopping_upgrade_routine(routine : AttributeTraining) :
 	$MyTabContainer/InnerContainer/Training.upgradeRoutine(routine)
@@ -193,7 +260,11 @@ func _on_tutorial_requested(tutorialName : Encyclopedia.tutorialName, tutorialPo
 		tabsUnlocked[2] = true
 	elif (tutorialName == Encyclopedia.tutorialName.tutorialFloorEnd && !tabsUnlocked[1]) :
 		$MyTabContainer.revealChild($MyTabContainer/InnerContainer/Training)
+		$Player.enableLearningCurve()
 		tabsUnlocked[1] = true
+	elif (tutorialName == Encyclopedia.tutorialName.herophile) :
+		_on_routine_unlock_requested(self, MegaFile.getRoutine("spar_herophile"))
+		Shopping.unlockHerophile()
 	$TutorialManager.queueTutorial(tutorialName, tutorialPos)
 	
 func _on_player_core_requested(emitter) -> void:
@@ -222,20 +293,27 @@ func _on_floor_clear(typicalEnemyDefense) :
 ## "<column name 2>" : Dictionary ->
 ## ...
 ## ...
-const shopLoader = preload("res://Graphic Elements/Shop/shop_window.tscn")
+const routineShopLoader = preload("res://Graphic Elements/Shop/routine_shop.tscn")
 const equipmentShopLoader = preload("res://Graphic Elements/Shop/equipment_shop.tscn")
+const soulShopLoader = preload("res://Graphic Elements/Shop/soul_shop.tscn")
 func _on_shop_requested(details : ShopDetails) :
 	var newShop
 	if (details.shopName == Shopping.shopNames["armor"] || details.shopName == Shopping.shopNames["weapon"]) :
 		newShop = equipmentShopLoader.instantiate()
+	elif (details.shopName == Shopping.shopNames["soul"]) :
+		newShop = soulShopLoader.instantiate()
 	else :
-		newShop = shopLoader.instantiate()
+		newShop = routineShopLoader.instantiate()
 	$MyTabContainer/InnerContainer/Combat.add_child(newShop)
 	newShop.name = "Shop"
 	if (!newShop.myReady) :
 		await newShop.myReadySignal
 	newShop.connect("currencyAmountRequested", _on_currency_amount_requested)
 	newShop.connect("finished", _on_shop_finished)
+	if (newShop.has_signal("playerClassRequested")) :
+		newShop.connect("playerClassRequested", _on_player_class_requested)
+	if (newShop.has_signal("playerSubclassRequested")) :
+		newShop.connect("playerSubclassRequested", _on_player_subclass_requested)
 	$MyTabContainer/InnerContainer/Combat.disableUI()
 	newShop.setFromDetails(details)
 
@@ -371,6 +449,9 @@ func beforeLoad(newSave) :
 	Shopping.connect("reforgeItemRequested", _shopping_reforge_item_requested)
 	Shopping.connect("equipmentScalingRequested", _shopping_equipment_scaling_requested)
 	Shopping.connect("currencyScalingRequested", _shopping_currency_scaling_requested)
+	Shopping.connect("setSubclassRequested", _shopping_set_subclass_requested)
+	Shopping.connect("respecRequested", _shopping_respec_requested)
+	Shopping.connect("increaseInventorySizeRequested", _shopping_inventory_size_requested)
 	if (newSave) :
 		permanentMods = {}
 		Shopping.resetItemPrices()

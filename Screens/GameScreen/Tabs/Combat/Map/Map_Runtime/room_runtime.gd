@@ -154,3 +154,10 @@ func getSaveDictionary() :
 	#for enemy in $VBoxContainer.get_children() :
 		#tempDict["enemies"].append(enemy.getSaveDictionary())
 	return tempDict
+
+func _process(_delta) :
+	if ((size.x < $VBoxContainer.size.x + 20 || size.y < $VBoxContainer.size.y + 20) && $VBoxContainer.visible) :
+		var originalSize = custom_minimum_size
+		size = $VBoxContainer.size + Vector2(20,20)
+		global_position.y -= (size.y-originalSize.y)/2.0
+		global_position.x -= (size.x-originalSize.x)/2.0

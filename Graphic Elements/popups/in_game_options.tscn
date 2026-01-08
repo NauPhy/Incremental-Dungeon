@@ -20,19 +20,19 @@ text = ""
 [node name="ManualSaveButton" parent="Panel/CenterContainer/Window/VBoxContainer" index="2" instance=ExtResource("3_mod6m")]
 layout_mode = 2
 theme = ExtResource("4_vfm63")
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 20
 text = "Manual Save"
 
 [node name="LoadButton" parent="Panel/CenterContainer/Window/VBoxContainer" index="3" instance=ExtResource("3_mod6m")]
 layout_mode = 2
 theme = ExtResource("4_vfm63")
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 20
 text = "Load Game"
 
 [node name="QuitButton0" parent="Panel/CenterContainer/Window/VBoxContainer" index="4" instance=ExtResource("3_mod6m")]
 layout_mode = 2
 theme = ExtResource("4_vfm63")
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 20
 text = " Save and Quit"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="5"]

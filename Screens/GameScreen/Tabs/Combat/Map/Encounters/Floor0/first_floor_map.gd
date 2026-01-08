@@ -12,14 +12,12 @@ var playerClass_comm : CharacterClass = null
 var waitingForPlayerClass : bool = false
 signal playerClassRequested
 signal playerClassReceived
-
 func getPlayerClass() -> CharacterClass:
 	waitingForPlayerClass = true
 	emit_signal("playerClassRequested", self)
 	if (waitingForPlayerClass) :
 		await playerClassReceived
 	return playerClass_comm
-	
 func providePlayerClass(val : CharacterClass) :
 	playerClass_comm = val
 	waitingForPlayerClass = false

@@ -144,12 +144,12 @@ otherMods = {
 script = ExtResource("3_pelyi")
 boostedAttr1 = 0
 boostedAttr2 = 3
-title = "Spark Ammo"
-description = "Sample description
-...
-If using ranged weapon: 
-DR Multiplier x1.11
-Physical Conversion Standard Multiplier +0.11"
+title = "Spark Arrows"
+description = "While using ranged weapon: 
+DR Multiplier [color=green]x1.11[/color]
+Physical Conversion Standard Multiplier +0.11
+
+Syzygy was a natural philosopher before the Great War, and created a variety of bizarre weapons for the war effort, but none so popular as the spark arrows. Though identical to normal arrows in weight and aerodynamics, these arrows explode in a cloud of sparks when broken."
 myPacket = SubResource("Resource_s6w72")
 equipmentGroups = SubResource("Resource_7gqv1")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

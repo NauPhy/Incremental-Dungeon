@@ -17,7 +17,7 @@ const signatureEquipmentList = {
 	"tormentor" : "rampart_agony",
 	"hellion" : "ring_malice",
 	"hell_sentinel" : "rune_advanced_automation",
-	"champion_of_poseidon" : "aegis",
+	"champion_of_poseidon" : "shield_5",
 	"kraken" : "armor_cephalopod",
 	"fire_dragon" : "dragonbone_plate",
 	"water_dragon" : "dragonbone_plate",

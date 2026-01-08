@@ -145,7 +145,9 @@ script = ExtResource("3_6xfpt")
 boostedAttr1 = 0
 boostedAttr2 = -1
 title = "Tome of Eternal Winter"
-description = "Sample description"
+description = "This tome is perpetually at a temperature of absolute zero. Thankfully cold does not radiate like heat does, but it's still probably best to keep it heavily insulated and wear gloves while using it. 
+
+This tome contains powerful ice spells such as induce blizzard, conjure ice elemental, and... summon frost hydra. Huh."
 myPacket = SubResource("Resource_wjvqy")
 equipmentGroups = SubResource("Resource_10roh")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

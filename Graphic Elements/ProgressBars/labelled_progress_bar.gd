@@ -6,6 +6,9 @@ var growthMultiplier = 0
 const maxGrowth = 10000
 var currentGrowth = baseGrowth
 var actualProgress = 0
+var secondaryMultiplier = 1
+func setSecondaryGrowthMultiplier(val) :
+	secondaryMultiplier = val
 
 func _process(delta) :
 	updateCurrentGrowth()
@@ -21,13 +24,13 @@ func _process(delta) :
 	actualProgress = newProgress
 	currentLevel = newLevel
 	$LevelLabel.text = "Lv " + str(newLevel)	
-	if (is_equal_approx(currentGrowth, maxGrowth)) :
+	if (currentGrowth > baseGrowth*55) :
 		$ProgressBar.value = 100
 	else :
 		$ProgressBar.value = actualProgress
 	
 func updateCurrentGrowth() -> void :
-	var tempGrowth = baseGrowth * growthMultiplier
+	var tempGrowth = baseGrowth * growthMultiplier * secondaryMultiplier
 	if (tempGrowth >= maxGrowth) :
 		currentGrowth = maxGrowth
 	else :

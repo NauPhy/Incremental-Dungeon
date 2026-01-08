@@ -145,8 +145,10 @@ script = ExtResource("3_kgadq")
 boostedAttr1 = 2
 boostedAttr2 = -1
 title = "Vial of Goddess Tears"
-description = "Sample description
-<insert Tear of the Goddess lyrics>"
+description = "Keepers of old
+Keep us from the cold
+Let us fight once more
+'Til our honor is restored"
 myPacket = SubResource("Resource_06lkb")
 equipmentGroups = SubResource("Resource_ol5fc")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

@@ -442,7 +442,8 @@ func getNewEquipment_Armor(resourceName : String) :
 
 const NewEquipment_CurrencyDictionary = {
 	"gold_coin" : preload("res://Resources/NewEquipment/Currency/gold_coin.tres"),
-	"ore" : preload("res://Resources/NewEquipment/Currency/ore.tres")}
+	"ore" : preload("res://Resources/NewEquipment/Currency/ore.tres"),
+	"soul" : preload("res://Resources/NewEquipment/Currency/soul.tres")}
 
 
 func getNewEquipment_Currency(resourceName : String) :
@@ -756,11 +757,22 @@ func getAllOldEquipment() -> Array :
 
 ################################################################################
 const Routine_FilesDictionary = {
+	"barefoot" : preload("res://Resources/Routine/Files/barefoot.tres"),
+	"earth" : preload("res://Resources/Routine/Files/earth.tres"),
+	"fence_swordfish" : preload("res://Resources/Routine/Files/fence_swordfish.tres"),
+	"fire" : preload("res://Resources/Routine/Files/fire.tres"),
+	"hug_cacti" : preload("res://Resources/Routine/Files/hug_cacti.tres"),
+	"hunt" : preload("res://Resources/Routine/Files/hunt.tres"),
+	"ice" : preload("res://Resources/Routine/Files/ice.tres"),
 	"lift_weights" : preload("res://Resources/Routine/Files/lift_weights.tres"),
+	"offhand" : preload("res://Resources/Routine/Files/offhand.tres"),
+	"parrying" : preload("res://Resources/Routine/Files/parrying.tres"),
 	"pickpocket_goblins" : preload("res://Resources/Routine/Files/pickpocket_goblins.tres"),
 	"punch_walls" : preload("res://Resources/Routine/Files/punch_walls.tres"),
 	"read_novels" : preload("res://Resources/Routine/Files/read_novels.tres"),
-	"spar" : preload("res://Resources/Routine/Files/spar.tres")}
+	"spar" : preload("res://Resources/Routine/Files/spar.tres"),
+	"spar_herophile" : preload("res://Resources/Routine/Files/spar_herophile.tres"),
+	"tactics" : preload("res://Resources/Routine/Files/tactics.tres")}
 
 
 func getRoutine_Files(resourceName : String) :
