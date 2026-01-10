@@ -1,4 +1,4 @@
-extends Panel
+extends PanelContainer
 
 var currentStats : CharacterClass
 @export var fighterStats : CharacterClass = null
@@ -13,6 +13,9 @@ func setStats(index : int) :
 	elif (index == 2) :
 		currentStats = rogueStats
 	for key in Definitions.attributeDictionary.keys() :
-		$VBoxContainer/ColumnContainer/StatAmounts.get_child(1+key).text = str(currentStats.getBaseAttribute(key))
-		$VBoxContainer/ColumnContainer/StatScaling.get_child(1+key).text = str(currentStats.getAttributeScaling(key))
+		var titleIndex = 3 + 3*key
+		var baseIndex = titleIndex + 1
+		var scalingIndex = titleIndex + 2
+		$VBoxContainer/ColumnContainer.get_child(baseIndex).text = str(currentStats.getBaseAttribute(key))
+		$VBoxContainer/ColumnContainer.get_child(scalingIndex).text = str(currentStats.getAttributeScaling(key))
 	

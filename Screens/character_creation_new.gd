@@ -14,9 +14,9 @@ func _ready() :
 func setupCarousels(isBody : bool) :
 	var children
 	if (isBody) :
-		children = $Carousels/VBoxContainer/Body.get_children()
+		children = $Carousels/Body/PanelContainer/VBoxContainer.get_children()
 	else :
-		children = $Carousels/VBoxContainer/Clothes.get_children()
+		children = $Carousels/Clothes/PanelContainer/VBoxContainer.get_children()
 	for child in children :
 		if (!(child is HBoxContainer)) :
 			continue
@@ -35,7 +35,7 @@ func setupCarousels(isBody : bool) :
 	
 func setupBase(type) -> int :
 	var count = 0
-	var values = MegaFile.getPlayerTextureDictionary(type).keys()
+	var values = MegaFile.getPlayerTextureDictionary("PlayerTexture_" + type).keys()
 	for value in values :
 		var permitted : bool = false
 		for prefix in permittedBasePrefixes :
@@ -47,12 +47,12 @@ func setupBase(type) -> int :
 			count += 1
 	return count
 func setupCat(type) -> int :
-	return MegaFile.getPlayerTextureDictionary(type).size()
+	return MegaFile.getPlayerTextureDictionary("PlayerTexture_" + type).size()
 func setupOther(type) -> int :
-	return MegaFile.getPlayerTextureDictionary(type).size() + 1
+	return MegaFile.getPlayerTextureDictionary("PlayerTexture_" + type).size() + 1
 
 func setDefaultTextures() :
-	$Portrait/Base.texture = MegaFile.getPlayerTexture_base(permittedBasePrefixes[0]+"_female")
+	$Portrait.setTexture("Base", MegaFile.getPlayerTexture_base(permittedBasePrefixes[0]+"_female"), permittedBasePrefixes[0]+"_female")
 	for child in $Portrait.get_children() :
 		if (child == $Portrait/Base || child == $Portrait/Cat) :
 			pass
@@ -60,12 +60,12 @@ func setDefaultTextures() :
 			child.texture = null
 
 func connectCarousels() :
-	for child in $Carousels/VBoxContainer/Body.get_children() :
+	for child in $Carousels/Body/PanelContainer/VBoxContainer.get_children() :
 		if !child.has_node("Carousel") : continue
 		var carousel = child.get_node("Carousel")
 		if (carousel != null) :
 			carousel.connect("move", _on_carousel_move)
-	for child in $Carousels/VBoxContainer/Clothes.get_children() :
+	for child in $Carousels/Clothes/PanelContainer/VBoxContainer.get_children() :
 		if !child.has_node("Carousel") : continue
 		var carousel = child.get_node("Carousel")
 		if (carousel != null) :
@@ -74,18 +74,18 @@ func connectCarousels() :
 func _on_carousel_move(emitter : Node, currentPos, _currentOption) :
 	var type : String = emitter.get_parent().name
 	if (type == "base") :
-		$Portrait/Base.texture = MegaFile.getPlayerTexture_base(permittedNames[currentPos])
+		$Portrait.setTexture("Base", MegaFile.getPlayerTexture_base(permittedNames[currentPos]), permittedNames[currentPos])
 	elif (type == "felids") :
-		$Portrait/Cat.texture = MegaFile.getPlayerTextureDictionary(type).values()[currentPos]
+		$Portrait.setTexture("Cat", MegaFile.getPlayerTextureDictionary("PlayerTexture_" + type).values()[currentPos], MegaFile.getPlayerTextureDictionary("PlayerTexture_"+type).keys()[currentPos])
 	elif (currentPos == 0) :
-		$Portrait.get_node(type).texture = null
+		$Portrait.setTexture(type, null, "null")
 	else :
-		$Portrait.get_node(type).texture = MegaFile.getPlayerTextureDictionary(type).values()[currentPos-1]
+		$Portrait.setTexture(type, MegaFile.getPlayerTextureDictionary("PlayerTexture_" + type).values()[currentPos-1], MegaFile.getPlayerTextureDictionary("PlayerTexture_"+type).keys()[currentPos-1])
 
 func setupLayout() :
-	var base = $Carousels/VBoxContainer/Body/base
-	var children = $Carousels/VBoxContainer/Body.get_children()
-	children.append_array($Carousels/VBoxContainer/Clothes.get_children())
+	var base = $Carousels/Body/PanelContainer/VBoxContainer/base
+	var children = $Carousels/Body/PanelContainer/VBoxContainer.get_children()
+	children.append_array($Carousels/Clothes/PanelContainer/VBoxContainer.get_children())
 	for child in children :
 		if (!(child is HBoxContainer)) :
 			continue
@@ -112,3 +112,25 @@ func _on_button_pressed(emitter : Node) :
 	emitter.get_parent().get_node("Carousel").setPositionWithSignal(-10, true)
 func _on_button2_pressed(emitter : Node) :
 	emitter.get_parent().get_node("Carousel").setPositionWithSignal(10,true)
+	
+signal characterDone
+const popup = preload("res://Graphic Elements/popups/binary_decision.tscn")
+func _on_my_button_pressed() -> void:
+	var tempPop = popup.instantiate()
+	add_child(tempPop)
+	tempPop.setTitle("Are you sure?")
+	tempPop.setText("Is this your true self?")
+	tempPop.connect("binaryChosen", _on_binary_chosen)
+func _on_binary_chosen(chosen : int) :
+	if (chosen == 0) :
+		var myClass = $CharacterCreator/VBoxContainer2/StatDescription.currentStats
+		var myName = $VBoxContainer/LineEdit.text
+		if (myName == "") :
+			myName = " "
+		var myCharacter : CharacterPacket = CharacterPacket.new()
+		myCharacter.setClass(myClass)
+		myCharacter.setName(myName)
+		myCharacter.setPortraitExtraSafe($Portrait)
+		emit_signal("characterDone", myCharacter)
+	elif (chosen == 1) :
+		return

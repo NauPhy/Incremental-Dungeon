@@ -45,3 +45,34 @@ func _on_return_button_pressed() -> void:
 	
 func _on_equipment_details_individual_equipment_take_changed(itemSceneRef : Node, index : int) -> void:
 	workingDict[itemSceneRef.getItemName()] = index
+
+func _on_line_edit_text_changed(new_text: String) -> void:
+	if (new_text == "") :
+		for child in getEntries().get_children() :
+			if (child == getEntries().get_node("Sample") || child == getEntries().get_node("Sample2")) :
+				continue
+			child.visible = true
+		return
+	for child in getEntries().get_children() :
+		if (child == getEntries().get_node("Sample") || child == getEntries().get_node("Sample2")) :
+			continue
+		if (child is Button) :
+			child.visible = false
+		elif (child.getText().to_upper().find(new_text.to_upper()) == -1) :
+			child.visible = false
+		else :
+			child.visible = true
+
+func _on_my_check_box_2_pressed() -> void:
+	if ($Panel/CenterContainer/Window/VBoxContainer/HBoxContainer2/myCheckBox.isPressed()) :
+		for child in getEntries().get_children() :
+			if (child == getEntries().get_node("Sample") || child == getEntries().get_node("Sample2")) :
+				continue
+			child.visible = true
+		$Panel/CenterContainer/Window/VBoxContainer/HBoxContainer2/LineEdit.clear()
+	else :
+		for child in getEntries().get_children() :
+			if (child == getEntries().get_node("Sample") || child == getEntries().get_node("Sample2")) :
+				continue
+			if (child is Button) :
+				child.visible = false

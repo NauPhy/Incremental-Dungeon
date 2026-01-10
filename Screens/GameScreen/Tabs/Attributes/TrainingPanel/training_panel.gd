@@ -6,18 +6,35 @@ const trainingEntry = preload("res://Screens/GameScreen/Tabs/Attributes/Training
 func _on_alphabetical_sort_pressed() -> void:
 	sortTraining(null)
 	
-var cachedRoutineSpeed : float = 1
-var cachedMultipliers : Array[float] = [0,0,0,0,0]
-func cacheRoutineSpeed(val : float) :
-	cachedRoutineSpeed = val
-func cacheMultipliers(val : Array[float]) :
-	cachedMultipliers = val
-func _process(_delta) :
+#var cachedRoutineSpeed : Array[float] = [1,1,1,1,1]
+#var cachedMultipliers : Array[float] = [0,0,0,0,0]
+#func cacheRoutineSpeed(val : Array[float]) :
+	#cachedRoutineSpeed = val
+#func cacheMultipliers(val : Array[float]) :
+	#cachedMultipliers = val
+#func _process(_delta) :
+	#var grid = $RoutineGrowth/PanelContainer/GridContainer
+	#for key in Definitions.attributeDictionary.keys() :
+		#var textBox = grid.get_child(Definitions.attributeDictionary.keys().size() + key)
+		#var newText = str(Helpers.engineeringRound(cachedMultipliers[key] * cachedRoutineSpeed[key] / 10.0,3))
+		#textBox.text = newText
+var playerNumberRefs : Array[NumberClass] = []
+var myNumberRefs : Array[NumberClass] = []
+## Dependency injection of values from the Player Panel
+func initialiseNumberRefs(val : Array[NumberClass]) :
 	var grid = $RoutineGrowth/PanelContainer/GridContainer
-	for key in Definitions.attributeDictionary.keys() :
-		var textBox = grid.get_child(Definitions.attributeDictionary.keys().size() + key)
-		var newText = str(Helpers.engineeringRound(cachedMultipliers[key] * cachedRoutineSpeed / 10.0,3))
-		textBox.text = newText
+	playerNumberRefs = val
+	for index in range(0, playerNumberRefs.size()) :
+		var newNumberClass : NumberClass = NumberClass.new()
+		myNumberRefs.append(newNumberClass)
+		grid.get_child(Definitions.attributeDictionary.keys().size() + index).setNumberReference(myNumberRefs[index])
+	
+func _process(_delta) :
+	for index in range(0,playerNumberRefs.size()) :
+		myNumberRefs[index].setPremultiplier("Routine Speed", playerNumberRefs[index].getFinal())
+		if (currentTrainingResource != null) :
+			myNumberRefs[index].setPrebonus("Base RGR/10", currentTrainingResource.getScaling(index as Definitions.attributeEnum)/10.0)
+			myNumberRefs[index].setPostmultiplier("Routine Upgrade", routineUpgradeLevels[currentTrainingResource.getResourceName()] * 0.25)
 
 func _on_header_button_pressed(emitter) :
 	var type : Definitions.attributeEnum
@@ -71,7 +88,7 @@ var routineUpgradeLevels : Dictionary = {}
 func _on_requested_enable(emitter) :
 	setTrainingGraphic(emitter.getResource())
 	currentTrainingResource = emitter.getResource()
-	emit_signal("trainingChanged", createUpgradedTraining(emitter.getResource()))
+	emit_signal("trainingChanged", await createUpgradedTraining(emitter.getResource()))
 	
 func unlockRoutine(routine : AttributeTraining) :
 	for child in $Con.get_children() :
@@ -82,12 +99,15 @@ func unlockRoutine(routine : AttributeTraining) :
 func upgradeRoutine(routine : AttributeTraining) :
 	routineUpgradeLevels[routine.resource_path.get_file().get_basename()] += 1
 	if (routine == currentTrainingResource) :
-		emit_signal("trainingChanged", createUpgradedTraining(currentTrainingResource))
+		emit_signal("trainingChanged", await createUpgradedTraining(currentTrainingResource))
 		
 func createUpgradedTraining(routine : AttributeTraining) :
+	while (playerNumberRefs.size() != Definitions.attributeDictionary.keys().size()) :
+		await get_tree().process_frame
 	var retVal = routine.duplicate()
 	for key in retVal.scaling.keys() :
 		retVal.scaling[key] *= 1 + 0.25*routineUpgradeLevels[routine.resource_path.get_file().get_basename()]
+		retVal.scaling[key] *= playerNumberRefs[Definitions.attributeDictionary.find_key(key)].getFinal()
 	return retVal
 
 func _on_requested_disable(_emitter) :
@@ -129,7 +149,7 @@ func onLoad(loadDict : Dictionary) :
 			if (child.has_method("getResource") && child.getResource().getResourceName() == loadDict["currentTraining"]) :
 				child.setButton()
 				break
-		emit_signal("trainingChanged", createUpgradedTraining(currentTrainingResource))
+		emit_signal("trainingChanged", await createUpgradedTraining(currentTrainingResource))
 func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
 	var routineUnlocks : Dictionary = {}

@@ -46,9 +46,9 @@ func getProgress(type : Definitions.attributeEnum) :
 func setProgress(type : Definitions.attributeEnum, val) :
 	$Panel/HBoxContainer/Con.get_node(Definitions.attributeDictionary[type]).setProgress(val)
 
-func updateRoutineSpeed(val : float) :
-	for key in Definitions.attributeDictionary.keys() :
-		$Panel/HBoxContainer/Con.get_node(Definitions.attributeDictionary[key]).setSecondaryGrowthMultiplier(val)
+#func updateRoutineSpeed(val : Array[float]) :
+	#for key in Definitions.attributeDictionary.keys() :
+		#$Panel/HBoxContainer/Con.get_node(Definitions.attributeDictionary[key]).setSecondaryGrowthMultiplier(val[key])
 
 func _on_dex_text_submitted(new_text: String) -> void:
 	setLevel(Definitions.attributeEnum.DEX, int(new_text))

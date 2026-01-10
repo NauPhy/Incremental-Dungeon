@@ -30,7 +30,7 @@ const tutorialTitles : Dictionary = {
 	tutorialName.herophile : "Training with Herophile"
 }
 const tutorialDesc : Dictionary = {
-	tutorialName.tutorial : "Tutorial popups can be disabled in the in-game options (F1) menu. There you will also find a list of all encountered tutorials, even if they were suppressed. Remember that tutorials may show up even in the late game!",
+	tutorialName.tutorial : "Tutorial popups can be disabled in the in-game options (F2) menu. You can find a list of all encountered tutorials, even if they were suppressed, in the Encyclopedia (F1). Remember that tutorials may show up even in the late game!",
 	tutorialName.tutorialFloor1 : "Welcome to the Combat Map. Here you can click to select a room to enter next. At the start of each map, only the entrance will be available to explore.",
 	#fight rats
 	tutorialName.tutorialFloor2 : "Nice! Not every room has a combat encounter, but most will. Try entering the newly discovered room next.",
@@ -301,7 +301,7 @@ const keywords : Array[String] = [
 	"Biome",
 	
 	"Learning Curve",
-	"Softcap"
+	#"Softcap"
 	]
 const keyword_alternates : Dictionary = {
 	"Dexterity" : "DEX",
@@ -319,13 +319,15 @@ const keyword_alternates : Dictionary = {
 	"Magic Damage Dealt" : "MDD",
 	"Magic Damage Taken" : "MDT",
 	"Miku Miku Dance" : "MMD",
-	"Routine Growth Ratio" : "RGR"
+	"Routine Growth Ratio" : "RGR",
+	"Cumulative Routine Level" : "CRL",
+	"Routine Effect" : "RE"
 }
 
 var descriptions : Dictionary = {
 	"Learning Curve" : "This stuff is easy! As a bright young adventurer, you're still learning quickly. 3.0x Routine Speed for all attributes, linearly decaying to 1.0x as the attribute's Base value approaches 63.",
 	
-	"Softcap" : "Every time the Bonus provided to an attribute by Cumulative Routine Levels reaches a new power of 10 (starting at 100), your Routine Speed for that attribute halves permanently!.",
+	#"Softcap" : "Every time the Bonus provided to an attribute by Cumulative Routine Levels reaches a new power of 10 (starting at 100), your Routine Speed for that attribute halves permanently.",
 	
 	"Class" : "Your Class determines their starting Attributes, Attribute multipliers, and unarmed Weapon Scaling. Fighter is the tankiest, Mage is the highest damage, and Rogue is balanced. You can respec about halfway through the game at the cost of half of your Cumulative Routine Levels",
 	
@@ -373,9 +375,9 @@ var descriptions : Dictionary = {
 
 	"Routine" : "Routines passively increase your Cumulative Routine Levels over time, which in turn increases your Attributes. Each Routine improves Cumulative Routine Levels at different rates, and more Routines can be acquired from shops. To view and use Routines, see the Training tab.",
 	
-	"Cumulative Routine Level" : "There are six Cumulative Routine Levels, one for each Attribute. They can be found under \"Routine Levels\" in the Training tab. Cumulative Routine Levels increase constantly at a rate equal to your Routine Growth Rates.\n\t-Cumulative Routine Levels provide a Bonus to the Base of your corresponding Attributes equal to Routine Effect*respective level.",
+	"Cumulative Routine Level" : "There are five Cumulative Routine Levels, one for each Attribute. They can be found under \"Routine Levels\" in the Training tab. Cumulative Routine Levels increase constantly at a rate equal to your Routine Growth Rates.\n\t-Cumulative Routine Levels provide a Bonus to the Base of your corresponding Attributes equal to Routine Effect*respective level.",
 	
-	"Routine Growth": "Routine Growth is the amount of levels you gain in Cumulative Routine Levels per second. There are six Routine Growth Rates, one for each Attribute. They can be found at the bottom of the \"Routines\" panel in the Training Tab.\n\t-For a given Attribute, the corresponding Base Routine Growth Rate = RGR*Routine Speed.",
+	"Routine Growth": "Routine Growth is the amount of levels you gain in Cumulative Routine Levels per second. There are five Routine Growth Rates, one for each Attribute. They can be found at the bottom of the \"Routines\" panel in the Training Tab.\n\t-For a given Attribute, the corresponding Base Routine Growth Rate = RGR*Routine Speed.",
 	
 	"Routine Speed" : "Listed under \"Other Stats\" in the Player Panel, Routine Speed provides a Multiplier to all Routine Growth Rates of x<Routine Speed>.\n\t-Base Routine Speed = 1.0\n\nRoutine Speed is capped at 100.0.",
 	

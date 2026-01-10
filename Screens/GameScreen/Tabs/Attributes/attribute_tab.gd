@@ -3,13 +3,13 @@ extends Panel
 func _process(_delta) :
 	$AttributeMultipliers.myUpdate(playerModsCache)
 	$AttributeBonuses.myUpdate(playerModsCache)
-	$AttributeLevels.updateRoutineSpeed(routineSpeedCache)
+	#$AttributeLevels.updateRoutineSpeed(routineSpeedCache)
 
 func _on_training_panel_training_changed(newTraining : AttributeTraining) -> void:
 	$AttributeLevels.setMultipliers(newTraining)
 	if (newTraining != null) :
 		var multipliers = newTraining.getMultipliers()
-		$TrainingPanel.cacheMultipliers(multipliers)
+		#$TrainingPanel.cacheMultipliers(multipliers)
 		
 func getAttributeLevels() -> Array[int] :
 	var retVal : Array[int] = []
@@ -58,11 +58,13 @@ func onLoad(loadDict) -> void :
 	#emit_signal("playerClassRequested", emitter)
 	
 var playerModsCache : Array[NumberClass] = []
-var routineSpeedCache = 1
-func setPlayerMods(newMods : Array[NumberClass], routineSpeed) :
+#var routineSpeedCache : Array[float] = []
+func setPlayerMods(newMods : Array[NumberClass]) :
 	playerModsCache = newMods
-	routineSpeedCache = routineSpeed
-	$TrainingPanel.cacheRoutineSpeed(routineSpeed)
+	#routineSpeedCache = routineSpeed
+	#$TrainingPanel.cacheRoutineSpeed(routineSpeed)
+func initialiseNumberRefs(val) :
+	$TrainingPanel.initialiseNumberRefs(val)
 
 func unlockRoutine(routine) :
 	$TrainingPanel.unlockRoutine(routine)

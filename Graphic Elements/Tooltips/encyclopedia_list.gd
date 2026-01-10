@@ -21,3 +21,18 @@ func _on_my_pressed(emitter : Node) :
 	add_child(myPopup)
 	myPopup.nestedPopupInit(self)
 	myPopup.setKey(emitter.getText())
+
+func _on_line_edit_text_changed(new_text: String) -> void:
+	if (new_text == "") :
+		for child in getContainer().get_children() :
+			if (child == getContainer().get_node("Sample")) :
+				continue
+			child.visible = true
+		return
+	for child in getContainer().get_children() :
+		if (child == getContainer().get_node("Sample")) :
+			continue
+		elif (child.text.to_upper().find(new_text.to_upper()) == -1) :
+			child.visible = false
+		else :
+			child.visible = true

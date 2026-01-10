@@ -51,3 +51,6 @@ func select():
 	
 func getCount() :
 	return myItemScene.getCount()
+	
+func getText() -> String :
+	return myItemScene.getName()

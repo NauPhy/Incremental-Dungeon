@@ -45,6 +45,8 @@ func reforge(scalingVal) :
 	reforges += 1
 func getReforges() -> int :
 	return reforges
+func getName() -> String :
+	return core.getName()
 ###################################################################################
 ##This scene is not "saveable" but is explicitly saved by EquipmentTab/Inventory##
 func getSaveDictionary() -> Dictionary :

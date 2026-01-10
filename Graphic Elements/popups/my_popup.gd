@@ -73,3 +73,4 @@ func _on_my_button_pressed(emitter) :
 		if (children[index] == emitter) :
 			emit_signal("buttonPressed", index)
 			return
+		

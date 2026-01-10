@@ -39,3 +39,4 @@ func _on_tutorials_pressed() -> void:
 func _on_tutorial_list_finished(newDict : Dictionary) :
 	optionDictCopy["individualTutorialDisable"] = newDict
 	IGOptions.saveAndUpdateIGOptions(optionDictCopy)
+	

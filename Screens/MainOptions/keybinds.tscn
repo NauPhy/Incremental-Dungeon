@@ -11,6 +11,7 @@ text = " Key Bindings "
 text = "Currently the game does not support rebinding (sorry) but all the controls are listed here:
 
 Open save menu: ESC
-Open in-game options menu: F1
+Open Encyclopedia: F1
+Open in-game options menu: F2
 Menu \"go back\": ESC
 Map navigation: WASD or arrow keys"

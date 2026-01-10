@@ -54,7 +54,8 @@ func initialiseNumberObjects() :
 	otherStatObjects[Definitions.otherStatEnum.physicalDamageTaken].setPrebonus("Humanoid",1.0)
 	otherStatObjects[Definitions.otherStatEnum.magicDamageDealt].setPrebonus("Humanoid",1.0)
 	otherStatObjects[Definitions.otherStatEnum.magicDamageTaken].setPrebonus("Humanoid",1.0)
-	otherStatObjects[Definitions.otherStatEnum.routineSpeed].setPrebonus("Humanoid",1.0)
+	for index in range(0,6) :
+		otherStatObjects[Definitions.otherStatEnum.routineSpeed_0 + index].setPrebonus("Humanoid",1.0)
 	otherStatObjects[Definitions.otherStatEnum.routineEffect].setPrebonus("Humanoid",1.0)
 ###############################
 ## Specific Modifiers
@@ -92,16 +93,18 @@ func updateDirectModifier(origin : String, val : ModifierPacket) :
 		otherStatObjects[key].setPostbonus(origin, val.otherMods[tag]["Postbonus"])
 		otherStatObjects[key].setPostmultiplier(origin, val.otherMods[tag]["Postmultiplier"])
 		var statDisplay = $ScrollContainer/VBoxContainer/OtherStatPanel/PanelContainer/OtherStatDisplay
-		if (otherStatObjects[key].getPrebonuses().get("Humanoid") != null) :
-			if (otherStatObjects[key].getFinal() == 1) :
-				statDisplay.get_child(key as int).visible = false
+		
+		if (key < Definitions.otherStatEnum.routineSpeed_0) :
+			if (otherStatObjects[key].getPrebonuses().get("Humanoid") != null) :
+				if (otherStatObjects[key].getFinal() == 1) :
+					statDisplay.get_child(key as int).visible = false
+				else :
+					statDisplay.get_child(key as int).visible = true
 			else :
-				statDisplay.get_child(key as int).visible = true
-		else :
-			if (otherStatObjects[key].getFinal() == 0) :
-				statDisplay.get_child(key as int).visible = false
-			else :
-				statDisplay.get_child(key as int).visible = true
+				if (otherStatObjects[key].getFinal() == 0) :
+					statDisplay.get_child(key as int).visible = false
+				else :
+					statDisplay.get_child(key as int).visible = true
 				
 func getSubclassModPacket() -> ModifierPacket :
 	var subclassMod : ModifierPacket = ModifierPacket.new()
@@ -186,10 +189,13 @@ func myUpdate() :
 	var capModifier : ModifierPacket = ModifierPacket.new()
 	updateDirectModifier("Hard cap", capModifier)
 	#capModifier.addMod("otherStat", Definitions.otherStatEnum.routineSpeed, "Premultiplier", 1)
-	var routineSpeed = otherStatObjects[Definitions.otherStatEnum.routineSpeed].getFinal()
-
-	if (routineSpeed > 100) :
-		capModifier.addMod("otherStat", Definitions.otherStatEnum.routineSpeed,"Premultiplier",100.0/routineSpeed)
+	var changed : bool = false
+	for index in range(0,5) :
+		var routineSpeed = otherStatObjects[Definitions.otherStatEnum.routineSpeed_0 + index].getFinal()
+		if (routineSpeed > 100) :
+			capModifier.addMod("otherStat", Definitions.otherStatEnum.routineSpeed_0+index,"Premultiplier",100.0/routineSpeed)
+			changed = true
+	if changed :
 		updateDirectModifier("Hard cap", capModifier)
 
 	## Attributes
@@ -199,7 +205,7 @@ func myUpdate() :
 	pass
 	#trainingLevels
 	for key in Definitions.attributeDictionary.keys() :
-		attributeObjects[key].setPrebonus("Cumulative Routine Levels*Routine Effect", otherStatObjects[Definitions.otherStatEnum.routineEffect].getFinal()*trainingLevels[key])
+		attributeObjects[key].setPrebonus("CRL * RE", otherStatObjects[Definitions.otherStatEnum.routineEffect].getFinal()*trainingLevels[key])
 	#Final
 	var finalAttributes : Array[float]
 	for key in Definitions.attributeDictionary.keys() :
@@ -257,6 +263,11 @@ func getDerivedStatList() :
 #########################################
 ## Setters
 #Takes ownership of class struct
+var myCharacter : CharacterPacket = null
+func setFromCharacter(character : CharacterPacket) :
+	myCharacter = character
+	setClass(character.getClass())
+	setName(character.getName())
 func setClass(character : CharacterClass) :
 	characterClass = character
 	for key in Definitions.attributeDictionary.keys() :
@@ -286,6 +297,12 @@ func getAttributeMods() -> Array[NumberClass] :
 		temp.postbonuses = attr.postbonuses
 		retVal.append(temp)
 	return retVal
+func getRoutineSpeedByReference() -> Array[NumberClass] :
+	var retVal : Array[NumberClass] = []
+	for key in Definitions.otherStatDictionary.keys() :
+		if (Definitions.otherStatEnum.routineSpeed_0 <= key && key <= Definitions.otherStatEnum.routineSpeed_4) :
+			retVal.append(otherStatObjects[key])
+	return retVal
 func getOtherStat(key : Definitions.otherStatEnum) :
 	return otherStatObjects[key].getFinal()
 func getModifierDictionary() -> Dictionary :
@@ -310,11 +327,12 @@ func afterDependencyLoaded(_dependency : Definitions.loadDependencyName) :
 	
 func getSaveDictionary() -> Dictionary :
 	var tempDict = {}
-	tempDict["playerClass"] = characterClass.resource_path
-	tempDict["playerName"] = characterName
+	#tempDict["playerClass"] = characterClass.resource_path
+	#tempDict["playerName"] = characterName
 	tempDict["typicalEnemyDefense"] = typicalEnemyDefense
 	tempDict["subclass"] = mySubclass
 	tempDict["learningCurveEnabled"] = learningCurveEnabled
+	tempDict["myCharacter"] = myCharacter.getSaveDictionary()
 	return tempDict
 	
 var myReady : bool = false
@@ -331,8 +349,9 @@ func beforeLoad(_newSave : bool) :
 	core = humanMan.duplicate()
 	
 func onLoad(loadDict) -> void :	
-	setClass(load(loadDict["playerClass"]))
-	setName(loadDict["playerName"])
+	#setClass(load(loadDict["playerClass"]))
+	#setName(loadDict["playerName"])
+	setFromCharacter(CharacterPacket.createFromSaveDictionary(loadDict["myCharacter"]))
 	if (loadDict.get(typicalEnemyDefense) != null) :
 		typicalEnemyDefense = loadDict["typicalEnemyDefense"]
 	setSubclass(loadDict["subclass"])
@@ -340,12 +359,15 @@ func onLoad(loadDict) -> void :
 	
 func getSoftcapMod() -> ModifierPacket :
 	var retVal = ModifierPacket.new()
+	## My original plan for the softcap would change the scaling from exponential to cubic, which I don't really want. I'll take it off for now, hoping that the exponential growth and random items encourage diversification.
+	## I could also use df(x)/dx = x/(1+log10(x)) or x/(1+log10(x)^2.
+	return retVal
 	for key in Definitions.attributeDictionary.keys() :
 		var allBonuses = attributeObjects[key].getPrebonusesRaw()
-		var bonus = allBonuses.get("Cumulative Routine Levels*Routine Effect")
+		var bonus = allBonuses.get("CRL * RE")
 		if (bonus == null) :
 			continue
-		var thresholds = log(bonus)-1
+		var thresholds = floor(log(bonus)/log(10))-1
 		var mult
 		if (thresholds > 0) :
 			mult = pow(0.5,thresholds)
@@ -370,7 +392,7 @@ func getLearningCurveMod() -> ModifierPacket :
 	for key in Definitions.attributeDictionary.keys() :
 		var currentBonuses = attributeObjects[key].getPrebonuses()
 		var currentLevel = 0
-		for val in currentBonuses : 
+		for val in currentBonuses.values() : 
 			currentLevel += val
 		var attributeMult
 		if (currentLevel <= minLevel) :

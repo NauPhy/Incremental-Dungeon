@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_x1rfh")
 title = "Lake of Fire"
+introText = "You emerge into a large cavern, a gigantic pool of magma in its center. You can skirt around the edge just fine, but no doubt the lake will be spewing elementals at you along the way, and you'll be in spitting distance of fire snakes..."
 permittedFactions = Array[int]([0])
 firePermitted = true
 icePermitted = false

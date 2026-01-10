@@ -8,7 +8,16 @@ const binaryPopup = preload("res://Graphic Elements/popups/binary_decision.tscn"
 ## Other
 var firstProcess : bool = true
 func _process(_delta) :
-	$MyTabContainer/InnerContainer/Training.setPlayerMods($Player.getAttributeMods(), $Player.getModifierDictionary()["otherStat"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed]])
+	if (firstProcess) :
+		var numberRefs = $Player.getRoutineSpeedByReference()
+		$MyTabContainer/InnerContainer/Training.initialiseNumberRefs(numberRefs)
+		firstProcess = false
+	var attributeMods = $Player.getAttributeMods()
+	#var modDictionary = $Player.getModifierDictionary()
+	#var routineSpeeds : Array[float] = []
+	#for index in range(Definitions.otherStatEnum.routineSpeed_0, Definitions.otherStatEnum.routineSpeed_4+1) :
+		#routineSpeeds.append(modDictionary["otherStat"][Definitions.otherStatDictionary[index]])
+	$MyTabContainer/InnerContainer/Training.setPlayerMods(attributeMods)
 	updatePlayer()
 
 func updatePlayer() :
@@ -39,15 +48,12 @@ func updatePlayer() :
 	$Player.myUpdate()
 #############################################
 ## New game initialisation
-func initialisePlayerClass(val) :
-	$Player.setClass(val)
-func initialisePlayerName(val) :
-	$Player.setName(val)
-	
+func initialisePlayerCharacter(val) :
+	$Player.setFromCharacter(val)
 ######################################
 ## Signals
 var permanentMods : Dictionary = {}
-func _shopping_permanent_modifier(value : Array[float], type : String, statEnum : Array[int], source : String, modType, isMultiplicative : bool) :
+func _shopping_permanent_modifier(value : Array[float], type : String, statEnum : Array[int], source : String, modType, isMultiplicative : bool, recursiveCall : bool) :
 	if (permanentMods.get(source) == null) :
 		permanentMods[source] = ModifierPacket.new()
 	for index in range(0,value.size()) :
@@ -64,8 +70,17 @@ func _shopping_permanent_modifier(value : Array[float], type : String, statEnum 
 		elif (type == "otherStat" && !isMultiplicative) :
 			permanentMods[source].otherMods[Definitions.otherStatDictionary[statEnum[index]]][modType] += value[index]
 		else :
-			Shopping.provideConfirmation(false)
-	Shopping.provideConfirmation(true)
+			if (!recursiveCall) :
+				Shopping.provideConfirmation(false)
+	if (type == "otherStat" && statEnum.size() == 1 && statEnum[0] == Definitions.otherStatEnum.routineSpeed_5) :
+		var newValue : Array[float] = []
+		var newEnum : Array[int] = []
+		for index in range(Definitions.otherStatEnum.routineSpeed_0, Definitions.otherStatEnum.routineSpeed_4+1) :
+			newValue.append(value[0])
+			newEnum.append(index)
+		_shopping_permanent_modifier(newValue, type, newEnum, source, modType, isMultiplicative, true)
+	if (!recursiveCall) :
+		Shopping.provideConfirmation(true)
 	
 func _on_equip_item(itemSceneRef) :
 	var type

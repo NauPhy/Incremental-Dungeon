@@ -93,12 +93,19 @@ enum otherStatEnum {
 	magicConversion,
 	physicalConversion,
 	magicFind,
+	routineEffect,
+	#dex
 	routineSpeed_0,
+	#dur
 	routineSpeed_1,
+	#int
 	routineSpeed_2,
+	#ski
 	routineSpeed_3,
+	#str
 	routineSpeed_4,
-	routineEffect
+	#all
+	routineSpeed_5,
 }
 const otherStatDictionary = {
 	otherStatEnum.magicDamageDealt : "Magic Damage Dealt",
@@ -108,12 +115,13 @@ const otherStatDictionary = {
 	otherStatEnum.magicConversion : "Magic Conversion",
 	otherStatEnum.physicalConversion : "Physical Conversion",
 	otherStatEnum.magicFind : "Magic Find",
-	otherStatEnum.routineSpeed_0 : "Routine Speed",
-	otherStatEnum.routineSpeed_1 : "Routine Speed",
-	otherStatEnum.routineSpeed_2 : "Routine Speed",
-	otherStatEnum.routineSpeed_3 : "Routine Speed",
-	otherStatEnum.routineSpeed_4 : "Routine Speed",
-	otherStatEnum.routineEffect : "Routine Effect"
+	otherStatEnum.routineEffect : "Routine Effect",
+	otherStatEnum.routineSpeed_0 : "Routine Speed (DEX)",
+	otherStatEnum.routineSpeed_1 : "Routine Speed (DUR)",
+	otherStatEnum.routineSpeed_2 : "Routine Speed (INT)",
+	otherStatEnum.routineSpeed_3 : "Routine Speed (SKI)",
+	otherStatEnum.routineSpeed_4 : "Routine Speed (STR)",
+	otherStatEnum.routineSpeed_5 : "Routine Speed"
 }
 enum classEnum {
 	fighter,mage,rogue

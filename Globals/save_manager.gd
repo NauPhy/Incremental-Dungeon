@@ -163,14 +163,13 @@ func loadGame(slot : Definitions.saveSlots) :
 	createTimer()
 	return true
 	
-func newGame(gameScreenRef : Node, characterClass : CharacterClass, characterName : String) :
+func newGame(gameScreenRef : Node, character : CharacterPacket) :
 	var saveableScenes : Array[NodePath]
 	for node in get_tree().get_nodes_in_group("Saveable") :
 		saveableScenes.append(node.get_path())
 	waitForReady(saveableScenes)
 	beforeLoadStep(saveableScenes, true)
-	gameScreenRef.initialisePlayerClass(characterClass)
-	gameScreenRef.initialisePlayerName(characterName)
+	gameScreenRef.initialisePlayerCharacter(character)
 	secondsElapsed = 0
 	createTimer()
 	

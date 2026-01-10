@@ -300,3 +300,10 @@ func engineeringRound(val, sigFigs : int) -> String :
 		return str(val).substr(0,2+sigFigs)
 	var rounded = myRound(val, sigFigs)
 	return engineeringNotation(val)
+	
+func popupIsPresent() -> bool :
+	var nodes = getAllNodes()
+	for node in nodes :
+		if (node.has_method("nestedPopupInit")) :
+			return true
+	return false

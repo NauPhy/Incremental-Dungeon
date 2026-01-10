@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_obe8o")
 title = "Demon City"
+introText = "You arrive in the suburbs of a Demon metropolitan area. Is this one of their larger cities? Their capital? You have no clue. The residents don't seem happy with you, though."
 permittedFactions = Array[int]([5, 6])
 firePermitted = true
 icePermitted = false

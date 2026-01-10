@@ -8,7 +8,7 @@ signal tutorialRequested
 func getTypicalEnemyDefense() :
 	var numArr : Array[float] = []
 	for room in $CombatMap/RoomContainer.get_children() :
-		if (room.has_method("getEncounterRef")) :
+		if (room.has_method("getEncounterRef") && room.getEncounterRef() != null) :
 			for enemy in room.getEncounterRef().enemies :
 				numArr.append(enemy.PHYSDEF)
 				numArr.append(enemy.MAGDEF)
@@ -151,6 +151,7 @@ func addRow(val : MapData, row : int) :
 			newConnection.setVisibility(1)
 		else :
 			newConnection.setVisibility(0)
+	
 	for index in range(0, val.rows[row].leftEncounters.size()) :
 		addSideRoom(val, row, index, true)
 	for index in range(0, val.rows[row].rightEncounters.size()) :
@@ -374,6 +375,8 @@ var debounceTimer = 0
 func _process(delta) :
 	debounceTimer += delta
 func _unhandled_input(event: InputEvent) -> void:
+	if (Helpers.popupIsPresent()) :
+		return
 	if (!is_visible_in_tree() || !UIEnabled) :
 		return
 	if (debounceTimer < 0.1 && !event.is_echo()) :
@@ -414,7 +417,8 @@ func setFromMapPosRatio() :
 func checkHerophile(room) :
 	if (room.has_method("getEncounterRef")) :
 		var encounter : Encounter = room.getEncounterRef()
-		for enemy in encounter.enemies :
-			if (enemy.getResourceName() == "champion_of_poseidon") :
-				emit_signal("tutorialRequested", Encyclopedia.tutorialName.herophile, Vector2(0,0))
-				return
+		if (encounter != null) :
+			for enemy in encounter.enemies :
+				if (enemy.getResourceName() == "champion_of_poseidon") :
+					emit_signal("tutorialRequested", Encyclopedia.tutorialName.herophile, Vector2(0,0))
+					return

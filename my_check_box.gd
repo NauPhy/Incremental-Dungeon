@@ -9,11 +9,13 @@ extends PanelContainer
 func setText(val) :
 	myText = val
 	$HBoxContainer/RichTextLabel.text = val + " "
+@export var pressedOnStartup : bool = false
 	
 func _ready() :
 	$HBoxContainer/RichTextLabel.text = myText + " "
+	set_pressed_no_signal(pressedOnStartup)
 func isPressed() -> bool :
-	return $HBoxContainer/CheckBox.button_pressed()
+	return $HBoxContainer/CheckBox.button_pressed
 	
 signal pressed
 func _on_check_box_pressed() -> void:

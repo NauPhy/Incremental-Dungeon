@@ -49,6 +49,6 @@ func addSaveInformation() :
 		if (loadDict == null) :
 			currentButton.hideExtra()
 		else :
-			currentButton.setName((loadDict["/root/Main/GameScreen/Player"])["playerName"])
+			currentButton.setName((loadDict["/root/Main/GameScreen/Player"])["myCharacter"]["name"])
 			currentButton.setTime((loadDict[SaveManager.get_path() as String])["playtime"])
 			currentButton.showExtra()

@@ -21,7 +21,7 @@ func createMap() -> MapData :
 	elif (previousMaps.size() == 4) :
 		newMap.shopName = "soul"
 	else :
-		newMap.shopData = "empty"
+		newMap.shopName = "empty"
 	previousMaps.append(newMap)
 	return newMap
 	

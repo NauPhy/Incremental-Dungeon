@@ -758,24 +758,24 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 	if (item == routinePurchasable.speed) :
 		value = [pow(2,0.125)]
 		type = "otherStat"
-		statEnum = [Definitions.otherStatEnum.routineSpeed]
+		statEnum = [Definitions.otherStatEnum.routineSpeed_5]
 		isMultiplicative = true
 		awaitingConfirmation = true
-		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	elif (item == routinePurchasable.effect) :
 		value = [pow(2,0.125)]
 		type = "otherStat"
 		statEnum = [Definitions.otherStatEnum.routineEffect]
 		isMultiplicative = true
 		awaitingConfirmation = true
-		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	elif (item == routinePurchasable.mixed) :
 		value = [0.1, 11]
 		type = "otherStat"
-		statEnum = [Definitions.otherStatEnum.routineSpeed, Definitions.otherStatEnum.routineEffect]
+		statEnum = [Definitions.otherStatEnum.routineSpeed_5, Definitions.otherStatEnum.routineEffect]
 		isMultiplicative = true
 		awaitingConfirmation = true
-		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 
 	elif (item == routinePurchasable.randomRoutine) :
 		var routineList = MegaFile.getAllRoutine()
@@ -838,7 +838,7 @@ func givePurchaseBenefit_armor(item : armorPurchasable, purchase : Purchasable) 
 		var source = "Armory Upgrade"
 		var modType = "Postmultiplier"
 		awaitingConfirmation = true
-		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	else :
 		return
 
@@ -862,7 +862,7 @@ func givePurchaseBenefit_weapon(item : weaponPurchasable, purchase : Purchasable
 		var source = "Weaponsmith Upgrade"
 		var modType = "Postmultiplier"
 		awaitingConfirmation = true
-		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	else :
 		return
 
@@ -926,7 +926,7 @@ func givePurchaseBenefitSoul(item : soulPurchasable, purchase : Purchasable) :
 			symbol = "+"
 		var ret : Array[String] = [statName + " Mult " + symbol + str(value[0])]
 		lastBought["statsBought"] = ret
-		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	elif (item == soulPurchasable.inventorySpace) :
 		awaitingConfirmation = true
 		emit_signal("increaseInventorySizeRequested")
@@ -950,7 +950,7 @@ func upgradeAllStats() :
 		statName = Definitions.attributeDictionary[key]
 		lastBought["statsBought"].append([statName + " Mult +0.005"])
 	awaitingConfirmation = true
-	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	if (awaitingConfirmation) :
 		await confirmationReceived
 	if (!confirmed) :
@@ -964,7 +964,7 @@ func upgradeAllStats() :
 		statName = Definitions.baseStatDictionary[key]
 		lastBought["statsBought"].append([statName + " Mult +0.01"])
 	awaitingConfirmation = true
-	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	if (awaitingConfirmation) :
 		await confirmationReceived
 	if (!confirmed) :
@@ -986,12 +986,12 @@ func upgradeAllStats() :
 		var temp2 : String = statName + " Mult " + symbol + str(value.back())
 		lastBought["statsBought"].append(temp2)
 	awaitingConfirmation = true
-	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative)
+	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	
 func getOtherStatUpgrade(key : Definitions.otherStatEnum, isAllStat : bool) :
 	if (key == Definitions.otherStatEnum.magicConversion || key == Definitions.otherStatEnum.physicalConversion) :
 		return 0
-	elif (key == Definitions.otherStatEnum.routineSpeed || key == Definitions.otherStatEnum.routineEffect) :
+	elif (key == Definitions.otherStatEnum.routineSpeed_5 || key == Definitions.otherStatEnum.routineEffect) :
 		if (isAllStat) :
 			return 0.01
 		else :
@@ -1013,9 +1013,9 @@ func setupDescriptions() :
 	var standardScaling = pow(2,0.125)
 	var standardScalingString = str(Helpers.myRound(standardScaling, 3))
 	var dict1 = routineDescriptionDictionary
-	dict1[routinePurchasable.speed] = Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed] + " Multiplier [color=green]x" + standardScalingString + "[/color]."
+	dict1[routinePurchasable.speed] = Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5] + " Multiplier [color=green]x" + standardScalingString + "[/color]."
 	dict1[routinePurchasable.effect] = Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect] + " Multiplier [color=green]x" + standardScalingString + "[/color]."
-	dict1[routinePurchasable.mixed] = Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed] + " Multiplier [color=red]x" + "0.1" + "[/color]." + "\n"
+	dict1[routinePurchasable.mixed] = Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5] + " Multiplier [color=red]x" + "0.1" + "[/color]." + "\n"
 	dict1[routinePurchasable.mixed] += Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect] + " Multiplier [color=green]x" + "1.2" + "[/color]."
 	dict1[routinePurchasable.randomRoutine] = "Unlock a random new Routine!"
 	dict1[str(routinePurchasable.randomRoutine)+"alt"] = "All routines unlocked!"
