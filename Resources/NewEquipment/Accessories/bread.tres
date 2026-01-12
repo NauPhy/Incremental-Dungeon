@@ -8,7 +8,7 @@
 script = ExtResource("1_8asru")
 isEligible = true
 quality = 1
-technology = 1
+technology = 0
 weaponClass = -1
 armorClass = -1
 isFire = false
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -145,7 +175,10 @@ script = ExtResource("3_meeim")
 boostedAttr1 = 1
 boostedAttr2 = -1
 title = "Bread"
-description = "Get gluten get gluten get gluten get gluten!"
+description = "Get gluten!
+Get gluten!
+Get gluten!
+Get gluten!"
 myPacket = SubResource("Resource_8asru")
 equipmentGroups = SubResource("Resource_1jl8n")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

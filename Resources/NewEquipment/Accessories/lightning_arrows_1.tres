@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_s6w72"]
+[sub_resource type="Resource" id="Resource_gf06t"]
 script = ExtResource("2_n2ass")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -145,11 +175,11 @@ script = ExtResource("3_pelyi")
 boostedAttr1 = 0
 boostedAttr2 = 3
 title = "Spark Arrows"
-description = "While using ranged weapon: 
+description = "While using non-melee weapon: 
 DR Multiplier [color=green]x1.11[/color]
-Physical Conversion Standard Multiplier +0.11
+Physical Conversion Base Bonus +0.11
 
 Syzygy was a natural philosopher before the Great War, and created a variety of bizarre weapons for the war effort, but none so popular as the spark arrows. Though identical to normal arrows in weight and aerodynamics, these arrows explode in a cloud of sparks when broken."
-myPacket = SubResource("Resource_s6w72")
+myPacket = SubResource("Resource_gf06t")
 equipmentGroups = SubResource("Resource_7gqv1")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

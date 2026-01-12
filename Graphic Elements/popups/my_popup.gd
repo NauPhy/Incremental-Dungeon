@@ -74,3 +74,5 @@ func _on_my_button_pressed(emitter) :
 			emit_signal("buttonPressed", index)
 			return
 		
+func _ready() :
+	$Panel.grab_focus()

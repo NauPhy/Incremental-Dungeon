@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = true
 
-[sub_resource type="Resource" id="Resource_wjvqy"]
+[sub_resource type="Resource" id="Resource_vehde"]
 script = ExtResource("2_bqdcg")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -148,6 +178,6 @@ title = "Tome of Eternal Winter"
 description = "This tome is perpetually at a temperature of absolute zero. Thankfully cold does not radiate like heat does, but it's still probably best to keep it heavily insulated and wear gloves while using it. 
 
 This tome contains powerful ice spells such as induce blizzard, conjure ice elemental, and... summon frost hydra. Huh."
-myPacket = SubResource("Resource_wjvqy")
+myPacket = SubResource("Resource_vehde")
 equipmentGroups = SubResource("Resource_10roh")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

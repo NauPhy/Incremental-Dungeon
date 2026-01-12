@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = true
 
-[sub_resource type="Resource" id="Resource_en5i7"]
+[sub_resource type="Resource" id="Resource_kbr0i"]
 script = ExtResource("2_utfkk")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -146,6 +176,6 @@ boostedAttr1 = 4
 boostedAttr2 = -1
 title = "Tome of Blazing Hellfire, 1st Edition"
 description = "Written by the famous archfiend Asmodeus, this hellforged tome contains many spells too advanced for even the most adept humanoid pyrokeneticists. Thankfully, there are some spells you can still manage, such as conjure magma, lance of soulfire, and Modazier's Expidited Pyrokinetic Hypercombustion (more commonly known as explosion)."
-myPacket = SubResource("Resource_en5i7")
+myPacket = SubResource("Resource_kbr0i")
 equipmentGroups = SubResource("Resource_vu1v0")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

@@ -134,6 +134,9 @@ signal playerClassRequested
 func _on_player_class_requested(emitter) :
 	emit_signal("playerClassRequested", emitter)
 	
+func getTypicalEnemyDefense(floor : int) :
+	return $MapContainer.get_child(floor).getTypicalEnemyDefense()
+	
 signal newFloorCompleted
 func _on_map_completed(emitter) :
 	var completedIndex = Helpers.findIndexInContainer($MapContainer, emitter)

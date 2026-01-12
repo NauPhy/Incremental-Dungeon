@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_wei8d"]
+[sub_resource type="Resource" id="Resource_ytxga"]
 script = ExtResource("2_bdiwc")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -144,6 +174,6 @@ otherMods = {
 script = ExtResource("3_lysf1")
 title = "Gold Coins"
 description = "Gold greases palms, builds empires, and investigates murder."
-myPacket = SubResource("Resource_wei8d")
+myPacket = SubResource("Resource_ytxga")
 equipmentGroups = SubResource("Resource_gvsjq")
 metadata/_custom_type_script = "uid://7ojdgcodms63"

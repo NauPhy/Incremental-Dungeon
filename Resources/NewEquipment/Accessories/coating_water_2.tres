@@ -17,7 +17,7 @@ isEarth = false
 isWater = true
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_06lkb"]
+[sub_resource type="Resource" id="Resource_ynhbv"]
 script = ExtResource("2_k1isq")
 attributeMods = {
 "Dexterity": {
@@ -110,8 +110,8 @@ otherMods = {
 },
 "Physical Conversion": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.22,
-"Prebonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.22,
 "Premultiplier": 1.0
 },
 "Physical Damage Dealt": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -149,6 +179,6 @@ description = "Keepers of old
 Keep us from the cold
 Let us fight once more
 'Til our honor is restored"
-myPacket = SubResource("Resource_06lkb")
+myPacket = SubResource("Resource_ynhbv")
 equipmentGroups = SubResource("Resource_ol5fc")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

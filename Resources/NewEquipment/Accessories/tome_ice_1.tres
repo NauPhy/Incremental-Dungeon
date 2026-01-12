@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_bng7w"]
+[sub_resource type="Resource" id="Resource_bj6gn"]
 script = ExtResource("2_xoav0")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -146,6 +176,6 @@ boostedAttr1 = 0
 boostedAttr2 = -1
 title = "Tome of Ice"
 description = "This frigid tome saw limited use in the Great War to assist in countermeasures against the hellfire storms conjured by opposing demon generals. "
-myPacket = SubResource("Resource_bng7w")
+myPacket = SubResource("Resource_bj6gn")
 equipmentGroups = SubResource("Resource_6kjjb")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

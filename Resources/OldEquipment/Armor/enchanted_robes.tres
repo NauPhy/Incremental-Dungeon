@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_e7ng2"]
+[sub_resource type="Resource" id="Resource_hw7a3"]
 script = ExtResource("1_e7ng2")
 attributeMods = {
 "Dexterity": {
@@ -84,7 +84,85 @@ statMods = {
 }
 }
 otherMods = {
+"Magic Conversion": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Magic Damage Dealt": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Magic Damage Taken": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
 "Magic Find": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Conversion": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Damage Dealt": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Physical Damage Taken": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Effect": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
 "Postbonus": 0.0,
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
@@ -98,6 +176,6 @@ PHYSDEF = 60.0
 MAGDEF = 100.0
 title = "Enchanted robes"
 description = "These robes enhance the user's magic while still providing more protection than a suit of plate armor."
-myPacket = SubResource("Resource_e7ng2")
+myPacket = SubResource("Resource_hw7a3")
 equipmentGroups = SubResource("Resource_jf1ll")
 metadata/_custom_type_script = "uid://bnh3m73ifmphh"

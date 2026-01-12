@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_fsdft"]
+[sub_resource type="Resource" id="Resource_05r8n"]
 script = ExtResource("2_inycu")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -146,6 +176,6 @@ boostedAttr1 = 1
 boostedAttr2 = 3
 title = "Dragon Crest Shield"
 description = "This shield is the work of a pacifist enchanter and blacksmith. A powerful statement of how one can defend themselves without killing. Unfortunately this master smith's identity is lost to history, as their ideals were unpopular at the time of the Great War."
-myPacket = SubResource("Resource_fsdft")
+myPacket = SubResource("Resource_05r8n")
 equipmentGroups = SubResource("Resource_e1vxo")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

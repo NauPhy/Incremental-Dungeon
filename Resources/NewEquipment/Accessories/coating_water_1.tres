@@ -17,7 +17,7 @@ isEarth = false
 isWater = true
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_1kxbn"]
+[sub_resource type="Resource" id="Resource_v0i1v"]
 script = ExtResource("2_c535u")
 attributeMods = {
 "Dexterity": {
@@ -110,8 +110,8 @@ otherMods = {
 },
 "Physical Conversion": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.12,
-"Prebonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.12,
 "Premultiplier": 1.0
 },
 "Physical Damage Dealt": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -145,7 +175,7 @@ script = ExtResource("3_274oe")
 boostedAttr1 = 2
 boostedAttr2 = -1
 title = "Vial of Liquid Mana"
-description = "Skin contact with liquid mana is thought to eat away at the soul of the victim, resulting in both temporary and permanent neurological damage. Prolonged exposure is fatal."
-myPacket = SubResource("Resource_1kxbn")
+description = "A common magical weapon coating. Skin contact with liquid mana is thought to eat away at the soul of the victim, resulting in both temporary and permanent neurological damage. Prolonged exposure results in cessation of brain function."
+myPacket = SubResource("Resource_v0i1v")
 equipmentGroups = SubResource("Resource_kkjfg")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

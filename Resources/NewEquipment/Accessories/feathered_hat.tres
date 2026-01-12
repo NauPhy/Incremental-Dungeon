@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_usxak"]
+[sub_resource type="Resource" id="Resource_sct40"]
 script = ExtResource("2_mnrq0")
 attributeMods = {
 "Dexterity": {
@@ -66,9 +66,9 @@ statMods = {
 },
 "Magic Defense": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.04,
+"Postmultiplier": 0.0,
 "Prebonus": 0.0,
-"Premultiplier": 1.0
+"Premultiplier": 1.04
 },
 "Max HP": {
 "Postbonus": 0.0,
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -147,6 +177,6 @@ boostedAttr2 = -1
 title = "Feathered Hat"
 description = "No fledgling marksman would be complete without a feathered hat.
 (The feather makes you go faster)"
-myPacket = SubResource("Resource_usxak")
+myPacket = SubResource("Resource_sct40")
 equipmentGroups = SubResource("Resource_3lbcc")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

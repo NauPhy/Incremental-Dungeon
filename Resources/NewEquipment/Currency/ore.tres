@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_opkat"]
+[sub_resource type="Resource" id="Resource_nq23y"]
 script = ExtResource("2_shfig")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -144,6 +174,6 @@ otherMods = {
 script = ExtResource("3_bcw2a")
 title = "Metal Ore"
 description = "This ore contains a mixture of metals of various qualities. For a milita spear one will get the job done, but if you want to forge Mjolnir you'd better bring a centrifuge."
-myPacket = SubResource("Resource_opkat")
+myPacket = SubResource("Resource_nq23y")
 equipmentGroups = SubResource("Resource_iwj32")
 metadata/_custom_type_script = "uid://7ojdgcodms63"

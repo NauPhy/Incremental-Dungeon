@@ -17,7 +17,7 @@ isEarth = true
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_rt1qk"]
+[sub_resource type="Resource" id="Resource_2d3y7"]
 script = ExtResource("2_17xs5")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -148,6 +178,6 @@ title = "Tome of Cataclysms"
 description = "This tome features a single page of acid-etched basalt beneath a window of sapphire glass. Its cover is multilayered, featuring materials such as aluminum oxide and CrCoNi. 
 
 The page features spells such as inducing earthquakes, summoning earth elementals, and growing forests."
-myPacket = SubResource("Resource_rt1qk")
+myPacket = SubResource("Resource_2d3y7")
 equipmentGroups = SubResource("Resource_v04tl")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

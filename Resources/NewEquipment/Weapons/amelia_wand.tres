@@ -18,7 +18,7 @@ isEarth = false
 isWater = false
 isSignature = true
 
-[sub_resource type="Resource" id="Resource_u0by7"]
+[sub_resource type="Resource" id="Resource_0l48m"]
 script = ExtResource("2_0l48m")
 attributeMods = {
 "Dexterity": {
@@ -138,6 +138,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -155,6 +185,6 @@ basicAttack = ExtResource("1_0l48m")
 isUnarmed = false
 title = "Thorns of Oglogoth"
 description = "These knitting needles surge with dark magic, and can be used in either melee or ranged combat to deadly effect. "
-myPacket = SubResource("Resource_u0by7")
+myPacket = SubResource("Resource_0l48m")
 equipmentGroups = SubResource("Resource_jvpns")
 metadata/_custom_type_script = "uid://6qgd3qugycc1"

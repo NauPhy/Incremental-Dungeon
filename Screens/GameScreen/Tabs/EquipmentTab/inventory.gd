@@ -64,13 +64,13 @@ func getModifierPacket() -> ModifierPacket :
 	for key in Definitions.equipmentTypeDictionary.keys() :
 		if (equippedEntries[key] != null) :
 			retVal = equippedEntries[key].addToModifierPacket(retVal)
-	if (equippedEntries[2] != null && equippedEntries[2].getItemName() == "coating_divine" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.melee) :
+	if (equippedEntries[2] != null && equippedEntries[2].getItemName() == "coating_divine" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass != EquipmentGroups.weaponClassEnum.ranged) :
 		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.11
 		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Prebonus"] += 0.11
-	elif (equippedEntries[2] != null && equippedEntries[2].getItemName() == "lightning_arrows_1" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.ranged) :
+	elif (equippedEntries[2] != null && equippedEntries[2].getItemName() == "lightning_arrows_1" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass != EquipmentGroups.weaponClassEnum.melee) :
 		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.11
 		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Prebonus"] += 0.11
-	elif (equippedEntries[2] != null && equippedEntries[2].getItemName() == "lightning_arrows_2" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass == EquipmentGroups.weaponClassEnum.ranged) :
+	elif (equippedEntries[2] != null && equippedEntries[2].getItemName() == "lightning_arrows_2" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass != EquipmentGroups.weaponClassEnum.melee) :
 		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.3
 		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Prebonus"] += 0.3
 	return retVal
@@ -86,7 +86,7 @@ func getElementalModifierPacket(subclass) -> ModifierPacket :
 		weaponMatches = 0
 	else :
 		weaponMatches = EquipmentGroups.getMatchingElementCount(equippedEntries[0].core.equipmentGroups, equippedEntries[2].core.equipmentGroups)
-		if (equippedEntries[1].getItemName() == "armor_cephalopod" && equippedEntries[2].core.equipmentGroups.isWater && !equippedEntries[0].core.equipmentGroups.isWater) :
+		if (equippedEntries[1] != null && equippedEntries[1].getItemName() == "armor_cephalopod" && equippedEntries[2] != null && equippedEntries[2].core.equipmentGroups.isWater && equippedEntries[0] != null && !equippedEntries[0].core.equipmentGroups.isWater) :
 			weaponMatches += 1
 	retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] = pow(mult, weaponMatches)
 	var armorMatches
@@ -404,4 +404,28 @@ func onLoad(loadDict) -> void :
 
 func _on_line_edit_text_submitted(new_text: String) -> void:
 	if (EquipmentDatabase.getEquipment(new_text) != null) :
-		addToInventory(SceneLoader.createEquipmentScene(new_text))
+		var newScene = SceneLoader.createEquipmentScene(new_text)
+		newScene.core = EquipmentDatabase.getEquipment(new_text).getAdjustedCopy(10)
+		addToInventory(newScene)
+
+const popupLoader = preload("res://Graphic Elements/popups/binary_decision.tscn")
+func _on_button_pressed() -> void:
+	var newPopup = popupLoader.instantiate()
+	add_child(newPopup)
+	newPopup.setTitle("Discard All")
+	newPopup.setText("Discard all non-equipped items?")
+	newPopup.setButton0Name("Confirm")
+	newPopup.setButton1Name("Cancel")
+	var choice = await newPopup.binaryChosen
+	if (choice == 0) :
+		var inventory = getInventory()
+		for index in range(0, inventory.get_children().size()) :
+			var panel = inventory.get_child(index)
+			if (panel.get_child_count() != 1) :
+				continue
+			var item = panel.get_child(0)
+			if (selectedEntry == item) :
+				emit_signal("itemDeselected",item)
+			if (equippedEntries.find(item) == -1) :
+				panel.remove_child(item)
+				item.queue_free()

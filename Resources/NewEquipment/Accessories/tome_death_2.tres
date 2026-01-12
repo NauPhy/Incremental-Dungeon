@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = true
 
-[sub_resource type="Resource" id="Resource_eoyyg"]
+[sub_resource type="Resource" id="Resource_54spu"]
 script = ExtResource("2_okcmq")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -148,6 +178,6 @@ title = "Tome of Forbidden Incantations"
 description = "Posession of this tome would have you burned at the stake by some of the more zealous righteous types... it features the true names of certain archfiends, rituals for summoning Avatars of Death and constructing bone dragons, spells for dominating the free will of other creatures, you name it. 
 
 Nothing about becoming a lich, though. No lich would commit that to paper."
-myPacket = SubResource("Resource_eoyyg")
+myPacket = SubResource("Resource_54spu")
 equipmentGroups = SubResource("Resource_lq8of")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

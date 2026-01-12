@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = true
 
-[sub_resource type="Resource" id="Resource_b6537"]
+[sub_resource type="Resource" id="Resource_dgx4w"]
 script = ExtResource("2_6m126")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.15
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.15
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.15
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.15
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.15
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.15
 }
 }
 
@@ -146,6 +176,6 @@ boostedAttr1 = 3
 boostedAttr2 = -1
 title = "Rune of Advanced Automation"
 description = "This rune is the central component of a Hell Sentinel's automation system, and it features the most advanced artificial intelligence in the world. Maybe it could teach you a thing or two."
-myPacket = SubResource("Resource_b6537")
+myPacket = SubResource("Resource_dgx4w")
 equipmentGroups = SubResource("Resource_1dot3")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

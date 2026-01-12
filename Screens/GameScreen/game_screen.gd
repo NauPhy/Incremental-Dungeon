@@ -466,6 +466,8 @@ func beforeLoad(newSave) :
 	## Wait for annoying dependency
 	if (!$MyTabContainer.myReady) :
 		await $MyTabContainer.actuallyReady
+	if (newSave) :
+		$Player.setTypicalEnemyDefense($MyTabContainer/InnerContainer/Combat.getTypicalEnemyDefense(0))
 	Shopping.connect("addPermanentModifierRequested", _shopping_permanent_modifier)
 	Shopping.connect("upgradeRoutineRequested", _shopping_upgrade_routine)
 	Shopping.connect("unlockRoutineRequested", _on_routine_unlock_requested)

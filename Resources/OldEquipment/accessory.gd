@@ -26,7 +26,7 @@ func getSaveDictionary() -> Dictionary :
 	if (boostedAttr1 == -1) :
 		retVal["attrVal1"] = -1
 	else :
-		retVal["attrVal1"] = myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr1]]["Postbonus"]
+		retVal["attrVal1"] = myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr1]]["Prebonus"]
 	return retVal
 	
 func createFromSaveDictionary(loadDict) -> Accessory :
@@ -35,7 +35,7 @@ func createFromSaveDictionary(loadDict) -> Accessory :
 		return retVal
 	if (loadDict["attrVal1"] == -1) :
 		return retVal
-	retVal.myPacket.attributeMods[Definitions.attributeDictionary[retVal.boostedAttr1]]["Postbonus"] = loadDict["attrVal1"]
+	retVal.myPacket.attributeMods[Definitions.attributeDictionary[retVal.boostedAttr1]]["Prebonus"] = loadDict["attrVal1"]
 	if (retVal.boostedAttr2 != -1) :
-		retVal.myPacket.attributeMods[Definitions.attributeDictionary[retVal.boostedAttr2]]["Postbonus"] = loadDict["attrVal1"]
+		retVal.myPacket.attributeMods[Definitions.attributeDictionary[retVal.boostedAttr2]]["Prebonus"] = loadDict["attrVal1"]
 	return retVal

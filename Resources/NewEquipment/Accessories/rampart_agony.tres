@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = true
 
-[sub_resource type="Resource" id="Resource_wdt5c"]
+[sub_resource type="Resource" id="Resource_2ievn"]
 script = ExtResource("2_vmr0o")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -146,6 +176,6 @@ boostedAttr1 = 1
 boostedAttr2 = 3
 title = "Rampart of Agony"
 description = "This torture device amplifies the victim's perception of pain while making them highly resistant to physical trauma. It certainly wouldn't be your first thought to use this yourself, but its previous owner made a compelling argument for its efficacy in combat."
-myPacket = SubResource("Resource_wdt5c")
+myPacket = SubResource("Resource_2ievn")
 equipmentGroups = SubResource("Resource_7f8mm")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

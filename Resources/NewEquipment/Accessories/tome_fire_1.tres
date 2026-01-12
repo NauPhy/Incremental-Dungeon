@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_47oov"]
+[sub_resource type="Resource" id="Resource_fv4oq"]
 script = ExtResource("2_yx6k0")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -146,6 +176,6 @@ boostedAttr1 = 4
 boostedAttr2 = -1
 title = "Tome of Fire"
 description = "These tomes are traditionally made from wood and soaked in oil to teach apprentice pyromancers to control the immense power they wield. It features spells such as fire blast, flame whip, and blinding flash."
-myPacket = SubResource("Resource_47oov")
+myPacket = SubResource("Resource_fv4oq")
 equipmentGroups = SubResource("Resource_2r3a5")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

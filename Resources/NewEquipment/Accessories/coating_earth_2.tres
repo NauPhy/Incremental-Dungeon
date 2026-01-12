@@ -17,7 +17,7 @@ isEarth = true
 isWater = false
 isSignature = true
 
-[sub_resource type="Resource" id="Resource_qp7aw"]
+[sub_resource type="Resource" id="Resource_ijjom"]
 script = ExtResource("2_0xm7a")
 attributeMods = {
 "Dexterity": {
@@ -110,8 +110,8 @@ otherMods = {
 },
 "Physical Conversion": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.35,
-"Prebonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.35,
 "Premultiplier": 1.0
 },
 "Physical Damage Dealt": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -146,6 +176,6 @@ boostedAttr1 = 1
 boostedAttr2 = -1
 title = "Vial of Lindwurm Venom"
 description = "This acrid venom eats through steel and rock with ease. Fortunately for your weapon, a precoating in lindwurm blood makes it immune to the effects."
-myPacket = SubResource("Resource_qp7aw")
+myPacket = SubResource("Resource_ijjom")
 equipmentGroups = SubResource("Resource_bil6r")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

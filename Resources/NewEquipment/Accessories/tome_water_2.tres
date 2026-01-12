@@ -17,7 +17,7 @@ isEarth = false
 isWater = true
 isSignature = true
 
-[sub_resource type="Resource" id="Resource_jl8t8"]
+[sub_resource type="Resource" id="Resource_vfe8m"]
 script = ExtResource("2_n47j7")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -146,6 +176,6 @@ boostedAttr1 = 2
 boostedAttr2 = -1
 title = "Tome of Frothing Torrents"
 description = "Ilsuiw's personal spellbook, this tome contains a variety of spells with both practical and academic applications, such as mass heal, conjure liquid mana, and an elaborate attempt at a tame kraken spell."
-myPacket = SubResource("Resource_jl8t8")
+myPacket = SubResource("Resource_vfe8m")
 equipmentGroups = SubResource("Resource_l28pn")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

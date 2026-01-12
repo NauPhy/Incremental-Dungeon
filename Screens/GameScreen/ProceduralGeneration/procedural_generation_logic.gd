@@ -226,7 +226,7 @@ func getScalingRows_mapFinished(currentRow) -> int :
 func getScalingRows_mapInProgress(currentRow) -> int :
 	var scalingRows = 0
 	if (previousMaps.size() == 0): 
-		return currentRow
+		return currentRow+1
 	if (previousMaps.size() == 1) :
 		return 6 + currentRow-1
 	scalingRows = 6

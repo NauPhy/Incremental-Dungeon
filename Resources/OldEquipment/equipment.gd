@@ -31,14 +31,29 @@ func resetNew() :
 	elif (myPacket.statMods.size() != Definitions.baseStatDictionary.keys().size()) :
 		myPacket = ModifierPacket.new()
 func resetOtherModsIfWrong() :
-	var localReset : bool = myPacket.otherMods.size() != Definitions.otherStatDictionary.keys().size()
-	localReset = localReset && myPacket.otherMods.size() < Definitions.otherStatEnum.routineSpeed_0 +1
-	if (localReset) :
+	var partialReset : bool = myPacket.otherMods.size() != Definitions.otherStatDictionary.keys().size()
+	var fullReset = partialReset && myPacket.otherMods.size() < Definitions.otherStatEnum.routineSpeed_0 +1
+	if (fullReset) :
+		print("Full reset: " + getItemName())
 		var oldPacket = myPacket.duplicate()
 		myPacket = ModifierPacket.new()
 		myPacket.attributeMods = oldPacket.attributeMods
 		myPacket.statMods = oldPacket.statMods
 		print(resource_path.get_file().get_basename())
+	elif (partialReset) :
+		print("Partial reset: " + getItemName())
+		var oldPacket = myPacket.duplicate()
+		myPacket = ModifierPacket.new()
+		myPacket.attributeMods = oldPacket.attributeMods
+		myPacket.statMods = oldPacket.statMods
+		## routine speed and routine effect used to be swapped
+		for index in range(0,Definitions.otherStatEnum.routineEffect) :
+			myPacket.otherMods[Definitions.otherStatDictionary[index]] = oldPacket.otherMods[Definitions.otherStatDictionary[index]]
+		myPacket.otherMods["Routine Effect"] = oldPacket.otherMods["Routine Effect"]
+		for index in range(Definitions.otherStatEnum.routineSpeed_0,Definitions.otherStatEnum.routineSpeed_5+1) :
+			myPacket.otherMods[Definitions.otherStatDictionary[index]] = oldPacket.otherMods["Routine Speed"]
+	else :
+		print("NO RESET: " + getItemName())
 
 func getModifierPacket() -> ModifierPacket :
 	return myPacket

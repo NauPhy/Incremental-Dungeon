@@ -2,7 +2,7 @@
 extends EditorScript
 
 func _run() :
-	performOnNewEquipmentFiles(func(a):a.resetOtherModsIfWrong())
+	performOnEquipmentFiles(func(a):a.resetOtherModsIfWrong())
 	
 func resetAllEquipmentFiles() :
 	performOnEquipmentFiles(func(a):a.reset())
@@ -72,7 +72,7 @@ func performOnResourcesInFolderRecursive(directory : String, toCall : Callable) 
 	currentIndex = 0
 	while (currentIndex < files.size()) :
 		if (files[currentIndex].get_extension() == "tres") :
-			print("Running on: " + files[currentIndex])
+			#print("Running on: " + files[currentIndex])
 			var temp : Resource = load(dir.get_current_dir().path_join(files[currentIndex]))
 			toCall.call(temp)
 			ResourceSaver.save(temp, dir.get_current_dir().path_join(files[currentIndex]))

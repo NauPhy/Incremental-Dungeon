@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = true
 
-[sub_resource type="Resource" id="Resource_qlpbb"]
+[sub_resource type="Resource" id="Resource_3m72b"]
 script = ExtResource("2_7ju8p")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -150,6 +180,6 @@ Physical Damage Taken Standard Multiplier [color=green]-0.25[/color]
 Magic Damage Taken Standard Multiplier [color=green]-0.25[/color]
 
 Created to keep the Balrog's bloodlust and insanity in check, this ring of power has a pacifying effect on nearby Demons."
-myPacket = SubResource("Resource_qlpbb")
+myPacket = SubResource("Resource_3m72b")
 equipmentGroups = SubResource("Resource_uvp3j")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"

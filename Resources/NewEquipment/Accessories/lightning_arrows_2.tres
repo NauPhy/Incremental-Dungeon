@@ -17,7 +17,7 @@ isEarth = false
 isWater = false
 isSignature = false
 
-[sub_resource type="Resource" id="Resource_1nkak"]
+[sub_resource type="Resource" id="Resource_4nhgq"]
 script = ExtResource("2_dn8c6")
 attributeMods = {
 "Dexterity": {
@@ -137,6 +137,36 @@ otherMods = {
 "Postmultiplier": 0.0,
 "Prebonus": 0.0,
 "Premultiplier": 1.0
+},
+"Routine Speed (DEX)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (DUR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (INT)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (SKI)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
+"Routine Speed (STR)": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
 }
 }
 
@@ -145,11 +175,11 @@ script = ExtResource("3_fos2q")
 boostedAttr1 = 0
 boostedAttr2 = 3
 title = "Thunderstorm Arrows"
-description = "If using ranged weapon: 
+description = "If using non-melee weapon: 
 DR Multiplier [color=green]x1.3[/color]
-Physical Conversion Standard Multiplier +0.3
+Physical Conversion Base Bonus +0.3
 
 The Dwarves of Zzyzx claim to have \"perfected\" Syzygy's spark arrows (mostly by adding more of every ingredient), but their designs never saw widespread use due to their tendency to detonate during transport or launch."
-myPacket = SubResource("Resource_1nkak")
+myPacket = SubResource("Resource_4nhgq")
 equipmentGroups = SubResource("Resource_o5u83")
 metadata/_custom_type_script = "uid://bmbbygpmfs6mv"
