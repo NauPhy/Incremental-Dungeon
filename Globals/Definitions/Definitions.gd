@@ -1,7 +1,7 @@
 extends Node
 const currentVersion : String = "V0.6 development"
 var GODMODE : bool = false
-var DEVMODE : bool = false
+var DEVMODE : bool = true
 
 func _ready() :
 	attributeCount = 0

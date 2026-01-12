@@ -358,6 +358,10 @@ func _ready() :
 	
 func beforeLoad(newSave) :
 	myReady = false
+	if (!Definitions.DEVMODE) :
+		$PanelContainer/HBoxContainer/LineEdit.queue_free()
+	else :
+		$PanelContainer/HBoxContainer/LineEdit.visible = true
 	for key in Definitions.equipmentTypeDictionary.keys() :
 		equippedEntries.append(null)
 	for key in Definitions.equipmentTypeDictionary.keys() :
@@ -396,3 +400,8 @@ func onLoad(loadDict) -> void :
 	emit_signal("myReadySignal")
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
+
+
+func _on_line_edit_text_submitted(new_text: String) -> void:
+	if (EquipmentDatabase.getEquipment(new_text) != null) :
+		addToInventory(SceneLoader.createEquipmentScene(new_text))

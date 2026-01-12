@@ -48,6 +48,10 @@ text = " ABC "
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -74,3 +78,5 @@ columns = 6
 [node name="Panel" parent="ScrollContainer/CenterContainer/GridContainer" instance=ExtResource("5_s505d")]
 layout_mode = 2
 mouse_filter = 1
+
+[connection signal="text_submitted" from="PanelContainer/HBoxContainer/LineEdit" to="." method="_on_line_edit_text_submitted"]
