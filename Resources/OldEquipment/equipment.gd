@@ -32,11 +32,13 @@ func resetNew() :
 		myPacket = ModifierPacket.new()
 func resetOtherModsIfWrong() :
 	var localReset : bool = myPacket.otherMods.size() != Definitions.otherStatDictionary.keys().size()
+	localReset = localReset && myPacket.otherMods.size() < Definitions.otherStatEnum.routineSpeed_0 +1
 	if (localReset) :
 		var oldPacket = myPacket.duplicate()
 		myPacket = ModifierPacket.new()
 		myPacket.attributeMods = oldPacket.attributeMods
 		myPacket.statMods = oldPacket.statMods
+		print(resource_path.get_file().get_basename())
 
 func getModifierPacket() -> ModifierPacket :
 	return myPacket

@@ -25,17 +25,26 @@ func tagUpdate() :
 func resetActorPresets() :
 	performOnResourcesInFolderRecursive("res://Screens/GameScreen/Tabs/Combat/Actors", func(a):a.reset())
 
+const oldDir = "res://Resources/OldEquipment/"
+const newDir = "res://Resources/NewEquipment/"
+const paths = ["Accessories","Armor","Currency","Weapons"]
 func performOnEquipmentFiles(toCall : Callable) :
 	for key in Definitions.equipmentTypeDictionary.keys() :
-		var path = Definitions.equipmentPaths[key]
-		var dir = DirAccess.open(path)
-		dir.list_dir_begin()
-		var filename = dir.get_next()
-		while (filename != "") :
-			var equipment : Equipment = load(path + "/" + filename)
-			toCall.call(equipment)
-			ResourceSaver.save(equipment, path + "/" + filename)
-			filename = dir.get_next()
+		for index in range(0,2) :
+			var path
+			if (index == 0) :
+				path = oldDir
+			else :
+				path = newDir
+			path += paths[key]
+			var dir = DirAccess.open(path)
+			dir.list_dir_begin()
+			var filename = dir.get_next()
+			while (filename != "") :
+				var equipment : Equipment = load(path + "/" + filename)
+				toCall.call(equipment)
+				ResourceSaver.save(equipment, path + "/" + filename)
+				filename = dir.get_next()
 			
 func performOnNewEquipmentFiles(toCall : Callable) :
 	performOnResourcesInFolderRecursive("res://Resources/NewEquipment/", toCall)
