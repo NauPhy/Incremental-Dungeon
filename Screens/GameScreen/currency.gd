@@ -38,7 +38,7 @@ func updateCurrencyGraphic(equip : Currency) :
 	var index = findCurrencyIndex(equip)
 	if (index == null) :
 		return
-	$VBoxContainer/HBoxContainer.get_child(index).get_node("Number").text = " " + str($VBoxContainer/HBoxContainer.get_child(index).get_child(0).getCount()) + " "
+	$VBoxContainer/HBoxContainer.get_child(index).get_node("Number").text = " " + Helpers.engineeringRound($VBoxContainer/HBoxContainer.get_child(index).get_child(0).getCount(),3) + " "
 func alphabetise() :
 	currencyList.sort_custom(func(a,b):a.name<b.name)
 	for index in range(0,currencyList.size()) :
@@ -91,16 +91,31 @@ func getSaveDictionary() -> Dictionary :
 	}
 	return tempDict
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	myReady = true
-func beforeLoad(_newGame) :
+	emit_signal("myReadySignal")
+func beforeLoad(newGame) :
+	myReady = false
 	if (Definitions.DEVMODE) :
 		$VBoxContainer/DevOptions.visible = true
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newGame) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 func onLoad(loadDict) :
+	myReady = false
 	if (loadDict.get("currencyList") != null) :
 		for key in loadDict["currencyList"].keys() :
 			var item = loadDict["currencyList"][key]
 			setCurrencyAmount(EquipmentDatabase.getEquipment(item["name"]),item["count"])
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
 
 
 func _on_line_edit_text_submitted(new_text: String) -> void:

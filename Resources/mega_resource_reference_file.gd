@@ -810,6 +810,8 @@ func getPlayerTexture_barding(resourceName : String) :
 	return PlayerTexture_bardingDictionary.get(resourceName)
 
 const PlayerTexture_baseDictionary = {
+	"ahuman_female" : preload("res://Resources/Textures/PlayerTexture/base/ahuman_female.png"),
+	"ahuman_male" : preload("res://Resources/Textures/PlayerTexture/base/ahuman_male.png"),
 	"centaur_brown_female" : preload("res://Resources/Textures/PlayerTexture/base/centaur_brown_female.png"),
 	"centaur_brown_male" : preload("res://Resources/Textures/PlayerTexture/base/centaur_brown_male.png"),
 	"centaur_darkbrown_female" : preload("res://Resources/Textures/PlayerTexture/base/centaur_darkbrown_female.png"),
@@ -820,10 +822,6 @@ const PlayerTexture_baseDictionary = {
 	"centaur_lightbrown_male" : preload("res://Resources/Textures/PlayerTexture/base/centaur_lightbrown_male.png"),
 	"centaur_lightgrey_female" : preload("res://Resources/Textures/PlayerTexture/base/centaur_lightgrey_female.png"),
 	"centaur_lightgrey_male" : preload("res://Resources/Textures/PlayerTexture/base/centaur_lightgrey_male.png"),
-	"deep_dwarf_female" : preload("res://Resources/Textures/PlayerTexture/base/deep_dwarf_female.png"),
-	"deep_dwarf_male" : preload("res://Resources/Textures/PlayerTexture/base/deep_dwarf_male.png"),
-	"deep_elf_female" : preload("res://Resources/Textures/PlayerTexture/base/deep_elf_female.png"),
-	"deep_elf_male" : preload("res://Resources/Textures/PlayerTexture/base/deep_elf_male.png"),
 	"demigod_male" : preload("res://Resources/Textures/PlayerTexture/base/demigod_male.png"),
 	"demonspawn_black_female" : preload("res://Resources/Textures/PlayerTexture/base/demonspawn_black_female.png"),
 	"demonspawn_black_male" : preload("res://Resources/Textures/PlayerTexture/base/demonspawn_black_male.png"),
@@ -864,8 +862,6 @@ const PlayerTexture_baseDictionary = {
 	"gnome_male" : preload("res://Resources/Textures/PlayerTexture/base/gnome_male.png"),
 	"halfling_female" : preload("res://Resources/Textures/PlayerTexture/base/halfling_female.png"),
 	"halfling_male" : preload("res://Resources/Textures/PlayerTexture/base/halfling_male.png"),
-	"human_female" : preload("res://Resources/Textures/PlayerTexture/base/human_female.png"),
-	"human_male" : preload("res://Resources/Textures/PlayerTexture/base/human_male.png"),
 	"kenku_winged_female" : preload("res://Resources/Textures/PlayerTexture/base/kenku_winged_female.png"),
 	"kenku_winged_male" : preload("res://Resources/Textures/PlayerTexture/base/kenku_winged_male.png"),
 	"kenku_wingless_female" : preload("res://Resources/Textures/PlayerTexture/base/kenku_wingless_female.png"),
@@ -925,7 +921,11 @@ const PlayerTexture_baseDictionary = {
 	"troll_female" : preload("res://Resources/Textures/PlayerTexture/base/troll_female.png"),
 	"troll_male" : preload("res://Resources/Textures/PlayerTexture/base/troll_male.png"),
 	"vampire_female" : preload("res://Resources/Textures/PlayerTexture/base/vampire_female.png"),
-	"vampire_male" : preload("res://Resources/Textures/PlayerTexture/base/vampire_male.png")}
+	"vampire_male" : preload("res://Resources/Textures/PlayerTexture/base/vampire_male.png"),
+	"zdeep_dwarf_female" : preload("res://Resources/Textures/PlayerTexture/base/zdeep_dwarf_female.png"),
+	"zdeep_dwarf_male" : preload("res://Resources/Textures/PlayerTexture/base/zdeep_dwarf_male.png"),
+	"zdeep_elf_female" : preload("res://Resources/Textures/PlayerTexture/base/zdeep_elf_female.png"),
+	"zdeep_elf_male" : preload("res://Resources/Textures/PlayerTexture/base/zdeep_elf_male.png")}
 
 
 func getPlayerTexture_base(resourceName : String) :

@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_codtv")
 title = "Merfolk Palace"
+introText = "The Merfolk have no desire to conquer the Surface or Underworld, but they do maintain embassies and trade outposts in other nations. This palace is the largest Merfolk settlement in the Underworld, serving as the official border between the Demon and Merfolk nations. "
 permittedFactions = Array[int]([7])
 firePermitted = false
 icePermitted = false

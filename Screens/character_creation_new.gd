@@ -1,6 +1,6 @@
 extends Control
 
-const permittedBasePrefixes = ["deep_dwarf", "deep_elf", "demigod", "dwarf", "elf", "gnome", "human", "vampire"]
+const permittedBasePrefixes = ["human", "zdeep_dwarf", "zdeep_elf", "demigod", "dwarf", "elf", "gnome", "vampire"]
 
 var permittedNames : Array[String] = []
 
@@ -52,7 +52,8 @@ func setupOther(type) -> int :
 	return MegaFile.getPlayerTextureDictionary("PlayerTexture_" + type).size() + 1
 
 func setDefaultTextures() :
-	$Portrait.setTexture("Base", MegaFile.getPlayerTexture_base(permittedBasePrefixes[0]+"_female"), permittedBasePrefixes[0]+"_female")
+	$Portrait.setTexture("Base", MegaFile.getPlayerTexture_base(permittedNames[0]), permittedNames[0])
+	$Portrait.setTexture("Cat", MegaFile.getPlayerTexture_felids("cat_1"), "cat_1")
 	for child in $Portrait.get_children() :
 		if (child == $Portrait/Base || child == $Portrait/Cat) :
 			pass
@@ -81,6 +82,9 @@ func _on_carousel_move(emitter : Node, currentPos, _currentOption) :
 		$Portrait.setTexture(type, null, "null")
 	else :
 		$Portrait.setTexture(type, MegaFile.getPlayerTextureDictionary("PlayerTexture_" + type).values()[currentPos-1], MegaFile.getPlayerTextureDictionary("PlayerTexture_"+type).keys()[currentPos-1])
+	if (!applyingPreset) :
+		undoPreset = preUndoPreset
+		preUndoPreset = getCurrentPreset()
 
 func setupLayout() :
 	var base = $Carousels/Body/PanelContainer/VBoxContainer/base
@@ -121,6 +125,8 @@ func _on_my_button_pressed() -> void:
 	tempPop.setTitle("Are you sure?")
 	tempPop.setText("Is this your true self?")
 	tempPop.connect("binaryChosen", _on_binary_chosen)
+	if (get_parent() is CanvasLayer) :
+		tempPop.layer = get_parent().layer
 func _on_binary_chosen(chosen : int) :
 	if (chosen == 0) :
 		var myClass = $CharacterCreator/VBoxContainer2/StatDescription.currentStats
@@ -134,3 +140,114 @@ func _on_binary_chosen(chosen : int) :
 		emit_signal("characterDone", myCharacter)
 	elif (chosen == 1) :
 		return
+
+const softNotificationLoader = preload("res://Graphic Elements/soft_notification.tscn")
+func _on_joke_cat_button_pressed() -> void:
+	var newNotification = softNotificationLoader.instantiate()
+	add_child(newNotification)
+	newNotification.global_position = $JokeCatButton.global_position
+	newNotification.initialiseAndRun("[color=red]DO NOT THE CAT[/color]", null, null, null, null)
+
+const magePreset : Array[int] = [1,1,0,1,82,95,0,0,13,1,23]
+const fighterPreset : Array[int] = [0,8,0,3,63,102,26,10,13,49,89]
+const roguePreset : Array[int] = [5,7,0,2,0,88,20,0,11,16,187]
+const nullPreset : Array[int] = [0,0,0,0,0,0,0,0,0,0,0]
+var undoPreset : Array[int] = nullPreset
+var preUndoPreset : Array[int] = nullPreset
+var applyingPreset : bool = false
+func _on_preset_button_pressed(emitter) -> void:
+	applyingPreset = true
+	var tempPreset
+	tempPreset = getCurrentPreset()
+	if (emitter.name as String == "Mage") :
+		applyPreset(magePreset)
+	elif (emitter.name as String == "Fighter") :
+		applyPreset(fighterPreset)
+	elif (emitter.name as String == "Rogue") :
+		applyPreset(roguePreset)
+	elif (emitter.name as String == "Reset All") :
+		applyPreset(nullPreset)
+	elif (emitter.name as String == "Undo") :
+		applyPreset(undoPreset)
+	else :
+		return
+	await get_tree().process_frame
+	undoPreset = tempPreset
+	preUndoPreset = getCurrentPreset()
+	applyingPreset = false
+	
+func disableClassSelection() :
+	$CharacterCreator.visible = false
+func addCancelOption() :
+	$VBoxContainer.position.x = $Portrait.position.x/2.0-$VBoxContainer.size.x/2.0
+	$VBoxContainer.position.y = $Portrait.position.y + $Portrait.size.y/2.0-$VBoxContainer.size.y/2.0
+	#$VBoxContainer.position.x += 30
+	$VBoxContainer.offset_bottom = 0
+	var newButton = $VBoxContainer/MyButton.duplicate()
+	$VBoxContainer.add_child(newButton)
+	newButton.disconnect("pressed", _on_my_button_pressed)
+	newButton.text = " Cancel "
+	newButton.connect("pressed", _on_cancel)
+	
+var currentCharacterCache
+func initialiseAppearanceChange(currentCharacter : CharacterPacket) :
+	currentCharacterCache = currentCharacter
+	disableClassSelection()
+	addCancelOption()
+	$Portrait.onLoad(currentCharacter.getPortraitDictionary())
+	$VBoxContainer/LineEdit.text = currentCharacter.getName()
+	var textures = currentCharacter.getPortraitDictionary()["textures"]
+	for index in range(0,textures.size()) :
+		var key = textures.keys()[index]
+		if (textures[key] == null || textures[key] == "null") :
+			continue
+		var tempKey
+		if (key == "Base") :
+			tempKey = "base"
+		elif (key == "Cat") :
+			tempKey = "felids"
+		else :
+			tempKey = key
+		var isBody : bool = false
+		for child in $Carousels/Body/PanelContainer/VBoxContainer.get_children() :
+			if (child.name as String == tempKey) :
+				isBody = true
+				break
+		var pos
+		if (key == "Base") :
+			pos = permittedNames.find(textures[key])
+		else :
+			pos = MegaFile.getPlayerTextureDictionary("PlayerTexture_"+tempKey).keys().find(textures[key])
+		if (isBody) :
+			if (key != "Cat" && key != "Base") :
+				pos += 1
+			$Carousels/Body/PanelContainer/VBoxContainer.get_node(tempKey).get_node("Carousel").setPositionNoSignal(pos)
+		else :
+			pos += 1
+			$Carousels/Clothes/PanelContainer/VBoxContainer.get_node(tempKey).get_node("Carousel").setPositionNoSignal(pos)
+		
+func _on_cancel() :
+	emit_signal("characterDone", currentCharacterCache)
+	
+func applyPreset(val : Array[int]) :
+	var bodyCarousels = $Carousels/Body/PanelContainer/VBoxContainer.get_children()
+	var clothesCarousels = $Carousels/Clothes/PanelContainer/VBoxContainer.get_children()
+	#var bodyNames : Array[String] = []
+	#for car in bodyCarousels :
+		#bodyNames.append(car.name as String)
+	#var clothesNames : Array[String] = []
+	#for car in clothesCarousels :
+		#clothesNames.append(car.name as String)
+	for index in range(0, val.size()) :
+		if (index < bodyCarousels.size()) :
+			bodyCarousels[index].get_node("Carousel").setPositionWithSignal(val[index], false)
+		else :
+			clothesCarousels[index-bodyCarousels.size()].get_node("Carousel").setPositionWithSignal(val[index], false)
+			
+func getCurrentPreset() -> Array[int] :
+	var retVal : Array[int] = []
+	for car in $Carousels/Body/PanelContainer/VBoxContainer.get_children() :
+		retVal.append(car.get_node("Carousel").getPosition())
+	for car in $Carousels/Clothes/PanelContainer/VBoxContainer.get_children() :
+		retVal.append(car.get_node("Carousel").getPosition())
+	return retVal

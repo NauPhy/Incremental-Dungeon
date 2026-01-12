@@ -299,8 +299,13 @@ func engineeringRound(val, sigFigs : int) -> String :
 	if (abs(val) < 1) :
 		return str(val).substr(0,2+sigFigs)
 	var rounded = myRound(val, sigFigs)
-	return engineeringNotation(val)
+	return engineeringNotation(rounded)
 	
+var internalPopupBool : bool = false
+func notifyPopupStart() :
+	internalPopupBool = true
+func notifyPopupStop() :
+	internalPopupBool = false
 func popupIsPresent() -> bool :
 	var nodes = getAllNodes()
 	for node in nodes :

@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_4g02p")
 title = "Reef Community"
+introText = "This beautiful reef is officially part of the Merfolk nation. You'd best be on your guard, the Merfolk do not like outsiders."
 permittedFactions = Array[int]([1, 7])
 firePermitted = false
 icePermitted = false

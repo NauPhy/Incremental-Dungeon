@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_qh0e7")
 title = "Hell Fortress"
-introText = ""
+introText = "Strongholds of the Demonic Military, these fortresses maintain control over choke points in the vast cave system of the Underworld, taxing trade routes and ensuring the Demons' dominance in the region remains unchallenged."
 permittedFactions = Array[int]([5])
 firePermitted = true
 icePermitted = false

@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_s7i6f")
 title = "Greenskin War Camp"
+introText = "The route you've plotted appears to run straight through a Greenskin War Camp. They don't take kindly to outsiders, and will no doubt take an interest in your equipment."
 permittedFactions = Array[int]([8])
 firePermitted = false
 icePermitted = false

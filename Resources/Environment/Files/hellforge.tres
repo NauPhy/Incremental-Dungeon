@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_30d2a")
 title = "Hellforge"
+introText = "Deep in the Underworld, great hellforges such as this use magma to smelt and refine ores unheard of on the Surface, creating the finest tools of war the world has ever known."
 permittedFactions = Array[int]([0, 5])
 firePermitted = true
 icePermitted = false

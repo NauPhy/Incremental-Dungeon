@@ -4,7 +4,10 @@
 
 [resource]
 script = ExtResource("1_u8atk")
-title = "Arctic Tundra"
+title = "Boreal Forest"
+introText = "Pine needles crunch underfoot as you walk through the forest. The tree branches are heavy with snow, and dim light shines from... somewhere.
+
+With any luck you'll find a friendly wolf to adopt."
 permittedFactions = Array[int]([3, 2])
 firePermitted = false
 icePermitted = true

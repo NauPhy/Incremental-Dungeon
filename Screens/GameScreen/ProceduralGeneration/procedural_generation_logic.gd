@@ -84,19 +84,21 @@ func getAllItems() :
 	return list
 	
 func getEnvironment() -> MyEnvironment :
-	if (previousMaps.size() == 7) :
+	if (previousMaps.size() == 9) :
 		return MegaFile.getEnvironment("fort_demon")
 	var myRange = MegaFile.Environment_FilesDictionary.size()-1
 	var randKey = MegaFile.Environment_FilesDictionary.keys()[randi_range(0,myRange)]
 	var potentialEnvironment = MegaFile.getEnvironment(randKey)
-	while (createdRecently(potentialEnvironment)) :
+	## Outside of endless mode, the Demon Fortress is exclusive to the final floor
+	while (createdRecently(potentialEnvironment) || (previousMaps.size()<10 && randKey == "fort_demon") ) :
 		randKey = MegaFile.Environment_FilesDictionary.keys()[randi_range(0,myRange)]
 		potentialEnvironment = MegaFile.getEnvironment(randKey)
 	return potentialEnvironment
 	
 func createdRecently(newEnv : MyEnvironment) -> bool :
 	var envName = newEnv.resource_path.get_file().get_basename()
-	if (previousMaps.size() < 4) :
+	## There are 20 environments and 10 floors... might as well ensure no repeats whatsoever outside of endless mode
+	if (previousMaps.size() < 10) :
 		for map in previousMaps :
 			if (map.environmentName == envName) :
 				return true
@@ -122,7 +124,7 @@ func createEncounters() -> MapData :
 		for rightIndex in range(0,rightNodeCount) :
 			newRow.rightEncounters.append(createSideEncounter(index))
 		retVal.rows.append(newRow)
-	if (previousMaps.size() == 7) :
+	if (previousMaps.size() == 9) :
 		retVal.bossEncounter = createFinalBossEncounter(rowCount+1)
 	else :
 		retVal.bossEncounter = createBossEncounter(rowCount+1)
@@ -193,10 +195,10 @@ func createFinalBossEncounter(currentRow) -> Encounter :
 	retVal.enemies.append(apophisResource.getAdjustedCopy(getEnemyScaling(scalingRows+1)))
 	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(scalingRows)))
 	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(scalingRows)))
-	retVal.introTitle = ""
-	retVal.introText = ""
-	retVal.victoryTitle = ""
-	retVal.victoryText = ""
+	retVal.introTitle = "This Is It"
+	retVal.introText = "You had heard that the royal family was uniquely powerful among Archfiends, and as you enter the throne room, you finally see why. Half demon, half fire dragon, the Demon King towers over the archfiend at his side. He glowers at you with 3 sets of eyes and signals a phalanx of hell knights to advance on you."
+	retVal.victoryTitle = "Victory!"
+	retVal.victoryText = "After a long and brutal fight, Apophis finally falls, and with him, the Demons' hopes of world domination."
 	addDrops(retVal)
 	return retVal
 		
@@ -278,17 +280,32 @@ func createRandomShopItem(type : Definitions.equipmentTypeEnum, scaling : float)
 	return newItem.getAdjustedCopy(scaling)
 ############# Saving
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	myReady = true
+	emit_signal("myReadySignal")
 func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
 	retVal["previousMaps"] = []
 	for map in previousMaps :
 		retVal["previousMaps"].append(map.getSaveDictionary())
 	return retVal
-func beforeLoad(_newGame) :
+func beforeLoad(newGame) :
+	myReady = false
 	$EnemyPoolHandler.initialiseMiscPool(getAllMisc())
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newGame) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 func onLoad(loadDict : Dictionary) :
+	myReady = false
 	if (loadDict.get("previousMaps") != null) :
 		for map in loadDict.get("previousMaps") :
 			previousMaps.append(MapData.createFromSaveDictionary(map))
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")

@@ -29,6 +29,10 @@ func setSpriteSizeRecursive(children : Array[Node], val) :
 			child.visible = true
 		setSpriteSizeRecursive(child.get_children(), val)
 
+var currentLayer = 0
+func setLayer(val) :
+	currentLayer = val
+			
 func setEquipment(item : Equipment) :
 	var stuff = item.equipmentGroups
 	var tech = $Technology.get_children()
@@ -55,6 +59,9 @@ func setEquipment(item : Equipment) :
 		$Signature.get_child(0).visible = false
 	updateAllRecursive(get_children())
 	addTooltipsRecursive(get_children())
+	for child in get_children() :
+		for child2 in child.get_children() :
+			child2.get_child(0).get_child(1).currentLayer = currentLayer
 	
 func updateAllRecursive(children : Array[Node]) :
 	for child in children :
@@ -82,5 +89,5 @@ func addTooltip(child : Node) :
 	var newTrigger = tooltipLoader.instantiate()
 	child.add_child(newTrigger)
 	newTrigger.initialise(title)
-	newTrigger.currentLayer = Helpers.getTopLayer()
+	#newTrigger.currentLayer = Helpers.getTopLayer()
 	newTrigger.setPos(upperLeft, bottomRight)

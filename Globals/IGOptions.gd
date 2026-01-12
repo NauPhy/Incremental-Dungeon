@@ -70,14 +70,29 @@ func getSaveDictionary() -> Dictionary :
 	tempDict["optionDict"] = optionDict
 	return tempDict
 var myReady : bool = false
-
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	add_to_group("Saveable")
 	myReady = true
+	emit_signal("myReadySignal")
 	
 func beforeLoad(newGame : bool) :
+	myReady = false
 	if (newGame) :
 		saveAndUpdateIGOptions(getDefaultOptionDict())
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newGame) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 		
 func onLoad(loadDict : Dictionary) :
+	myReady = false
 	saveAndUpdateIGOptions(loadDict["optionDict"])
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
+	

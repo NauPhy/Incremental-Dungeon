@@ -8,6 +8,10 @@ const binaryPopup = preload("res://Graphic Elements/popups/binary_decision.tscn"
 ## Other
 var firstProcess : bool = true
 func _process(_delta) :
+	if (!doneLoading) :
+		return
+	if (!myReady) :
+		return
 	if (firstProcess) :
 		var numberRefs = $Player.getRoutineSpeedByReference()
 		$MyTabContainer/InnerContainer/Training.initialiseNumberRefs(numberRefs)
@@ -290,6 +294,8 @@ func _on_player_subclass_requested(emitter) -> void :
 	emitter.providePlayerSubclass($Player.getSubclass())
 func _on_weapon_resource_requested(emitter) -> void :
 	emitter.provideWeaponResource(EquipmentDatabase.getEquipment($MyTabContainer/InnerContainer/Equipment.getCurrentWeapon().getItemName()))
+func _on_player_portrait_requested(emitter) -> void :
+	emitter.provideplayerPortrait($Player.getPortrait())
 func _on_routine_unlock_requested(emitter, routine : AttributeTraining) :
 	$MyTabContainer/InnerContainer/Training.unlockRoutine(routine)
 	if (emitter == Shopping) :
@@ -444,13 +450,19 @@ func getSaveDictionary() -> Dictionary :
 	tempDict["permanentMods"] = {}
 	for key in permanentMods.keys() :
 		tempDict["permanentMods"][key] = permanentMods[key].getSaveDictionary()
+	tempDict["apophisKilled"] = apophisKilledOnThisFile
 	return tempDict
 		
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	myReady = true
+	emit_signal("myReadySignal")
 	
 func beforeLoad(newSave) :
+	myReady = false
 	## Wait for annoying dependency
 	if (!$MyTabContainer.myReady) :
 		await $MyTabContainer.actuallyReady
@@ -495,6 +507,10 @@ func beforeLoad(newSave) :
 			tab.connect("playerSubclassRequested", _on_player_subclass_requested)
 		if (tab.has_signal("weaponResourceRequested")) :
 			tab.connect("weaponResourceRequested", _on_weapon_resource_requested)
+		if (tab.has_signal("playerPortraitRequested")) :
+			tab.connect("playerPortraitRequested", _on_player_portrait_requested)
+		if (tab.has_signal("apophisKilled")) :
+			tab.connect("apophisKilled", createApophisScreen)
 		#if (tab.has_signal("isReforgedHoveredRequested")) :
 			#tab.connect("isReforgedHoveredRequested", _on_reforge_hovered_requested)
 		#if (tab.has_signal("playerAttributeModsRequested")) :
@@ -511,14 +527,55 @@ func beforeLoad(newSave) :
 		for index in range(0,tabsUnlocked.size()) :
 			if (!tabsUnlocked[index]) :
 				$MyTabContainer.hideChild($MyTabContainer/InnerContainer.get_child(index))
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newSave) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 				
 func onLoad(loadDict : Dictionary) -> void :
+	myReady = false
 	tabsUnlocked = loadDict["tabsUnlocked"]
 	for index in range(0,tabsUnlocked.size()) :
 		if (!tabsUnlocked[index]) :
 			$MyTabContainer.hideChild($MyTabContainer/InnerContainer.get_child(index))
 	for key in loadDict["permanentMods"].keys() :
 		permanentMods[key] = ModifierPacket.createFromSaveDictionary(loadDict["permanentMods"][key])
+	apophisKilledOnThisFile = loadDict["apophisKilled"]
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
 
 func updateFromOptions(optionsCopy : Dictionary) :
 	IGOptions_inventoryBehaviour = optionsCopy[IGOptions.options.inventoryBehaviour] as inventoryBehaviour_local
+
+var apophisKilledOnThisFile : bool = false
+func createApophisScreen() :
+	if (apophisKilledOnThisFile) :
+		return
+	var newPopup = binaryPopupLoader.instantiate()
+	add_child(newPopup)
+	newPopup.setTile("The Demon King is Slain!")
+	newPopup.setText("Congratulations, you've defeated the Demon King! The Surface world is saved! Or something. This game was going to have a more in depth story but game development is hard. In any case, there are actually 20 biomes, 25 bosses, and 10 factions in this game, and levels 1-9 are randomly generated! So I encourage you to check out endless mode or try one of the other classes. Thanks for playing!")
+	newPopup.setButton0Name("Continue playing (begin endless mode)")
+	newPopup.setButton1Name("Return to Main Menu")
+	var choice = await newPopup.binaryChosen
+	if (choice == 1) :
+		_exit_to_menu()
+	elif (choice == 0) :
+		apophisKilledOnThisFile = true
+		await SaveManager.saveGame(SaveManager.currentSlot)
+
+const characterCreationLoader = preload("res://Screens/character_creation_new.tscn")
+func _on_change_appearance_button_pressed() -> void:
+	var topLayer = CanvasLayer.new()
+	add_child(topLayer)
+	topLayer.layer = 99
+	var newScreen = characterCreationLoader.instantiate()
+	topLayer.add_child(newScreen)
+	newScreen.initialiseAppearanceChange($Player.getCharacterPacket())
+	var character : CharacterPacket = await newScreen.characterDone
+	$Player.setFromCharacter(character)
+	topLayer.queue_free()
+	

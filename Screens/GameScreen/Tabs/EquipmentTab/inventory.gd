@@ -307,6 +307,10 @@ func clearDraggingSiblings() :
 	draggingSiblings = []
 	
 func _process(_delta) :
+	if (!doneLoading) :
+		return
+	if (!myReady) :
+		return
 	if (draggingPanel != null) :
 		var changed : bool = true
 		if (draggingSiblings[0] && draggingPanel.global_position.x < draggingSiblings[0].global_position.x) :
@@ -345,10 +349,15 @@ func getSaveDictionary() -> Dictionary :
 	return tempDict
 	
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	myReady = true
+	emit_signal("myReadySignal")
 	
 func beforeLoad(newSave) :
+	myReady = false
 	for key in Definitions.equipmentTypeDictionary.keys() :
 		equippedEntries.append(null)
 	for key in Definitions.equipmentTypeDictionary.keys() :
@@ -360,8 +369,14 @@ func beforeLoad(newSave) :
 	$PanelContainer/HBoxContainer/ABC.connect("myPressed", _on_abc_pressed)
 	if (newSave) :
 		initialiseContainers()
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newSave) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 
-func onLoad(loadDict) -> void : 
+func onLoad(loadDict) -> void :
+	myReady = false 
 	inventorySize = loadDict["inventorySize"]
 	initialiseContainers()
 	var inventorySlots = getInventoryList()
@@ -377,3 +392,7 @@ func onLoad(loadDict) -> void :
 			equippedEntries[key] = null
 		else :
 			equipItem(inventorySlots[loadDict["equippedIndex" + str(key)]].get_child(0))
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")

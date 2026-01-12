@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cjkba3r58vrt7"]
+[gd_scene load_steps=18 format=3 uid="uid://cjkba3r58vrt7"]
 
 [ext_resource type="Script" uid="uid://c8wg3arf71lrm" path="res://Screens/GameScreen/game_screen.gd" id="1_ri4dt"]
 [ext_resource type="PackedScene" uid="uid://dmeoqahxkto01" path="res://Screens/GameScreen/Tabs/Attributes/attribute_tab.tscn" id="3_wv6b4"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://c208wpo504d75" path="res://Images/SpriteSheets/1-bit_Pixel_Icons/Icons_Software.png" id="13_hupum"]
 [ext_resource type="Texture2D" uid="uid://c4v37w36v2ff3" path="res://Images/SpriteSheets/1-bit_Pixel_Icons/Icons_Tools_Crafting.png" id="14_4fsfw"]
 [ext_resource type="PackedScene" uid="uid://dd4wj7wyb0t2j" path="res://Screens/GameScreen/currency_handler.tscn" id="15_4fsfw"]
+[ext_resource type="Theme" uid="uid://c8cfcbe6ioxu5" path="res://Graphic Elements/Themes/subTab.tres" id="16_4fsfw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0vvmv"]
 bg_color = Color(1, 1, 1, 1)
@@ -159,12 +160,19 @@ region_rect = Rect2(39, 40, 12, 8)
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="changeAppearanceButton" type="Button" parent="TopRibbon/Ribbon"]
+layout_mode = 2
+size_flags_vertical = 4
+theme = ExtResource("16_4fsfw")
+text = " Change Appearance "
+
 [connection signal="timeout" from="Autosave" to="Autosave" method="_on_timeout"]
 [connection signal="addToInventoryRequested" from="MyTabContainer/InnerContainer/Combat" to="." method="_on_combat_add_to_inventory_requested"]
 [connection signal="newFloorCompleted" from="MyTabContainer/InnerContainer/Combat" to="." method="_on_floor_clear"]
 [connection signal="wasSelected" from="TopRibbon/Ribbon/MenuContainer/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="wasSelected" from="TopRibbon/Ribbon/MenuContainer/EncyclopediaButton" to="." method="_on_encyclopedia_button_pressed"]
 [connection signal="wasSelected" from="TopRibbon/Ribbon/MenuContainer/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="TopRibbon/Ribbon/changeAppearanceButton" to="." method="_on_change_appearance_button_pressed"]
 
 [editable path="MyTabContainer"]
 [editable path="TopRibbon/Ribbon/MenuContainer/SaveButton"]

@@ -71,6 +71,8 @@ func updateArmor(val : Armor) :
 	equippedArmor = val
 func updateAccessory(val : Accessory) :
 	equippedAccessory = val
+func getPortrait() -> Dictionary :
+	return myCharacter.getPortraitDictionary()
 ###############################
 ## Direct modifiers
 func updateDirectModifier(origin : String, val : ModifierPacket) :
@@ -264,6 +266,8 @@ func getDerivedStatList() :
 ## Setters
 #Takes ownership of class struct
 var myCharacter : CharacterPacket = null
+func getCharacterPacket() :
+	return myCharacter
 func setFromCharacter(character : CharacterPacket) :
 	myCharacter = character
 	setClass(character.getClass())
@@ -336,6 +340,9 @@ func getSaveDictionary() -> Dictionary :
 	return tempDict
 	
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	initialiseNumberObjects()
 	$CustomMouseover.initialise($ScrollContainer/VBoxContainer, $ScrollContainer/VBoxContainer/DerivedStatPanel/StatTitle, $ScrollContainer/VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay/AttackSpeed/Number, $ScrollContainer/VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay/DamagePerHit/Number)
@@ -343,12 +350,20 @@ func _ready() :
 	$ScrollContainer/VBoxContainer/AttributePanel.initialise(attributeObjects)
 	$ScrollContainer/VBoxContainer/OtherStatPanel.initialise(otherStatObjects)
 	myReady = true
+	emit_signal("myReadySignal")
 	
 var humanMan = preload("res://Resources/OldActor/Misc/human.tres")
-func beforeLoad(_newSave : bool) :
+func beforeLoad(newSave : bool) :
+	myReady = false
 	core = humanMan.duplicate()
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newSave) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 	
 func onLoad(loadDict) -> void :	
+	myReady = false
 	#setClass(load(loadDict["playerClass"]))
 	#setName(loadDict["playerName"])
 	setFromCharacter(CharacterPacket.createFromSaveDictionary(loadDict["myCharacter"]))
@@ -356,6 +371,10 @@ func onLoad(loadDict) -> void :
 		typicalEnemyDefense = loadDict["typicalEnemyDefense"]
 	setSubclass(loadDict["subclass"])
 	learningCurveEnabled = loadDict["learningCurveEnabled"]
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
 	
 func getSoftcapMod() -> ModifierPacket :
 	var retVal = ModifierPacket.new()

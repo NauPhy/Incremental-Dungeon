@@ -71,13 +71,24 @@ func getSaveDictionary() -> Dictionary :
 	return tempDict
 	
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() : 
 	mainSettingsInit()
 	randomize()
 	swapToMenu()
 	myReady = true
+	emit_signal("myReadySignal")
 
-func beforeLoad(_newSave) :
-	pass
+func beforeLoad(newSave) :
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newSave) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 func onLoad(_loadDict) :
-	pass
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")

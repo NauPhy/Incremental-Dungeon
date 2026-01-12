@@ -58,6 +58,7 @@ func _on_add_child_requested(emitter, node : Node) :
 signal mapCompleted
 func completeRoom(completedRoom) :
 	checkHerophile(completedRoom)
+	checkApophis(completedRoom)
 	var firstCompletion = !completedRoom.isCompleted()
 	completedRoom.onCombatComplete()
 	if (firstCompletion || completedRoom.has_method("isEmpty") && completedRoom.isEmpty()) :
@@ -147,11 +148,17 @@ func addRow(val : MapData, row : int) :
 		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row-1))
 		newConnection.Room2 = centerRoom
 		if (row == 1) :
+			if (val.shopName == "empty") :
+				newConnection.visibilityOnStartup = 2
+				newConnection.setVisibility(2)
+			else :
+				newConnection.visibilityOnStartup = 1
+				newConnection.setVisibility(1)
+		elif (row == 2 && val.shopName == "empty") :
 			newConnection.visibilityOnStartup = 1
 			newConnection.setVisibility(1)
 		else :
 			newConnection.setVisibility(0)
-	
 	for index in range(0, val.rows[row].leftEncounters.size()) :
 		addSideRoom(val, row, index, true)
 	for index in range(0, val.rows[row].rightEncounters.size()) :
@@ -164,6 +171,8 @@ func addSideRoom(val : MapData, row : int, leafCounter : int, isLeft : bool) :
 		newRoom.initialise(val.rows[row].leftEncounters[leafCounter], 0)
 	else :
 		newRoom.initialise(val.rows[row].rightEncounters[leafCounter], 0)
+	if (row == 0 && leafCounter == 0) :
+		newRoom.setVisibility(1)
 	var leftRightChar
 	if (isLeft) :
 		leftRightChar = "L"
@@ -183,8 +192,18 @@ func addSideRoom(val : MapData, row : int, leafCounter : int, isLeft : bool) :
 		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row))
 	else :
 		newConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(row)+leftRightChar+str(leafCounter-1))
+	if (row == 0 && leafCounter == 0) :
+		if (val.shopName == "empty") :
+			newConnection.visibilityOnStartup = 2
+		else :
+			newConnection.visibilityOnStartup = 1
+	elif (row == 0 && leafCounter == 1 && val.shopName == "empty"):
+		newConnection.visibilityOnStartup = 1
+	elif (row == 1 && leafCounter == 0 && val.shopName == "empty"):
+		newConnection.visibilityOnStartup = 1
 		
 func addBossRoom(val : MapData) :
+	var tempEncounter = val.bossEncounter
 	var bossRoom = roomLoader.instantiate()
 	$CombatMap/RoomContainer.add_child(bossRoom)
 	bossRoom.initialise(val.bossEncounter, 0)
@@ -195,6 +214,7 @@ func addBossRoom(val : MapData) :
 	$CombatMap/ConnectionContainer.add_child(bossConnection)
 	bossConnection.Room1 = $CombatMap/RoomContainer.get_node("N"+str(val.rows.size()-1))
 	bossConnection.Room2 = bossRoom
+	
 		
 func setRoomToOrigin(room : Button) :
 	room.anchor_left = 0.5
@@ -222,6 +242,7 @@ func setRoomPosVertical(room : Button, amount : int, isBoss : bool) :
 ## This function constructs itself as well as its rooms and calls initialise() for each
 ## room. room.beforeLoad() and room.onLoad() is left for map.beforeLoad() and map.onLoad().
 var fullyInitialised : bool = false
+signal fullyInitialisedSignal
 func initialise(val) :
 	if (val is MapData) :
 		await setFromMapData(val)
@@ -230,6 +251,7 @@ func initialise(val) :
 		initScroll()
 		goHome()
 		fullyInitialised = true
+		emit_signal("fullyInitialisedSignal")
 	elif (val == null) :
 		return
 	else :
@@ -374,10 +396,10 @@ func forceBoundaries() :
 var debounceTimer = 0
 func _process(delta) :
 	debounceTimer += delta
-func _unhandled_input(event: InputEvent) -> void:
-	if (Helpers.popupIsPresent()) :
-		return
+func _unhandled_input(event: InputEvent) -> void :
 	if (!is_visible_in_tree() || !UIEnabled) :
+		return
+	if (Helpers.popupIsPresent()) :
 		return
 	if (debounceTimer < 0.1 && !event.is_echo()) :
 		return
@@ -421,4 +443,13 @@ func checkHerophile(room) :
 			for enemy in encounter.enemies :
 				if (enemy.getResourceName() == "champion_of_poseidon") :
 					emit_signal("tutorialRequested", Encyclopedia.tutorialName.herophile, Vector2(0,0))
+					return
+signal apophisKilled
+func checkApophis(room) :
+	if (room.has_method("getEncounterRef")) :
+		var encounter : Encounter = room.getEncounterRef()
+		if (encounter != null) :
+			for enemy in encounter.enemies :
+				if (enemy.getResourceName() == "aphophis") :
+					emit_signal("apophisKilled")
 					return

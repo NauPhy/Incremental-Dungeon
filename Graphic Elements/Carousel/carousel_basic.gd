@@ -20,6 +20,8 @@ var hiddenScale : float = 1.0
 		
 
 var currentPos : int = 0
+func getPosition() -> int :
+	return currentPos
 
 const minimumSize = Vector2(14,12)
 var myReady : bool = false
@@ -59,6 +61,9 @@ func moveCarousel() :
 		callable.call(options[currentPos])
 	else :
 		emit_signal("move", self, currentPos, options[currentPos])
+func setPositionNoSignal(val : int) :
+	currentPos = val
+	updateCarousel()
 
 func _on_right_pressed() -> void:
 	if (currentPos == options.size()-1) :

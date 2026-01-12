@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_b13gx")
 title = "Fortress of Death"
+introText = "Featuring gargoyles, bats, and pumpkin patches, this castle is surely swarming with undead. The stench of decay and unnatural chill are already making you feel a bit ill."
 permittedFactions = Array[int]([4])
 firePermitted = false
 icePermitted = true

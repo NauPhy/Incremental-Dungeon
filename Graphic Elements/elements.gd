@@ -8,10 +8,14 @@ func _ready() :
 		var newTooltip = tooltipLoader.instantiate()
 		children[index].add_child(newTooltip)
 		newTooltip.initialise(elementStrings[index])
-		newTooltip.currentLayer = Helpers.getTopLayer()
+		#newTooltip.currentLayer = Helpers.getTopLayer()
 		var upperLeft = Vector2(0,0)
 		var bottomRight = Vector2(16,16)*children[index].getScale()
 		newTooltip.setPos(upperLeft, bottomRight)
+		
+func setLayer(val) :
+	for child in get_children() :
+		child.get_child(1).currentLayer = val
 
 func setSymbolMutex(val : String) :
 	clearAllSymbols()

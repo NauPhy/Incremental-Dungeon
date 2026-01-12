@@ -1,7 +1,7 @@
 extends Node
 const currentVersion : String = "V0.6 development"
-var GODMODE : bool = true
-var DEVMODE : bool = true
+var GODMODE : bool = false
+var DEVMODE : bool = false
 
 func _ready() :
 	attributeCount = 0
@@ -215,6 +215,6 @@ const subclassDescriptions = {
 	subclass.knight : "-DR Multiplier [color=red]x0.75[/color].\n-Bonus to Base DR of [color=green]+N[/color], where N = 190% of the average of your equipped Armor's PHYSDEF and MAGDEF.\n\nYou feel naked in anything less than full plate.",
 	subclass.ammo : "While a ranged (or neither) weapon is equipped:\n-AR Multiplier [color=green]x1.35[/color].\n-All damage is dealt to the lower of your enemy's resistances.\n\nYour custom ammunition always hits the enemy where it's weakest.",
 	subclass.whirl : "While a melee (or neither) weapon is equipped:\n-Attack speed Multiplier [color=green]x1.16[/color]\n-PHYSDEF Multiplier [color=green]x1.08[/color]\n-MAGDEF Multiplier [color=green]x1.08[/color]\n\nYou fight with such ferocity that no opponent can get within arms reach unharmed.",
-	subclass.enchant : "While an elemental weapon is equipped:\n-DR Multiplier [color=green]x1.1[/color].\nWhile an elemental armor is equipped:\n-MAGDEF Multiplier [color=green]x1.1[/color].\n-PHYSDEF Multiplier [color=green]x1.1[/color].\nWhile an elemental accessory is equipped:\n-Skill Multiplier [color=green]x1.05[/color].\n\nThe effect of Elemental synergy is increased from [color=green]1.25x[/color] to [color=green]1.3125x[/color]\n\nYou've spent countless hours studying and attuning to enchanted equipment, and can use it expertly.",
+	subclass.enchant : "While an elemental weapon is equipped:\n-DR Multiplier [color=green]x1.1[/color].\nWhile an elemental armor is equipped:\n-MAGDEF Multiplier [color=green]x1.1[/color].\n-PHYSDEF Multiplier [color=green]x1.1[/color].\nWhile an elemental accessory is equipped:\n-Skill Multiplier [color=green]x1.05[/color].\n-The effect of Elemental synergy is increased from [color=green]1.25x[/color] to [color=green]1.3125x[/color]\n\nYou've spent countless hours studying and attuning to enchanted equipment, and can use it expertly.",
 	subclass.soul : "-HP Multiplier [color=red]x0.85[/color]\n-Bonus to HP Standard Multiplier of [color=green]+N[/color]\n-Bonus to DR Standard Multiplier of [color=green]+N[/color]\n-N=-0.00004x^2+0.0105x-0.25\n\nYou performed a ritual that allows your body to gain power from the souls of your enemies. Your heart stopped for a couple seconds and now you have jaundice, but it's probably nothing to worry about."
 }

@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_yqiwc")
 title = "Pit of Depravity"
+introText = "Some of the more barbaric Demonic castes have found a kinship with the Greenskin tribes of the Surface, leading to the creation of scavenging settlements like this one. The Demonic military, understandably wanting nothing to do with these savages, have turned a blind eye."
 permittedFactions = Array[int]([6, 8])
 firePermitted = false
 icePermitted = false

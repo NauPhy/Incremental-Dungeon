@@ -2,9 +2,13 @@ extends Node
 ############################################################
 ## Saving
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	self.add_to_group("Saveable")
 	myReady = true
+	emit_signal("myReadySignal")
 	
 var lastBought = {
 	"boughtRoutine" : null,
@@ -68,6 +72,7 @@ func getSaveDictionary() -> Dictionary :
 	return retVal
 
 func beforeLoad(newGame) :
+	myReady = false
 	resetSaveSpecificVariants()
 	setupDescriptions()
 	setupTimers()
@@ -78,10 +83,16 @@ func beforeLoad(newGame) :
 		unlockedRoutines.append("hug_cacti")
 		unlockedRoutines.append("read_novels")
 		unlockedRoutines.append("spar")
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newGame) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 
 var armorUnlocked : bool = false
 var weaponUnlocked : bool = false
 func onLoad(loadDict) :
+	myReady = false
 	allRoutinesPurchased = loadDict["allRoutines"]
 	if (loadDict.get("unlockedRoutines") != null) :
 		unlockedRoutines = loadDict["unlockedRoutines"]
@@ -116,6 +127,10 @@ func onLoad(loadDict) :
 		else :
 			myArmor.append(EquipmentDatabase.getEquipment(armor).getAdjustedCopy(armorScaling))
 	subclassPurchased = loadDict["subclassPurchased"]
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
 		
 ###################################################################################
 ## General

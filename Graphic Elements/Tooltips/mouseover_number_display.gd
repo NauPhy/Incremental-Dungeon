@@ -19,7 +19,7 @@ func createNumberList(items : Dictionary) -> String :
 	for index in range(0,keys.size()) :
 		if (index != 0) :
 			retVal += "\n\t"
-		retVal += keys[index] + ": " + str(Helpers.myRound(items[keys[index]], 3))
+		retVal += keys[index] + ": " + Helpers.engineeringRound(items[keys[index]],3)
 	return retVal
 	
 enum number_createFormulaString_type{prebonus,postbonus,premultiplier,postmultiplier}
@@ -31,7 +31,7 @@ func createFormulaString(items : Dictionary, type : number_createFormulaString_t
 		for index in range(0,myKeys.size()) :
 			if (index != 0) :
 				retVal += getSymbol(type)
-			retVal += str(Helpers.myRound(items[myKeys[index]],3))
+			retVal += Helpers.engineeringRound(items[myKeys[index]],3)
 		retVal += getAffix(type, items.size())
 	return retVal
 
@@ -78,7 +78,7 @@ func getSymbol(type : number_createFormulaString_type) :
 func _process(_delta) :
 	if (myNumberRef == null) :
 		return
-	setText(str(Helpers.myRound(myNumberRef.getFinal(),3)))
+	setText(Helpers.engineeringRound(myNumberRef.getFinal(),3))
 	#if ($TooltipTrigger.spawned) :
 		#return
 	if (!$TooltipTrigger.isOnNestedTooltip()) :

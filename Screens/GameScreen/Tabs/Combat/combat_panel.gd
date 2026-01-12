@@ -45,6 +45,22 @@ func providePlayerSubclass(val) :
 	waitingForPlayerSubclass = false
 	emit_signal("playerSubclassReceived")
 
+signal playerPortraitRequested
+signal playerPortraitReceived
+var waitingForplayerPortrait : bool = false
+var playerPortrait_comm = -1
+func getplayerPortrait() -> Dictionary :
+	waitingForplayerPortrait = true
+	emit_signal("playerPortraitRequested", self)
+	if (waitingForplayerPortrait) :
+		await playerPortraitReceived
+	return playerPortrait_comm
+func provideplayerPortrait(val) :
+	playerPortrait_comm = val
+	waitingForplayerPortrait = false
+	emit_signal("playerPortraitReceived")
+
+const playerLoader = preload("res://Screens/GameScreen/Tabs/Combat/Actors/player_actor.tscn")
 var currentPlayerMods : Dictionary = {}
 var hasDemonRingEquipped : bool = false
 func resetCombat(friendlyCores : Array[ActorPreset], enemyCores : Array[ActorPreset]) :
@@ -54,10 +70,13 @@ func resetCombat(friendlyCores : Array[ActorPreset], enemyCores : Array[ActorPre
 	for friend in friendlyCores :
 		if (friend == friendlyCores[0] && Definitions.GODMODE) :
 			friend.actions = [GODPUNCHloader]
-		var newActor = actorLoader.instantiate()
+		var newActor = playerLoader.instantiate()
 		newActor.core = friend
 		newActor.HP = newActor.core.MAXHP
 		$FriendlyParty.add_child(newActor)
+		var playerPortrait = await getplayerPortrait()
+		playerPortrait["scale"] = newActor.get_node("Portrait").myScale
+		newActor.setPortrait(playerPortrait)
 		newActor.connect("playerSubclassRequested", _on_player_subclass_requested)
 		newActor.connect("actionTaken", _on_friend_action_taken)
 		newActor.connect("weaponResourceRequested", _on_weapon_resource_requested)
@@ -108,8 +127,12 @@ func cleanup() :
 	
 enum combatStatus {running, victory, defeat}		
 func _process(_delta: float) -> void:
+	if (!doneLoading) :
+		return
+	if (!myReady) :
+		return
 	if (paused) :
-			return
+		return
 	var status = getStatus()
 	if (status == combatStatus.running) :
 		doCombatStep()
@@ -247,30 +270,30 @@ func executeAction(emitter, action, target) :
 				physicalDR = DR
 		else :
 			if (action.type == AttackAction.damageType.MAG) :
-				magicDR = DR*(1-currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicConversion])
-				physicalDR = DR*(currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicConversion])
+				magicDR = DR*(1-currentPlayerMods["otherStat"][Definitions.otherStatDictionary[Definitions.otherStatEnum.magicConversion]])
+				physicalDR = DR*(currentPlayerMods["otherStat"][Definitions.otherStatDictionary[Definitions.otherStatEnum.magicConversion]])
 			elif (action.type == AttackAction.damageType.PHYS) :
-				magicDR = DR*(currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalConversion])
-				physicalDR = DR*(1-currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalConversion])
+				magicDR = DR*(currentPlayerMods["otherStat"][Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]])
+				physicalDR = DR*(1-currentPlayerMods["otherStat"][Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]])
 			else :
 				return
 
 	var physicalArgs : Array = [action.power, physicalDR, AR, physicalDefense]
-	var physicalDamage = Encyclopedia.getFormula("Damage Value", Encyclopedia.formulaAction.getCalculation_full, physicalArgs)
+	var physicalDamage = Encyclopedia.getFormula("Damage", Encyclopedia.formulaAction.getCalculation_full, physicalArgs)
 	if (target != $FriendlyParty.get_child(0)) :
-		physicalDamage *= currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalDamageDealt]
+		physicalDamage *= currentPlayerMods["otherStat"][Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalDamageDealt]]
 	else :
-		var PDT =  currentPlayerMods["otherStat"][Definitions.otherStatEnum.physicalDamageTaken]
+		var PDT =  currentPlayerMods["otherStat"][Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalDamageTaken]]
 		if (hasDemonRingEquipped && emitter.core.enemyGroups.faction == EnemyGroups.factionEnum.demonic_military) :
 			PDT -= 0.25
 		physicalDamage *= PDT
 		
 	var magicArgs : Array = [action.power, magicDR, AR, magicDefense]
-	var magicDamage = Encyclopedia.getFormula("Damage Value", Encyclopedia.formulaAction.getCalculation_full, magicArgs)
+	var magicDamage = Encyclopedia.getFormula("Damage", Encyclopedia.formulaAction.getCalculation_full, magicArgs)
 	if (target != $FriendlyParty.get_child(0)) :
-		magicDamage *= currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicDamageDealt]
+		magicDamage *= currentPlayerMods["otherStat"][Definitions.otherStatDictionary[Definitions.otherStatEnum.magicDamageDealt]]
 	else :
-		var MDT = currentPlayerMods["otherStat"][Definitions.otherStatEnum.magicDamageTaken]
+		var MDT = currentPlayerMods["otherStat"][Definitions.otherStatDictionary[Definitions.otherStatEnum.magicDamageTaken]]
 		if (hasDemonRingEquipped && emitter.core.enemyGroups.faction == EnemyGroups.factionEnum.demonic_military) :
 			MDT -= 0.25
 		magicDamage *= MDT
@@ -284,17 +307,30 @@ func executeAction(emitter, action, target) :
 func _on_check_box_toggled(toggled_on: bool) -> void:
 	autoMode = toggled_on
 	
-var myReady
+var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	myReady = true
+	emit_signal("myReadySignal")
 
 func getSaveDictionary() -> Dictionary :
 	var tempDict : Dictionary = {}
 	tempDict["autoMode"] = autoMode
 	return tempDict
-func beforeLoad(_newGame : bool) :
-	pass
+func beforeLoad(newGame : bool) :
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newGame) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 func onLoad(loadDict : Dictionary) :
+	myReady = false
 	autoMode = loadDict["autoMode"]
 	if (autoMode) :
 		$PanelContainer/HBoxContainer/CheckBox.set_pressed_no_signal(true)
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")

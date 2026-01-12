@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_1u6xb")
 title = "Unholy Alliance"
+introText = "The Demonic Military are nothing if not pragmatic, and frequently supplement their forces with undead raised in the Underworld's Fortresses of Death. Requiring no alms, no sleep, and following orders without question, they make ideal soldiers."
 permittedFactions = Array[int]([4, 5])
 firePermitted = false
 icePermitted = false

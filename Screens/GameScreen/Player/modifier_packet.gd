@@ -109,7 +109,7 @@ static func getStrOrNull_static(tag : String, val : float, prefix : String, spec
 			tempStr += "[color=red]"
 		else :
 			tempStr += "[color=green]"
-	tempStr += symbol + str(Helpers.myRound(val,3))
+	tempStr += symbol + Helpers.engineeringRound(val,3)
 	tempStr += "[/color]"
 	return tempStr
 		

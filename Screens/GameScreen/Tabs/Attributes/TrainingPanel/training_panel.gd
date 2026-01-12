@@ -100,6 +100,7 @@ func upgradeRoutine(routine : AttributeTraining) :
 	routineUpgradeLevels[routine.resource_path.get_file().get_basename()] += 1
 	if (routine == currentTrainingResource) :
 		emit_signal("trainingChanged", await createUpgradedTraining(currentTrainingResource))
+	$Con.get_node(routine.text).setResource(routine, routineUpgradeLevels[routine.getResourceName()])
 		
 func createUpgradedTraining(routine : AttributeTraining) :
 	while (playerNumberRefs.size() != Definitions.attributeDictionary.keys().size()) :
@@ -111,12 +112,18 @@ func createUpgradedTraining(routine : AttributeTraining) :
 	return retVal
 
 func _on_requested_disable(_emitter) :
+	currentTrainingResource = null
 	emit_signal("trainingChanged", null)
 	
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	myReady = true
-func beforeLoad(_newGame) :
+	emit_signal("myReadySignal")
+func beforeLoad(newGame) :
+	myReady = false
 	var routineList = MegaFile.getAllRoutine()
 	for routine in routineList :
 		routineUpgradeLevels[routine.resource_path.get_file().get_basename()] = 0
@@ -131,16 +138,24 @@ func beforeLoad(_newGame) :
 	for key in MegaFile.Routine_FilesDictionary.keys() :
 		var newEntry = trainingEntry.instantiate()
 		$Con.add_child(newEntry)
-		newEntry.setResource(MegaFile.getRoutine(key))
+		newEntry.setResource(MegaFile.getRoutine(key), 0)
 		newEntry.name = newEntry.getResource().text
 		newEntry.visible = !newEntry.getResource().hidden
 		newEntry.connect("requestedEnable", _on_requested_enable)
 		newEntry.connect("requestedDisable", _on_requested_disable)
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newGame) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 func onLoad(loadDict : Dictionary) :
+	myReady = false
+	routineUpgradeLevels = loadDict["routineUpgrades"]
 	for node in $Con.get_children() :
 		if (node != $Con/Title && node != $Con/Spacer && node != $Con/PanelContainer) :
 			node.visible = loadDict["routineUnlocks"][node.name]
-	routineUpgradeLevels = loadDict["routineUpgrades"]
+			var upgrades = routineUpgradeLevels[node.getResource().getResourceName()]
+			node.setResource(node.getResource(),upgrades)
 	if (loadDict["currentTraining"] == "null") :
 		currentTrainingResource = null
 	else :
@@ -150,6 +165,10 @@ func onLoad(loadDict : Dictionary) :
 				child.setButton()
 				break
 		emit_signal("trainingChanged", await createUpgradedTraining(currentTrainingResource))
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
 func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
 	var routineUnlocks : Dictionary = {}

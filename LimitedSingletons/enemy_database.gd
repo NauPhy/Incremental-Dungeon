@@ -38,8 +38,12 @@ func setItemCollected(enemyName : String, item : String) :
 	emit_signal("enemyDataChanged", enemyName)
 	
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	myReady = true
+	emit_signal("myReadySignal")
 	
 func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
@@ -48,12 +52,18 @@ func getSaveDictionary() -> Dictionary :
 	return retVal
 	
 func beforeLoad(newGame) :
+	myReady = false
 	if (newGame) :
 		for actor in MegaFile.getAllNewActor() :
 			resetEntry(actor.resource_path.get_file().get_basename())
 		for actor in MegaFile.getAllOldActor() :
 			resetEntry(actor.resource_path.get_file().get_basename())
-				
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newGame) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
+	
 func resetEntry(key) :
 	killedDictionary[key] = 0
 	var emptyDict : Dictionary = {}
@@ -63,10 +73,15 @@ func resetEntry(key) :
 		itemsObtainedDictionary[key][item.getName()] = false
 
 func onLoad(loadDict : Dictionary) :
+	myReady = false
 	killedDictionary = loadDict["killed"]
 	itemsObtainedDictionary = loadDict["items"]
 	await get_tree().process_frame
 	emit_signal("enemyDataChanged", "ALL")
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
 
 func getEnemyList() :
 	var retVal : Array = []

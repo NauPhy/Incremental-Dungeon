@@ -22,12 +22,17 @@ func providePlayerCore(val : ActorPreset) :
 	playerCore_comm = val
 	waitingForPlayerCore = false
 	emit_signal("playerCoreReceived")
+signal playerPortraitRequested
+func _on_player_portrait_requested(emitter) :
+	emit_signal("playerPortraitRequested", emitter)
 ##########################
 func getMostRecentEquipmentScaling() -> float :
 	var currentRow = $MapContainer.get_children().back().getFurthestProgression()
 	var scalingRows = $ProceduralGenerationLogic.getScalingRows_mapFinished(currentRow)
 	return $ProceduralGenerationLogic.getEquipmentScaling(scalingRows)
 func getMostRecentCurrencyScaling(type) -> float :
+	if $MapContainer.get_child_count() == 1 :
+		return 0
 	var currentRow = $MapContainer.get_children().back().getFurthestProgression()
 	var scalingRows = $ProceduralGenerationLogic.getScalingRows_mapFinished(currentRow)
 	if (type == "routine") :
@@ -122,6 +127,7 @@ func _on_combat_panel_retreat() -> void:
 	interruptDefeatCoroutine()
 	currentFloor.onCombatRetreat(currentRoom)
 	currentRoom = null
+	$CombatPanel.visible = false
 	showMapAndUI()
 	
 signal playerClassRequested
@@ -234,7 +240,8 @@ func hideMapAndUI() :
 	$MapContainer.visible = false
 	disableUI()
 func disableUI() :
-	currentFloor.disableUI()
+	if (currentFloor != null) :
+		currentFloor.disableUI()
 	$FloorDisplay.visible = false
 func enableUI() :
 	currentFloor.enableUI()
@@ -276,7 +283,13 @@ func connectToMapSignals(map : Node) :
 		map.connect("shopRequested", _on_shop_requested)
 	if (map.has_signal("addChildRequested")) :
 		map.connect("addChildRequested", _on_add_child_requested)
+	if (map.has_signal("apophisKilled")) :
+		map.connect("apophisKilled", _on_apophis_killed)
 	map.connect("mapCompleted", _on_map_completed)
+	
+signal apophisKilled
+func _on_apophis_killed() :
+	emit_signal("apophisKilled")
 
 const combatRewardsLoader = preload("res://Screens/GameScreen/Tabs/Combat/CombatRewards/combat_rewards.tscn")
 var firstReward : bool = true
@@ -322,13 +335,20 @@ func getSaveDictionary() -> Dictionary :
 	return tempDict
 	
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	for map in $MapContainer.get_children() :
 		if(!map.myReady) :
 			await map.myReadySignal
 	myReady = true
+	emit_signal("myReadySignal")
 	
 func beforeLoad(newGame) :
+	myReady = false
+	disableUI()
+	$MapContainer.visible = false
 	$NarrativePanel.connect("continueSignal", _on_narrative_panel_complete)
 	for map in $MapContainer.get_children() :
 		if (!map.is_in_group("Saveable")) :
@@ -339,9 +359,17 @@ func beforeLoad(newGame) :
 		currentFloor = $MapContainer.get_child(0)
 		$FloorDisplay.setFloor(0)
 		$FloorDisplay.setTutorialBiome()
+		$MapContainer.visible = true
 		currentFloor.visible = true
+		enableUI()
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newGame) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 		
 func onLoad(loadDict : Dictionary) :
+	myReady = false
 	var hardMapCount = $MapContainer.get_child_count()
 	for index in range(0, loadDict["maps"].size()) :
 		if (index < hardMapCount) :
@@ -350,12 +378,19 @@ func onLoad(loadDict : Dictionary) :
 		else :
 			var newMap = mapLoader.instantiate()
 			$MapContainer.add_child(newMap)
+			newMap.visible = false
 			if (!newMap.myReady) :
 				await newMap.myReadySignal
-			await newMap.initialise(loadDict["maps"][index])
-			newMap.beforeLoad()
-			newMap.onLoad(loadDict["maps"][index])
-			connectToMapSignals(newMap)
+			newMap.initialise(loadDict["maps"][index])
+	var maps = $MapContainer.get_children()
+	for index in range(0, maps.size()) :
+		var child = maps[index]
+		if (child.has_signal("fullyInitialisedSignal") && !child.fullyInitialised) :
+			await child.fullyInitialisedSignal
+		if (child.has_signal("fullyInitialisedSignal")) :
+			child.beforeLoad()
+			child.onLoad(loadDict["maps"][index])
+			connectToMapSignals(child)
 		
 	firstReward = loadDict["firstReward"]
 	maxFloor = loadDict["maxFloor"]
@@ -372,7 +407,13 @@ func onLoad(loadDict : Dictionary) :
 			$FloorDisplay.setTutorialBiome()
 		else : 
 			$FloorDisplay.setEnvironment(currentFloor.getEnvironment())
+	enableUI()
+	$MapContainer.visible = true
 	currentFloor.visible = true
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
 
 
 signal playerModifierDictionaryRequested

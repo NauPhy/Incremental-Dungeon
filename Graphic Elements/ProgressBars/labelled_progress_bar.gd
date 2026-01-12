@@ -23,7 +23,7 @@ func _process(delta) :
 	var newLevel : int = oldLevel + levelGained
 	actualProgress = newProgress
 	currentLevel = newLevel
-	$LevelLabel.text = "Lv " + str(newLevel)	
+	$LevelLabel.text = "Lv " + Helpers.engineeringRound(newLevel,3)	
 	if (currentGrowth > baseGrowth*55) :
 		$ProgressBar.value = 100
 	else :

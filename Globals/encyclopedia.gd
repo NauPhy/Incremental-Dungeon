@@ -14,7 +14,8 @@ enum tutorialName {
 	tutorialFloorEnd,
 	dropIntro,
 	manticoreKill,
-	herophile
+	herophile,
+	#apophis
 }
 const tutorialTitles : Dictionary = {
 	tutorialName.tutorial : "A Tutorial About Tutorials",
@@ -27,7 +28,8 @@ const tutorialTitles : Dictionary = {
 	tutorialName.tutorialFloorEnd : "Floor Exit",
 	tutorialName.dropIntro : "Drops Introduction",
 	tutorialName.manticoreKill : "Manticore Defeated",
-	tutorialName.herophile : "Training with Herophile"
+	tutorialName.herophile : "Training with Herophile",
+	#tutorialName.apophis : "The Demon King is Slain!"
 }
 const tutorialDesc : Dictionary = {
 	tutorialName.tutorial : "Tutorial popups can be disabled in the in-game options (F2) menu. You can find a list of all encountered tutorials, even if they were suppressed, in the Encyclopedia (F1). Remember that tutorials may show up even in the late game!",
@@ -46,7 +48,8 @@ const tutorialDesc : Dictionary = {
 	tutorialName.tutorialFloorEnd : "Congratulations, you've beaten the tutorial floor. The dungeon from here on out will be a bit slower and more challenging.\n\nRemember to explore the side paths and farm drops from weaker monsters. If you feel progress is too slow, get a cup of coffee or pull up a YouTube video. This is not meant to be a terribly active game.\n\nAlternatively, you could spend some time scrutinising your build to try and squeeze a bit more performance out of it!\n\nOh, and you might want to check out the Encyclopedia (F1).",
 	tutorialName.dropIntro : "Most enemies have a chance to drop items on death. After completing a room for the first time, enemies and hints about their drops will be added to the beastiary found in the in-game options (F1) menu.\n\nEnemies will also be listed on the room itself. You can access an enemy's beastiary entry by CTRL-clicking its name in the room's enemy list, but only if you've defeated it at least once.",
 	tutorialName.manticoreKill : "Congratulations on defeating the Manticore! Unfortunately this is the end of content in the current version. I hope you enjoyed the game, and I'd be happy to hear any feedback you have!",
-	tutorialName.herophile : "\"I am no match for you. I yield to your strength.\" Herophile says, kneeling. You turn towards the exit.\n\n\"However\"\n\nYou turn back towards the demigoddess, eyebrow raised.\n\n\"Your skill is clearly lacking.\" she says, grinning. \"I believe a mutually beneficial arrangement can be made.\"\n\n[i]The \"Spar with Herophile\" Routine has been unlocked![/i]"
+	tutorialName.herophile : "\"I am no match for you. I yield to your strength.\" Herophile says, kneeling. You turn towards the exit.\n\n\"However\"\n\nYou turn back towards the demigoddess, eyebrow raised.\n\n\"Your skill is clearly lacking.\" she says, grinning. \"I believe a mutually beneficial arrangement can be made.\"\n\n[i]The \"Spar with Herophile\" Routine has been unlocked![/i]",
+	#tutorialName.apophis : "Congratulations, you've defeated the Demon King! The Surface world is saved! Or something. This game was going to have a more in depth story but game development is hard. In any case, there are actually 20 biomes, 25 bosses, and 10 factions in this game, and levels 1-9 are randomly generated! So I encourage you to check out endless mode or try one of the other classes. Thanks for playing!"
 }
 const tutorialPointers : Dictionary = {
 }
@@ -62,7 +65,8 @@ const oneOffTutorials : Array = [
 	tutorialName.tutorialFloorEnd,
 	tutorialName.dropIntro,
 	tutorialName.manticoreKill,
-	tutorialName.herophile
+	tutorialName.herophile,
+	#tutorialName.apophis
 ]
 
 ## I tried my damndest, but I could not figure out an elegant way to do this. Oh well, it's decent. All formulas in the game that are exposed to the player are in

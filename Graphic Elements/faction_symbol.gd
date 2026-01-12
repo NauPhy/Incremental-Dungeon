@@ -2,12 +2,13 @@ extends HBoxContainer
 
 const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
 func _ready() :
+	var currentLayer = Helpers.getTopLayer()
 	var children = get_children()
 	for index in range(0,children.size()) :
 		var newTooltip = tooltipLoader.instantiate()
 		children[index].add_child(newTooltip)
 		newTooltip.initialise(EnemyGroups.factionDictionary[index as EnemyGroups.factionEnum])
-		newTooltip.currentLayer = Helpers.getTopLayer()
+		newTooltip.currentLayer = currentLayer
 		var upperLeft = Vector2(0,0)
 		var bottomRight = Vector2(32,32)*children[index].getScale() + Vector2(10,10)
 		newTooltip.setPos(upperLeft, bottomRight)

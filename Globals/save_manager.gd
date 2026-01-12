@@ -52,15 +52,13 @@ func saveExists() -> bool :
 func waitForReady(nodePaths : Array[NodePath]) :
 	for nodePath in nodePaths :
 		var node = get_node_or_null(nodePath)
-		while(node == null) :
-			await get_tree().process_frame
-			node = get_node_or_null(nodePath)
-		while(!node.myReady) :
-			await get_tree().process_frame
+		if (!node.myReady) :
+			await node.myReadySignal
 			
 ## All initialisation that can be done before loading should be done here to minimise dependency
 ## issues. This includes initialising values to defaults.
 func beforeLoadStep(nodePaths : Array[NodePath], freshSave : bool) :
+	waitForReady(nodePaths)
 	for nodePath in nodePaths :
 		var node = get_node_or_null(nodePath)
 		node.beforeLoad(freshSave)
@@ -102,9 +100,11 @@ func loadStep(gameState : Dictionary) :
 	## Load nondependent nodes
 	for key in gameState.keys() :
 		var node = get_node_or_null(NodePath(key))
-		#if (!node.has_method("afterDependencyLoaded")) :
-		if (true) :
-			node.onLoad(gameState[key])
+		if (!node.myReady) :
+			await node.myReadySignal
+	for key in gameState.keys() :
+		var node = get_node_or_null(NodePath(key))
+		node.onLoad(gameState[key])
 		
 
 ###################################
@@ -116,13 +116,28 @@ func _on_new_game_option_chosen(slot : Definitions.saveSlots) :
 	emit_signal("newGameReady")
 ##################################
 ## Saving
+var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
+func _ready() :
+	myReady = true
+	emit_signal("myReadySignal")
+func beforeLoad(_newGame) :
+	myReady = true
+	emit_signal("myReadySignal")
 func getSaveDictionary() -> Dictionary :
 	var tempDict = {}
 	tempDict["playtime"] = Helpers.getTimestampString(secondsElapsed)
 	return tempDict
 	
 func onLoad(loadDict) -> void :
+	myReady = false
 	secondsElapsed = Helpers.getSecondsFromTimestamp(loadDict["playtime"])
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
 ##################################
 ## Other
 func saveGame(slot : Definitions.saveSlots) :
@@ -157,11 +172,22 @@ func loadGame(slot : Definitions.saveSlots) :
 	for key in centralisedGameState.keys() :
 		if (key != (self.get_path() as String)) :
 			nodePaths.append(NodePath(key))
-	waitForReady(nodePaths)
-	beforeLoadStep(nodePaths, false)
-	loadStep(centralisedGameState)
+	await waitForReady(nodePaths)
+	await beforeLoadStep(nodePaths, false)
+	await loadStep(centralisedGameState)
+	await postLoad(nodePaths)
 	createTimer()
 	return true
+	
+func postLoad(scenes) :
+	for key in scenes :
+		var node = get_node_or_null(key)
+		if (!node.myReady) :
+			await node.myReadySignal
+	for key in scenes :
+		var node = get_node_or_null(NodePath(key))
+		if (node.has_method("onLoad_2")) :
+			node.onLoad_2()
 	
 func newGame(gameScreenRef : Node, character : CharacterPacket) :
 	var saveableScenes : Array[NodePath]
@@ -170,6 +196,7 @@ func newGame(gameScreenRef : Node, character : CharacterPacket) :
 	waitForReady(saveableScenes)
 	beforeLoadStep(saveableScenes, true)
 	gameScreenRef.initialisePlayerCharacter(character)
+	postLoad(saveableScenes)
 	secondsElapsed = 0
 	createTimer()
 	

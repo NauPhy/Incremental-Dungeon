@@ -33,6 +33,7 @@ func writeDescription(enemy : ActorPreset, killCount) :
 	
 const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
 func setFactionSymbol(enemy : ActorPreset) :
+	var currentLayer = Helpers.getTopLayer()
 	var children = getFactionSymbolContainer().get_children()
 	for index in range(0,children.size()) :
 		if (index == enemy.enemyGroups.faction as int) :
@@ -42,7 +43,7 @@ func setFactionSymbol(enemy : ActorPreset) :
 			var newTooltip = tooltipLoader.instantiate()
 			children[index].add_child(newTooltip)
 			newTooltip.initialise(EnemyGroups.factionDictionary[index])
-			newTooltip.currentLayer = Helpers.getTopLayer()
+			newTooltip.currentLayer = currentLayer
 			newTooltip.setPos(upperLeft, bottomRight)
 		else :
 			children[index].visible = false

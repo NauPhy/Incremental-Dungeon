@@ -9,7 +9,7 @@ var myName : String = ""
 func getPortraitDictionary() -> Dictionary :
 	if (portraitDictionary == {} && portraitRef != null) :
 		portraitDictionary = portraitRef.getSaveDictionary()
-	return portraitDictionary
+	return portraitDictionary.duplicate(true)
 func setPortrait(val : Node) : 
 	portraitRef = val
 	portraitDictionary = portraitRef.getSaveDictionary()

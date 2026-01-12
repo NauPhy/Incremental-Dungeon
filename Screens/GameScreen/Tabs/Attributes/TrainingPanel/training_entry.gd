@@ -9,15 +9,15 @@ func _ready() :
 		newEntry.name = Definitions.attributeDictionary[key]
 		newEntry.visible = true
 
-func setResource(newEntry : AttributeTraining) -> void :
+func setResource(newEntry : AttributeTraining, upgrades : int) -> void :
 	myEntry = newEntry
 	$HBoxContainer/HBoxContainer2/Name.text = myEntry.text
 	for key in Definitions.attributeDictionary.keys() :
-		var scaling = myEntry.getScaling(key)
+		var scaling = myEntry.getScaling(key) * (1 + 0.25*upgrades)
 		if (scaling == 0) :
 			$HBoxContainer/HBoxContainer.get_node(Definitions.attributeDictionary[key]).text = "-"
 		else :
-			$HBoxContainer/HBoxContainer.get_node(Definitions.attributeDictionary[key]).text = str(scaling)
+			$HBoxContainer/HBoxContainer.get_node(Definitions.attributeDictionary[key]).text = Helpers.engineeringRound(scaling,3)
 
 signal requestedEnable
 signal requestedDisable

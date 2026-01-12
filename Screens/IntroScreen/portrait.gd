@@ -1,22 +1,18 @@
-@tool
 extends Panel
 
-@export var myScale : float : 
-	set(val) :
-		hiddenScale = val
-		for child in get_children() :
-			if (child is Sprite2D) :
-				if (child.name == "Cat") :
-					child.scale = Vector2(val/2,val/2)
-				else :
-					child.scale = Vector2(val,val)
-	get() :
-		return hiddenScale
-
-var hiddenScale : float = 16.0
+@export var myScale : float = 16
 const margin = 10
 
+func applyScale() :
+	for child in get_children() :
+		if (child is Sprite2D) :
+			if (child.name == "Cat") :
+				child.scale = Vector2(myScale/2.0,myScale/2.0)
+			else :
+				child.scale = Vector2(myScale,myScale)
+
 func _ready() :
+	applyScale()
 	var baseWidth = 32*$Base.scale.x
 	var catWidth = 32*$Cat.scale.x
 	var basePos = Vector2(0,0)
@@ -53,12 +49,22 @@ func _on_check_box_toggled(toggled_on: bool) -> void:
 
 func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary
-	retVal["scale"] = hiddenScale
+	retVal["scale"] = myScale
 	retVal["textures"] = textureNames
 	return retVal
 func onLoad(loadDict) :
 	myScale = loadDict["scale"]
+	applyScale()
 	textureNames = loadDict["textures"]
 	for key in textureNames.keys() :
-		setTexture(key, MegaFile.getPlayerTexture(textureNames[key]),textureNames[key])
+		if (textureNames[key] == null || textureNames[key] == "null") :
+			continue
+		var tempKey
+		if (key == "Base") :
+			tempKey = "base"
+		elif (key == "Cat") :
+			tempKey = "felids"
+		else :
+			tempKey = key
+		setTexture(key, MegaFile.getPlayerTextureDictionary("PlayerTexture_"+tempKey)[textureNames[key]], textureNames[key])
 	

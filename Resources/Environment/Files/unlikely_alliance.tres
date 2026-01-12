@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_og0n3")
 title = "Unlikely Alliance"
+introText = "Nations of the Surface and Underworld were shocked when the Merfolk announced their alliance with the Greenskin Tribes. Perhaps to the Merfolk, the other races are all equally barbaric..."
 permittedFactions = Array[int]([7, 8])
 firePermitted = false
 icePermitted = false

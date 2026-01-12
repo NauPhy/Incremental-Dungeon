@@ -115,6 +115,10 @@ func forceBoundaries() :
 
 var debounceTimer = 0
 func _process(delta) :
+	if (!doneLoading) :
+		return
+	if (!myReady) :
+		return
 	debounceTimer += delta
 func _unhandled_input(event: InputEvent) -> void:
 	if (!is_visible_in_tree() || !UIEnabled) :
@@ -162,10 +166,15 @@ func getSaveDictionary() -> Dictionary :
 var fullyInitialised : bool = false
 	
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	myReady = true
+	emit_signal("myReadySignal")
 	
 func beforeLoad(newSave) :
+	myReady = false
 	clip_contents = true
 	for child in $CombatMap/RoomContainer.get_children() :
 		child.connect("levelChosen", _on_level_chosen)
@@ -175,6 +184,11 @@ func beforeLoad(newSave) :
 	goHome()
 	if (newSave) :
 		fullyInitialised = true
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newSave) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 		
 func getTypicalEnemyDefense() :
 	var numArr : Array[float] = []
@@ -192,6 +206,7 @@ func _on_shop_requested(details : ShopDetails) :
 	emit_signal("shopRequested", details)
 	
 func onLoad(loadDict) -> void :
+	myReady = false
 	var connections = $CombatMap/ConnectionContainer.get_children()
 	for index in range (connections.size()) :
 		var key : String = "connection" + str(index) 
@@ -205,6 +220,11 @@ func onLoad(loadDict) -> void :
 	mapPosRatio = Vector2(loadDict["mapPosX"], loadDict["mapPosY"])
 	setFromMapPosRatio()
 	fullyInitialised = true
+	_on_resized()
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
 	
 func setFromMapPosRatio() :
 	if (mapPosRatio.x == -99 || (minX > maxX)) :

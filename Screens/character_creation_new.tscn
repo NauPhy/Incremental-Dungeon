@@ -1,19 +1,8 @@
-[gd_scene load_steps=26 format=3 uid="uid://ckj85egqvfy1i"]
+[gd_scene load_steps=15 format=3 uid="uid://ckj85egqvfy1i"]
 
 [ext_resource type="Script" uid="uid://dtyjf0vx73nxt" path="res://Screens/character_creation_new.gd" id="1_ec33j"]
 [ext_resource type="Script" uid="uid://bkh6okf1c2trl" path="res://Screens/IntroScreen/portrait.gd" id="1_jdd23"]
-[ext_resource type="Texture2D" uid="uid://dk1cprmud360t" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/base/elf_female.png" id="2_7xalo"]
 [ext_resource type="PackedScene" uid="uid://cewpfcujhrm8h" path="res://Screens/IntroScreen/character_creator.tscn" id="2_63urx"]
-[ext_resource type="Texture2D" uid="uid://bsneg763fewlg" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/legs/leg_armor_1.png" id="3_njo3g"]
-[ext_resource type="Texture2D" uid="uid://btlxwd8bxpu7e" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/body/dragon_armor_cyan_new.png" id="4_5hiny"]
-[ext_resource type="Texture2D" uid="uid://cg14xl7jtn67d" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/hair/fem_black.png" id="4_exae6"]
-[ext_resource type="Texture2D" uid="uid://dtdfptb1gvlt7" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/beard/long_black.png" id="5_ec33j"]
-[ext_resource type="Texture2D" uid="uid://7mwwe142g7i7" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/felids/cat_5.png" id="6_1ldgm"]
-[ext_resource type="Texture2D" uid="uid://oimqh08a3y2g" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/head/isildur.png" id="7_oobpv"]
-[ext_resource type="Texture2D" uid="uid://dxe1eb6bki7j4" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/gloves/gauntlet_blue.png" id="8_8s7uo"]
-[ext_resource type="Texture2D" uid="uid://bems1utyayvtk" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/boots/middle_gold.png" id="9_7rg6p"]
-[ext_resource type="Texture2D" uid="uid://qynreusj6ned" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/hand_left/shield_holy.png" id="10_q47kp"]
-[ext_resource type="Texture2D" uid="uid://bmb3psy11xlrs" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/hand_right/axe_executioner_new.png" id="11_eevmu"]
 [ext_resource type="PackedScene" uid="uid://demic8kpubfcc" path="res://Graphic Elements/Carousel/carousel_basic.tscn" id="13_5hiny"]
 [ext_resource type="Texture2D" uid="uid://dx4fvgghc0432" path="res://Images/CC0 Assets/icon_map.png" id="14_q47kp"]
 [ext_resource type="Script" uid="uid://c0e8ghbyrf5w0" path="res://Screens/my_texture_button.gd" id="15_eevmu"]
@@ -78,9 +67,62 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
 offset_left = 30.0
-offset_top = 30.0
+offset_top = 103.0
 offset_right = -340.0
 offset_bottom = 0.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_top = 83.0
+offset_right = -30.0
+grow_horizontal = 0
+theme = ExtResource("19_eevmu")
+theme_override_constants/separation = 8
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("19_eevmu")
+text = " Presets "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Mage" parent="HBoxContainer" instance=ExtResource("16_63urx")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Mage"
+
+[node name="Fighter" parent="HBoxContainer" instance=ExtResource("16_63urx")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = " Fighter "
+
+[node name="Rogue" parent="HBoxContainer" instance=ExtResource("16_63urx")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = " Rogue "
+
+[node name="Spacer" type="Control" parent="HBoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="Undo" parent="HBoxContainer" instance=ExtResource("16_63urx")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = " Undo "
+
+[node name="Spacer2" type="Control" parent="HBoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="Reset All" parent="HBoxContainer" instance=ExtResource("16_63urx")]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = " Reset All "
 
 [node name="Carousels" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -289,6 +331,24 @@ layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
+[node name="gloves" type="HBoxContainer" parent="Carousels/Clothes/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/gloves"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = " Gloves "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Carousel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/gloves" instance=ExtResource("13_5hiny")]
+layout_mode = 2
+size_flags_horizontal = 10
+textureScale = 3.0
+
 [node name="boots" type="HBoxContainer" parent="Carousels/Clothes/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
@@ -355,72 +415,60 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_8nt8s")
 script = ExtResource("1_jdd23")
-myScale = 16.0
 
 [node name="Base" type="Sprite2D" parent="Portrait"]
 position = Vector2(10, 10)
 scale = Vector2(15, 15)
-texture = ExtResource("2_7xalo")
 centered = false
 
 [node name="legs" type="Sprite2D" parent="Portrait"]
 position = Vector2(10, 10)
 scale = Vector2(15, 15)
-texture = ExtResource("3_njo3g")
 centered = false
 
 [node name="body" type="Sprite2D" parent="Portrait"]
 position = Vector2(10, 10)
 scale = Vector2(15, 15)
-texture = ExtResource("4_5hiny")
 centered = false
 
 [node name="beard" type="Sprite2D" parent="Portrait"]
 position = Vector2(10, 10)
 scale = Vector2(15, 15)
-texture = ExtResource("5_ec33j")
 centered = false
 
 [node name="hair" type="Sprite2D" parent="Portrait"]
 position = Vector2(10, 10)
 scale = Vector2(15, 15)
-texture = ExtResource("4_exae6")
 centered = false
 
 [node name="head" type="Sprite2D" parent="Portrait"]
 position = Vector2(10, 10)
 scale = Vector2(15, 15)
-texture = ExtResource("7_oobpv")
 centered = false
 
 [node name="gloves" type="Sprite2D" parent="Portrait"]
 position = Vector2(10, 10)
 scale = Vector2(15, 15)
-texture = ExtResource("8_8s7uo")
 centered = false
 
 [node name="boots" type="Sprite2D" parent="Portrait"]
 position = Vector2(10, 10)
 scale = Vector2(15, 15)
-texture = ExtResource("9_7rg6p")
 centered = false
 
 [node name="hand_left" type="Sprite2D" parent="Portrait"]
 position = Vector2(10, 10)
 scale = Vector2(15, 15)
-texture = ExtResource("10_q47kp")
 centered = false
 
 [node name="hand_right" type="Sprite2D" parent="Portrait"]
 position = Vector2(10, 10)
 scale = Vector2(15, 15)
-texture = ExtResource("11_eevmu")
 centered = false
 
 [node name="Cat" type="Sprite2D" parent="Portrait"]
 position = Vector2(370, 250)
 scale = Vector2(7.5, 7.5)
-texture = ExtResource("6_1ldgm")
 centered = false
 
 [node name="Checkboxes" type="Panel" parent="."]
@@ -488,6 +536,7 @@ layout_mode = 2
 size_flags_horizontal = 10
 
 [node name="ContinueButton" type="Button" parent="."]
+visible = false
 custom_minimum_size = Vector2(250, 70)
 layout_mode = 1
 anchors_preset = -1
@@ -511,6 +560,7 @@ anchor_bottom = 1.0
 offset_bottom = -50.0
 grow_horizontal = 2
 grow_vertical = 0
+theme = ExtResource("17_8nt8s")
 theme_override_constants/separation = 20
 
 [node name="LineEdit" type="LineEdit" parent="VBoxContainer"]
@@ -527,6 +577,23 @@ size_flags_horizontal = 4
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Confirm"
 
+[node name="JokeCatButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 200.0
+offset_top = 265.0
+text = " Remove Cat "
+
+[connection signal="myPressed" from="HBoxContainer/Mage" to="." method="_on_preset_button_pressed"]
+[connection signal="myPressed" from="HBoxContainer/Fighter" to="." method="_on_preset_button_pressed"]
+[connection signal="myPressed" from="HBoxContainer/Rogue" to="." method="_on_preset_button_pressed"]
+[connection signal="myPressed" from="HBoxContainer/Undo" to="." method="_on_preset_button_pressed"]
+[connection signal="myPressed" from="HBoxContainer/Reset All" to="." method="_on_preset_button_pressed"]
 [connection signal="pressed" from="Carousels/Body/PanelContainer/VBoxContainer/base/TextureButton" to="Carousels/Body/PanelContainer/VBoxContainer/base/TextureButton" method="_on_pressed"]
 [connection signal="pressed" from="ContinueButton" to="." method="_on_my_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/MyButton" to="." method="_on_my_button_pressed"]
+[connection signal="pressed" from="JokeCatButton" to="." method="_on_joke_cat_button_pressed"]

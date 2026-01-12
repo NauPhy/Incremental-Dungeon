@@ -72,7 +72,7 @@ func setMods(source : String, val : Array[float]) :
 	#waitingForPlayerClass = false
 	#emit_signal("playerClassReceived")
 var myType : String = ""
-var catPic = preload("res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/player/felids/cat_1.png")
+#var catPic = preload("res://Resources/Textures/PlayerTexture/felids/cat_1.png")
 ##########################
 func setType(type : String) :
 	if (type == "bonus") :
@@ -102,7 +102,8 @@ func setType(type : String) :
 		#getRightCol().size_flags_horizontal = SIZE_SHRINK_END
 		var newPic = TextureRect.new()
 		getRightCol().add_child(newPic)
-		newPic.texture = catPic
+		newPic.name = "CatPic"
+		#newPic.texture = catPic
 		newPic.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
 		newPic.expand_mode = TextureRect.EXPAND_FIT_WIDTH
 		newPic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

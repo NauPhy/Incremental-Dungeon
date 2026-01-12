@@ -23,13 +23,13 @@ func setEnemy(enemy : ActorPreset) :
 		getHBOX().get_node("Skull").visible = true
 	var description : String = ""
 	for key in Definitions.baseStatDictionary.keys() :
-		description += Definitions.baseStatDictionary[key] + ": " + str(Helpers.myRound(enemy.getStat(key),3)) + "\n"
+		description += Definitions.baseStatDictionary[key] + ": " + Helpers.engineeringRound(enemy.getStat(key),3) + "\n"
 	description += "Action - "
 	var attack = enemy.actions[0]
 	description += attack.getName() + "\n"
 	description += "\tType: " + Definitions.damageTypeDictionary[attack.getDamageType()] + "\n"
-	description += "\tPower: " + str(Helpers.myRound(attack.getPower(),3)) + "\n"
-	description += "\tWarmup: " + str(Helpers.myRound(attack.getWarmup(),3)) + " seconds\n"
+	description += "\tPower: " + Helpers.engineeringRound(attack.getPower(),3) + "\n"
+	description += "\tWarmup: " + Helpers.engineeringRound(attack.getWarmup(),3) + " seconds\n"
 	description += "\nKilled: " + str(int(killCount)) + "\n\n"
 	description += "Drops\n"
 	if (enemy.drops.is_empty()) :

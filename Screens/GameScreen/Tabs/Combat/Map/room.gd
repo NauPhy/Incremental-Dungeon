@@ -129,10 +129,15 @@ func createBigEntry() :
 			return
 			
 var myReady : bool = false
+signal myReadySignal
+var doneLoading : bool = false
+signal doneLoadingSignal
 func _ready() :
 	myReady = true
+	emit_signal("myReadySignal")
 	
 func beforeLoad(newGame) :
+	myReady = false
 	if (encounter != null) :
 		for enemy in encounter.enemies :
 			var newEntry = enemyEntryLoader.instantiate()
@@ -140,11 +145,21 @@ func beforeLoad(newGame) :
 			newEntry.setEnemy(enemy)
 	if (newGame) :
 		setVisibility(visibilityOnStartup as int)
+	myReady = true
+	emit_signal("myReadySignal")
+	if (newGame) :
+		doneLoading = true
+		emit_signal("doneLoadingSignal")
 
 func onLoad(loadDict) :
+	myReady = false
 	visited = loadDict["visited"]
 	completed = loadDict["completed"]
 	setVisibility(loadDict["visibility"])
+	myReady = true
+	emit_signal("myReadySignal")
+	doneLoading = true
+	emit_signal("doneLoadingSignal")
 
 func enableEnemyList() :
 	$VBoxContainer.visible = true

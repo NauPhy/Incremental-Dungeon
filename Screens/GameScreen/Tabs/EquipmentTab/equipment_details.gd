@@ -8,10 +8,14 @@ func getItemSceneRef() :
 @export var isInIGOptions : bool = false
 @export var spriteScale : int = 12
 
+var currentLayer = 0
 func _ready() :
 	if (isInIGOptions) :
-		$VBoxContainer/Text/VBoxContainer/HBoxContainer/EncyclopediaTextLabel.currentLayer = Helpers.getTopLayer() + 1
-		$VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Description.currentLayer = Helpers.getTopLayer() + 1
+		currentLayer = Helpers.getTopLayer() + 1
+		$VBoxContainer/Text/VBoxContainer/HBoxContainer/EncyclopediaTextLabel.currentLayer = currentLayer
+		$VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Description.currentLayer = currentLayer
+		$VBoxContainer/Picture/Elements.setLayer(currentLayer+1)
+		$VBoxContainer/Text/VBoxContainer/TagContainerEquipment.setLayer(currentLayer+1)
 	addElementTooltips()
 	resetDetails()
 	
@@ -26,39 +30,41 @@ func setItemSceneRefBase(itemSceneRef) :
 		updateText()
 	
 func updateElements() :
-	var children = $VBoxContainer/Picture/Elements.get_children()
-	for child in children :
-		child.visible = false
+	var elements = $VBoxContainer/Picture/Elements
+	elements.clearAllSymbols()
 	if (currentItemSceneRef == null || currentItemSceneRef.core.equipmentGroups == null) :
 		return
 	if (currentItemSceneRef.core.equipmentGroups.isEarth) :
-		children[0].visible = true
+		elements.setSymbol("Earth")
 	if (currentItemSceneRef.core.equipmentGroups.isFire) :
-		children[1].visible = true
+		elements.setSymbol("Fire")
 	if (currentItemSceneRef.core.equipmentGroups.isIce) :
-		children[2].visible = true
+		elements.setSymbol("Ice")
 	if (currentItemSceneRef.core.equipmentGroups.isWater) :
-		children[3].visible = true
+		elements.setSymbol("Water")
 	
 func addElementTooltips() :
-	var children = $VBoxContainer/Picture/Elements.get_children()
-	for index in range(0,children.size()) :
-		var newTooltip = tooltipLoader.instantiate()
-		children[index].add_child(newTooltip)
-		var upperLeft = Vector2(0,0)
-		var bottomRight = Vector2(16,16) * children[index].getScale()
-		var key
-		if (index == 0) :
-			key = "Earth"
-		elif (index == 1) :
-			key = "Fire"
-		elif (index == 2) :
-			key = "Ice"
-		else :
-			key = "Water"
-		newTooltip.initialise(key)
-		newTooltip.currentLayer = Helpers.getTopLayer()
-		newTooltip.setPos(upperLeft, bottomRight)
+	return
+	#var elements = $VBoxContainer/Picture/Elements
+	#elements.setLayer(currentLayer+1)
+	#var children = $VBoxContainer/Picture/Elements.get_children()
+	#for index in range(0,children.size()) :
+		#var newTooltip = tooltipLoader.instantiate()
+		#children[index].add_child(newTooltip)
+		#var upperLeft = Vector2(0,0)
+		#var bottomRight = Vector2(16,16) * children[index].getScale()
+		#var key
+		#if (index == 0) :
+			#key = "Earth"
+		#elif (index == 1) :
+			#key = "Fire"
+		#elif (index == 2) :
+			#key = "Ice"
+		#else :
+			#key = "Water"
+		#newTooltip.initialise(key)
+		#newTooltip.setPos(upperLeft, bottomRight)
+		#newTooltip.currentLayer = currentLayer+1
 	
 func updateText_sprite() :#
 	var mySprite = $VBoxContainer/Picture/CenterContainer/Sprite
@@ -85,7 +91,7 @@ func updateText_weapon(myText) :
 	$VBoxContainer/Text/VBoxContainer/Extra.text = ""
 	if (isInIGOptions) :
 		myText += "Typical "
-	myText += "Bonus to Base DR:\n\t" + str(Helpers.myRound(currentItemSceneRef.getAttack(),3)) + "\n\n"
+	myText += "Bonus to Base DR:\n\t" + Helpers.engineeringRound(currentItemSceneRef.getAttack(),3) + "\n\n"
 	myText = updateText_weapon_scaling(myText)
 	myText = updateText_weapon_action(myText)
 	myText += "\n"
@@ -111,18 +117,18 @@ func updateText_weapon_action(myText) :
 	var attack = currentItemSceneRef.getBasicAttack()
 	myText += attack.getName() + "\n"
 	myText += "\t\tType: " + Definitions.damageTypeDictionary[attack.getDamageType()] + "\n"
-	myText += "\t\tAction Power: " + str(Helpers.myRound(attack.getPower(),3)) + "\n"
-	myText += "\t\tWarmup: " + str(Helpers.myRound(attack.getWarmup(),3)) + " seconds\n"
+	myText += "\t\tAction Power: " + Helpers.engineeringRound(attack.getPower(),3) + "\n"
+	myText += "\t\tWarmup: " + Helpers.engineeringRound(attack.getWarmup(),3) + " seconds\n"
 	return myText
 
 func updateText_armor(myText) :
 	$VBoxContainer/Text/VBoxContainer/Extra.text = ""
 	if (isInIGOptions) :
 		myText += "Typical "
-	myText += "Bonus to Base Physical Defense:\n    " + str(Helpers.myRound(currentItemSceneRef.getPhysicalDefense(),3)) + "\n"
+	myText += "Bonus to Base Physical Defense:\n    " + Helpers.engineeringRound(currentItemSceneRef.getPhysicalDefense(),3) + "\n"
 	if (isInIGOptions) :
 		myText += "Typical "
-	myText = myText + "Bonus to Base Magic Defense:\n    " + str(Helpers.myRound(currentItemSceneRef.getMagicDefense(),3)) + "\n"
+	myText = myText + "Bonus to Base Magic Defense:\n    " + Helpers.engineeringRound(currentItemSceneRef.getMagicDefense(),3) + "\n"
 	myText = myText + "\n"
 	return myText
 	
@@ -305,7 +311,7 @@ func addWeaponScalingTooltips() :
 		myTooltips.append(newTooltip)
 		#newTooltip.setTitle(Definitions.attributeDictionaryShort[key] + " Scaling: " + letterCache[key])
 		#newTooltip.setDesc(str(currentItemSceneRef.core.getScaling(key)))
-		newTooltip.setTitle(str(Helpers.myRound(currentItemSceneRef.core.getScaling(key),3)))
+		newTooltip.setTitle(Helpers.engineeringRound(currentItemSceneRef.core.getScaling(key),3))
 		newTooltip.setDesc("")
 		newTooltip.setTooltipWidth(80)
 		newTooltip.setPos(Vector2(xCoord1, yCoord1), Vector2(xCoord2, yCoord2))
