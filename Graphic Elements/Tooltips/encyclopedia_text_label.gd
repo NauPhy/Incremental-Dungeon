@@ -71,6 +71,8 @@ func get_black_text() :
 	return retVal
 	
 func updateHyperlinksExceptBadKey() :
+	if (isOnNestedTooltip()) :
+		return
 	if (self.updateRunning) :
 		await self.doneRunning
 	updateRunning = true
@@ -212,7 +214,8 @@ func addTooltipAtPos(index, key) :
 		if (coroutineSemaphore == 0) :
 			emit_signal("coroutinesDone")
 		return
-	var lineHeight = get_theme_font("normal_font").get_height(get_theme_font_size("normal_font_size"))
+	var fontSize = get_theme_font_size("normal_font_size")
+	var lineHeight = get_theme_font("normal_font").get_height(fontSize)
 		
 	var yCoord1 = lineNumber * lineHeight
 	var xCoord1

@@ -104,9 +104,9 @@ otherMods = {
 },
 "Magic Find": {
 "Postbonus": 0.0,
-"Postmultiplier": 0.15,
+"Postmultiplier": 0.0,
 "Prebonus": 0.0,
-"Premultiplier": 1.0
+"Premultiplier": 1.15
 },
 "Physical Conversion": {
 "Postbonus": 0.0,

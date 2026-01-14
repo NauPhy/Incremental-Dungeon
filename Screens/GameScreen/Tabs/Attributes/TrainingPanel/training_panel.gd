@@ -29,12 +29,30 @@ func initialiseNumberRefs(val : Array[NumberClass]) :
 		myNumberRefs.append(newNumberClass)
 		grid.get_child(Definitions.attributeDictionary.keys().size() + index).setNumberReference(myNumberRefs[index])
 	
+var oldValues : Array[float] = []
 func _process(_delta) :
 	for index in range(0,playerNumberRefs.size()) :
 		myNumberRefs[index].setPremultiplier("Routine Speed", playerNumberRefs[index].getFinal())
 		if (currentTrainingResource != null) :
 			myNumberRefs[index].setPrebonus("Base RGR/10", currentTrainingResource.getScaling(index as Definitions.attributeEnum)/10.0)
 			myNumberRefs[index].setPostmultiplier("Routine Upgrade", routineUpgradeLevels[currentTrainingResource.getResourceName()] * 0.25)
+	updateValues()
+	
+func updateValues() :
+	var update : bool = false
+	if (oldValues.size() != myNumberRefs.size()) :
+		update = true
+	else :
+		for index in range(0,myNumberRefs.size()) :
+			if (!(is_equal_approx(myNumberRefs[index].getFinal(), oldValues[index]))) :
+				update = true
+				break
+	if (update) :
+		oldValues = []
+		for num in myNumberRefs :
+			oldValues.append(num.getFinal())
+		if (currentTrainingResource != null) :
+			emit_signal("trainingChanged", await createUpgradedTraining(currentTrainingResource))
 
 func _on_header_button_pressed(emitter) :
 	var type : Definitions.attributeEnum

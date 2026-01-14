@@ -27,14 +27,16 @@ func _on_player_portrait_requested(emitter) :
 	emit_signal("playerPortraitRequested", emitter)
 ##########################
 func getMostRecentEquipmentScaling() -> float :
-	var currentRow = $MapContainer.get_children().back().getFurthestProgression()
-	var scalingRows = $ProceduralGenerationLogic.getScalingRows_mapFinished(currentRow)
+	var currentRow = getFurthestProgression()
+	var scalingRows = $ProceduralGenerationLogic.getScalingRows_mapFinished(maxFloor,currentRow)
 	return $ProceduralGenerationLogic.getEquipmentScaling(scalingRows)
 func getMostRecentCurrencyScaling(type) -> float :
-	if $MapContainer.get_child_count() == 1 :
-		return 0
-	var currentRow = $MapContainer.get_children().back().getFurthestProgression()
-	var scalingRows = $ProceduralGenerationLogic.getScalingRows_mapFinished(currentRow)
+	var row = getFurthestProgression()
+	return getCurrencyScaling(type, maxFloor, row)
+func getCurrencyScalingInCurrentRoom(type) -> float :
+	return getCurrencyScaling(type, getCurrentFloorIndex(), currentFloor.getRoomRow(currentRoom))
+func getCurrencyScaling(type : String, myFloor : int, row : int) -> float :
+	var scalingRows = $ProceduralGenerationLogic.getScalingRows_mapFinished(myFloor,row)
 	if (type == "routine") :
 		return $ProceduralGenerationLogic.getGoldScaling(scalingRows)
 	elif (type == "armor" || type == "weapon") :
@@ -44,20 +46,18 @@ func getMostRecentCurrencyScaling(type) -> float :
 	else :
 		return 0
 func getFurthestProgression() :
+	if ($MapContainer.get_child_count() == 1) :
+		return 0
 	return $MapContainer.get_children().back().getFurthestProgression()
 func createRandomShopItem(type : Definitions.equipmentTypeEnum) -> Equipment :
-	return $ProceduralGenerationLogic.createRandomShopItem(type, getMostRecentEquipmentScaling())
+	return $ProceduralGenerationLogic.createRandomShopItem(type, maxFloor, getFurthestProgression())
 func _on_level_chosen(emitter, encounter) -> void:
 	friendlyParty[0] = await getPlayerCore()
 	currentRoom = emitter
 	if (currentRoom.isFirstEntry()) :
 		currentRoom.enter()
 		if (encounter.introText != "") :
-			$NarrativePanel.text = encounter.introText
-			$NarrativePanel.title = encounter.introTitle
-			$NarrativePanel.visible = true
-			await($NarrativePanel.continueSignal)
-			$NarrativePanel.visible = false
+			await launchNarrative(encounter.introTitle, encounter.introText, "Continue", true, false)
 	if (encounter.enemies.is_empty()) :
 		_on_combat_panel_victory(false)
 		return
@@ -73,17 +73,13 @@ func _on_tutorial_requested(tutorialName, tutorialPos) :
 	emit_signal("tutorialRequested", tutorialName, tutorialPos)
 
 func _on_combat_panel_victory(automaticReset : bool) -> void:
-	if (currentRoom.getEncounterRef().victoryText != "") :
-		$NarrativePanel.text = currentRoom.getEncounterRef().victoryText
-		$NarrativePanel.title = currentRoom.getEncounterRef().victoryTitle
-		$NarrativePanel.visible = true
-		await($NarrativePanel.continueSignal)
-		$NarrativePanel.visible = false	
+	if (currentRoom.getEncounterRef().victoryText != "" && !currentRoom.isCompleted()) :
+		await launchNarrative(currentRoom.getEncounterRef().victoryTitle, currentRoom.getEncounterRef().victoryText, "Continue", true, false)
 	var magicFind = await getMagicFind()
 	var rewards
 	## New
 	if (currentFloor.has_method("getEnvironment")) :
-		rewards = $ProceduralGenerationLogic.generateDrops(currentRoom, currentFloor.getEnvironment())
+		rewards = $ProceduralGenerationLogic.generateDrops(getCurrentFloorIndex(), currentRoom, currentFloor.getEnvironment(), magicFind)
 	else :
 		var rewardsTutorial = currentRoom.getEncounterRef().getRewards(magicFind)
 		rewards = {
@@ -103,6 +99,14 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 		$CombatPanel.visible = false
 		if (!narrativeWorking) :
 			showMapAndUI()
+			
+func getCurrentFloorIndex() :
+	var index = 0
+	for child in $MapContainer.get_children() :
+		if (child == currentFloor) :
+			break
+		index += 1
+	return index
 
 var waitingForMagicFind : bool = false
 signal magicFindDone
@@ -134,8 +138,8 @@ signal playerClassRequested
 func _on_player_class_requested(emitter) :
 	emit_signal("playerClassRequested", emitter)
 	
-func getTypicalEnemyDefense(floor : int) :
-	return $MapContainer.get_child(floor).getTypicalEnemyDefense()
+func getTypicalEnemyDefense(myFloor : int) :
+	return $MapContainer.get_child(myFloor).getTypicalEnemyDefense()
 	
 signal newFloorCompleted
 func _on_map_completed(emitter) :
@@ -168,7 +172,7 @@ func launchNarrative(title : String, myText : String, buttonText : String, waitT
 	$NarrativePanel.setTitle(title)
 	$NarrativePanel.setText(myText)
 	$NarrativePanel.setButtonText(buttonText)
-	disableUI()
+	hideMapAndUI()
 	$NarrativePanel.visible = true
 	var factions = $NarrativePanel/VBoxContainer/VBoxContainer/FactionSymbol
 	var elements = $NarrativePanel/VBoxContainer/VBoxContainer/Elements
@@ -308,11 +312,16 @@ func handleCombatRewards(rewards : Dictionary) :
 	var rewardHandler = combatRewardsLoader.instantiate()
 	add_child(rewardHandler)
 	rewardHandler.connect("addToInventoryRequested", _on_add_to_inventory_request)
+	rewardHandler.connect("waitingForUser", _on_reward_pending)
 	rewardHandler.initialise(rewards)
 	#if (rewardHandler.initialisationPending) :
 		#await rewardHandler.initialisationComplete
 	if (!rewardHandler.isFinished()) :
 		await rewardHandler.finished
+		
+signal rewardPending
+func _on_reward_pending() :
+	emit_signal("rewardPending")
 
 signal addToInventoryRequested
 func _on_add_to_inventory_request(itemSceneRef, isAutomatic : bool) :

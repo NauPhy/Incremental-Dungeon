@@ -175,7 +175,7 @@ script = ExtResource("3_a7r4s")
 boostedAttr1 = 1
 boostedAttr2 = 3
 title = "Aegis"
-description = "Forged for Athena by Hephaestus himself, this shield was gifted to Herophile for her achievements in the art of war. Do not concern yourself with the wrath of Athena, for she is quite interested to see what you can do with her shield.
+description = "Forged for Athena by Hephaestus himself, this shield was gifted to Herophile for her achievements in the art of war. You're wary of taking a divine gift, but Herophile insists that it belongs to you now.
 
 Besides, if the Goddess of War wanted you dead, you would be dead."
 myPacket = SubResource("Resource_5pddg")

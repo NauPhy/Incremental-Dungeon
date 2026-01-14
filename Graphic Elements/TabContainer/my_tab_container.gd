@@ -16,6 +16,15 @@ const tabButtonLoader = preload("res://Graphic Elements/Buttons/super_button.tsc
 
 var currentTabIndex : int = 0
 
+func setThemeOfButtonUntilActive(child : Control, newTheme : Theme) :
+	var button = findButton(child)
+	if (button.isSelected()) :
+		return
+	button.theme = newTheme
+	button.updatePanel()
+	await button.wasSelected
+	button.theme = theme
+
 func _on_inner_container_pre_sort_children() -> void:
 	var hardRefresh : bool = false
 	var children = $InnerContainer.get_children()

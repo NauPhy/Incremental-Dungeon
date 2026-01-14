@@ -51,8 +51,16 @@ func getSaveDictionary() -> Dictionary :
 	retVal["items"]=itemsObtainedDictionary
 	return retVal
 	
+var typicalAdasRatio : float = 0.45
+func getAdasRatio() :
+	return typicalAdasRatio
 func beforeLoad(newGame) :
 	myReady = false
+	var sum = 0
+	var attacks = MegaFile.getAllNewAction()
+	for attack in attacks :
+		sum += attack.getPower()/attack.getWarmup()
+	typicalAdasRatio = sum/attacks.size()
 	if (newGame) :
 		for actor in MegaFile.getAllNewActor() :
 			resetEntry(actor.resource_path.get_file().get_basename())

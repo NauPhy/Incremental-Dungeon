@@ -6,7 +6,7 @@
 script = ExtResource("1_t3pif")
 type = 1
 power = 5.25
-text = "Fire Stomp"
+text = "Frost Stomp"
 mode = 0
 warmup = 10.0
 metadata/_custom_type_script = "uid://6o4dw2binuis"

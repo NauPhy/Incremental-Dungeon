@@ -197,6 +197,10 @@ func myUpdate() :
 		if (routineSpeed > 100) :
 			capModifier.addMod("otherStat", Definitions.otherStatEnum.routineSpeed_0+index,"Premultiplier",100.0/routineSpeed)
 			changed = true
+	var magicFind = otherStatObjects[Definitions.otherStatEnum.magicFind].getFinal()
+	if (magicFind >= 2.29665) :
+		capModifier.addMod("otherStat", Definitions.otherStatEnum.magicFind, "Premultiplier",2.29665/magicFind)
+		changed = true
 	if changed :
 		updateDirectModifier("Hard cap", capModifier)
 
@@ -367,7 +371,7 @@ func onLoad(loadDict) -> void :
 	#setClass(load(loadDict["playerClass"]))
 	#setName(loadDict["playerName"])
 	setFromCharacter(CharacterPacket.createFromSaveDictionary(loadDict["myCharacter"]))
-	if (loadDict.get(typicalEnemyDefense) != null) :
+	if (loadDict.get("typicalEnemyDefense") != null) :
 		typicalEnemyDefense = loadDict["typicalEnemyDefense"]
 	setSubclass(loadDict["subclass"])
 	learningCurveEnabled = loadDict["learningCurveEnabled"]
@@ -405,23 +409,25 @@ func getLearningCurveMod() -> ModifierPacket :
 	const minMult = 1
 	const maxMult = 3
 	const minLevel = 7
-	const maxLevel = 63
+	const maxLevel = 106
 	var learningCurveMod = ModifierPacket.new()
 	var disable = true
 	for key in Definitions.attributeDictionary.keys() :
 		var currentBonuses = attributeObjects[key].getPrebonuses()
-		var currentLevel = 0
-		for val in currentBonuses.values() : 
-			currentLevel += val
 		var attributeMult
-		if (currentLevel <= minLevel) :
+		if (currentBonuses.get("CRL * RE") == null) :
 			attributeMult = maxMult
 			disable = false
-		elif (currentLevel >= maxLevel) :
-			continue
 		else :
-			attributeMult = 1 + (maxMult-1)*(1 - (currentLevel-minLevel)/(maxLevel-minLevel))
-			disable = false
+			var currentLevel = currentBonuses["CRL * RE"] + currentBonuses["Class"]
+			if (currentLevel <= minLevel) :
+				attributeMult = maxMult
+				disable = false
+			elif (currentLevel >= maxLevel) :
+				continue
+			else :
+				attributeMult = 1 + (maxMult-1)*(1 - (currentLevel-minLevel)/(maxLevel-minLevel))
+				disable = false
 		learningCurveMod.addMod("otherStat",Definitions.otherStatEnum.routineSpeed_0 + key,"Premultiplier",attributeMult)
 	if (disable) :
 		learningCurveEnabled = false

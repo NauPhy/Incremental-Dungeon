@@ -27,10 +27,10 @@ const signatureEquipmentList = {
 	"swamp_dragon" : "dragonbone_plate",
 	"iron_dragon" : "dragonbone_plate",
 	"bone_dragon" : "dragonbone_plate",
+	"apophis" : "dragonbone_plate"
 }
 
 var itemPool : Array
-var qualityCounts : Array[int] = [0,0,0,0,0]
 #
 func reset(items) :
 	itemPool = items
@@ -72,39 +72,62 @@ func reset(items) :
 	#for index in range(0,count) :
 		#retVal.append(chances[count])
 	#return retVal
-	
-const possibleDrops = [2,3,5]
-const dropChance = [0.134,0.157,0.167]
-func getDropCount(enemy : ActorPreset) :
-	var dropCount = 0
-	for index in range(0,possibleDrops[enemy.enemyGroups.enemyQuality as int]) :
-		if (randf_range(0,1) < dropChance[enemy.enemyGroups.enemyQuality as int]) :
-			dropCount += 1
-	return dropCount
 
-func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float, penaliseElemental : bool) -> Array[Equipment] :
+## Changing drops per normal/veteran/elite to drops per side/central/boss
+const dropChance = [0.4,0.4,1.3]
+func getDropCount(enemy : ActorPreset, magicFind : float) -> int:
+	var averageVal
+	if (enemy.enemyGroups.enemyQuality == EnemyGroups.enemyQualityEnum.normal || enemy.enemyGroups.enemyQuality == EnemyGroups.enemyQualityEnum.veteran) :
+		var roll = randf_range(0,1)
+		if (roll <= 0.65) :
+			averageVal = 0
+		elif (roll <= 0.95) :
+			averageVal = 1
+		else :
+			averageVal = 2
+	elif (enemy.enemyGroups.enemyQuality == EnemyGroups.enemyQualityEnum.elite) :
+		var roll = randf_range(0,1)
+		if (roll <= 0.267) :
+			averageVal = 0
+		elif (roll <= 0.617) :
+			averageVal = 1
+		elif (roll <= 0.817) :
+			averageVal = 2
+		else :
+			averageVal = 3
+	else :
+		averageVal = 0
+	averageVal *= magicFind
+	var retVal : int = floor(averageVal)
+	var roll = randf_range(0,1)
+	if (averageVal-floor(averageVal)>=roll) :
+		retVal += 1
+	return retVal
+
+func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float, penaliseElemental : bool, magicFind : float) -> Array[Equipment] :
 	var retVal : Array[Equipment] = []
-	var dropCount = getDropCount(enemy)
+	var dropCount = getDropCount(enemy, magicFind)
 	if (dropCount == 0) :
 		return retVal
 	var signatureDropped : bool = false
-	if (enemy.enemyGroups.enemyQuality == EnemyGroups.enemyQualityEnum.elite && !(enemy.getResourceName() == "apophis")) :
+	if (enemy.enemyGroups.enemyQuality == EnemyGroups.enemyQualityEnum.elite) :
 		var roll = randf_range(0,100)
-		if (roll < 3) : 
+		if (roll < 3*magicFind) : 
 			signatureDropped = true
 	if (signatureDropped) :
 		retVal.append(getSignature(enemy).getAdjustedCopy(scalingFactor))
 		dropCount -= 1
-	var qualities = getDropQualities(dropCount)
+	var qualities = getDropQualities(dropCount, magicFind)
 	for index in range(0,dropCount) :
-		var actualQuality = reduceToValidQuality(qualities[index])
+		var type = rollType()
+		var actualQuality = reduceToValidQuality(qualities[index], type)
 		if (actualQuality == null) :
 			continue
 		var item
 		if (penaliseElemental) :
-			item = getItemOfQuality_penaliseElemental(actualQuality, false)
+			item = getItemOfQuality_penaliseElemental(actualQuality, type, false)
 		else :
-			item = getItemOfQuality(actualQuality)
+			item = getItemOfQuality(actualQuality, type)
 		if (item == null) :
 			continue
 		retVal.append(item.getAdjustedCopy(scalingFactor))
@@ -113,13 +136,13 @@ func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float, penaliseEle
 func getSignature(enemy : ActorPreset) :
 	return EquipmentDatabase.getEquipment(signatureEquipmentList[enemy.getResourceName()])
 	
-const qualityThresholds : Array[int] = [1.5,5,15,40,100]
-func getDropQualities(count : int) -> Array[EquipmentGroups.qualityEnum] :
+const qualityThresholds : Array[float] = [1.5,5,15,40,100]
+func getDropQualities(count : int, magicFind : float) -> Array[EquipmentGroups.qualityEnum] :
 	var retVal : Array[EquipmentGroups.qualityEnum] = []
 	for index in range(0,count) :
 		var roll = randf_range(0,100)
 		for qualityIndex in range(0,qualityThresholds.size()) :
-			if (roll <= qualityThresholds[qualityIndex]) :
+			if (roll <= qualityThresholds[qualityIndex]*magicFind) :
 				retVal.append((4-qualityIndex) as EquipmentGroups.qualityEnum)
 				break
 	return retVal
@@ -138,34 +161,54 @@ func getDropQualities(count : int) -> Array[EquipmentGroups.qualityEnum] :
 			#retVal.append(newItem)
 	#return retVal
 	
-func reduceToValidQuality(startingQuality) :
+func reduceToValidQuality(startingQuality, type) :
 	var currentQuality = startingQuality
-	while (qualityCounts[currentQuality] == 0 && currentQuality != -1) :
+	while ((countDict["T"+str(type)].get(currentQuality) == null || countDict["T"+str(type)][currentQuality] == 0) && currentQuality != -1) :
 		currentQuality -= 1
 	if (currentQuality == -1) :
 		return null
 	return currentQuality
 	
-func getItemOfQuality(quality) :
-	var roll = randi_range(0,qualityCounts[quality]-1)
+func rollType() :
+	const baseWeights = [6,4,3]
+	var actualWeights = [0,0,0]
+	for key in Definitions.equipmentTypeDictionary.keys() :
+		if (key == Definitions.equipmentTypeEnum.currency) :
+			continue
+		if (countDict.get("T"+str(key)) != null && countDict["T"+str(key)].get("total") != null && countDict["T"+str(key)]["total"] > 0) :
+			actualWeights[key] = baseWeights[key]
+	var total = actualWeights[0] + actualWeights[1] + actualWeights[2]
+	if (total == 0) :
+		return null
+	var chosenType
+	var roll = randi_range(0,total-1)
+	if (roll < actualWeights[0]) :
+		return 0
+	elif (roll < actualWeights[0] + actualWeights[1]) :
+		return 1
+	else :
+		return 2
+	
+func getItemOfQuality(quality, type) :
+	var roll = randi_range(0,countDict["T"+str(type)][quality]-1)
 	var current = 0
 	for item : Equipment in itemPool :
-		if (item.equipmentGroups.quality == quality) :
+		if (item.getType() == type && item.equipmentGroups.quality == quality) :
 			if (roll == current) :
 				return item
 			current += 1
 	return null
 	
-func getItemOfQuality_penaliseElemental(quality, isHalved : bool) :
+func getItemOfQuality_penaliseElemental(quality, type, isHalved : bool) :
 	var poolContainsNonelemental : bool = false
 	for item in itemPool :
 		if (!item.equipmentGroups.isElemental()) :
 			poolContainsNonelemental = true
 			break
 	if (!poolContainsNonelemental) :
-		return getItemOfQuality(quality)
+		return getItemOfQuality(quality, type)
 	
-	var sample = getItemOfQuality(quality)
+	var sample = getItemOfQuality(quality, type)
 	if (sample == null) :
 		return null
 	var maxVal
@@ -174,7 +217,7 @@ func getItemOfQuality_penaliseElemental(quality, isHalved : bool) :
 	else :
 		maxVal = 3
 	while (sample.equipmentGroups.isElemental() && randi_range(0,maxVal) != 0) :
-		sample = getItemOfQuality(quality)
+		sample = getItemOfQuality(quality,type)
 	return sample
 	
 #func getItemsOfQualities(qualities : Array[EquipmentGroups.qualityEnum]) :
@@ -233,8 +276,25 @@ func getItemOfQuality_penaliseElemental(quality, isHalved : bool) :
 			#count += 1
 	#return count
 		#
+var countDict : Dictionary = {}
 func updateQualityCounts() :
-	qualityCounts = [0,0,0,0,0]
+	countDict = {}
 	for item in itemPool :
+		var type = item.getType()
+		if (countDict.get("T"+str(type)) == null) :
+			countDict["T"+str(type)] = {"total" : 1}
+		else :
+			countDict["T"+str(type)]["total"] += 1
 		var quality = item.equipmentGroups.quality
-		qualityCounts[quality as int] += 1
+		#if (countDict.get("Q"+str(quality)) == null) :
+			#countDict["Q"+str(quality)] = {"total" : 1}
+		#else :
+			#countDict["Q"+str(quality)]["total"] += 1
+		if (countDict["T"+str(type)].get(quality) == null) :
+			countDict["T"+str(type)][quality] = 1
+		else :
+			countDict["T"+str(type)][quality] += 1
+		#if (countDict["Q"+str(quality)].get(type) == null) :
+			#countDict["Q"+str(quality)][type] = 1
+		#else :
+			#countDict["Q"+str(quality)][type] += 1

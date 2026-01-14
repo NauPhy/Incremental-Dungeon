@@ -12,6 +12,7 @@ func getTypicalEnemyDefense() :
 			for enemy in room.getEncounterRef().enemies :
 				numArr.append(enemy.PHYSDEF)
 				numArr.append(enemy.MAGDEF)
+	numArr.sort_custom(func(a,b):return a<b)
 	if (numArr.size()%2 != 0) :
 		return numArr[(numArr.size()-1)/2]
 	else :
@@ -25,6 +26,9 @@ func getEnvironment() -> MyEnvironment :
 	if (mapData == null) :
 		return MyEnvironment.new()
 	return MegaFile.getEnvironment(mapData.environmentName)
+func getRoomRow(room : Node) :
+	return getRow(room)
+		
 #######################################
 ## Setters
 var UIEnabled : bool = true
@@ -203,7 +207,7 @@ func addSideRoom(val : MapData, row : int, leafCounter : int, isLeft : bool) :
 		newConnection.visibilityOnStartup = 1
 		
 func addBossRoom(val : MapData) :
-	var tempEncounter = val.bossEncounter
+	#var tempEncounter = val.bossEncounter
 	var bossRoom = roomLoader.instantiate()
 	$CombatMap/RoomContainer.add_child(bossRoom)
 	bossRoom.initialise(val.bossEncounter, 0)
@@ -266,6 +270,15 @@ func getRowTotal() -> int :
 		if (num > highest) :
 			highest = num
 	return highest
+func getRow(room : Node) :
+	if ((room.name as String).find("L") != -1 || (room.name as String).find("R") != -1) :
+		var cutoff = (room.name as String).find("L")
+		if (cutoff == -1) :
+			cutoff = (room.name as String).find("R")
+		var parentName = (room.name as String).substr(0,(room.name as String).length()-cutoff)
+		return int(parentName.substr(1))
+	else :
+		return int((room.name as String).substr(1))
 	
 func getFurthestProgression() -> int :
 	var highest = 0
@@ -450,6 +463,6 @@ func checkApophis(room) :
 		var encounter : Encounter = room.getEncounterRef()
 		if (encounter != null) :
 			for enemy in encounter.enemies :
-				if (enemy.getResourceName() == "aphophis") :
+				if (enemy.getResourceName() == "apophis") :
 					emit_signal("apophisKilled")
 					return

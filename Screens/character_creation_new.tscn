@@ -18,10 +18,10 @@ content_margin_bottom = 30.0
 bg_color = Color(0.458824, 0.458824, 0.458824, 1)
 
 [sub_resource type="Theme" id="Theme_63urx"]
-RichTextLabel/font_sizes/normal_font_size = 28
+RichTextLabel/font_sizes/normal_font_size = 25
 
 [sub_resource type="Theme" id="Theme_8nt8s"]
-RichTextLabel/font_sizes/normal_font_size = 28
+RichTextLabel/font_sizes/normal_font_size = 25
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8nt8s"]
 content_margin_left = 10.0
@@ -53,37 +53,94 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
-offset_top = 50.0
+offset_top = 30.0
 grow_horizontal = 2
 theme_override_font_sizes/normal_font_size = 80
-text = " Who am I? "
+text = "Character Creation"
 fit_content = true
 autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CharacterCreator" parent="." instance=ExtResource("2_63urx")]
+[node name="Warning" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -299.0
+offset_bottom = -299.0
+grow_horizontal = 2
+text = "You can respec later"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ClassContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.5
+anchor_bottom = 1.0
 offset_left = 30.0
-offset_top = 103.0
-offset_right = -340.0
-offset_bottom = 0.0
+offset_top = 50.0
+offset_right = -360.0
+offset_bottom = -50.0
+theme_override_constants/separation = 30
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="Title" type="RichTextLabel" parent="ClassContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/normal_font_size = 60
+text = "Class"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CharacterCreator" parent="ClassContainer" instance=ExtResource("2_63urx")]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AppearanceContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
+anchor_left = 0.5
 anchor_right = 1.0
-offset_top = 83.0
+anchor_bottom = 1.0
+offset_left = 360.0
+offset_top = 50.0
 offset_right = -30.0
-grow_horizontal = 0
-theme = ExtResource("19_eevmu")
-theme_override_constants/separation = 8
+offset_bottom = -50.0
+theme_override_constants/separation = 30
 
-[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer"]
+[node name="Title" type="RichTextLabel" parent="AppearanceContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/normal_font_size = 60
+text = "Appearance"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Carousels" type="VBoxContainer" parent="AppearanceContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("17_8nt8s")
+theme_override_constants/separation = 35
+
+[node name="PresetContainer" type="VBoxContainer" parent="AppearanceContainer/Carousels"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/PresetContainer"]
 layout_mode = 2
 theme = ExtResource("19_eevmu")
+theme_override_font_sizes/normal_font_size = 30
 text = " Presets "
 fit_content = true
 scroll_active = false
@@ -91,61 +148,48 @@ autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Mage" parent="HBoxContainer" instance=ExtResource("16_63urx")]
+[node name="HBoxContainer" type="HBoxContainer" parent="AppearanceContainer/Carousels/PresetContainer"]
+layout_mode = 2
+theme = ExtResource("19_eevmu")
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Mage" parent="AppearanceContainer/Carousels/PresetContainer/HBoxContainer" instance=ExtResource("16_63urx")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = "Mage"
 
-[node name="Fighter" parent="HBoxContainer" instance=ExtResource("16_63urx")]
+[node name="Fighter" parent="AppearanceContainer/Carousels/PresetContainer/HBoxContainer" instance=ExtResource("16_63urx")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = " Fighter "
 
-[node name="Rogue" parent="HBoxContainer" instance=ExtResource("16_63urx")]
+[node name="Rogue" parent="AppearanceContainer/Carousels/PresetContainer/HBoxContainer" instance=ExtResource("16_63urx")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = " Rogue "
 
-[node name="Spacer" type="Control" parent="HBoxContainer"]
-custom_minimum_size = Vector2(10, 0)
+[node name="Control" type="Control" parent="AppearanceContainer/Carousels/PresetContainer/HBoxContainer"]
+custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="Undo" parent="HBoxContainer" instance=ExtResource("16_63urx")]
+[node name="Undo" parent="AppearanceContainer/Carousels/PresetContainer/HBoxContainer" instance=ExtResource("16_63urx")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = " Undo "
 
-[node name="Spacer2" type="Control" parent="HBoxContainer"]
-custom_minimum_size = Vector2(10, 0)
-layout_mode = 2
-
-[node name="Reset All" parent="HBoxContainer" instance=ExtResource("16_63urx")]
+[node name="Reset All" parent="AppearanceContainer/Carousels/PresetContainer/HBoxContainer" instance=ExtResource("16_63urx")]
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = " Reset All "
 
-[node name="Carousels" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 340.0
-offset_top = 30.0
-offset_right = -30.0
-offset_bottom = -130.0
-grow_horizontal = 0
-grow_vertical = 2
-theme = ExtResource("17_8nt8s")
-theme_override_constants/separation = 100
-alignment = 1
-
-[node name="Body" type="VBoxContainer" parent="Carousels"]
+[node name="Body" type="VBoxContainer" parent="AppearanceContainer/Carousels"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 25
+theme_override_constants/separation = 15
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Body"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Body"]
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/normal_font_size = 30
@@ -156,19 +200,19 @@ autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="Carousels/Body"]
+[node name="PanelContainer" type="PanelContainer" parent="AppearanceContainer/Carousels/Body"]
 layout_mode = 2
 theme = SubResource("Theme_63urx")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Carousels/Body/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="AppearanceContainer/Carousels/Body/PanelContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 15
 
-[node name="base" type="HBoxContainer" parent="Carousels/Body/PanelContainer/VBoxContainer"]
+[node name="base" type="HBoxContainer" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Body/PanelContainer/VBoxContainer/base"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/base"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Base "
@@ -177,33 +221,33 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="TextureButton" type="TextureButton" parent="Carousels/Body/PanelContainer/VBoxContainer/base"]
+[node name="TextureButton" type="TextureButton" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/base"]
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
 texture_normal = ExtResource("14_q47kp")
 script = ExtResource("15_eevmu")
 
-[node name="MyButton" parent="Carousels/Body/PanelContainer/VBoxContainer/base" instance=ExtResource("16_63urx")]
+[node name="MyButton" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/base" instance=ExtResource("16_63urx")]
 layout_mode = 2
 theme = ExtResource("17_8nt8s")
 text = "-10"
 
-[node name="MyButton2" parent="Carousels/Body/PanelContainer/VBoxContainer/base" instance=ExtResource("16_63urx")]
+[node name="MyButton2" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/base" instance=ExtResource("16_63urx")]
 layout_mode = 2
 theme = ExtResource("17_8nt8s")
 text = "+10"
 
-[node name="Carousel" parent="Carousels/Body/PanelContainer/VBoxContainer/base" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/base" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
-[node name="hair" type="HBoxContainer" parent="Carousels/Body/PanelContainer/VBoxContainer"]
+[node name="hair" type="HBoxContainer" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Body/PanelContainer/VBoxContainer/hair"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/hair"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Hair "
@@ -212,16 +256,16 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Carousel" parent="Carousels/Body/PanelContainer/VBoxContainer/hair" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/hair" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
-[node name="beard" type="HBoxContainer" parent="Carousels/Body/PanelContainer/VBoxContainer"]
+[node name="beard" type="HBoxContainer" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Body/PanelContainer/VBoxContainer/beard"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/beard"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Beard "
@@ -230,16 +274,16 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Carousel" parent="Carousels/Body/PanelContainer/VBoxContainer/beard" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/beard" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
-[node name="felids" type="HBoxContainer" parent="Carousels/Body/PanelContainer/VBoxContainer"]
+[node name="felids" type="HBoxContainer" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Body/PanelContainer/VBoxContainer/felids"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/felids"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Cat "
@@ -248,18 +292,18 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Carousel" parent="Carousels/Body/PanelContainer/VBoxContainer/felids" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/felids" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
-[node name="Clothes" type="VBoxContainer" parent="Carousels"]
+[node name="Clothes" type="VBoxContainer" parent="AppearanceContainer/Carousels"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = SubResource("Theme_8nt8s")
-theme_override_constants/separation = 25
+theme_override_constants/separation = 15
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Clothes"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Clothes"]
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/normal_font_size = 30
@@ -270,18 +314,18 @@ autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="Carousels/Clothes"]
+[node name="PanelContainer" type="PanelContainer" parent="AppearanceContainer/Carousels/Clothes"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Carousels/Clothes/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="AppearanceContainer/Carousels/Clothes/PanelContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 15
 
-[node name="head" type="HBoxContainer" parent="Carousels/Clothes/PanelContainer/VBoxContainer"]
+[node name="head" type="HBoxContainer" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/head"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/head"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Helmet "
@@ -290,16 +334,16 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Carousel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/head" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/head" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
-[node name="body" type="HBoxContainer" parent="Carousels/Clothes/PanelContainer/VBoxContainer"]
+[node name="body" type="HBoxContainer" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/body"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/body"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Body "
@@ -308,16 +352,16 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Carousel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/body" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/body" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
-[node name="legs" type="HBoxContainer" parent="Carousels/Clothes/PanelContainer/VBoxContainer"]
+[node name="legs" type="HBoxContainer" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/legs"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/legs"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Pants "
@@ -326,16 +370,16 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Carousel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/legs" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/legs" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
-[node name="gloves" type="HBoxContainer" parent="Carousels/Clothes/PanelContainer/VBoxContainer"]
+[node name="gloves" type="HBoxContainer" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/gloves"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/gloves"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Gloves "
@@ -344,16 +388,16 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Carousel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/gloves" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/gloves" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
-[node name="boots" type="HBoxContainer" parent="Carousels/Clothes/PanelContainer/VBoxContainer"]
+[node name="boots" type="HBoxContainer" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/boots"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/boots"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Shoes "
@@ -362,16 +406,16 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Carousel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/boots" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/boots" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
-[node name="hand_left" type="HBoxContainer" parent="Carousels/Clothes/PanelContainer/VBoxContainer"]
+[node name="hand_left" type="HBoxContainer" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/hand_left"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/hand_left"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Left Hand "
@@ -380,16 +424,16 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Carousel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/hand_left" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/hand_left" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
-[node name="hand_right" type="HBoxContainer" parent="Carousels/Clothes/PanelContainer/VBoxContainer"]
+[node name="hand_right" type="HBoxContainer" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/hand_right"]
+[node name="RichTextLabel" type="RichTextLabel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/hand_right"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = " Right Hand "
@@ -398,13 +442,13 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
-[node name="Carousel" parent="Carousels/Clothes/PanelContainer/VBoxContainer/hand_right" instance=ExtResource("13_5hiny")]
+[node name="Carousel" parent="AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer/hand_right" instance=ExtResource("13_5hiny")]
 layout_mode = 2
 size_flags_horizontal = 10
 textureScale = 3.0
 
 [node name="Portrait" type="Panel" parent="."]
-custom_minimum_size = Vector2(620, 500)
+custom_minimum_size = Vector2(660, 532)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -564,6 +608,7 @@ theme = ExtResource("17_8nt8s")
 theme_override_constants/separation = 20
 
 [node name="LineEdit" type="LineEdit" parent="VBoxContainer"]
+custom_minimum_size = Vector2(350, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 placeholder_text = "Enter Player Name"
@@ -584,16 +629,18 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 200.0
-offset_top = 265.0
+offset_left = 221.0
+offset_top = 276.0
+offset_right = 330.0
 text = " Remove Cat "
 
-[connection signal="myPressed" from="HBoxContainer/Mage" to="." method="_on_preset_button_pressed"]
-[connection signal="myPressed" from="HBoxContainer/Fighter" to="." method="_on_preset_button_pressed"]
-[connection signal="myPressed" from="HBoxContainer/Rogue" to="." method="_on_preset_button_pressed"]
-[connection signal="myPressed" from="HBoxContainer/Undo" to="." method="_on_preset_button_pressed"]
-[connection signal="myPressed" from="HBoxContainer/Reset All" to="." method="_on_preset_button_pressed"]
-[connection signal="pressed" from="Carousels/Body/PanelContainer/VBoxContainer/base/TextureButton" to="Carousels/Body/PanelContainer/VBoxContainer/base/TextureButton" method="_on_pressed"]
+[connection signal="classMoved" from="ClassContainer/CharacterCreator" to="." method="_on_character_creator_class_moved"]
+[connection signal="myPressed" from="AppearanceContainer/Carousels/PresetContainer/HBoxContainer/Mage" to="." method="_on_preset_button_pressed"]
+[connection signal="myPressed" from="AppearanceContainer/Carousels/PresetContainer/HBoxContainer/Fighter" to="." method="_on_preset_button_pressed"]
+[connection signal="myPressed" from="AppearanceContainer/Carousels/PresetContainer/HBoxContainer/Rogue" to="." method="_on_preset_button_pressed"]
+[connection signal="myPressed" from="AppearanceContainer/Carousels/PresetContainer/HBoxContainer/Undo" to="." method="_on_preset_button_pressed"]
+[connection signal="myPressed" from="AppearanceContainer/Carousels/PresetContainer/HBoxContainer/Reset All" to="." method="_on_preset_button_pressed"]
+[connection signal="pressed" from="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/base/TextureButton" to="AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/base/TextureButton" method="_on_pressed"]
 [connection signal="pressed" from="ContinueButton" to="." method="_on_my_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/MyButton" to="." method="_on_my_button_pressed"]
 [connection signal="pressed" from="JokeCatButton" to="." method="_on_joke_cat_button_pressed"]

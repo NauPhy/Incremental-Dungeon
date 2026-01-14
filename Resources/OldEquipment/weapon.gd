@@ -93,3 +93,6 @@ func createFromSaveDictionary(loadDict : Dictionary) -> Weapon :
 		return retVal
 	retVal.attackBonus = loadDict["attack"]
 	return retVal
+
+func getType() :
+	return type

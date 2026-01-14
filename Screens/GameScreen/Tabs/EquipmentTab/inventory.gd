@@ -365,6 +365,8 @@ func beforeLoad(newSave) :
 	for key in Definitions.equipmentTypeDictionary.keys() :
 		equippedEntries.append(null)
 	for key in Definitions.equipmentTypeDictionary.keys() :
+		if (key == Definitions.equipmentTypeEnum.currency) :
+			continue
 		var newTab = $PanelContainer/HBoxContainer/ABC.duplicate()
 		$PanelContainer/HBoxContainer.add_child(newTab)
 		newTab.name = Definitions.equipmentTypeDictionary[key]

@@ -7,6 +7,10 @@
 [node name="PagedEquipmentDetails" instance=ExtResource("1_eqrmg")]
 script = ExtResource("2_43h0h")
 
+[node name="EncyclopediaTextLabel" parent="VBoxContainer/Text/VBoxContainer/HBoxContainer" index="0"]
+horizontal_alignment = 0
+wrappingEnabled = false
+
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/Text/VBoxContainer" index="5"]
 layout_mode = 2
 alignment = 1
@@ -33,8 +37,3 @@ text = "Discard"
 
 [connection signal="pressed" from="VBoxContainer/Text/VBoxContainer/HBoxContainer2/CenterContainer/Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/Text/VBoxContainer/HBoxContainer2/CenterContainer2/Discard" to="." method="_on_discard_pressed"]
-
-[editable path="VBoxContainer/Picture/Elements/Sprite"]
-[editable path="VBoxContainer/Picture/Elements/Sprite2"]
-[editable path="VBoxContainer/Picture/Elements/Sprite3"]
-[editable path="VBoxContainer/Picture/Elements/Sprite4"]

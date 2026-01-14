@@ -41,7 +41,7 @@ func setEnemy(enemy : ActorPreset) :
 					description += enemy.drops[index].getName() + " - " + str(100*enemy.dropChances[index]) + "%\n"
 				else :
 					description += "??? (" + Definitions.equipmentTypeDictionary[enemy.drops[index].type] + ") - " + str(100*enemy.dropChances[index]) + "%\n"
-	description += "\n"
+	#description += "\n"
 	description += enemy.getDesc()
 	setText(description)
 	

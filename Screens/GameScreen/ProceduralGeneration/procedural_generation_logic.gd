@@ -26,27 +26,41 @@ func createMap() -> MapData :
 	return newMap
 	
 ## moderately inefficent
-func generateDrops(room : Node, environment : MyEnvironment) -> Dictionary :
+func generateDrops(currentFloor : int, room : Node, environment : MyEnvironment, magicFind : float) -> Dictionary :
 	var retVal1 : Array[Equipment] = []
 	$ItemPoolHandler.reset(environment, getAllItems())
 	var roomName : String = room.name
-	var currentRow = roomName.substr(1,1) as int
+	var currentRow = (roomName.substr(1,1) as int)
 	var penaliseElemental : bool = !(environment.earthPermitted || environment.firePermitted || environment.icePermitted || environment.waterPermitted)
 	for enemy in room.getEncounterRef().enemies :
 		$DropHandler.reset($ItemPoolHandler.getItemPoolForEnemy(enemy))
-		retVal1.append_array($DropHandler.createDropsForEnemy(enemy, getEquipmentScaling(getScalingRows_mapFinished(currentRow)), penaliseElemental))
-	var averageGold = getGoldScaling(getScalingRows_mapFinished(currentRow))
+		retVal1.append_array($DropHandler.createDropsForEnemy(enemy, getEquipmentScaling(getScalingRows_mapFinished(currentFloor, currentRow)), penaliseElemental, magicFind))
+	for item in retVal1 :
+		var scalingAmount = getScalingRows_mapFinished(currentFloor, currentRow)
+		if (scalingAmount > 1) :
+			item.title += " +"+str(scalingAmount-1)
+	var averageGold = getGoldScaling(getScalingRows_mapFinished(currentFloor, currentRow))
 	var goldRoll = randf_range(0, averageGold)
 	var goldCount : int = round(goldRoll)
 	var retVal2 : Array[int] = [goldCount]
-	var averageOre = getOreScaling(getScalingRows_mapFinished(currentRow))
+	var averageOre = getOreScaling(getScalingRows_mapFinished(currentFloor, currentRow))
 	var oreRoll = randf_range(0,averageOre)
 	var oreCount : int = round(oreRoll)
 	retVal2.append(oreCount)
-	var averageSouls = getSoulScaling(getScalingRows_mapFinished(currentRow))
+	var averageSouls = getSoulScaling(getScalingRows_mapFinished(currentFloor, currentRow))
 	var soulRoll = randf_range(0,averageSouls)
 	var soulCount : int = round(soulRoll)
 	retVal2.append(soulCount)
+	if (room.has_method("getEncounterRef")) :
+		var enemies = room.getEncounterRef().enemies
+		var goldDragon : bool = false
+		for enemy in enemies :
+			if (enemy.getResourceName() == "gold_dragon") :
+				goldDragon = true
+				break
+		if (goldDragon) :
+			for index in range(0, retVal2.size()) :
+				retVal2[index] = retVal2[index] * 3
 	var retVal = {
 		"equipment" : retVal1,
 		"currency" : retVal2
@@ -109,14 +123,19 @@ func createdRecently(newEnv : MyEnvironment) -> bool :
 			if (previousMaps[index].environmentName == envName) :
 				return index < mostRecentPermitted
 		return false
-	
+
+## The goal is:
+## Central encounter power = 2
+## Side encounter power = 1 BUT with +sqrt(2) scaling, i.e. halfway to next node
+## Boss encounter power = 3
+## with normal = (1/3), vet = 1, boss = 2
 func createEncounters() -> MapData :
 	var retVal = MapData.new()
 	var rowCount = 5
 	for index in range(0,rowCount) :
 		var newRow = MapRow.new()
 		newRow.centralEncounter = createCentralEncounter(index)
-		var sideNodeCount = randi_range(2,5)
+		var sideNodeCount = randi_range(2,3)
 		var leftNodeCount = randi_range(0,sideNodeCount)
 		var rightNodeCount = sideNodeCount-leftNodeCount
 		for leftIndex in range(0,leftNodeCount) :
@@ -125,9 +144,9 @@ func createEncounters() -> MapData :
 			newRow.rightEncounters.append(createSideEncounter(index))
 		retVal.rows.append(newRow)
 	if (previousMaps.size() == 9) :
-		retVal.bossEncounter = createFinalBossEncounter(rowCount+1)
+		retVal.bossEncounter = createFinalBossEncounter(rowCount)
 	else :
-		retVal.bossEncounter = createBossEncounter(rowCount+1)
+		retVal.bossEncounter = createBossEncounter(rowCount)
 	return retVal
 	
 ## Drops are now added on combat end. Instead of drop lists, beastiary will now show tags indicating what categories can and cannot be dropped.
@@ -149,7 +168,7 @@ func createCentralEncounter(row) -> Encounter :
 	if (!hasEnemies) :
 		return retVal
 	retVal.enemies.append(createVeteran(row))
-	if (randi_range(0,2) == 0) :
+	if (randi_range(0,1) == 0) :
 		retVal.enemies.append(createVeteran(row))
 	else :
 		for index in range(0,randi_range(2,3)) :
@@ -157,19 +176,22 @@ func createCentralEncounter(row) -> Encounter :
 	addDrops(retVal)
 	return retVal
 
+## Side encounters have a unit power of 1, but use stronger enemies- halfway to the next node.
+## This may result in side encounters feeling a bit trivial, but they're meant for farming, not challenge.
 func createSideEncounter(row) -> Encounter :
+	var roll = randf_range(0,1)
 	var retVal = Encounter.new()
-	if (randi_range(0,2)==0) :
-		retVal.enemies.append(createVeteran(row))
+	if (roll <= 0.333*0.95) :
+		retVal.enemies.append(createVeteran(row+0.5))
 		if (randi_range(0,2) == 0) :
-			retVal.enemies.append(createNormal(row))
-	elif (randi_range(0,9) == 0) :
-		var enemy = createNormal(row)
+			retVal.enemies.append(createNormal(row+0.5))
+	elif (roll <= 0.95) :
+		for index in range(0, 3) :
+			retVal.enemies.append(createNormal(row+0.5))
+	else :
+		var enemy = createNormal(row+0.5)
 		for index in range(0,5) :
 			retVal.enemies.append(enemy.getAdjustedCopy(enemy.myScalingFactor))
-	else :
-		for index in range(0, randi_range(2,3)) :
-			retVal.enemies.append(createNormal(row))
 	addDrops(retVal)
 	return retVal
 
@@ -196,7 +218,7 @@ func createFinalBossEncounter(currentRow) -> Encounter :
 	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(scalingRows)))
 	retVal.enemies.append(hellKnightResource.getAdjustedCopy(getEnemyScaling(scalingRows)))
 	retVal.introTitle = "This Is It"
-	retVal.introText = "You had heard that the royal family was uniquely powerful among Archfiends, and as you enter the throne room, you finally see why. Half demon, half fire dragon, the Demon King towers over the archfiend at his side. He glowers at you with 3 sets of eyes and signals a phalanx of hell knights to advance on you."
+	retVal.introText = "You had heard that the royal family was uniquely powerful among Archfiends, and as you enter the throne room, you finally see why. Half demon, half fire dragon, the Demon King towers over the Archfiend at his side. He glowers at you with 3 sets of eyes and signals a phalanx of hell knights to advance on you."
 	retVal.victoryTitle = "Victory!"
 	retVal.victoryText = "After a long and brutal fight, Apophis finally falls, and with him, the Demons' hopes of world domination."
 	addDrops(retVal)
@@ -210,38 +232,40 @@ func createElite(currentRow) -> ActorPreset :
 	return $EnemyPoolHandler.getEnemyOfType(EnemyGroups.enemyQualityEnum.elite).getAdjustedCopy(getEnemyScaling(getScalingRows_mapInProgress(currentRow)))
 
 ##currentRow starts at 0
-func getScalingRows_mapFinished(currentRow) -> int :
-	if (previousMaps.size() == 0): 
+func getScalingRows_mapFinished(currentFloor, currentRow) -> int :
+	if (currentFloor == 0): 
 		return 0
-	if (previousMaps.size() == 1) :
-		return currentRow
-	if (previousMaps.size() == 2) :
-		return 6 + currentRow-1
+	if (currentFloor == 1) :
+		return currentRow+1
+	if (currentFloor == 2) :
+		return 6 + currentRow
 	var scalingRows = 6
-	for index in range(1, previousMaps.size()-1) :
+	for index in range(1, currentFloor-1) :
 		scalingRows += 5
-	return scalingRows - 1
+	return scalingRows + currentRow
 
 ##currentRow starts at 0
-func getScalingRows_mapInProgress(currentRow) -> int :
+func getScalingRows_mapInProgress(currentRow) -> float :
 	var scalingRows = 0
 	if (previousMaps.size() == 0): 
 		return currentRow+1
 	if (previousMaps.size() == 1) :
-		return 6 + currentRow-1
+		return 6 + currentRow
 	scalingRows = 6
 	for index in range(1, previousMaps.size()) :
 		scalingRows += 5
-	return scalingRows - 1
+	return scalingRows + currentRow
 	
 func getEnemyScaling(scalingRows) :
+	#return pow(2, scalingRows)
 	if (scalingRows <= 6) :
-		return pow(4.18,scalingRows)
-	return pow(4.18,6)*pow(2,scalingRows-6)
+		return pow(5.657,scalingRows)
+	return pow(5.657,6)*pow(2,scalingRows-6)
 func getEquipmentScaling(scalingRows) :
+	#return pow(2,scalingRows/4.0)
 	if (scalingRows <= 6) :
-		return pow(4.18,scalingRows/4.0)
-	return pow(4.18,6/4.0)*pow(2,(scalingRows-6)/4.0)
+		return pow(5.657,scalingRows/4.0)
+	return pow(5.657,6/4.0)*pow(2,(scalingRows-6)/4.0)
 func getGoldScaling(scalingRows) :
 	return pow(2,(scalingRows-1)/4.0)
 func getOreScaling(scalingRows) :
@@ -261,7 +285,9 @@ func getScalingRowsInFloor(floorIndex) :
 	else :
 		return 5
 	
-func createRandomShopItem(type : Definitions.equipmentTypeEnum, scaling : float) -> Equipment :
+func createRandomShopItem(type : Definitions.equipmentTypeEnum, myFloor, currentRow) -> Equipment :
+	var scalingRow = getScalingRows_mapFinished(myFloor, currentRow)
+	var scaling = getEquipmentScaling(scalingRow)
 	var items = getAllItems()
 	var index = 0
 	while (index < items.size()) :
@@ -275,9 +301,11 @@ func createRandomShopItem(type : Definitions.equipmentTypeEnum, scaling : float)
 			index += 1
 	#$ItemPoolHandler.reset(MegaFile.getEnvironment("chaos"), items)
 	$DropHandler.reset(items)
-	var quality = $DropHandler.getDropQualities(1)
-	var newItem : Equipment = $DropHandler.getItemOfQuality_penaliseElemental(quality[0], true)
-	return newItem.getAdjustedCopy(scaling)
+	var quality = $DropHandler.getDropQualities(1.0, 1)
+	var newItem : Equipment = $DropHandler.getItemOfQuality_penaliseElemental(quality[0],type, true)
+	var retVal = newItem.getAdjustedCopy(scaling)
+	retVal.title += " +" + str(scalingRow-1)
+	return retVal
 ############# Saving
 var myReady : bool = false
 signal myReadySignal

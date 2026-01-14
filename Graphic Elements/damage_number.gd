@@ -12,4 +12,4 @@ func initialiseAndRun(val : float, minX, maxX, minY, maxY) :
 	myTween.tween_callback(queue_free)
 func setValue(val) :
 	value = val
-	text = " " + str(Helpers.myRound(val,5)) + " "
+	text = " " + Helpers.engineeringRound(val,5) + " "

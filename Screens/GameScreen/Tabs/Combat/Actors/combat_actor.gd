@@ -34,6 +34,10 @@ func setHP(val) :
 #Add more sophisticated AI later
 func _ready() :
 	$TitleCard/Title.text = core.text
+	var width = await Helpers.getTextWidthWaitFrame($TitleCard/Title,null,core.text)
+	$TitleCard/Title.custom_minimum_size.x = width
+	$TitleCard.custom_minimum_size.x = width+20
+	custom_minimum_size.x = width+20
 	$Graphic.texture = core.portrait
 	setHP(core.MAXHP)
 	var chosenAction = randi_range(0,core.actions.size()-1)

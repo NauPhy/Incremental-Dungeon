@@ -77,7 +77,7 @@ func beforeLoad(newGame) :
 	setupDescriptions()
 	setupTimers()
 	if (newGame) :
-		var routineList = MegaFile.Routine_FilesDictionary.keys()
+		#var routineList = MegaFile.Routine_FilesDictionary.keys()
 		unlockedRoutines.append("lift_weightss")
 		unlockedRoutines.append("pickpocket_goblins")
 		unlockedRoutines.append("hug_cacti")
@@ -884,7 +884,7 @@ func givePurchaseBenefit_weapon(item : weaponPurchasable, purchase : Purchasable
 signal setSubclassRequested
 signal respecRequested
 signal increaseInventorySizeRequested
-func givePurchaseBenefitSoul(item : soulPurchasable, purchase : Purchasable) :
+func givePurchaseBenefitSoul(item : soulPurchasable, _purchase : Purchasable) :
 	if ((soulPurchasable.fighterSubclass_1 as int) <= (item as int) && (item as int) <= (soulPurchasable.mageSubclass_2 as int)) :
 		awaitingConfirmation = true
 		emit_signal("setSubclassRequested", item as Definitions.subclass)
@@ -963,7 +963,8 @@ func upgradeAllStats() :
 		value.append(0.005)
 		statEnum.append(key)
 		statName = Definitions.attributeDictionary[key]
-		lastBought["statsBought"].append([statName + " Mult +0.005"])
+		var temp_2 : String = statName + " Mult +0.005"
+		lastBought["statsBought"].append(temp_2)
 	awaitingConfirmation = true
 	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	if (awaitingConfirmation) :
@@ -977,7 +978,8 @@ func upgradeAllStats() :
 		value.append(0.01)
 		statEnum.append(key)
 		statName = Definitions.baseStatDictionary[key]
-		lastBought["statsBought"].append([statName + " Mult +0.01"])
+		var temp_2 : String = statName + " Mult +0.01"
+		lastBought["statsBought"].append(temp_2)
 	awaitingConfirmation = true
 	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	if (awaitingConfirmation) :
@@ -1040,6 +1042,12 @@ func setupDescriptions() :
 var armorTimer : Timer
 var weaponTimer : Timer
 func setupTimers() :
+	if (armorTimer != null) :
+		armorTimer.queue_free()
+		armorTimer = null
+	if (weaponTimer != null) :
+		weaponTimer.queue_free()
+		weaponTimer = null
 	armorTimer = Timer.new()
 	add_child(armorTimer)
 	armorTimer.one_shot = false
@@ -1054,6 +1062,7 @@ func setupTimers() :
 var myArmor : Array[Armor] = []
 var armorScaling : float = 0
 func _on_armor_timeout() :
+	armorTimer.wait_time = 30*60
 	armorScaling = await getEquipmentScaling()
 	var currencyScaling = await getCurrencyScaling("armor")
 	currencyScaling /= pow(2,5.0/4.0)
@@ -1070,6 +1079,7 @@ func _on_armor_timeout() :
 var myWeapons : Array[Weapon] = []
 var weaponScaling : float = 0
 func _on_weapon_timeout() :
+	weaponTimer.wait_time = 30*60
 	weaponScaling = await getEquipmentScaling()
 	var currencyScaling = await getCurrencyScaling("weapon")
 	currencyScaling /= pow(2,5.0/4.0)

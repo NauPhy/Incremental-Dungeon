@@ -8,7 +8,7 @@
 script = ExtResource("1_k8vib")
 isEligible = true
 quality = 1
-technology = 0
+technology = 1
 weaponClass = 2
 armorClass = 0
 isFire = false

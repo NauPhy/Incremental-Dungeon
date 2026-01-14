@@ -62,7 +62,7 @@ func getSoftPos(text, newNotif) :
 	var Y1 = mousePos.y-estimatedSize.y
 	newNotif.initialiseAndRun(text,X0,X1,Y0,Y1)
 	
-func spamNotifications(child, upgraded : Array[String]) :
+func spamNotifications(_child, upgraded : Array[String]) :
 	var myTimer = Timer.new()
 	add_child(myTimer)
 	myTimer.one_shot = false

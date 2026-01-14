@@ -161,7 +161,7 @@ text = "Continue"
 visible = false
 layout_mode = 1
 theme_override_styles/panel = SubResource("StyleBoxTexture_bd4h1")
-text = "After nearly 3 centuries of war, yours is the first generation to grow up in a time of peace. The expectations of war-torn elders weigh heavily upon you, and soon it will be your responsibility to provide, learn, adapt, and of course, to ensure safety from the ravenous Demon armies..."
+text = "Born shortly after the war's end, you grew up hearing fanciful tales of a world beneath our own, filled with riches, fascinating creatures, and of course, the vile Demon Nation, gathering strength and plotting revenge. Eager to prove yourself, today you've volunteered for a routine scouting mission, following up on rumors of an entrance to the Underworld hidden deep within a local mine."
 
 [node name="Page4" parent="NarrativeContainer" instance=ExtResource("7_lmv0o")]
 visible = false
@@ -173,7 +173,7 @@ text = "As you stumble once more in the dim light, you again find yourself wishi
 visible = false
 layout_mode = 1
 theme_override_styles/panel = SubResource("StyleBoxTexture_wi5k1")
-text = "You see light ahead, a lantern next to an ancient door, built into the cave wall. So the rumors were true, this cave does contain an entrance to the Underworld. At that thought, frightful stories from your youth come to mind unbidden, and you try to remember..."
+text = "You see light ahead, a lantern next to an ancient door, built into the cave wall. As you draw closer, you see the insignia of the Demon Nation's royal family prominently displayed in the stonework. Your orders are of course to search the area and report back, but no one said you couldn't take a look inside..."
 
 [node name="CharacterCreator" parent="." instance=ExtResource("8_lxllv")]
 visible = false
@@ -181,14 +181,13 @@ layout_mode = 1
 
 [node name="BackButton" parent="." instance=ExtResource("8_yrspc")]
 custom_minimum_size = Vector2(150, 55)
-layout_direction = 3
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 40.0
+offset_left = 30.0
 offset_right = 0.0
-offset_bottom = -40.0
+offset_bottom = -50.0
 grow_vertical = 0
 text = "    Back    "
 

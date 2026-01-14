@@ -32,7 +32,7 @@ texture_click_mask = ExtResource("7_hjwet")
 stretch_mode = 0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer"]
-custom_minimum_size = Vector2(36, 0)
+custom_minimum_size = Vector2(67, 0)
 layout_mode = 2
 text = " Sample Text "
 fit_content = true

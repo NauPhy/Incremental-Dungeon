@@ -6,7 +6,7 @@
 script = ExtResource("1_sj2tl")
 type = 1
 power = 3.91
-text = "Frost Breath"
+text = "Breath of Midas"
 mode = 0
 warmup = 8.0
 metadata/_custom_type_script = "uid://6o4dw2binuis"

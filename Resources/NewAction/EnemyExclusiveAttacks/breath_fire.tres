@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_mfo67")
 type = 1
-power = 4.91
+power = 3.91
 text = "Fire Breath"
 mode = 0
 warmup = 8.0

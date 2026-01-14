@@ -1,6 +1,7 @@
 extends Panel
 
 signal finished
+signal waitingForUser
 
 const entryLoader = preload("res://Screens/GameScreen/Tabs/Combat/CombatRewards/combat_reward_entry.tscn")
 
@@ -67,6 +68,7 @@ func initialise(rewards : Dictionary) :
 		self.visible = true
 		initialisationPending = false
 		emit_signal("initialisationComplete")
+		emit_signal("waitingForUser")
 		
 func _on_entry_selected(itemSceneRef) :
 	$Content/Details.setItemSceneRefBase(itemSceneRef)

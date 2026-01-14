@@ -8,7 +8,7 @@
 script = ExtResource("1_emaue")
 isEligible = true
 quality = 2
-technology = 0
+technology = 1
 weaponClass = 2
 armorClass = 1
 isFire = false

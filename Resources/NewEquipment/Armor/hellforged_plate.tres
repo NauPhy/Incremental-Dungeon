@@ -175,9 +175,9 @@ script = ExtResource("3_iugcr")
 PHYSDEF = 0.0
 MAGDEF = 0.0
 title = "Hellforged Plate"
-description = "Fortified with extensive enchantments and forged in the deepest pits of the Underworld, Hellforged Plate is a paragon of industrial metalworking.
+description = "Fortified with extensive enchantments and forged in the deepest pits of the Underworld, hellforged plate is a paragon of industrial metalworking.
 
-Granted exclusively to Hell Knights and Hell Sentinels, Hellforged Plate is a symbol of great prestige and authority."
+Granted exclusively to Hell Knights, hellforged plate is a symbol of great prestige and authority."
 myPacket = SubResource("Resource_co2un")
 equipmentGroups = SubResource("Resource_xugd0")
 metadata/_custom_type_script = "uid://bnh3m73ifmphh"

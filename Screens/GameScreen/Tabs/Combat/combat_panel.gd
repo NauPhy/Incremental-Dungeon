@@ -220,6 +220,17 @@ func getLowestTarget(otherParty) :
 	return lowestTarget
 
 func getStandardTarget(emitter, otherParty) :
+	if (emitter == $FriendlyParty.get_child(0)) :
+		var maxRatio = 0
+		var maxEnemy
+		for enemy in $EnemyParty.get_children() :
+			var newRatio = (enemy.core.AR*enemy.core.DR)/(enemy.core.MAXHP*(enemy.core.PHYSDEF+enemy.core.MAGDEF)/2.0)
+			if (enemy.dead) :
+				continue
+			if (newRatio > maxRatio) :
+				maxRatio = newRatio
+				maxEnemy = enemy
+		return maxEnemy
 	var myPos = emitter.combatPosition
 	var target
 	for index in range(5) :
@@ -299,10 +310,7 @@ func executeAction(emitter, action, target) :
 		magicDamage *= MDT
 		
 	var damage = magicDamage + physicalDamage
-	if (damage > target.HP) :
-		target.setHP(0)
-	else :
-		target.setHP(target.HP-damage)
+	target.setHP(target.HP-damage)
 
 func _on_check_box_toggled(toggled_on: bool) -> void:
 	autoMode = toggled_on

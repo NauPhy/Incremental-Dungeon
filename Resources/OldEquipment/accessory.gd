@@ -6,7 +6,7 @@ var type = Definitions.equipmentTypeEnum.accessory
 @export var boostedAttr1 : Definitions.attributeEnum = -1
 @export var boostedAttr2 : Definitions.attributeEnum = -1
 
-const referenceValue = 4.094723
+const referenceValue = 4.094723*(31.8/60.0)
 func getAdjustedCopy(scalingFactor : float) -> Accessory :
 	var retVal = super(scalingFactor) as Accessory
 	if (!Helpers.equipmentIsNew(retVal) || scalingFactor == -1) :
@@ -39,3 +39,6 @@ func createFromSaveDictionary(loadDict) -> Accessory :
 	if (retVal.boostedAttr2 != -1) :
 		retVal.myPacket.attributeMods[Definitions.attributeDictionary[retVal.boostedAttr2]]["Prebonus"] = loadDict["attrVal1"]
 	return retVal
+
+func getType() :
+	return type

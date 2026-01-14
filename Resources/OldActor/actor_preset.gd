@@ -37,7 +37,11 @@ func getStat(type : Definitions.baseStatEnum) -> float :
 	else :
 		return -1
 
-const referencePowerLevel = 919107
+## Normally, a central encounter has a total power of 2, a side encounter 1, and a boss encounter 3.
+## The reference power level is half the power level of the orc-- the orc is treated as a central encounter (not a boss),
+## but because it's alone, it has the strength of 2 veterans. 
+## The very first procedurally generated node will have a veteran power of 2*reference.
+const referencePowerLevel = 58936
 var myScalingFactor : float = -1
 func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 	var retVal = self.duplicate()
@@ -51,7 +55,7 @@ func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 	elif (enemyGroups.enemyQuality == enemyGroups.enemyQualityEnum.veteran) :
 		strengthMultiplier = 1.0
 	elif (enemyGroups.enemyQuality == enemyGroups.enemyQualityEnum.elite) :
-		strengthMultiplier = 1.67
+		strengthMultiplier = 2.0
 	else :
 		return retVal
 	var powerLevel = referencePowerLevel*scalingFactor*strengthMultiplier
@@ -67,8 +71,8 @@ func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 		retVal.AR = 0
 		retVal.DR = 0
 	else :
-		var product = eDPS*actions[0].getPower()/actions[0].getWarmup()
-		retVal.AR = sqrt(product/enemyGroups.atkRatio)
+		var product = eDPS/EnemyDatabase.getAdasRatio()
+		retVal.AR = sqrt(product*enemyGroups.atkRatio)
 		retVal.DR = product/retVal.AR
 	#retVal.resourceName = getResourceName()
 	return retVal

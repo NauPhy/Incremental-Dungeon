@@ -305,6 +305,7 @@ const keywords : Array[String] = [
 	"Biome",
 	
 	"Learning Curve",
+	"Magic Find"
 	#"Softcap"
 	]
 const keyword_alternates : Dictionary = {
@@ -329,7 +330,7 @@ const keyword_alternates : Dictionary = {
 }
 
 var descriptions : Dictionary = {
-	"Learning Curve" : "This stuff is easy! As a bright young adventurer, you're still learning quickly. 3.0x Routine Speed for all attributes, linearly decaying to 1.0x as the attribute's Base value approaches 63.",
+	"Learning Curve" : "This stuff is easy! As a bright young adventurer, you're still learning quickly. 3.0x Routine Speed for all attributes, linearly decaying to 1.0x as the attribute's Bonus from Class + Cumulative Routine Levels approaches 106.",
 	
 	#"Softcap" : "Every time the Bonus provided to an attribute by Cumulative Routine Levels reaches a new power of 10 (starting at 100), your Routine Speed for that attribute halves permanently.",
 	
@@ -408,6 +409,8 @@ var descriptions : Dictionary = {
 	"Accessory" : "A type of equipment. Accessories tend to give Bonuses to Base Attributes and Multipliers to Combat Stats.\n\nYou gain a DR Multiplier of 1.25x for each Element shared by your Weapon and Accessory.\n\nYou gain a PHYSDEF and MAGDEF Multiplier of 1.25x for each Element shared by your Armor and Accessory.",
 	
 	"Player Panel" : "Located on the left side of the game screen, the Player Panel lists important stats for your character. Hover over the stats to see all of the Bonuses to the Base and Standard Multiplier as well as all non-Standard multipliers.",
+	
+	"Magic Find" : "Magic Find increases the quantity and quality of item drops from enemies. Currency is unaffected.\n\nWith a Magic Find of 1.0, the drop rarity chances are 60/25/10/3.5/1.5/0 (common/uncommon/rare/epic/legendary/signature), or for bosses, 58.2/24.25/9.7/3.395/1.455/3.\n\nWith a Magic Find of 1.5, 50% more items would drop, and the rarity distribution would instead be 40/37.5/15/5.25/2.25/0, or 34.3/36.375/14.55/5.093/2.183/4.5.\n\nMagic Find is capped at 2.297, at which point common items drop 1% of the time.",
 	################################################################
 	## Tags
 	"Tag" : "Tags determine what equipment an enemy can drop. Both equipment and enemies have Tags, and either can disqualify an item from dropping. See Equipment tags and Enemy tags.",
@@ -448,8 +451,8 @@ var descriptions : Dictionary = {
 	"Earth" : "Earth is the Element of creation.",
 	
 	"Signature" : "This equipment is a Boss' signature drop!",
-	"Boss" : "This enemy is the boss of its floor. It drops 42% more items on average and has a powerful signature drop!",
-	"Veteran" : "This enemy is pretty strong, but drops 27% more items on average.",
+	"Boss" : "This enemy is the boss of its floor. It drops 225% more items on average and has a powerful signature drop!",
+	"Veteran" : "This enemy is quite strong, and has the audacity to not drop any extra items!",
 	
 	"Faction" : "Each enemy belongs to a single Faction. A given Biome will only contain enemies of permitted factions, displayed on the top right corner of the Combat Map. The 10 Factions are: Flamekin, Frostkin, Naturekin, Nautikin, Demonic Civilian, Demonic Military, Greenskin, Merfolk, Undead, and Wanderkin.",
 	"Demonic Civilian" : "The Demonic Civilian Faction includes Demons too weak, dumb, or unruly to be drafted into the Demonic Military.",

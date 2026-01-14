@@ -52,7 +52,7 @@ func setEnemy(enemy : ActorPreset) :
 			def[index].visible = false
 	var sig = $Signature.get_children()
 	for index in range(0, sig.size()) :
-		if (index + 1 == stuff.enemyQuality as int && enemy.getResourceName() != "apophis") :
+		if (index + 1 == stuff.enemyQuality as int) :
 			sig[index].visible = true
 		else :
 			sig[index].visible = false

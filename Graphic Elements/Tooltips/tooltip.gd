@@ -32,9 +32,9 @@ func setTitle(val) :
 	
 func setDesc(val) :
 	if ($HBoxContainer/VBoxContainer/Title.text != "") :
-		$HBoxContainer/VBoxContainer/EncyclopediaTextLabel.setTextExceptKey(val, $HBoxContainer/VBoxContainer/Title.text)
+		await $HBoxContainer/VBoxContainer/EncyclopediaTextLabel.setTextExceptKey(val, $HBoxContainer/VBoxContainer/Title.text)
 	else :
-		$HBoxContainer/VBoxContainer/EncyclopediaTextLabel.setText(val)
+		await $HBoxContainer/VBoxContainer/EncyclopediaTextLabel.setText(val)
 	if (val == "") :
 		$HBoxContainer/VBoxContainer/EncyclopediaTextLabel.visible = false
 	

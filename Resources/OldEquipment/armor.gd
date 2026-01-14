@@ -50,3 +50,6 @@ func createFromSaveDictionary(loadDict) -> Armor :
 	retVal.PHYSDEF = loadDict["PHYSDEF"]
 	retVal.MAGDEF = loadDict["MAGDEF"]
 	return retVal
+	
+func getType() :
+	return type

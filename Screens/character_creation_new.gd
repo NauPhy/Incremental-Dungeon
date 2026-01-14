@@ -4,19 +4,24 @@ const permittedBasePrefixes = ["human", "zdeep_dwarf", "zdeep_elf", "demigod", "
 
 var permittedNames : Array[String] = []
 
+var pristine : bool = true
 func _ready() :
 	setupCarousels(true)
 	setupCarousels(false)
 	setDefaultTextures()
 	connectCarousels()
 	setupLayout()
+	applyPreset(fighterPreset)
+	undoPreset = fighterPreset
+	preUndoPreset = fighterPreset
+	pristine = true
 	
 func setupCarousels(isBody : bool) :
 	var children
 	if (isBody) :
-		children = $Carousels/Body/PanelContainer/VBoxContainer.get_children()
+		children = $AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer.get_children()
 	else :
-		children = $Carousels/Clothes/PanelContainer/VBoxContainer.get_children()
+		children = $AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer.get_children()
 	for child in children :
 		if (!(child is HBoxContainer)) :
 			continue
@@ -61,18 +66,19 @@ func setDefaultTextures() :
 			child.texture = null
 
 func connectCarousels() :
-	for child in $Carousels/Body/PanelContainer/VBoxContainer.get_children() :
+	for child in $AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer.get_children() :
 		if !child.has_node("Carousel") : continue
 		var carousel = child.get_node("Carousel")
 		if (carousel != null) :
 			carousel.connect("move", _on_carousel_move)
-	for child in $Carousels/Clothes/PanelContainer/VBoxContainer.get_children() :
+	for child in $AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer.get_children() :
 		if !child.has_node("Carousel") : continue
 		var carousel = child.get_node("Carousel")
 		if (carousel != null) :
 			carousel.connect("move", _on_carousel_move)
 		
 func _on_carousel_move(emitter : Node, currentPos, _currentOption) :
+	pristine = false
 	var type : String = emitter.get_parent().name
 	if (type == "base") :
 		$Portrait.setTexture("Base", MegaFile.getPlayerTexture_base(permittedNames[currentPos]), permittedNames[currentPos])
@@ -87,9 +93,9 @@ func _on_carousel_move(emitter : Node, currentPos, _currentOption) :
 		preUndoPreset = getCurrentPreset()
 
 func setupLayout() :
-	var base = $Carousels/Body/PanelContainer/VBoxContainer/base
-	var children = $Carousels/Body/PanelContainer/VBoxContainer.get_children()
-	children.append_array($Carousels/Clothes/PanelContainer/VBoxContainer.get_children())
+	var base = $AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer/base
+	var children = $AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer.get_children()
+	children.append_array($AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer.get_children())
 	for child in children :
 		if (!(child is HBoxContainer)) :
 			continue
@@ -129,7 +135,7 @@ func _on_my_button_pressed() -> void:
 		tempPop.layer = get_parent().layer
 func _on_binary_chosen(chosen : int) :
 	if (chosen == 0) :
-		var myClass = $CharacterCreator/VBoxContainer2/StatDescription.currentStats
+		var myClass = $ClassContainer/CharacterCreator/VBoxContainer2/StatDescription.currentStats
 		var myName = $VBoxContainer/LineEdit.text
 		if (myName == "") :
 			myName = " "
@@ -177,7 +183,7 @@ func _on_preset_button_pressed(emitter) -> void:
 	applyingPreset = false
 	
 func disableClassSelection() :
-	$CharacterCreator.visible = false
+	$ClassContainer/CharacterCreator.visible = false
 func addCancelOption() :
 	$VBoxContainer.position.x = $Portrait.position.x/2.0-$VBoxContainer.size.x/2.0
 	$VBoxContainer.position.y = $Portrait.position.y + $Portrait.size.y/2.0-$VBoxContainer.size.y/2.0
@@ -209,7 +215,7 @@ func initialiseAppearanceChange(currentCharacter : CharacterPacket) :
 		else :
 			tempKey = key
 		var isBody : bool = false
-		for child in $Carousels/Body/PanelContainer/VBoxContainer.get_children() :
+		for child in $AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer.get_children() :
 			if (child.name as String == tempKey) :
 				isBody = true
 				break
@@ -221,17 +227,18 @@ func initialiseAppearanceChange(currentCharacter : CharacterPacket) :
 		if (isBody) :
 			if (key != "Cat" && key != "Base") :
 				pos += 1
-			$Carousels/Body/PanelContainer/VBoxContainer.get_node(tempKey).get_node("Carousel").setPositionNoSignal(pos)
+			$AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer.get_node(tempKey).get_node("Carousel").setPositionNoSignal(pos)
 		else :
 			pos += 1
-			$Carousels/Clothes/PanelContainer/VBoxContainer.get_node(tempKey).get_node("Carousel").setPositionNoSignal(pos)
+			$AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer.get_node(tempKey).get_node("Carousel").setPositionNoSignal(pos)
 		
 func _on_cancel() :
 	emit_signal("characterDone", currentCharacterCache)
 	
 func applyPreset(val : Array[int]) :
-	var bodyCarousels = $Carousels/Body/PanelContainer/VBoxContainer.get_children()
-	var clothesCarousels = $Carousels/Clothes/PanelContainer/VBoxContainer.get_children()
+	var wasPristine = pristine
+	var bodyCarousels = $AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer.get_children()
+	var clothesCarousels = $AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer.get_children()
 	#var bodyNames : Array[String] = []
 	#for car in bodyCarousels :
 		#bodyNames.append(car.name as String)
@@ -243,11 +250,24 @@ func applyPreset(val : Array[int]) :
 			bodyCarousels[index].get_node("Carousel").setPositionWithSignal(val[index], false)
 		else :
 			clothesCarousels[index-bodyCarousels.size()].get_node("Carousel").setPositionWithSignal(val[index], false)
+	pristine = wasPristine
 			
 func getCurrentPreset() -> Array[int] :
 	var retVal : Array[int] = []
-	for car in $Carousels/Body/PanelContainer/VBoxContainer.get_children() :
+	for car in $AppearanceContainer/Carousels/Body/PanelContainer/VBoxContainer.get_children() :
 		retVal.append(car.get_node("Carousel").getPosition())
-	for car in $Carousels/Clothes/PanelContainer/VBoxContainer.get_children() :
+	for car in $AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer.get_children() :
 		retVal.append(car.get_node("Carousel").getPosition())
 	return retVal
+
+
+func _on_character_creator_class_moved(newPos) -> void:
+	if (pristine) :
+		var tempPreset = getCurrentPreset()
+		if (newPos == 0) :
+			applyPreset(fighterPreset)
+		elif (newPos == 1) :
+			applyPreset(magePreset)
+		elif (newPos == 2) :
+			applyPreset(roguePreset)
+		undoPreset = tempPreset

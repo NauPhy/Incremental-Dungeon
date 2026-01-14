@@ -57,7 +57,15 @@ func getModStringOrNull_attr(attribute : Definitions.attributeEnum, tag : String
 func getModStringOrNull_combatStat(combatStat : Definitions.baseStatEnum, tag : String) :
 	return internalGetStrOrNull(internalCallType.stat, tag, Definitions.baseStatDictionary[combatStat])
 func getModStringOrNull_otherStat(otherStat : Definitions.otherStatEnum, tag : String) :
-	return internalGetStrOrNull(internalCallType.other, tag, Definitions.otherStatDictionary[otherStat])
+	var retVal = internalGetStrOrNull(internalCallType.other, tag, Definitions.otherStatDictionary[otherStat])
+	if (retVal == null) :
+		return retVal
+	elif (otherStat == Definitions.otherStatEnum.physicalDamageTaken || otherStat == Definitions.otherStatEnum.magicDamageTaken) :
+		if (retVal.find("red") != -1) :
+			retVal = retVal.replace("red","green")
+		else :
+			retVal = retVal.replace("green","red")
+	return retVal
 	
 enum internalCallType{attribute, stat, other}
 func internalGetStrOrNull(type : internalCallType, tag : String, key : String,) :
@@ -82,6 +90,8 @@ static func getStrOrNull_static(tag : String, val : float, prefix : String, spec
 	var symbol
 	if (tag == "Premultiplier") :
 		symbol = "x"
+	elif (val < 0) :
+		symbol = ""
 	else :
 		symbol = "+"
 	var typeString : String

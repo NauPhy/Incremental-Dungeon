@@ -17,5 +17,5 @@ func setStats(index : int) :
 		var baseIndex = titleIndex + 1
 		var scalingIndex = titleIndex + 2
 		$VBoxContainer/ColumnContainer.get_child(baseIndex).text = str(currentStats.getBaseAttribute(key))
-		$VBoxContainer/ColumnContainer.get_child(scalingIndex).text = str(currentStats.getAttributeScaling(key))
+		$VBoxContainer/ColumnContainer.get_child(scalingIndex).text = str(currentStats.getAttributeScaling(key))+"x"
 	

@@ -12,7 +12,10 @@ func setCurrency(val : Texture2D) :
 	$HBoxContainer/HBoxContainer2/CurrencySprite.setTexture(val)
 func setPrice(val) :
 	core.purchasablePrice = val
-	$HBoxContainer/HBoxContainer2/Price.text = " " + str(Helpers.engineeringRound(val, 3)) + " "
+	if (val == -1) :
+		$HBoxContainer/HBoxContainer2/Price.text = " -1 "
+	else :
+		$HBoxContainer/HBoxContainer2/Price.text = " " + str(Helpers.engineeringRound(val, 3)) + " "
 	
 var disabled : bool = false
 func set_disabled(val : bool) :
@@ -63,7 +66,10 @@ func setFromDetails(val : Purchasable) :
 		$HBoxContainer/HBoxContainer/PurchaseableName.text = " " + val.equipment_optional.getName() + " "
 	else :
 		$HBoxContainer/HBoxContainer/PurchaseableName.text = " " + val.purchasableName + " "
-	$HBoxContainer/HBoxContainer2/Price.text = " " + Helpers.engineeringRound(val.purchasablePrice, 3) + " "
+	if (val.purchasablePrice == -1) :
+		$HBoxContainer/HBoxContainer2/Price.text = " -1 "
+	else :
+		$HBoxContainer/HBoxContainer2/Price.text = " " + Helpers.engineeringRound(val.purchasablePrice, 3) + " "
 	if (val.equipment_optional != null) :
 		self.toggle = true
 

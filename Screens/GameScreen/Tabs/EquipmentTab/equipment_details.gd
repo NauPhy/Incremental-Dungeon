@@ -160,6 +160,8 @@ func updateText_modifiers(myText) :
 				myText += modString + "\n"
 				addEndl = true
 	for key in Definitions.otherStatDictionary.keys() :
+		if (Definitions.otherStatEnum.routineSpeed_0 <= key && key <= Definitions.otherStatEnum.routineSpeed_4) :
+			continue
 		for subkey in ModifierPacket.StandardModifier.keys() :
 			var modString = modifiers.getModStringOrNull_otherStat(key,subkey)
 			if (modString != null) :
@@ -281,7 +283,7 @@ func addWeaponScalingTooltips() :
 		if (currentItemSceneRef.core.getScaling(key) == 0) :
 			continue
 		var lineHeight = myText.get_theme_font("normal_font").get_height(fontSize)
-		var yCoord1 = (lineNumber-1) * lineHeight + lineHeight/4.0
+		var yCoord1 = (lineNumber-1) * lineHeight# + lineHeight/4.0
 		var xCoord1
 		if (key == Definitions.attributeEnum.DEX) :
 			xCoord1 = strWidths[0]
@@ -301,13 +303,14 @@ func addWeaponScalingTooltips() :
 			xCoord2 = xCoord1+strWidths[5]
 		else :
 			return
-		var offset = myText.global_position-global_position
-		xCoord1 += offset.x
-		xCoord2 += offset.x
-		yCoord1 += offset.y
-		yCoord2 += offset.y
+		#var offset = myText.global_position-global_position
+		#xCoord1 += offset.x
+		#xCoord2 += offset.x
+		#yCoord1 += offset.y
+		#yCoord2 += offset.y
+		var desc = $VBoxContainer/Text/VBoxContainer/Panel/ScrollContainer/VBoxContainer/Description
 		var newTooltip = tooltipLoader.instantiate()
-		add_child(newTooltip)
+		desc.add_child(newTooltip)
 		myTooltips.append(newTooltip)
 		#newTooltip.setTitle(Definitions.attributeDictionaryShort[key] + " Scaling: " + letterCache[key])
 		#newTooltip.setDesc(str(currentItemSceneRef.core.getScaling(key)))

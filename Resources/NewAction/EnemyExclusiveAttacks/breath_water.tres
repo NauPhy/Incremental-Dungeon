@@ -6,7 +6,7 @@
 script = ExtResource("1_sqnvl")
 type = 0
 power = 3.91
-text = "Acid Breath"
+text = "Mana Aerosol Breath"
 mode = 0
 warmup = 8.0
 metadata/_custom_type_script = "uid://6o4dw2binuis"

@@ -165,8 +165,8 @@ func _shopping_respec_requested() :
 	add_child(confirmationPopup)
 	confirmationPopup.setTitle("Change Class")
 	confirmationPopup.setText("Are you sure you want to change your class? You will lose half your Cumulative Training Levels, but you may select a different class or subclass.")
-	confirmationPopup.setButton0Name("I'm ready")
-	confirmationPopup.setButton1Name("I changed my mind")
+	confirmationPopup.setButton0Name(" I'm ready ")
+	confirmationPopup.setButton1Name(" I changed my mind ")
 	var choice = await confirmationPopup.binaryChosen
 	if (choice == 1) :
 		Shopping.provideConfirmation(false)
@@ -271,6 +271,8 @@ func _on_combat_add_to_inventory_requested(itemSceneRef, isAutomatic : bool) -> 
 		$MyTabContainer/InnerContainer/Combat.removeCombatRewardEntry(itemSceneRef)
 		
 func _on_tutorial_requested(tutorialName : Encyclopedia.tutorialName, tutorialPos : Vector2) :
+	if (tutorialName == Encyclopedia.tutorialName.tutorialFloorEnd) :
+		$Player.enableLearningCurve()
 	if (tutorialName == Encyclopedia.tutorialName.tutorialFloor3 && !tabsUnlocked[1]) :
 		$MyTabContainer.revealChild($MyTabContainer/InnerContainer/Training)
 		tabsUnlocked[1] = true
@@ -279,7 +281,6 @@ func _on_tutorial_requested(tutorialName : Encyclopedia.tutorialName, tutorialPo
 		tabsUnlocked[2] = true
 	elif (tutorialName == Encyclopedia.tutorialName.tutorialFloorEnd && !tabsUnlocked[1]) :
 		$MyTabContainer.revealChild($MyTabContainer/InnerContainer/Training)
-		$Player.enableLearningCurve()
 		tabsUnlocked[1] = true
 	elif (tutorialName == Encyclopedia.tutorialName.herophile) :
 		_on_routine_unlock_requested(self, MegaFile.getRoutine("spar_herophile"))
@@ -513,6 +514,8 @@ func beforeLoad(newSave) :
 			tab.connect("playerPortraitRequested", _on_player_portrait_requested)
 		if (tab.has_signal("apophisKilled")) :
 			tab.connect("apophisKilled", createApophisScreen)
+		if (tab.has_signal("rewardPending")) :
+			tab.connect("rewardPending", _on_reward_pending)
 		#if (tab.has_signal("isReforgedHoveredRequested")) :
 			#tab.connect("isReforgedHoveredRequested", _on_reforge_hovered_requested)
 		#if (tab.has_signal("playerAttributeModsRequested")) :
@@ -558,10 +561,10 @@ func createApophisScreen() :
 		return
 	var newPopup = binaryPopupLoader.instantiate()
 	add_child(newPopup)
-	newPopup.setTile("The Demon King is Slain!")
+	newPopup.setTitle("The Demon King is Slain!")
 	newPopup.setText("Congratulations, you've defeated the Demon King! The Surface world is saved! Or something. This game was going to have a more in depth story but game development is hard. In any case, there are actually 20 biomes, 25 bosses, and 10 factions in this game, and levels 1-9 are randomly generated! So I encourage you to check out endless mode or try one of the other classes. Thanks for playing!")
-	newPopup.setButton0Name("Continue playing (begin endless mode)")
-	newPopup.setButton1Name("Return to Main Menu")
+	newPopup.setButton0Name(" Continue playing (begin endless mode) ")
+	newPopup.setButton1Name(" Return to Main Menu ")
 	var choice = await newPopup.binaryChosen
 	if (choice == 1) :
 		_exit_to_menu()
@@ -581,3 +584,6 @@ func _on_change_appearance_button_pressed() -> void:
 	$Player.setFromCharacter(character)
 	topLayer.queue_free()
 	
+const altTheme = preload("res://Graphic Elements/Themes/mainTab_red.tres")
+func _on_reward_pending() :
+	$MyTabContainer.setThemeOfButtonUntilActive($MyTabContainer/InnerContainer/Combat, altTheme)

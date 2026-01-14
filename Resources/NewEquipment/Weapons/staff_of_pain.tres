@@ -9,7 +9,7 @@
 script = ExtResource("1_o5wau")
 isEligible = true
 quality = 3
-technology = 0
+technology = 3
 weaponClass = -1
 armorClass = -1
 isFire = false

@@ -16,5 +16,5 @@ func setPercent(val) :
 	$HBoxContainer/Percent.text = "(" + str(Helpers.myRound(value,2)) + "%)"
 func setCurrentHP(val) :
 	currentHP = val
-	$HBoxContainer/Number.text = str(Helpers.myRound(val,3))
+	$HBoxContainer/Number.text = Helpers.engineeringRound(val,3)
 	setPercent(currentHP/maxHP)
