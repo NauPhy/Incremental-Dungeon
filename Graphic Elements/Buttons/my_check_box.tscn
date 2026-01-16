@@ -19,6 +19,9 @@ script = ExtResource("2_nos1y")
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
+[node name="CheckBox" type="CheckBox" parent="HBoxContainer"]
+layout_mode = 2
+
 [node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer"]
 layout_mode = 2
 theme_override_colors/default_color = Color(0, 0, 0, 1)
@@ -27,8 +30,5 @@ text = " Sample Text "
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
-
-[node name="CheckBox" type="CheckBox" parent="HBoxContainer"]
-layout_mode = 2
 
 [connection signal="pressed" from="HBoxContainer/CheckBox" to="." method="_on_check_box_pressed"]

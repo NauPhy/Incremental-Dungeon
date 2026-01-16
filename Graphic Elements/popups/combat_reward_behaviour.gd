@@ -2,10 +2,10 @@ extends "res://Graphic Elements/popups/my_popup.gd"
 
 var workingDict : Dictionary = {}
 
-func initialise(startingSettings : Dictionary) :
+func initialise() :
 	var allItems = EquipmentDatabase.getAllEquipment()
 	allItems.sort_custom(func(a,b):return a.getName()<b.getName())
-	workingDict = startingSettings
+	#workingDict = startingSettings
 	for item in IGOptions.getIGOptionsCopy()["encounteredItems"] :
 		if (workingDict.get(item) == null) :
 			workingDict[item] = 0
@@ -20,13 +20,13 @@ func initialise(startingSettings : Dictionary) :
 			newEntry.connect("wasSelected", _on_entry_selected)
 			newEntry.visible = true
 			newEntry.initialise(item.createSampleCopy())
-	if (!startingSettings.keys().is_empty()) :
-		var children = getEntries().get_children()
-		for index in range(2, children.size()) :
-			if (!(children[index] is Button)) : 
-				getDetails().setItemSceneRefBase(children[index].getItemSceneRef())
-				children[index].select()
-				break
+	#if (!startingSettings.keys().is_empty()) :
+		#var children = getEntries().get_children()
+		#for index in range(2, children.size()) :
+			#if (!(children[index] is Button)) : 
+				#getDetails().setItemSceneRefBase(children[index].getItemSceneRef())
+				#children[index].select()
+				#break
 
 func _on_entry_selected(emitter) :
 	for child in getEntries().get_children() :

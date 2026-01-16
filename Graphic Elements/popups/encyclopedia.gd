@@ -20,13 +20,14 @@ const equipmentLoader = preload("res://Graphic Elements/popups/combat_reward_beh
 func _on_equipment_pressed() -> void:
 	var equips = equipmentLoader.instantiate()
 	add_child(equips)
-	equips.initialise(optionDictCopy["individualEquipmentTake"].duplicate())
+	equips.initialise()
 	equips.connect("finished", _on_combat_reward_settings_finished)
 	equips.nestedPopupInit(self)
 
-func _on_combat_reward_settings_finished(newSettings : Dictionary) :
-	optionDictCopy["individualEquipmentTake"] = newSettings
-	IGOptions.saveAndUpdateIGOptions(optionDictCopy)
+func _on_combat_reward_settings_finished() :
+	#optionDictCopy["individualEquipmentTake"] = newSettings
+	#IGOptions.saveAndUpdateIGOptions(optionDictCopy)
+	pass
 	
 const tutorialListLoader = preload("res://Screens/GameScreen/Tutorials/tutorial_list.tscn")
 func _on_tutorials_pressed() -> void:

@@ -144,6 +144,8 @@ func getDropQualities(count : int, magicFind : float) -> Array[EquipmentGroups.q
 		for qualityIndex in range(0,qualityThresholds.size()) :
 			if (roll <= qualityThresholds[qualityIndex]*magicFind) :
 				retVal.append((4-qualityIndex) as EquipmentGroups.qualityEnum)
+				if (4-qualityIndex == EquipmentGroups.qualityEnum.legendary) :
+					print("legendary drop")
 				break
 	return retVal
 	

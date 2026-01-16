@@ -64,6 +64,7 @@ func getType() :
 func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
 	retVal["resourceName"] = resourceName
+	retVal["title"] = title
 	return retVal
 func createFromSaveDictionary(loadDict : Dictionary) -> Equipment :
 	var resource = EquipmentDatabase.getEquipment(loadDict["resourceName"])
@@ -71,4 +72,5 @@ func createFromSaveDictionary(loadDict : Dictionary) -> Equipment :
 		return resource
 	var retVal = resource.duplicate()
 	retVal.resourceName = loadDict["resourceName"]
+	retVal.title = loadDict["title"]
 	return retVal

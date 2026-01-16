@@ -22,6 +22,15 @@ func createMap() -> MapData :
 		newMap.shopName = "soul"
 	else :
 		newMap.shopName = "empty"
+	if (previousMaps.size() == 0) :
+		for enemy in newMap.rows[0].centralEncounter.enemies :
+			enemy.MAXHP *= 0.6
+		for room in newMap.rows[0].leftEncounters :
+			for enemy in room.enemies :
+				enemy.MAXHP *= 0.7
+		for room in newMap.rows[0].rightEncounters :
+			for enemy in room.enemies :
+				enemy.MAXHP *= 0.7
 	previousMaps.append(newMap)
 	return newMap
 	
@@ -174,6 +183,47 @@ func createCentralEncounter(row) -> Encounter :
 		for index in range(0,randi_range(2,3)) :
 			retVal.enemies.append(createNormal(row))
 	addDrops(retVal)
+	retVal = compensateForMultiEnemy(retVal, row, "center")
+	return retVal
+	
+func compensateForMultiEnemy(encounter : Encounter,row, type) -> Encounter :
+	if (encounter.enemies.size() == 1) :
+		return encounter
+	var retVal = encounter.duplicate(true)
+	var scalingRows = getScalingRows_mapInProgress(row)
+	var roomBudget
+	if (type == "center") :
+		roomBudget = ActorPreset.referencePowerLevel*getEnemyScaling(scalingRows)*2
+	elif (type == "side") :
+		roomBudget = ActorPreset.referencePowerLevel*getEnemyScaling(scalingRows)*sqrt(2)
+	else :
+		roomBudget = ActorPreset.referencePowerLevel*getEnemyScaling(scalingRows)*3
+		
+	var enemyVals : Array[Dictionary] = []
+	for enemy : ActorPreset in retVal.enemies :
+		var tempDict : Dictionary = {}
+		tempDict["eHP"] = enemy.MAXHP * (enemy.PHYSDEF + enemy.MAGDEF)/2.0
+		tempDict["eDPS"] = enemy.AR * enemy.DR * (enemy.actions[0].getPower() / enemy.actions[0].getWarmup())
+		tempDict["ratio"] = tempDict["eDPS"]/tempDict["eHP"]
+		enemyVals.append(tempDict)
+	enemyVals.sort_custom(func(a,b): return a["ratio"]>b["ratio"])
+	var actualPower = 0
+	for index in range(0,enemyVals.size()) :
+		var lifespan = enemyVals[index]["eHP"]
+		var damage = 0
+		for innerIndex in range(index, enemyVals.size()) :
+			damage += enemyVals[innerIndex]["eDPS"]
+		actualPower += lifespan*damage
+
+	var correctionRatio = 1.0/(pow(actualPower/roomBudget,1.0/4.0))
+	for enemy : ActorPreset in retVal.enemies :
+		enemy.AR *= correctionRatio
+		enemy.DR *= correctionRatio
+		enemy.MAXHP *= correctionRatio
+		enemy.PHYSDEF *= correctionRatio
+		enemy.MAGDEF *= correctionRatio
+	#if (actualPower > 1.5*roomBudget) :
+		#print("corrected " + type + " room with " + str(retVal.enemies.size()) + " enemies from " + str(actualPower) + " to " + str(roomBudget))
 	return retVal
 
 ## Side encounters have a unit power of 1, but use stronger enemies- halfway to the next node.
@@ -183,16 +233,17 @@ func createSideEncounter(row) -> Encounter :
 	var retVal = Encounter.new()
 	if (roll <= 0.333*0.95) :
 		retVal.enemies.append(createVeteran(row+0.5))
-		if (randi_range(0,2) == 0) :
-			retVal.enemies.append(createNormal(row+0.5))
 	elif (roll <= 0.95) :
 		for index in range(0, 3) :
+			retVal.enemies.append(createNormal(row+0.5))
+		if (randi_range(0,2) == 0) :
 			retVal.enemies.append(createNormal(row+0.5))
 	else :
 		var enemy = createNormal(row+0.5)
 		for index in range(0,5) :
 			retVal.enemies.append(enemy.getAdjustedCopy(enemy.myScalingFactor))
 	addDrops(retVal)
+	retVal = compensateForMultiEnemy(retVal, row, "side")
 	return retVal
 
 func createBossEncounter(row) -> Encounter :
@@ -204,6 +255,7 @@ func createBossEncounter(row) -> Encounter :
 		for index in range(0,randi_range(2,3)) :
 			retVal.enemies.append(createNormal(row))
 	addDrops(retVal)
+	retVal = compensateForMultiEnemy(retVal, row, "boss")
 	return retVal
 	
 func createFinalBossEncounter(currentRow) -> Encounter :
@@ -222,6 +274,7 @@ func createFinalBossEncounter(currentRow) -> Encounter :
 	retVal.victoryTitle = "Victory!"
 	retVal.victoryText = "After a long and brutal fight, Apophis finally falls, and with him, the Demons' hopes of world domination."
 	addDrops(retVal)
+	retVal = compensateForMultiEnemy(retVal, currentRow,"boss")
 	return retVal
 		
 func createNormal(currentRow) -> ActorPreset :
@@ -257,15 +310,58 @@ func getScalingRows_mapInProgress(currentRow) -> float :
 	return scalingRows + currentRow
 	
 func getEnemyScaling(scalingRows) :
-	#return pow(2, scalingRows)
-	if (scalingRows <= 6) :
-		return pow(5.657,scalingRows)
-	return pow(5.657,6)*pow(2,scalingRows-6)
+	var retVal = enemyScalingLookupTable.get(scalingRows as int)
+	if (retVal== null) :
+		var prev = enemyScalingLookupTable.get(scalingRows-1 as int)
+		if (prev == null) :
+			var currentVal = enemyScalingLookupTable[11]
+			for index in range(12, scalingRows+1) :
+				if (((index as int)-7)%5==0) :
+					currentVal *= 2*1.5
+				else :
+					currentVal *= 2
+				enemyScalingLookupTable[index as int] = currentVal
+		else :
+			if (((scalingRows as int)-7)%5 == 0) :
+				enemyScalingLookupTable[scalingRows as int] = prev*2*1.5
+			else :
+				enemyScalingLookupTable[scalingRows as int] = prev*2
+		retVal = enemyScalingLookupTable[scalingRows as int]
+	if (is_equal_approx(scalingRows-floor(scalingRows),0.5)) :
+		retVal *= sqrt(2)
+	return retVal
+				
+	
+var enemyScalingLookupTable : Dictionary = {}
+## I'm less likely to make a mistake if I do this a bit at a time, but it's rather computationally expensive so:
+func createLookupTable() :
+	enemyScalingLookupTable = {}
+	var currentVal = 1
+	## The first 5 rows scale quickly to get the player to the point where it takes 10 minutes to increase their stat total by a factor of 4throot(2)
+	for index in range(1,5+1) :
+		currentVal *= 5.558253
+		enemyScalingLookupTable[index] = currentVal
+	## The first boss is scaled down slightly due to playtesting experience
+	for index in range(6,6+1) :
+		currentVal *= 5.558253*0.85
+		enemyScalingLookupTable[index] = currentVal
+	## From here on it's x2 every row, but it's multiplied by an additional 1.5 after each boss so as to not be a pushover (bosses are 1.5x stronger than normal nodes)
+	## I might want to give the node after the first boss an additional buff but it's probably fine.
+	for index in range(7,7+1) :
+		currentVal *= 2*1.5
+		enemyScalingLookupTable[index] = currentVal
+	for index in range(8,11+1) :
+		currentVal *= 2
+		enemyScalingLookupTable[index] = currentVal
+
+	
 func getEquipmentScaling(scalingRows) :
-	#return pow(2,scalingRows/4.0)
-	if (scalingRows <= 6) :
-		return pow(5.657,scalingRows/4.0)
-	return pow(5.657,6/4.0)*pow(2,(scalingRows-6)/4.0)
+	var rows
+	if (is_equal_approx(scalingRows-floor(scalingRows),0.5)) :
+		rows = floor(scalingRows)
+	else :
+		rows = scalingRows
+	return pow(getEnemyScaling(floor(rows)), 0.25)
 func getGoldScaling(scalingRows) :
 	return pow(2,(scalingRows-1)/4.0)
 func getOreScaling(scalingRows) :
@@ -322,6 +418,7 @@ func getSaveDictionary() -> Dictionary :
 	return retVal
 func beforeLoad(newGame) :
 	myReady = false
+	createLookupTable()
 	$EnemyPoolHandler.initialiseMiscPool(getAllMisc())
 	myReady = true
 	emit_signal("myReadySignal")

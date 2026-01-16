@@ -20,7 +20,8 @@ func createSampleCopy() -> Armor :
 
 const ratioMin = [0.500, 0.741, 1.350]
 const ratioMax = [0.741, 1.350, 2.000]
-const referenceDefense = 15.7426
+## +4 armor (5x buffs) should be 174.9. That means +0 armor should be 20.4947. divided by 1.08 to compensate for quality
+const referenceDefense = 20.4947/1.08/1.15
 func calculateDefenses(scalingFactor, useAverage) :
 	var myQuality = equipmentGroups.quality
 	var myType = equipmentGroups.armorClass
@@ -34,6 +35,9 @@ func calculateDefenses(scalingFactor, useAverage) :
 	PHYSDEF = 2*referenceDefense-MAGDEF
 	MAGDEF *= scalingFactor * qualityFactor
 	PHYSDEF *= scalingFactor * qualityFactor
+	if (!equipmentGroups.isElemental()) :
+		PHYSDEF *= 1.15
+		MAGDEF *= 1.15
 	
 func getSaveDictionary() -> Dictionary :
 	var retVal = super()

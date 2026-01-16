@@ -18,3 +18,6 @@ func setCurrentHP(val) :
 	currentHP = val
 	$HBoxContainer/Number.text = Helpers.engineeringRound(val,3)
 	setPercent(currentHP/maxHP)
+func setFontSize(val) :
+	$HBoxContainer/Number.add_theme_font_size_override("normal_font_size", val)
+	$HBoxContainer/Percent.add_theme_font_size_override("normal_font_size", val)

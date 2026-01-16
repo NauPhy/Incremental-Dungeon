@@ -161,8 +161,9 @@ func getSaveDictionary() :
 	return tempDict
 
 func _process(_delta) :
-	if ((size.x < $VBoxContainer.size.x + 20 || size.y < $VBoxContainer.size.y + 20) && $VBoxContainer.visible) :
-		var originalSize = custom_minimum_size
+	var vboxSize = $VBoxContainer.size
+	if ((size.x < vboxSize.x + 19 || size.y < vboxSize.y + 19) && $VBoxContainer.visible) :
+		var originalSize = size
 		size = $VBoxContainer.size + Vector2(20,20)
 		global_position.y -= (size.y-originalSize.y)/2.0
 		global_position.x -= (size.x-originalSize.x)/2.0

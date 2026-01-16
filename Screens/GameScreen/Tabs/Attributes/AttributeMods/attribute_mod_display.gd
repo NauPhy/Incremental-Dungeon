@@ -105,9 +105,9 @@ func setType(type : String) :
 		newPic.name = "CatPic"
 		#newPic.texture = catPic
 		newPic.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
-		newPic.expand_mode = TextureRect.EXPAND_FIT_WIDTH
-		newPic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		newPic.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		newPic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		newPic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		newPic.size_flags_horizontal = Control.SIZE_FILL
 		newPic.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		#var newPic2 = newPic.duplicate()
 		#getRightCol().add_child(newPic2)

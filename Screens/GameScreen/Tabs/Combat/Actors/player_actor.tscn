@@ -14,15 +14,13 @@ texture = ExtResource("3_g6kjb")
 
 [node name="Portrait" parent="." index="3" instance=ExtResource("3_m7ff6")]
 custom_minimum_size = Vector2(206.016, 206.016)
-layout_mode = 0
-anchors_preset = 0
+layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 22.0
-offset_top = 60.5
-offset_right = 228.0
-offset_bottom = 283.75
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 0.75
 grow_horizontal = 1
 grow_vertical = 1
+
+[connection signal="resized" from="Portrait" to="." method="_on_portrait_resized"]

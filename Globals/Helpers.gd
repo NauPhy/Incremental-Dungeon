@@ -186,6 +186,61 @@ func getTopLayer() -> int :
 			if (node.layer > maxLayer) :
 				maxLayer = node.layer
 	return maxLayer
+	
+func equipmentIsDirectUpgrade(newEquip : Equipment, oldEquip : Equipment) -> bool :
+	if (newEquip.getType() != oldEquip.getType()) :
+		return false
+	var eq1Elems = newEquip.equipmentGroups.getElements()
+	var eq2Elems = oldEquip.equipmentGroups.getElements()
+	for index in range(0,eq1Elems.size()) :
+		if (eq1Elems[index] != eq2Elems[index]) :
+			return false
+	if (newEquip.getType() == Definitions.equipmentTypeEnum.weapon) :
+		var temp1 = newEquip as Weapon
+		var temp2 = oldEquip as Weapon
+		if (!is_equal_approx(temp1.basicAttack.getPower(),temp2.basicAttack.getPower()) || !is_equal_approx(temp1.basicAttack.getWarmup(), temp2.basicAttack.getWarmup())) :
+			return false
+		if (temp1.attackBonus < temp2.attackBonus && !is_equal_approx(temp1.attackBonus,temp2.attackBonus)) :
+			return false
+		var t1Scalings = temp1.getScalingArray()
+		var t2Scalings = temp2.getScalingArray()
+		for index in range(0,t1Scalings.size()) :
+			if (t1Scalings[index] < t2Scalings[index]) :
+				return false
+	elif (newEquip.getType() == Definitions.equipmentTypeEnum.armor) :
+		var temp1 = newEquip as Armor
+		var temp2 = oldEquip as Armor
+		if (temp1.PHYSDEF < temp2.PHYSDEF && !is_equal_approx(temp1.PHYSDEF, temp2.PHYSDEF)) :
+			return false
+		if (temp1.MAGDEF < temp2.MAGDEF && !is_equal_approx(temp1.MAGDEF, temp2.MAGDEF)) :
+			return false
+	else :
+		pass
+	for key in newEquip.myPacket.attributeMods.keys() :
+		if (!modIsDirectUpgrade(newEquip.myPacket.attributeMods[key], oldEquip.myPacket.attributeMods[key])) :
+			return false
+	for key in newEquip.myPacket.statMods.keys() :
+		if (!modIsDirectUpgrade(newEquip.myPacket.statMods[key], oldEquip.myPacket.statMods[key])) :
+			return false
+	for key in newEquip.myPacket.otherMods.keys() :
+		if (key == Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalDamageTaken] || key == Definitions.otherStatDictionary[Definitions.otherStatEnum.magicDamageTaken]) :
+			if (!modIsDirectUpgrade(oldEquip.myPacket.otherMods[key], newEquip.myPacket.otherMods[key])) :
+				return false
+		else :
+			if (!modIsDirectUpgrade(newEquip.myPacket.otherMods[key], oldEquip.myPacket.otherMods[key])) :
+				return false
+	return true
+		
+func modIsDirectUpgrade(mod1 : Dictionary, mod2 : Dictionary) -> bool :
+	if (mod1["Prebonus"] < mod2["Prebonus"] && !is_equal_approx(mod1["Prebonus"], mod2["Prebonus"])) :
+		return false
+	if (mod1["Postbonus"] < mod2["Postbonus"] && !is_equal_approx(mod1["Postbonus"], mod2["Postbonus"])) :
+		return false
+	if (mod1["Premultiplier"] < mod2["Premultiplier"] && !is_equal_approx(mod1["Premultiplier"], mod2["Premultiplier"])) :
+		return false
+	if (mod1["Postmultiplier"] < mod2["Postmultiplier"] && !is_equal_approx(mod1["Postmultiplier"], mod2["Postmultiplier"])) :
+		return false
+	return true
 
 func equipmentIsNew(item : Equipment) :
 	if (item.equipmentGroups == null) :

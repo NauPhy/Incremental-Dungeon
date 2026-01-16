@@ -1,20 +1,20 @@
 extends Node
 
 enum optionType {checkBox,dropdown}
-enum options {tutorialsEnabled,inventoryBehaviour}
+enum options {tutorialsEnabled}#,inventoryBehaviour}
 const optionNameDictionary = {
 	options.tutorialsEnabled : "Tutorials enabled",
-	options.inventoryBehaviour : "Inventory Behaviour"
+	#options.inventoryBehaviour : "Inventory Behaviour"
 }
 const optionTypeDictionary = {
 	options.tutorialsEnabled : optionType.checkBox,
-	options.inventoryBehaviour : optionType.dropdown
+	#options.inventoryBehaviour : optionType.dropdown
 }
 const optionDefaultDictionary = {
 	options.tutorialsEnabled : true
 }
 const dropdownDictionary = {
-	options.inventoryBehaviour : ["Wait", "Discard"]
+	#options.inventoryBehaviour : ["Wait", "Discard"]
 }
 
 
@@ -39,9 +39,16 @@ func getDefaultOptionDict() -> Dictionary :
 			pass
 	var emptyDict : Dictionary = {}
 	tempDict["individualTutorialDisable"] = emptyDict.duplicate()
-	tempDict["individualEquipmentTake"] = emptyDict.duplicate()
+	#tempDict["individualEquipmentTake"] = emptyDict.duplicate()
 	var emptyStrArray : Array = []
 	tempDict["encounteredItems"] = emptyStrArray
+	tempDict["filter"] = {
+		"type" : "whitelist",
+		"element" : [true,true,true,true,true],
+		"quality" : [true,true,true,true,true,true],
+		"equipmentType" : [true,true,true],
+		"directDowngrade" : [true,false,false]
+		}
 	return tempDict
 #########################################
 ## Getters

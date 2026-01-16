@@ -150,6 +150,18 @@ func saveGame(slot : Definitions.saveSlots) :
 	centralisedGameState[self.get_path()] = self.getSaveDictionary()
 	for node in get_tree().get_nodes_in_group("Saveable") :
 		centralisedGameState[node.get_path()] = node.getSaveDictionary()
+	var tempFile = FileAccess.open(Definitions.tempSlot, FileAccess.WRITE)
+	tempFile.store_string(JSON.stringify(centralisedGameState))
+	tempFile.close()
+	## With this pattern there is no point in time where your save file exists only in RAM.
+	var dir = DirAccess.open("user://")
+	if (FileAccess.file_exists(Definitions.emergencySlot) && FileAccess.file_exists(filePath)) :
+		dir.remove(Definitions.emergencySlot)
+	if (FileAccess.file_exists(filePath)) :
+		dir.copy(filePath,Definitions.emergencySlot)
+	if (FileAccess.file_exists(filePath)) :
+		dir.remove(filePath)
+	dir.rename(Definitions.tempSlot, filePath)
 	var saveFile = FileAccess.open(filePath, FileAccess.WRITE)
 	saveFile.store_string(JSON.stringify(centralisedGameState))
 	saveFile.close()
@@ -160,6 +172,8 @@ func loadSaveDict(slot : Definitions.saveSlots) :
 	if (!FileAccess.file_exists(Definitions.slotPaths[slot])) : return null
 	var text = FileAccess.open(Definitions.slotPaths[slot], FileAccess.READ).get_as_text()
 	var centralisedGameState = JSON.parse_string(text)
+	if (centralisedGameState == null) :
+		centralisedGameState = {}
 	fixEnumRecursive(centralisedGameState)
 	fixNullRecursive(centralisedGameState)
 	return centralisedGameState

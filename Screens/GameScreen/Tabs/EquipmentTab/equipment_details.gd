@@ -176,6 +176,8 @@ func updateText() :
 		return
 	if (!myTooltips.is_empty()) :
 		for child in myTooltips :
+			if (child == null || !(child.has_method("queue_free"))) :
+				continue
 			child.queue_free()
 		myTooltips.clear()
 	updateText_sprite()
@@ -220,29 +222,32 @@ func resetDetails() :
 	$VBoxContainer/Picture/CenterContainer.visible = false
 	
 func setOptionButton(itemSceneRef : Node) :
-	var optionButton = $VBoxContainer/Text/VBoxContainer/HBoxContainer/OptionButton
-	var chosenItem = IGOptions.getIGOptionsCopy()["individualEquipmentTake"].get(itemSceneRef.getItemName())
-	if (chosenItem == null) :
-		optionButton.select(0)
-	else :
-		optionButton.select(chosenItem)
+	return
+	#var optionButton = $VBoxContainer/Text/VBoxContainer/HBoxContainer/OptionButton
+	#var chosenItem = IGOptions.getIGOptionsCopy()["individualEquipmentTake"].get(itemSceneRef.getItemName())
+	#if (chosenItem == null) :
+		#optionButton.select(0)
+	#else :
+		#optionButton.select(chosenItem)
 
 signal individualEquipmentTakeChanged
 func _on_option_button_item_selected(index: int) -> void:
-	if (isInIGOptions) :
-		emit_signal("individualEquipmentTakeChanged", currentItemSceneRef, index)
-	else :
-		var optionsCopy = IGOptions.getIGOptionsCopy()
-		optionsCopy["individualEquipmentTake"][currentItemSceneRef.getItemName()] = index
-		IGOptions.saveAndUpdateIGOptions(optionsCopy)
+	return
+	#if (isInIGOptions) :
+		#emit_signal("individualEquipmentTakeChanged", currentItemSceneRef, index)
+	#else :
+		#var optionsCopy = IGOptions.getIGOptionsCopy()
+		#optionsCopy["individualEquipmentTake"][currentItemSceneRef.getItemName()] = index
+		#IGOptions.saveAndUpdateIGOptions(optionsCopy)
 
 func updateFromOptions(optionDict : Dictionary) :
-	if (currentItemSceneRef == null) :
-		return
-	var currentEquipSetting = optionDict["individualEquipmentTake"].get(currentItemSceneRef.getItemName())
-	if (currentEquipSetting == null) :
-		currentEquipSetting = 0
-	$VBoxContainer/Text/VBoxContainer/HBoxContainer/OptionButton.select(currentEquipSetting)
+	return
+	#if (currentItemSceneRef == null) :
+		#return
+	#var currentEquipSetting = optionDict["individualEquipmentTake"].get(currentItemSceneRef.getItemName())
+	#if (currentEquipSetting == null) :
+		#currentEquipSetting = 0
+	#$VBoxContainer/Text/VBoxContainer/HBoxContainer/OptionButton.select(currentEquipSetting)
 
 var myTooltips : Array[Node] = []
 ## Attack Bonus

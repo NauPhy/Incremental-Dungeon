@@ -36,6 +36,9 @@ func _ready() :
 			newElement.select(optionDictCopy[key])
 		else :
 			pass
+	await $Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/DiscardFilter.initialise(optionDictCopy["filter"])
+	$Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/DiscardFilter.setCurrentLayer(layer)
+	
 		
 func redLambda(elem : Node, key) :
 	getOptionsContainer().add_child(elem)
@@ -64,6 +67,7 @@ func updateOptionDict() :
 			optionDictCopy[key] = getOptionsContainer().get_child(key+myOffset).get_child(1).get_selected()
 		else :
 			pass
+	optionDictCopy["filter"] = $Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/DiscardFilter.getData()
 
 const encyclopediaLoader = preload("res://Graphic Elements/popups/encyclopedia.tscn")
 func _on_encyclopedia_pressed() -> void:

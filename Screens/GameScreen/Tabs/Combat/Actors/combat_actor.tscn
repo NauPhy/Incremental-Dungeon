@@ -24,6 +24,10 @@ border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fx5t0"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
 bg_color = Color(1, 1, 1, 1)
 border_width_left = 2
 border_width_top = 2
@@ -43,7 +47,7 @@ bg_color = Color(0.229211, 0.614065, 0.871764, 1)
 bg_color = Color(0.254902, 0.839216, 0.937255, 1)
 
 [node name="CombatActor" type="Panel"]
-custom_minimum_size = Vector2(250, 405)
+custom_minimum_size = Vector2(227, 367.5)
 offset_right = 200.0
 offset_bottom = 323.6
 mouse_filter = 1
@@ -67,6 +71,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 18
 text = "Placeholder Name"
 fit_content = true
 scroll_active = false
@@ -74,8 +79,6 @@ autowrap_mode = 0
 horizontal_alignment = 1
 vertical_alignment = 1
 justification_flags = 161
-
-[node name="Delimiter" type="Line2D" parent="TitleCard"]
 
 [node name="ResourceCard" type="Panel" parent="."]
 layout_mode = 1
@@ -94,7 +97,7 @@ anchor_bottom = 0.25
 size_flags_horizontal = 3
 mouse_filter = 1
 theme_override_colors/default_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/normal_font_size = 16
 text = "Action Name"
 fit_content = true
 scroll_active = false

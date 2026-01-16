@@ -56,6 +56,31 @@ func initialisePlayerCharacter(val) :
 	$Player.setFromCharacter(val)
 ######################################
 ## Signals
+func _item_list_inspection(itemList : Array[Node], emitter : Node) :
+	var directUpgradeSettings = IGOptions.getIGOptionsCopy()["filter"]["directDowngrade"]
+	var discardFromCombatRewards = directUpgradeSettings[0]
+	var discardFromInventory = directUpgradeSettings[1]
+	var discardFromEquipped = directUpgradeSettings[2]
+	if !discardFromCombatRewards && !discardFromInventory && !discardFromEquipped :
+		emitter.waitingForResponse = false
+		emitter.emit_signal("responseReceived")
+		return
+	if (discardFromCombatRewards) :
+		var deleteList : Array[Node] = []
+		for index in range(0, itemList.size()) :
+			if ($MyTabContainer/InnerContainer/Equipment.hasDirectUpgrade(itemList[index].getItemSceneRef().core)) :
+				deleteList.append(itemList[index].getItemSceneRef())
+		await emitter.removeItemsFromList_internal(deleteList)
+		itemList = emitter.getItemList()
+	if (discardFromInventory || discardFromEquipped) :
+		var deleteList : Array[Node] = []
+		for index in range(0,itemList.size()) :
+			var replaced = $MyTabContainer/InnerContainer/Equipment.replaceDirectDowngrades(itemList[index].getItemSceneRef().core, discardFromInventory, discardFromEquipped)
+			if (replaced) :
+				deleteList.append(itemList[index].getItemSceneRef())
+		await emitter.removeItemsFromList_internal(deleteList)
+		itemList = emitter.getItemList()
+
 var permanentMods : Dictionary = {}
 func _shopping_permanent_modifier(value : Array[float], type : String, statEnum : Array[int], source : String, modType, isMultiplicative : bool, recursiveCall : bool) :
 	if (permanentMods.get(source) == null) :
@@ -251,17 +276,17 @@ func displayInventoryFull() :
 enum inventoryBehaviour_local {wait,discard}
 var IGOptions_inventoryBehaviour : inventoryBehaviour_local = inventoryBehaviour_local.wait
 const popupLoader = preload("res://Graphic Elements/popups/my_popup_button.tscn")
-func _on_combat_add_to_inventory_requested(itemSceneRef, isAutomatic : bool) -> void:
+func _on_combat_add_to_inventory_requested(itemSceneRef) -> void:
 	if (itemSceneRef.core is Currency) :
 		$TopRibbon/Ribbon/Currency.addToCurrency(itemSceneRef, itemSceneRef.getCount())
 		$MyTabContainer/InnerContainer/Combat.removeCombatRewardEntry(itemSceneRef)
 	elif (myInventoryFull()) :
-		if (isAutomatic && IGOptions_inventoryBehaviour == inventoryBehaviour_local.discard) :
-			$MyTabContainer/InnerContainer/Combat.removeCombatRewardEntry(itemSceneRef)
+		#if (isAutomatic && IGOptions_inventoryBehaviour == inventoryBehaviour_local.discard) :
+			#$MyTabContainer/InnerContainer/Combat.removeCombatRewardEntry(itemSceneRef)
 		## (!isAutomatic || isAutomatic && IGOptions_inventoryBehaviour == wait
-		else :
-			displayInventoryFull()
-			$MyTabContainer/InnerContainer/Combat.denyAddToInventory()
+		#else :
+		displayInventoryFull()
+		$MyTabContainer/InnerContainer/Combat.denyAddToInventory()
 	else :
 		#Does not account for randomly generated bonuses if you ever add that sorry
 		## I did add that thank you
@@ -319,6 +344,12 @@ const routineShopLoader = preload("res://Graphic Elements/Shop/routine_shop.tscn
 const equipmentShopLoader = preload("res://Graphic Elements/Shop/equipment_shop.tscn")
 const soulShopLoader = preload("res://Graphic Elements/Shop/soul_shop.tscn")
 func _on_shop_requested(details : ShopDetails) :
+	var oldShopExists = $MyTabContainer/InnerContainer/Combat.has_node("Shop")
+	if (oldShopExists) :
+		var oldShop = $MyTabContainer/InnerContainer/Combat.get_node("Shop")
+		$MyTabContainer/InnerContainer/Combat.remove_child(oldShop)
+		oldShop.queue_free()
+		await get_tree().process_frame
 	var newShop
 	if (details.shopName == Shopping.shopNames["armor"] || details.shopName == Shopping.shopNames["weapon"]) :
 		newShop = equipmentShopLoader.instantiate()
@@ -337,8 +368,32 @@ func _on_shop_requested(details : ShopDetails) :
 	if (newShop.has_signal("playerSubclassRequested")) :
 		newShop.connect("playerSubclassRequested", _on_player_subclass_requested)
 	$MyTabContainer/InnerContainer/Combat.disableUI()
+	if (details.shopName == Shopping.shopNames["routine"]) :
+		Shopping.routineUnlocked = true
+		$MyTabContainer/InnerContainer/Combat.enableShopShortcut("routine")
+	elif (details.shopName == Shopping.shopNames["soul"]) :
+		Shopping.soulUnlocked = true
+		$MyTabContainer/InnerContainer/Combat.enableShopShortcut("soul")
+	elif (details.shopName == Shopping.shopNames["weapon"]) :
+		$MyTabContainer/InnerContainer/Combat.enableShopShortcut("weapon")
+	elif (details.shopName == Shopping.shopNames["armor"]) :
+		$MyTabContainer/InnerContainer/Combat.enableShopShortcut("armor")
 	newShop.setFromDetails(details)
 
+func _on_shop_shortcut_selected(type : String) :
+	var details
+	if (type == "routine") :
+		details = Shopping.createRoutineShop()
+	elif (type == "armor") :
+		details = Shopping.createArmorShop()
+	elif (type == "weapon") :
+		details = Shopping.createWeaponShop()
+	elif (type == "soul") :
+		details = Shopping.createSoulShop()
+	else :
+		return 
+	_on_shop_requested(details)
+	
 func _on_shop_finished() :
 	$MyTabContainer/InnerContainer/Combat.enableUI()
 	
@@ -516,6 +571,10 @@ func beforeLoad(newSave) :
 			tab.connect("apophisKilled", createApophisScreen)
 		if (tab.has_signal("rewardPending")) :
 			tab.connect("rewardPending", _on_reward_pending)
+		if (tab.has_signal("shopShortcutSelected")) :
+			tab.connect("shopShortcutSelected", _on_shop_shortcut_selected)
+		if (tab.has_signal("itemListForYourInspectionGoodSir")) :
+			tab.connect("itemListForYourInspectionGoodSir", _item_list_inspection)
 		#if (tab.has_signal("isReforgedHoveredRequested")) :
 			#tab.connect("isReforgedHoveredRequested", _on_reforge_hovered_requested)
 		#if (tab.has_signal("playerAttributeModsRequested")) :
@@ -552,8 +611,20 @@ func onLoad(loadDict : Dictionary) -> void :
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
 
+func onLoad_2() :
+	var combat = $MyTabContainer/InnerContainer/Combat
+	if (Shopping.routineUnlocked) :
+		combat.enableShopShortcut("routine")
+	if (Shopping.weaponUnlocked) :
+		combat.enableShopShortcut("weapon")
+	if (Shopping.armorUnlocked) :
+		combat.enableShopShortcut("armor")
+	if (Shopping.soulUnlocked) :
+		combat.enableShopShortcut("soul")
+
 func updateFromOptions(optionsCopy : Dictionary) :
-	IGOptions_inventoryBehaviour = optionsCopy[IGOptions.options.inventoryBehaviour] as inventoryBehaviour_local
+	pass
+	#IGOptions_inventoryBehaviour = optionsCopy[IGOptions.options.inventoryBehaviour] as inventoryBehaviour_local
 
 var apophisKilledOnThisFile : bool = false
 func createApophisScreen() :

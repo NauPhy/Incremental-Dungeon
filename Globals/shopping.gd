@@ -46,6 +46,8 @@ func getSaveDictionary() -> Dictionary :
 	retVal["itemPrices"] = itemPrices
 	retVal["armorUnlocked"] = armorUnlocked
 	retVal["weaponUnlocked"] = weaponUnlocked
+	retVal["routineUnlocked"] = routineUnlocked
+	retVal["soulUnlocked"] = soulUnlocked
 	if (armorTimer.is_stopped()) :
 		retVal["armorTime"] = "stopped"
 	else :
@@ -78,7 +80,7 @@ func beforeLoad(newGame) :
 	setupTimers()
 	if (newGame) :
 		#var routineList = MegaFile.Routine_FilesDictionary.keys()
-		unlockedRoutines.append("lift_weightss")
+		unlockedRoutines.append("lift_weights")
 		unlockedRoutines.append("pickpocket_goblins")
 		unlockedRoutines.append("hug_cacti")
 		unlockedRoutines.append("read_novels")
@@ -110,6 +112,8 @@ func onLoad(loadDict) :
 		tempWeapon = -1
 	armorUnlocked = loadDict["armorUnlocked"]
 	weaponUnlocked = loadDict["weaponUnlocked"]
+	routineUnlocked = loadDict["routineUnlocked"]
+	soulUnlocked = loadDict["soulUnlocked"]
 	if (armorUnlocked) :
 		armorTimer.start(tempArmor)
 	if (weaponUnlocked) :
@@ -139,10 +143,14 @@ func resetSubclass() :
 	subclassPurchased = false
 func getSubclassPurchased() :
 	return subclassPurchased
+var routineUnlocked : bool = false
+var soulUnlocked : bool = false
 func resetSaveSpecificVariants() :
 	allRoutinesPurchased = false
 	armorUnlocked = false
 	weaponUnlocked = false
+	routineUnlocked = false
+	soulUnlocked = false
 	waitingOnEquipmentScaling = false
 	waitingOnCurrencyScaling = false
 	awaitingConfirmation = false
@@ -218,19 +226,29 @@ func getNextItemPrice(type, item) -> int :
 		return -1
 
 func getNextItemPrice_routine(item) -> int :
-	const standardScale = pow(2,0.125)
+	var standardScale = pow(2,0.25)
 	var currentVal = itemPrices["routine"][item]
 	if (item == routinePurchasable.speed) :
-		return currentVal * standardScale
+		if (currentVal == 6) :
+			return round(11.14)
+		elif (currentVal == 11) :
+			return round(21.43)
+		else :
+			return currentVal*standardScale
 	elif (item == routinePurchasable.effect) :
-		return currentVal * standardScale
+		if (currentVal == 8) :
+			return round(14.86)
+		elif (currentVal == 15) :
+			return round(28.57)
+		else :
+			return currentVal * standardScale
 	elif (item == routinePurchasable.mixed) :
-		return currentVal * 10
+		return round(currentVal * 10)
 	## It's 25x more expensive (5000) at the end of floor 5, after 9 purchases
 	elif (item == routinePurchasable.randomRoutine) :
-		return currentVal * 1.43
+		return round(currentVal * 1.43)
 	elif (item == routinePurchasable.upgradeRoutine) :
-		return currentVal * standardScale
+		return round(currentVal * standardScale)
 	else :
 		return -1
 		
@@ -241,12 +259,12 @@ func getNextItemPrice_armor(item) -> int :
 		return currentVal
 	elif (item == armorPurchasable.newArmor) :
 		## Arbitrary
-		return currentVal * 1.2
+		return round(currentVal * 1.2)
 	elif (item == armorPurchasable.reforge) :
-		return currentVal * 1.5
+		return round(currentVal * 1.5)
 	elif (item == armorPurchasable.statUpgrade_phys || item == armorPurchasable.statUpgrade_mag) :
 		## Intended to purchase 7-8 times throughout the game. The 9th time will cost 20 minutes of grinding.
-		return currentVal * 2.484
+		return round(currentVal * 2.484)
 	else :
 		return -1
 func getNextItemPrice_weapon(item) -> int :
@@ -256,12 +274,12 @@ func getNextItemPrice_weapon(item) -> int :
 		return currentVal
 	elif (item == weaponPurchasable.newWeapon) :
 		## Arbitrary
-		return currentVal * 1.2
+		return round(currentVal * 1.2)
 	elif (item == weaponPurchasable.reforge) :
-		return currentVal * 1.5
+		return round(currentVal * 1.5)
 	elif (item == weaponPurchasable.statUpgrade_DR) :
 		## Intended to purchase 7-8 times throughout the game
-		return currentVal * 2.484
+		return round(currentVal * 2.484)
 	else :
 		return -1
 		
@@ -273,10 +291,10 @@ func getNextItemPrice_soul(item) -> int :
 		return currentVal
 	## arbitrary
 	elif (item == soulPurchasable.inventorySpace) :
-		return currentVal * 1.2
+		return round(currentVal * 1.2)
 	## Sould be able to use it 12 times before the final boss.
 	elif (item == soulPurchasable.randomStat) :
-		return currentVal * 1.59
+		return round(currentVal * 1.59)
 	else :
 		return -1
 		
@@ -468,27 +486,28 @@ const weaponPurchasableDictionary = {
 }
 const itemPriceBase : Dictionary = {
 	"routine" : {
-		routinePurchasable.speed : 40,
-		routinePurchasable.effect : 51,
-		routinePurchasable.mixed : 10000,
-		routinePurchasable.randomRoutine : 200, 
+		##10 minutes of farming at node 5 yields 2 of each (40)
+		routinePurchasable.speed : 6,
+		routinePurchasable.effect : 8,
+		routinePurchasable.mixed : 2000,
+		routinePurchasable.randomRoutine : 40, 
 		## 8 routines
-		routinePurchasable.upgradeRoutine : 5000
+		routinePurchasable.upgradeRoutine : 1000
 	},
 	## Currency is 1x ore
 	## Expected currency/node at start is 48
 	"armor" : {
-		armorPurchasable.premadeArmor: 60,
-		armorPurchasable.newArmor : 50,
-		armorPurchasable.reforge : 40,
+		armorPurchasable.premadeArmor: 40,
+		armorPurchasable.newArmor : 30,
+		armorPurchasable.reforge : 27,
 		armorPurchasable.statUpgrade_phys : 40,
 		armorPurchasable.statUpgrade_mag : 40
 	},
 	"weapon" : {
-		weaponPurchasable.premadeWeapon : 60,
-		weaponPurchasable.newWeapon : 50,
-		weaponPurchasable.reforge : 40,
-		weaponPurchasable.statUpgrade_DR : 80
+		weaponPurchasable.premadeWeapon : 40,
+		weaponPurchasable.newWeapon : 30,
+		weaponPurchasable.reforge : 27,
+		weaponPurchasable.statUpgrade_DR : 95
 	},
 	"soul" : {
 		soulPurchasable.fighterSubclass_1 : 1,
@@ -1063,6 +1082,7 @@ var myArmor : Array[Armor] = []
 var armorScaling : float = 0
 func _on_armor_timeout() :
 	armorTimer.wait_time = 30*60
+	armorTimer.start()
 	armorScaling = await getEquipmentScaling()
 	var currencyScaling = await getCurrencyScaling("armor")
 	currencyScaling /= pow(2,5.0/4.0)
@@ -1080,6 +1100,7 @@ var myWeapons : Array[Weapon] = []
 var weaponScaling : float = 0
 func _on_weapon_timeout() :
 	weaponTimer.wait_time = 30*60
+	weaponTimer.start()
 	weaponScaling = await getEquipmentScaling()
 	var currencyScaling = await getCurrencyScaling("weapon")
 	currencyScaling /= pow(2,5.0/4.0)

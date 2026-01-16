@@ -73,3 +73,18 @@ static func getMatchingElementCount(a : EquipmentGroups, b: EquipmentGroups) :
 
 func isElemental() -> bool :
 	return isIce || isFire || isEarth || isWater
+
+## unofficial enum
+func getElements() -> Array[int] :
+	var retVal : Array[int] = []
+	if (isEarth) :
+		retVal.append(0)
+	if (isFire) :
+		retVal.append(1)
+	if (isIce) :
+		retVal.append(2)
+	if (isWater) :
+		retVal.append(3)
+	if (retVal.size() == 0) :
+		retVal.append(4)
+	return retVal

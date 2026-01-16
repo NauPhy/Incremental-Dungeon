@@ -63,6 +63,10 @@ func _process(_delta) :
 		myTooltip.updateExtendTimer(1-$ExtendTimer.time_left/$ExtendTimer.wait_time)
 
 var currentLayer = 0
+func setCurrentLayer(val) :
+	currentLayer = val
+	if (spawned) :
+		myTooltip.setCurrentLayer(currentLayer + 1)
 func _on_spawn_timer_timeout() -> void:
 	myLayer = CanvasLayer.new()
 	add_child(myLayer)

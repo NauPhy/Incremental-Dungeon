@@ -88,12 +88,12 @@ alignment = 2
 
 [node name="Save" type="Button" parent="Content/VBoxContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 35
 text = " Save "
 
 [node name="ReturnButton" parent="Content/VBoxContainer/VBoxContainer" instance=ExtResource("3_yapp8")]
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 35
 text = " Return "
 
 [connection signal="item_selected" from="Content/VBoxContainer/ScrollContainer/VBoxContainer/WindowMode/WindowMode" to="." method="_on_window_mode_item_selected"]

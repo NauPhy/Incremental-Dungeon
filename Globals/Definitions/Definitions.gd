@@ -1,6 +1,6 @@
 extends Node
 const currentVersion : String = "V0.6 development"
-var GODMODE : bool = false
+var GODMODE : bool = true
 var DEVMODE : bool = false
 
 func _ready() :
@@ -135,6 +135,8 @@ const classDictionary = {
 enum saveSlots {
 	nullVal,slot0,slot1,slot2,slot3,current
 }
+const tempSlot = "user://temp_save_slot.json"
+const emergencySlot = "user://backup_save_slot.json"
 var slotPaths = {
 	saveSlots.current : "",
 	saveSlots.slot0 : "user://save_slot_0.json",

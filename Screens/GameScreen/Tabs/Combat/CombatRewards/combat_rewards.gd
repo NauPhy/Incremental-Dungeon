@@ -12,6 +12,7 @@ func _ready() :
 
 var initialisationPending : bool = false
 signal initialisationComplete
+signal itemListForYourInspectionGoodSir
 func initialise(rewards : Dictionary) :
 	initialisationPending = true
 	for index in range(0, rewards["currency"].size()) :
@@ -37,27 +38,40 @@ func initialise(rewards : Dictionary) :
 		encounteredItems.sort_custom(func(a,b) : a<b)
 		optionsCopy["encounteredItems"] = encounteredItems
 		IGOptions.saveAndUpdateIGOptions(optionsCopy)
-		
+	
 	for entry in getItemList() :
-		var indivSetting = optionsCopy["individualEquipmentTake"].get(entry.getItemSceneRef().getItemName())
-		if (indivSetting == null) :
-			indivSetting = 0
-		# wait
-		if (indivSetting == 0) :
-			pass
-		# always take
-		elif (indivSetting == 1) :
+		if (entry.getItemSceneRef().getType() == Definitions.equipmentTypeEnum.currency) :
 			waitingForResponse = true
-			emit_signal("addToInventoryRequested", entry.getItemSceneRef(), true)
+			emit_signal("addToInventoryRequested", entry.getItemSceneRef())
 			if (waitingForResponse) :
 				await responseReceived
-		# always discard
-		elif (indivSetting == 2) :
-			entry.queue_free()
+				
+	emit_signal("itemListForYourInspectionGoodSir", getItemList(), self)
+	if (waitingForResponse) :
+		await responseReceived
+		
+	var filter = IGOptions.getIGOptionsCopy()["filter"]
+	var itemsToDelete : Array[Node] = []
+	for entry in getItemList() :
+		if (!Helpers.equipmentIsNew(entry.getItemSceneRef().core)) :
+			continue
+		var grouping : EquipmentGroups = entry.getItemSceneRef().core.equipmentGroups
+		var delete : bool = false
+		if (filter["type"] == "whitelist") :
+			delete = true
+			for element in grouping.getElements() :
+				delete = delete && !(filter["element"][element])
+			delete = delete || !(filter["quality"][grouping.quality])
+			delete = delete || !(filter["equipmentType"][entry.getItemSceneRef().getType()])
 		else :
-			initialisationPending = false
-			emit_signal("initialisationComplete")
-			return
+			for element in grouping.getElements() :
+				delete = delete || filter["element"][element]
+			delete = delete || filter["quality"][grouping.quality]
+			delete = delete || filter["equipmentType"][entry.getItemSceneRef().getType()]
+		if (delete) :
+			itemsToDelete.append(entry.getItemSceneRef())
+			continue
+	removeItemsFromList_internal(itemsToDelete)
 	await get_tree().process_frame
 	if (getItemList().is_empty()) :
 		suicide()
@@ -77,10 +91,11 @@ func _on_entry_selected(itemSceneRef) :
 			child.getItemSceneRef().deselect()
 
 signal addToInventoryRequested
+signal newItemDropped
 func _on_details_option_pressed(itemSceneRef, val : int) -> void:
 	if (val == 0) :
 		waitingForResponse = true
-		emit_signal("addToInventoryRequested", itemSceneRef, false)
+		emit_signal("addToInventoryRequested", itemSceneRef)
 	else :
 		removeItemFromList(itemSceneRef)
 	
@@ -92,19 +107,22 @@ func findItem(item : Equipment) :
 	
 func getItemList() :
 	return $Content/InventoryPanel/VBoxContainer.get_children()
-
-func removeItemFromList(itemSceneRef) :
-	var itemList = $Content/InventoryPanel/VBoxContainer.get_children()
+	
+func removeItemsFromList_internal(items : Array[Node]) :
+	if (items.size() == 0) :
+		return
 	var killableIndex
 	var killableScene
-	for index in range(0,itemList.size()) :
-		if (itemList[index].getItemSceneRef() == itemSceneRef) :
-			killableIndex = index
-			killableScene = itemList[index]
-			break
-	#Explicitly remove child because sometimes it seems to take more than 1 frame
-	$Content/InventoryPanel/VBoxContainer.remove_child(killableScene)
-	killableScene.queue_free()
+	for itemSceneRef in items :
+		var itemList = $Content/InventoryPanel/VBoxContainer.get_children()
+		for index in range(0,itemList.size()) :
+			if (itemList[index].getItemSceneRef() == itemSceneRef) :
+				killableIndex = index
+				killableScene = itemList[index]
+				break
+		#Explicitly remove child because sometimes it seems to take more than 1 frame
+		$Content/InventoryPanel/VBoxContainer.remove_child(killableScene)
+		killableScene.queue_free()
 	await get_tree().process_frame
 	var newItemList = $Content/InventoryPanel/VBoxContainer.get_children()
 	if (newItemList.is_empty()) :
@@ -118,6 +136,9 @@ func removeItemFromList(itemSceneRef) :
 	if (newItemList.size()-1>=newIndex && newItemList[newIndex] != null) :
 		$Content/Details.setItemSceneRefBase(newItemList[newIndex].getItemSceneRef())
 	newItemList[newIndex].getItemSceneRef().select()
+		
+func removeItemFromList(itemSceneRef) :
+	removeItemsFromList_internal([itemSceneRef])
 	waitingForResponse = false
 	addDenied = false
 	emit_signal("responseReceived")
@@ -138,7 +159,7 @@ func _on_take_all_button_pressed() -> void:
 			addDenied = false
 			return
 		waitingForResponse = true
-		emit_signal("addToInventoryRequested", item.getItemSceneRef(), false)
+		emit_signal("addToInventoryRequested", item.getItemSceneRef())
 	if (waitingForResponse) :
 		await responseReceived
 	if (addDenied) :

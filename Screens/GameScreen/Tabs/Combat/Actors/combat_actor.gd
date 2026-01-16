@@ -35,9 +35,10 @@ func setHP(val) :
 func _ready() :
 	$TitleCard/Title.text = core.text
 	var width = await Helpers.getTextWidthWaitFrame($TitleCard/Title,null,core.text)
-	$TitleCard/Title.custom_minimum_size.x = width
-	$TitleCard.custom_minimum_size.x = width+20
-	custom_minimum_size.x = width+20
+	originalSize.x = max(originalSize.x, width+20)
+	#$TitleCard/Title.custom_minimum_size.x = width
+	#$TitleCard.custom_minimum_size.x = width+20
+	#custom_minimum_size.x = width+20
 	$Graphic.texture = core.portrait
 	setHP(core.MAXHP)
 	var chosenAction = randi_range(0,core.actions.size()-1)
@@ -84,7 +85,30 @@ func provideweaponResource(val) :
 	waitingForweaponResource = false
 	emit_signal("weaponResourceReceived")
 	
+var originalSize = Vector2(227,367.5)
+const titleFont = 18/367.5
+const actionFont = 16/367.5
+const progressFont = 15/367.5
+const HPFont = 15/367.5
 func _process(_delta) :
+	$TitleCard/Title.add_theme_font_size_override("normal_font_size", titleFont*size.y)
+	$ResourceCard/ActionLabel.add_theme_font_size_override("normal_font_size", actionFont*size.y)
+	$ResourceCard/VBoxContainer/ActionProgressBar.add_theme_font_size_override("font_size",progressFont*size.y)
+	$ResourceCard/VBoxContainer/HPBar.setFontSize(HPFont*size.y)
+	var windowSize = Engine.get_singleton("DisplayServer").window_get_size()
+	#if (windowSize.x < windowSize.y) :
+	var actorCount = get_parent().get_child_count()
+	var myMaxWidth = get_parent().size.x/float(actorCount)
+	var newHeight = get_parent().size.y*0.95
+	var newWidth = newHeight/1.618
+	if (newWidth > myMaxWidth*0.95) :
+		newWidth = myMaxWidth*0.95
+		newHeight = myMaxWidth*1.618
+	if (newWidth < originalSize.x || newHeight < originalSize.y) :
+		custom_minimum_size = originalSize
+	else :
+		custom_minimum_size = Vector2(newWidth,newHeight)
+
 	if (checkDeath()) :
 		return
 	HPBar().setMaxHP(core.MAXHP)

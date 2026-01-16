@@ -20,6 +20,7 @@ func addToInventory(itemSceneRef) :
 	
 func discardItem(itemSceneRef) :
 	var itemIndex = findPanelIndex(itemSceneRef)
+	getInventoryList()[itemIndex].remove_child(itemSceneRef)
 	if (itemIndex == null) :
 		return
 	if (itemSceneRef.isEquipped()) :
@@ -36,6 +37,7 @@ func discardItem(itemSceneRef) :
 		selectItem(newSelection)
 		emit_signal("itemSelected", newSelection)
 	itemSceneRef.queue_free()
+	
 	
 func setItemCount(item : Equipment, val : int) :
 	if (item is Currency) :
@@ -237,23 +239,30 @@ func initialiseContainers() :
 	getInventory().get_child(0).connect("dragStart", _on_draggable_drag)
 	getInventory().get_child(0).connect("dragStop", _on_draggable_release)
 	
+var oldPosPanel : Node = null
 var draggingPanel : Node = null
-var ghostPanel : Node = null
-var draggingPanelIndex : int = -1
+#var ghostPanel : Node = null
+#var draggingPanelIndex : int = -1
 func _on_draggable_drag(emitter) :
-	draggingPanelIndex = Helpers.findIndexInContainer(getInventory(), emitter)
+	draggingPanel = emitter
+	#draggingPanelIndex = Helpers.findIndexInContainer(getInventory(), emitter)
 	await get_tree().process_frame
+	var oldIndex = Helpers.findIndexInContainer(getInventory(), emitter)
 	var oldPos = emitter.global_position
 	getInventory().remove_child(emitter)
 	add_child(emitter)
 	emitter.global_position = oldPos
-	ghostPanel = Control.new()
-	getInventory().add_child(ghostPanel)
-	ghostPanel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	ghostPanel.custom_minimum_size = emitter.size
-	getInventory().move_child(ghostPanel, draggingPanelIndex)
-	updateDraggingSiblings()
-	draggingPanel = emitter
+	oldPosPanel = draggablePanelLoader.instantiate()
+	getInventory().add_child(oldPosPanel)
+	getInventory().move_child(oldPosPanel, oldIndex)
+	
+	#ghostPanel = Control.new()
+	#getInventory().add_child(ghostPanel)
+	#ghostPanel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	#ghostPanel.custom_minimum_size = emitter.size
+	#getInventory().move_child(ghostPanel, draggingPanelIndex)
+	#updateDraggingSiblings()
+	
 	
 var waitingForReforgeHovered : bool = false
 var reforgeHovered_comm : bool = false
@@ -273,59 +282,88 @@ func provideIsReforgedHovered(val) :
 func _on_draggable_release(_emitter) :
 	## Inventory actually does not need to know if reforge is hovered. The player drags the item to the reforge window
 	#var reforgeHovered = await getReforgeHovered()
-	getInventory().remove_child(ghostPanel)
-	ghostPanel.queue_free()
-	ghostPanel = null
+	var oldIndex = Helpers.findIndexInContainer(getInventory(), oldPosPanel)
+	var newPos = draggingPanel.global_position + draggingPanel.size/2.0
+	var swapTarget : Node = null
+	for child in getInventoryList() :
+		var childPos = child.global_position
+		if (childPos.x <= newPos.x && childPos.x + child.size.x >= newPos.x && childPos.y <= newPos.y && childPos.y + child.size.y >= newPos.y) :
+			swapTarget = child
+			break
+	if (swapTarget == oldPosPanel) :
+		swapTarget = null
+	var newIndex
+	if (swapTarget != null) :
+		newIndex = Helpers.findIndexInContainer(getInventory(), swapTarget)
+	getInventory().remove_child(oldPosPanel)
+	oldPosPanel.queue_free()
+	oldPosPanel = null
 	remove_child(draggingPanel)
 	getInventory().add_child(draggingPanel)
-	getInventory().move_child(draggingPanel, draggingPanelIndex)
+	if (swapTarget == null) :
+		getInventory().move_child(draggingPanel, oldIndex)
+	else :
+		if (oldIndex < newIndex) :
+			getInventory().move_child(swapTarget, oldIndex)
+			getInventory().move_child(draggingPanel, newIndex)
+		else :
+			getInventory().move_child(draggingPanel, newIndex)
+			getInventory().move_child(swapTarget, oldIndex)
 	draggingPanel = null
-	draggingPanelIndex = -1
-	clearDraggingSiblings()
+	
+	#getInventory().remove_child(ghostPanel)
+	#ghostPanel.queue_free()
+	#ghostPanel = null
+	#remove_child(draggingPanel)
+	#getInventory().add_child(draggingPanel)
+	#getInventory().move_child(draggingPanel, draggingPanelIndex)
+	#draggingPanel = null
+	#draggingPanelIndex = -1
+	#clearDraggingSiblings()
 
-var draggingSiblings : Array = []
-func updateDraggingSiblings() :
-	draggingSiblings.clear()
-	var left = null
-	if (draggingPanelIndex >= 1 && (draggingPanelIndex)%6 != 0) :
-		left = getInventory().get_child(draggingPanelIndex-1)
-	draggingSiblings.append(left)
-	var right = null
-	if (draggingPanelIndex <= getInventory().get_child_count() - 2 && (draggingPanelIndex+1)%6 != 0) :
-		right = getInventory().get_child(draggingPanelIndex+1)
-	draggingSiblings.append(right)
-	var top = null
-	if (draggingPanelIndex >= getInventory().columns) :
-		top = getInventory().get_child(draggingPanelIndex-getInventory().columns)
-	draggingSiblings.append(top)
-	var bottom = null
-	if (draggingPanelIndex <= getInventory().get_child_count()-getInventory().columns-1) :
-		bottom = getInventory().get_child(draggingPanelIndex+getInventory().columns)
-	draggingSiblings.append(bottom)
-	
-func clearDraggingSiblings() :
-	draggingSiblings = []
-	
+#var draggingSiblings : Array = []
+#func updateDraggingSiblings() :
+	#draggingSiblings.clear()
+	#var left = null
+	#if (draggingPanelIndex >= 1 && (draggingPanelIndex)%6 != 0) :
+		#left = getInventory().get_child(draggingPanelIndex-1)
+	#draggingSiblings.append(left)
+	#var right = null
+	#if (draggingPanelIndex <= getInventory().get_child_count() - 2 && (draggingPanelIndex+1)%6 != 0) :
+		#right = getInventory().get_child(draggingPanelIndex+1)
+	#draggingSiblings.append(right)
+	#var top = null
+	#if (draggingPanelIndex >= getInventory().columns) :
+		#top = getInventory().get_child(draggingPanelIndex-getInventory().columns)
+	#draggingSiblings.append(top)
+	#var bottom = null
+	#if (draggingPanelIndex <= getInventory().get_child_count()-getInventory().columns-1) :
+		#bottom = getInventory().get_child(draggingPanelIndex+getInventory().columns)
+	#draggingSiblings.append(bottom)
+	#
+#func clearDraggingSiblings() :
+	#draggingSiblings = []
+	#
 func _process(_delta) :
 	if (!doneLoading) :
 		return
 	if (!myReady) :
 		return
-	if (draggingPanel != null) :
-		var changed : bool = true
-		if (draggingSiblings[0] && draggingPanel.global_position.x < draggingSiblings[0].global_position.x) :
-			draggingPanelIndex -= 1
-		elif (draggingSiblings[1] && draggingPanel.global_position.x > draggingSiblings[1].global_position.x) :
-			draggingPanelIndex += 1
-		elif (draggingSiblings[2] && draggingPanel.global_position.y < draggingSiblings[2].global_position.y) :
-			draggingPanelIndex -= getInventory().columns
-		elif (draggingSiblings[3] && draggingPanel.global_position.y > draggingSiblings[3].global_position.y) :
-			draggingPanelIndex += getInventory().columns
-		else :
-			changed = false
-		if (changed) :
-			getInventory().move_child(ghostPanel, draggingPanelIndex)
-			updateDraggingSiblings()
+	#if (draggingPanel != null) :
+		#var changed : bool = true
+		#if (draggingSiblings[0] && draggingPanel.global_position.x < draggingSiblings[0].global_position.x) :
+			#draggingPanelIndex -= 1
+		#elif (draggingSiblings[1] && draggingPanel.global_position.x > draggingSiblings[1].global_position.x) :
+			#draggingPanelIndex += 1
+		#elif (draggingSiblings[2] && draggingPanel.global_position.y < draggingSiblings[2].global_position.y) :
+			#draggingPanelIndex -= getInventory().columns
+		#elif (draggingSiblings[3] && draggingPanel.global_position.y > draggingSiblings[3].global_position.y) :
+			#draggingPanelIndex += getInventory().columns
+		#else :
+			#changed = false
+		#if (changed) :
+			#getInventory().move_child(ghostPanel, draggingPanelIndex)
+			#updateDraggingSiblings()
 
 ##############################################
 ##Saving

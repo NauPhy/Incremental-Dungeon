@@ -61,7 +61,7 @@ func _on_unequip_requested_from_details(itemSceneRef) -> void:
 	$Inventory.unequipItem(itemSceneRef.getType())
 func _on_current_equips_select_requested(itemSceneRef, type : Definitions.equipmentTypeEnum) -> void:
 	$PagedEquipmentDetails.setItemSceneRefBase(itemSceneRef)
-	$Inventory.sortByType(type)
+	#$Inventory.sortByType(type)
 	if (itemSceneRef != null) :
 		$Inventory.selectItem(itemSceneRef)
 func _on_discard_requested_from_details(itemSceneRef) -> void:
@@ -86,3 +86,43 @@ func _on_inventory_is_reforge_hovered_requested(emitter) -> void:
 	emit_signal("isReforgeHoveredRequested", emitter)
 func reforge(type, newScalingVal) :
 	return $Inventory.reforge(type, newScalingVal)
+	
+	
+func hasDirectUpgrade(oldItem : Equipment) -> bool:
+	for item in $Inventory.getInventoryList() :
+		if (item.get_child_count() != 1) :
+			continue
+		if (Helpers.equipmentIsDirectUpgrade(item.get_child(0).core,oldItem)) :
+			print("Deleting (probably) a combat reward: " + oldItem.getName() + " because you already have " + item.get_child(0).core.getName())
+			return true
+	return false
+
+func replaceDirectDowngrades(newItem : Equipment, replaceInInventory : bool, replaceInEquipped : bool) -> bool :
+	var replaced : bool = false
+	var equippedDiscarded : bool = false
+	for item in $Inventory.getInventoryList() :
+		if (item.get_child_count() != 1) :
+			continue
+		if (Helpers.equipmentIsDirectUpgrade(newItem, item.get_child(0).core)) :
+			var isEquipped = $Inventory.getEquippedItem(item.get_child(0).getType()) == item.get_child(0)
+			if (isEquipped && replaceInEquipped || !isEquipped && replaceInInventory) :
+				#if (item.get_child(0) == $Inventory.selectedEntry) :
+					#$PagedEquipmentDetails.setItemSceneRefBase(null)
+				var equippedString
+				if (isEquipped) :
+					equippedString = " (equipped) "
+				else :
+					equippedString = ""
+				print("replaced " + item.get_child(0).core.getName() + equippedString + " with " + newItem.getName())
+				$Inventory.discardItem(item.get_child(0))
+				replaced = true
+				if (isEquipped) :
+					equippedDiscarded = true
+	var itemSceneRef = null
+	if (replaced) :
+		itemSceneRef = SceneLoader.createEquipmentScene(newItem.getItemName())
+		itemSceneRef.core = newItem
+		$Inventory.addToInventory(itemSceneRef)
+	if (equippedDiscarded && itemSceneRef != null) :
+		$Inventory.equipItem(itemSceneRef)
+	return replaced

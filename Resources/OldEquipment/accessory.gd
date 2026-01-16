@@ -12,6 +12,8 @@ func getAdjustedCopy(scalingFactor : float) -> Accessory :
 	if (!Helpers.equipmentIsNew(retVal) || scalingFactor == -1) :
 		return retVal
 	var qualityModifier = pow(1.08,equipmentGroups.quality as int)
+	if (!retVal.equipmentGroups.isElemental()) :
+		qualityModifier *= 1.15
 	if (boostedAttr2 != -1 && boostedAttr1 != -1) :
 		retVal.myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr1]]["Prebonus"] = qualityModifier*scalingFactor*referenceValue/2.0
 		retVal.myPacket.attributeMods[Definitions.attributeDictionary[boostedAttr2]]["Prebonus"] = qualityModifier*scalingFactor*referenceValue/2.0

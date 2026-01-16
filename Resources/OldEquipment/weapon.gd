@@ -74,10 +74,15 @@ static func scalingToLetter(scalingVal : float) -> String :
 	else :
 		return "S+"
 
-const referenceValue = 0.3429401
+## This causes the average base damage value to be 50% of DR with the average of the stat distributions 1:0:0 and 1:0.5:0.25.
+## divided by 1.08 to compensate for quality
+## divided by 1.15 to compensate for elemental synergy
+const referenceValue = 0.161979/1.08/1.15
 func getAdjustedCopy(scalingFactor : float) -> Weapon :
 	var retVal = super(scalingFactor) as Weapon##not sure if copies weapon properties
 	retVal.attackBonus *= scalingFactor*referenceValue
+	if (!retVal.equipmentGroups.isElemental()) :
+		retVal.attackBonus *= 1.15
 	return retVal
 	
 func getSaveDictionary() -> Dictionary :

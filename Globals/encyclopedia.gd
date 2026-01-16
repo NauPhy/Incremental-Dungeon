@@ -15,6 +15,8 @@ enum tutorialName {
 	dropIntro,
 	manticoreKill,
 	herophile,
+	row1,
+	floor1
 	#apophis
 }
 const tutorialTitles : Dictionary = {
@@ -29,6 +31,8 @@ const tutorialTitles : Dictionary = {
 	tutorialName.dropIntro : "Drops Introduction",
 	tutorialName.manticoreKill : "Manticore Defeated",
 	tutorialName.herophile : "Training with Herophile",
+	tutorialName.row1 : "Beastiary and Item Drops",
+	tutorialName.floor1 : "Combat Rewards Filter"
 	#tutorialName.apophis : "The Demon King is Slain!"
 }
 const tutorialDesc : Dictionary = {
@@ -45,10 +49,12 @@ const tutorialDesc : Dictionary = {
 	#First time rewards screen comes up (presumably before goblins)
 	tutorialName.equipment : "You just found some equipment! Up until now you've been unarmed and unarmored. You can add the item to your inventory from the loot screen and equip it in the Equipment Tab. Try equipping it and see how it changes your Combat Stats.\n\n[i]The Equipment tab has been unlocked[/i]",
 	#End of first floor
-	tutorialName.tutorialFloorEnd : "Congratulations, you've beaten the tutorial floor. The dungeon from here on out will be a bit slower and more challenging.\n\nRemember to explore the side paths and farm drops from weaker monsters. If you feel progress is too slow, get a cup of coffee or pull up a YouTube video. This is not meant to be a terribly active game.\n\nAlternatively, you could spend some time scrutinising your build to try and squeeze a bit more performance out of it!\n\nOh, and you might want to check out the Encyclopedia (F1).",
+	tutorialName.tutorialFloorEnd : "Congratulations, you've beaten the tutorial floor. The dungeon from here on out will be a bit slower and more challenging.\n\nRemember to explore the side paths and farm drops from weaker monsters. If you feel progress is too slow, get a cup of coffee or pull up a YouTube video. This is not meant to be a terribly active game.\n\nAlternatively, you could spend some time scrutinising your build to try and squeeze a bit more performance out of it!\n\nOh, and take this Routine Speed buff, you're gonna need it.\n\n[i]The \"Learning Curve\" Routine Speed buff has been added[/i]",
 	tutorialName.dropIntro : "Most enemies have a chance to drop items on death. After completing a room for the first time, enemies and hints about their drops will be added to the beastiary found in the in-game options (F1) menu.\n\nEnemies will also be listed on the room itself. You can access an enemy's beastiary entry by CTRL-clicking its name in the room's enemy list, but only if you've defeated it at least once.",
 	tutorialName.manticoreKill : "Congratulations on defeating the Manticore! Unfortunately this is the end of content in the current version. I hope you enjoyed the game, and I'd be happy to hear any feedback you have!",
 	tutorialName.herophile : "\"I am no match for you. I yield to your strength.\" Herophile says, kneeling. You turn towards the exit.\n\n\"However\"\n\nYou turn back towards the demigoddess, eyebrow raised.\n\n\"Your skill is clearly lacking.\" she says, grinning. \"I believe a mutually beneficial arrangement can be made.\"\n\n[i]The \"Spar with Herophile\" Routine has been unlocked![/i]",
+	tutorialName.row1 : "Not all enemies drop from the same item pool! You can view the item pool Tags of an enemy on the Combat Map if you CTRL-Click their name.\n\nYou can also view the same entries in the Beastiary, found in the Encyclopedia (F1), provided you've won a battle against them at least once.",
+	tutorialName.floor1 : "Tired of getting irrelevant items? You can filter rewards to be auto-discarded in the in-game options menu (F2). There, you can also choose to have your items auto-replaced when an upgrade drops!"
 	#tutorialName.apophis : "Congratulations, you've defeated the Demon King! The Surface world is saved! Or something. This game was going to have a more in depth story but game development is hard. In any case, there are actually 20 biomes, 25 bosses, and 10 factions in this game, and levels 1-9 are randomly generated! So I encourage you to check out endless mode or try one of the other classes. Thanks for playing!"
 }
 const tutorialPointers : Dictionary = {
@@ -66,6 +72,7 @@ const oneOffTutorials : Array = [
 	tutorialName.dropIntro,
 	tutorialName.manticoreKill,
 	tutorialName.herophile,
+	tutorialName.row1
 	#tutorialName.apophis
 ]
 
@@ -336,7 +343,7 @@ var descriptions : Dictionary = {
 	
 	"Class" : "Your Class determines their starting Attributes, Attribute multipliers, and unarmed Weapon Scaling. Fighter is the tankiest, Mage is the highest damage, and Rogue is balanced. You can respec about halfway through the game at the cost of half of your Cumulative Routine Levels",
 	
-	"Currency" : "Currency items do not take up inventory space and only exist to be exchanged at shops.", 
+	"Currency" : "Currency items do not take up inventory space and only exist to be exchanged at shops.\n\nThe amount of currency acquired from a victory depends only on how deep in the dungeon it is (except in the case of a particular wandering boss ;3)", 
 		
 	"Attribute" : "Attributes are a measure of your basic ability, and are shown in the Player Panel.\n\nAttributes are used to calculate your Combat Stats, which are vital for combat. The 5 Attributes are Dexterity, Durability, Intelligence, Skill, and Strength.\n\t-Base Attribute = Class Bonus + Routine Effect * Cumulative Routine Level",
 	

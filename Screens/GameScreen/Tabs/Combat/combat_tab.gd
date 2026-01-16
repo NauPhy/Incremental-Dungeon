@@ -73,6 +73,7 @@ func _on_tutorial_requested(tutorialName, tutorialPos) :
 	emit_signal("tutorialRequested", tutorialName, tutorialPos)
 
 func _on_combat_panel_victory(automaticReset : bool) -> void:
+	$CombatPanel.pauseCombat()
 	if (currentRoom.getEncounterRef().victoryText != "" && !currentRoom.isCompleted()) :
 		await launchNarrative(currentRoom.getEncounterRef().victoryTitle, currentRoom.getEncounterRef().victoryText, "Continue", true, false)
 	var magicFind = await getMagicFind()
@@ -86,14 +87,19 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 			"equipment" : rewardsTutorial,
 			"currency" : [0]
 		}
-	await handleCombatRewards(rewards)		
+	hideMapAndUI()
+	await handleCombatRewards(rewards)
+	#showMapAndUI()
+	if (currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N0") :
+		emit_signal("tutorialRequested", Encyclopedia.tutorialName.row1, Vector2(0,0))
 	currentFloor.completeRoom(currentRoom)
-	if (automaticReset) :
+	if (automaticReset && currentRoom != null) :
 		friendlyParty[0] = await getPlayerCore()
 		var copy : Array[ActorPreset]
 		for elem in friendlyParty :
 			copy.append(elem.duplicate())
 		$CombatPanel.resetCombat(copy, currentRoom.getEncounterRef().enemies)
+		$CombatPanel.resumeCombat()
 	else :
 		currentRoom = null
 		$CombatPanel.visible = false
@@ -129,6 +135,7 @@ func _on_combat_panel_defeat() -> void:
 	
 func _on_combat_panel_retreat() -> void:
 	interruptDefeatCoroutine()
+	$CombatPanel.pauseCombat()
 	currentFloor.onCombatRetreat(currentRoom)
 	currentRoom = null
 	$CombatPanel.visible = false
@@ -143,6 +150,10 @@ func getTypicalEnemyDefense(myFloor : int) :
 	
 signal newFloorCompleted
 func _on_map_completed(emitter) :
+	currentRoom = null
+	$CombatPanel.pauseCombat()
+	$CombatPanel.visible = false
+	showMapAndUI()
 	var completedIndex = Helpers.findIndexInContainer($MapContainer, emitter)
 	if (completedIndex == maxFloor) :
 		## The only boss that starts with Hell Knight is the final boss
@@ -165,6 +176,8 @@ func _on_map_completed(emitter) :
 			var button = "Continue"
 			await launchNarrative(title, myText, button, true, true)
 		emit_signal("newFloorCompleted", typicalEnemyDefense)
+	if (emitter == $MapContainer.get_child(1)) :
+		emit_signal("tutorialRequested", Encyclopedia.tutorialName.floor1, Vector2(0,0))
 
 var narrativeWorking : bool = false
 func launchNarrative(title : String, myText : String, buttonText : String, waitToFinish : bool, isEnvironmentIntro : bool) :
@@ -250,9 +263,11 @@ func disableUI() :
 	if (currentFloor != null) :
 		currentFloor.disableUI()
 	$FloorDisplay.visible = false
+	$CanvasLayer.visible = false
 func enableUI() :
 	currentFloor.enableUI()
 	$FloorDisplay.visible = true
+	$CanvasLayer.visible = true
 
 #######################################
 var defeatCoroutineRunning : bool = false
@@ -313,19 +328,24 @@ func handleCombatRewards(rewards : Dictionary) :
 	add_child(rewardHandler)
 	rewardHandler.connect("addToInventoryRequested", _on_add_to_inventory_request)
 	rewardHandler.connect("waitingForUser", _on_reward_pending)
+	rewardHandler.connect("itemListForYourInspectionGoodSir", _item_list_inspection)
 	rewardHandler.initialise(rewards)
 	#if (rewardHandler.initialisationPending) :
 		#await rewardHandler.initialisationComplete
 	if (!rewardHandler.isFinished()) :
 		await rewardHandler.finished
 		
+signal itemListForYourInspectionGoodSir
+func _item_list_inspection(val, val2) :
+	emit_signal("itemListForYourInspectionGoodSir", val, val2)
+		
 signal rewardPending
 func _on_reward_pending() :
 	emit_signal("rewardPending")
 
 signal addToInventoryRequested
-func _on_add_to_inventory_request(itemSceneRef, isAutomatic : bool) :
-	emit_signal("addToInventoryRequested", itemSceneRef, isAutomatic)
+func _on_add_to_inventory_request(itemSceneRef) :
+	emit_signal("addToInventoryRequested", itemSceneRef)
 
 func removeCombatRewardEntry(itemSceneRef) :
 	get_node("CombatRewards").removeItemFromList(itemSceneRef)
@@ -422,6 +442,7 @@ func onLoad(loadDict : Dictionary) :
 	enableUI()
 	$MapContainer.visible = true
 	currentFloor.visible = true
+	$CanvasLayer.offset = global_position
 	myReady = true
 	emit_signal("myReadySignal")
 	doneLoading = true
@@ -439,3 +460,31 @@ func _on_combat_panel_player_subclass_requested(emitter) -> void:
 signal weaponResourceRequested
 func _on_combat_panel_weapon_resource_requested(emitter) -> void:
 	emit_signal("weaponResourceRequested", emitter)
+
+signal shopShortcutSelected
+func _on_routine_button_was_selected(_emitter) -> void:
+	emit_signal("shopShortcutSelected", "routine")
+func _on_armor_button_was_selected(_emitter) -> void:
+	emit_signal("shopShortcutSelected", "armor")
+func _on_weapon_button_was_selected(_emitter) -> void:
+	emit_signal("shopShortcutSelected", "weapon")
+func _on_soul_button_was_selected(_emitter) -> void:
+	emit_signal("shopShortcutSelected", )
+func enableShopShortcut(val : String) :
+	var buttons = $CanvasLayer/ShopShortcuts.get_children()
+	var index
+	if (val == "routine") :
+		index = 0
+	elif (val == "armor") :
+		index = 1
+	elif (val == "weapon") :
+		index = 2
+	elif (val == "soul") :
+		index = 3
+	else :
+		return
+	buttons[index].visible = true
+
+
+func _on_visibility_changed() -> void:
+	$CanvasLayer.visible = self.is_visible_in_tree()
