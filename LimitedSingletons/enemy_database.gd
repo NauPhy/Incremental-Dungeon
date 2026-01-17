@@ -5,6 +5,7 @@ var itemsObtainedDictionary : Dictionary = {}
 
 func _init() :
 	add_to_group("Saveable")
+	connect("enemyDataChanged", _on_enemy_data_changed)
 	
 func getAllEnemies() -> Array :
 	var actorList = MegaFile.getAllNewActor()
@@ -104,3 +105,13 @@ func getItemObtained(enemy, item) :
 	
 func getKillCount(enemy) :
 	return killedDictionary[enemy]
+	
+var souls : int = 27
+func getSoulCount() :
+	return souls
+
+func _on_enemy_data_changed(_var) :
+	souls = 0
+	for enemy in killedDictionary.keys() :
+		if (killedDictionary[enemy] > 0) :
+			souls += 1

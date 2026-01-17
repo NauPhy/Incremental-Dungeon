@@ -90,7 +90,7 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 	hideMapAndUI()
 	await handleCombatRewards(rewards)
 	#showMapAndUI()
-	if (currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N0") :
+	if ($MapContainer.get_child_count() >= 2 && currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N0") :
 		emit_signal("tutorialRequested", Encyclopedia.tutorialName.row1, Vector2(0,0))
 	currentFloor.completeRoom(currentRoom)
 	if (automaticReset && currentRoom != null) :
@@ -176,8 +176,10 @@ func _on_map_completed(emitter) :
 			var button = "Continue"
 			await launchNarrative(title, myText, button, true, true)
 		emit_signal("newFloorCompleted", typicalEnemyDefense)
-	if (emitter == $MapContainer.get_child(1)) :
+	if ($MapContainer.get_child_count() >= 2 && emitter == $MapContainer.get_child(1)) :
 		emit_signal("tutorialRequested", Encyclopedia.tutorialName.floor1, Vector2(0,0))
+	elif ($MapContainer.get_child_count() >= 3 && emitter == $MapContainer.get_child(2)) :
+		emit_signal("tutorialRequested", Encyclopedia.tutorialName.floor2, Vector2(0,0))
 
 var narrativeWorking : bool = false
 func launchNarrative(title : String, myText : String, buttonText : String, waitToFinish : bool, isEnvironmentIntro : bool) :
@@ -442,11 +444,13 @@ func onLoad(loadDict : Dictionary) :
 	enableUI()
 	$MapContainer.visible = true
 	currentFloor.visible = true
-	$CanvasLayer.offset = global_position
 	myReady = true
 	emit_signal("myReadySignal")
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
+
+func onLoad_2() :
+	$CanvasLayer.offset = global_position
 
 
 signal playerModifierDictionaryRequested
@@ -469,7 +473,7 @@ func _on_armor_button_was_selected(_emitter) -> void:
 func _on_weapon_button_was_selected(_emitter) -> void:
 	emit_signal("shopShortcutSelected", "weapon")
 func _on_soul_button_was_selected(_emitter) -> void:
-	emit_signal("shopShortcutSelected", )
+	emit_signal("shopShortcutSelected", "soul")
 func enableShopShortcut(val : String) :
 	var buttons = $CanvasLayer/ShopShortcuts.get_children()
 	var index

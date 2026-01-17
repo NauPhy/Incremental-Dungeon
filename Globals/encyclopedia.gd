@@ -16,7 +16,8 @@ enum tutorialName {
 	manticoreKill,
 	herophile,
 	row1,
-	floor1
+	floor1,
+	floor2
 	#apophis
 }
 const tutorialTitles : Dictionary = {
@@ -32,7 +33,8 @@ const tutorialTitles : Dictionary = {
 	tutorialName.manticoreKill : "Manticore Defeated",
 	tutorialName.herophile : "Training with Herophile",
 	tutorialName.row1 : "Beastiary and Item Drops",
-	tutorialName.floor1 : "Combat Rewards Filter"
+	tutorialName.floor1 : "Combat Rewards Filter",
+	tutorialName.floor2 : "Elements"
 	#tutorialName.apophis : "The Demon King is Slain!"
 }
 const tutorialDesc : Dictionary = {
@@ -54,7 +56,8 @@ const tutorialDesc : Dictionary = {
 	tutorialName.manticoreKill : "Congratulations on defeating the Manticore! Unfortunately this is the end of content in the current version. I hope you enjoyed the game, and I'd be happy to hear any feedback you have!",
 	tutorialName.herophile : "\"I am no match for you. I yield to your strength.\" Herophile says, kneeling. You turn towards the exit.\n\n\"However\"\n\nYou turn back towards the demigoddess, eyebrow raised.\n\n\"Your skill is clearly lacking.\" she says, grinning. \"I believe a mutually beneficial arrangement can be made.\"\n\n[i]The \"Spar with Herophile\" Routine has been unlocked![/i]",
 	tutorialName.row1 : "Not all enemies drop from the same item pool! You can view the item pool Tags of an enemy on the Combat Map if you CTRL-Click their name.\n\nYou can also view the same entries in the Beastiary, found in the Encyclopedia (F1), provided you've won a battle against them at least once.",
-	tutorialName.floor1 : "Tired of getting irrelevant items? You can filter rewards to be auto-discarded in the in-game options menu (F2). There, you can also choose to have your items auto-replaced when an upgrade drops!"
+	tutorialName.floor1 : "Tired of getting irrelevant items? You can filter rewards to be auto-discarded in the in-game options menu (F2). There, you can also choose to have your items auto-replaced when an upgrade drops!",
+	tutorialName.floor2 : "Have you been taking advantage of elemental synergies? Some equipment has one or more Elements. Although nonelemental equipment is 15% stronger, elemental equipment grants a boost of 25% when the synergy is activated!"
 	#tutorialName.apophis : "Congratulations, you've defeated the Demon King! The Surface world is saved! Or something. This game was going to have a more in depth story but game development is hard. In any case, there are actually 20 biomes, 25 bosses, and 10 factions in this game, and levels 1-9 are randomly generated! So I encourage you to check out endless mode or try one of the other classes. Thanks for playing!"
 }
 const tutorialPointers : Dictionary = {
@@ -72,7 +75,9 @@ const oneOffTutorials : Array = [
 	tutorialName.dropIntro,
 	tutorialName.manticoreKill,
 	tutorialName.herophile,
-	tutorialName.row1
+	tutorialName.row1,
+	tutorialName.floor1,
+	tutorialName.floor2
 	#tutorialName.apophis
 ]
 
@@ -212,7 +217,7 @@ const problemDictionary = {
 	"Damage" : ["Damage Rating"],
 	"Multiplier" : ["Standard Multiplier"],
 	"Routine Growth" : ["Routine Growth Ratio"],
-	"Routine" : ["Routine Growth", "Cumulative Routine Levels", "Routine Growth Ratio"]
+	"Routine" : ["Routine Growth", "Cumulative Routine Levels", "Routine Growth Ratio", "Routine Effect", "Routine Speed"]
 }
 const keywords : Array[String] = [
 	"Action Power",
@@ -391,7 +396,7 @@ var descriptions : Dictionary = {
 	
 	"Routine Growth": "Routine Growth is the amount of levels you gain in Cumulative Routine Levels per second. There are five Routine Growth Rates, one for each Attribute. They can be found at the bottom of the \"Routines\" panel in the Training Tab.\n\t-For a given Attribute, the corresponding Base Routine Growth Rate = RGR*Routine Speed.",
 	
-	"Routine Speed" : "Listed under \"Other Stats\" in the Player Panel, Routine Speed provides a Multiplier to all Routine Growth Rates of x<Routine Speed>.\n\t-Base Routine Speed = 1.0\n\nRoutine Speed is capped at 100.0.",
+	"Routine Speed" : "Listed under \"Other Stats\" in the Player Panel, Routine Speed provides a Multiplier to all Routine Growth of x<Routine Speed>.\n\t-Base Routine Speed = 1.0\n\nRoutine Speed is capped at 100.0.",
 	
 	"Routine Effect" : "Listed under \"Other Stats\" in the Player Panel. Routine Effect multiplies the Bonus to Base Attributes given by Cumulative Routine Levels.\n\t-Base Routine Effect = 1.0",
 	

@@ -16,7 +16,7 @@ func _on_resized() :
 	size = Vector2(0,0)
 
 func initialise(type : Encyclopedia.tutorialName, myPosition : Vector2, args : Array) :
-	position = Vector2(9999,9999)
+	#position = Vector2(9999,9999)
 	var startAsDisabled = args[0]
 	myType = type
 	$VBoxContainer/Title.text = Encyclopedia.tutorialTitles[type]
@@ -25,15 +25,15 @@ func initialise(type : Encyclopedia.tutorialName, myPosition : Vector2, args : A
 	await $VBoxContainer/Panel/EncyclopediaTextLabel.setText(Encyclopedia.tutorialDesc[type])
 	var tempPosition
 	await get_tree().process_frame
-	if (myPosition == Vector2(0,0)) :
-		var screenSize = Engine.get_singleton("DisplayServer").screen_get_size()
-		tempPosition = Vector2((screenSize.x-size.x)/2.0,(screenSize.y-size.y)/2.0)
-	else :
-		tempPosition = myPosition
-		var screenSize = Engine.get_singleton("DisplayServer").screen_get_size()
-		tempPosition.x = clamp(tempPosition.x, 0, screenSize.x-size.x)
-		tempPosition.y = clamp(tempPosition.y, 0, screenSize.y-size.y)
-	global_position = tempPosition
+	#if (myPosition == Vector2(0,0)) :
+		#var screenSize = Engine.get_singleton("DisplayServer").screen_get_size()
+		#tempPosition = Vector2((screenSize.x)/2.0,(screenSize.y)/2.0)
+	#else :
+		#tempPosition = myPosition
+		#var screenSize = Engine.get_singleton("DisplayServer").screen_get_size()
+		#tempPosition.x = clamp(tempPosition.x, 0, screenSize.x-size.x)
+		#tempPosition.y = clamp(tempPosition.y, 0, screenSize.y-size.y)
+	#global_position = tempPosition
 	if (Encyclopedia.oneOffTutorials.find(type) != -1) :
 		$VBoxContainer/FuckOffContainer.visible = false
 		$VBoxContainer.queue_sort()
