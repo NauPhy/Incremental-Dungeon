@@ -12,20 +12,24 @@ bg_color = Color(0.858824, 0.858824, 0.858824, 1)
 offset_right = 24.0
 offset_bottom = 24.0
 size_flags_horizontal = 3
+mouse_filter = 2
 theme = ExtResource("1_oypjo")
 theme_override_styles/panel = SubResource("StyleBoxFlat_fofx2")
 script = ExtResource("2_nos1y")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="CheckBox" type="CheckBox" parent="HBoxContainer"]
 layout_mode = 2
 
 [node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_colors/default_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
 text = " Sample Text "
 fit_content = true
 scroll_active = false

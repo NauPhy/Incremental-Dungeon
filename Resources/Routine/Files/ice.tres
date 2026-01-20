@@ -7,9 +7,9 @@ script = ExtResource("1_2l3em")
 text = "Study cryomancy"
 hidden = true
 scaling = {
-"Dexterity": 0.6,
+"Dexterity": 0.75,
 "Durability": 0.0,
-"Intelligence": 0.6,
+"Intelligence": 0.75,
 "Skill": 0.0,
 "Strength": 0.0
 }

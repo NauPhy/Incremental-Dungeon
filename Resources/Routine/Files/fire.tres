@@ -9,8 +9,8 @@ hidden = true
 scaling = {
 "Dexterity": 0.0,
 "Durability": 0.0,
-"Intelligence": 0.6,
+"Intelligence": 0.75,
 "Skill": 0.0,
-"Strength": 0.6
+"Strength": 0.75
 }
 metadata/_custom_type_script = "uid://dqi4f2avtalvt"

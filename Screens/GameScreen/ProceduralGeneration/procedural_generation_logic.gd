@@ -222,8 +222,8 @@ func compensateForMultiEnemy(encounter : Encounter,row, type) -> Encounter :
 		enemy.MAXHP *= correctionRatio
 		enemy.PHYSDEF *= correctionRatio
 		enemy.MAGDEF *= correctionRatio
-	#if (actualPower > 1.5*roomBudget) :
-		#print("corrected " + type + " room with " + str(retVal.enemies.size()) + " enemies from " + str(actualPower) + " to " + str(roomBudget))
+	if (actualPower > 1.5*roomBudget) :
+		print("corrected " + type + " room with " + str(retVal.enemies.size()) + " enemies from " + str(actualPower) + " to " + str(roomBudget))
 	return retVal
 
 ## Side encounters have a unit power of 1, but use stronger enemies- halfway to the next node.
@@ -312,23 +312,19 @@ func getScalingRows_mapInProgress(currentRow) -> float :
 func getEnemyScaling(scalingRows) :
 	var retVal = enemyScalingLookupTable.get(scalingRows as int)
 	if (retVal== null) :
-		var prev = enemyScalingLookupTable.get(scalingRows-1 as int)
+		var prev = enemyScalingLookupTable.get((scalingRows as int)-1)
 		if (prev == null) :
 			var currentVal = enemyScalingLookupTable[11]
 			for index in range(12, scalingRows+1) :
-				if (((index as int)-7)%5==0) :
-					currentVal *= 2*1.5
-				else :
-					currentVal *= 2
+				currentVal *= 2
 				enemyScalingLookupTable[index as int] = currentVal
-		else :
-			if (((scalingRows as int)-7)%5 == 0) :
-				enemyScalingLookupTable[scalingRows as int] = prev*2*1.5
-			else :
-				enemyScalingLookupTable[scalingRows as int] = prev*2
+			prev = enemyScalingLookupTable[(scalingRows as int)-1]
+		enemyScalingLookupTable[scalingRows as int] = prev*2
 		retVal = enemyScalingLookupTable[scalingRows as int]
 	if (is_equal_approx(scalingRows-floor(scalingRows),0.5)) :
 		retVal *= sqrt(2)
+	if ((scalingRows as int - 7)%5 == 0) :
+		retVal *= 1.25
 	return retVal
 				
 	
@@ -339,18 +335,14 @@ func createLookupTable() :
 	var currentVal = 1
 	## The first 5 rows scale quickly to get the player to the point where it takes 10 minutes to increase their stat total by a factor of 4throot(2)
 	for index in range(1,5+1) :
-		currentVal *= 5.558253
+		currentVal *= 5.284368
 		enemyScalingLookupTable[index] = currentVal
-	## The first boss is scaled down slightly due to playtesting experience
+	## First boss is currently the same
 	for index in range(6,6+1) :
-		currentVal *= 5.558253*0.85
+		currentVal *= 5.284368
 		enemyScalingLookupTable[index] = currentVal
-	## From here on it's x2 every row, but it's multiplied by an additional 1.5 after each boss so as to not be a pushover (bosses are 1.5x stronger than normal nodes)
-	## I might want to give the node after the first boss an additional buff but it's probably fine.
-	for index in range(7,7+1) :
-		currentVal *= 2*1.5
-		enemyScalingLookupTable[index] = currentVal
-	for index in range(8,11+1) :
+	## From here on it's x2 every row
+	for index in range(7,11+1) :
 		currentVal *= 2
 		enemyScalingLookupTable[index] = currentVal
 

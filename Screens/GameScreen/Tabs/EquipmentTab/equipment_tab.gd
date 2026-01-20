@@ -84,8 +84,8 @@ func _on_item_deselected(_itemSceneRef) -> void:
 signal isReforgeHoveredRequested
 func _on_inventory_is_reforge_hovered_requested(emitter) -> void:
 	emit_signal("isReforgeHoveredRequested", emitter)
-func reforge(type, newScalingVal) :
-	return $Inventory.reforge(type, newScalingVal)
+func reforge(type, newScalingVal, rows) :
+	return $Inventory.reforge(type, newScalingVal, rows)
 	
 	
 func hasDirectUpgrade(oldItem : Equipment) -> bool:

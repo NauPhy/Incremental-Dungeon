@@ -8,7 +8,8 @@ func _ready() :
 	
 func updatePos() :
 	var toolPos = Vector2(originalPos.x+30,originalPos.y-30-size.y)
-	var screenSize : Vector2i = Engine.get_singleton("DisplayServer").screen_get_size()
+	var rect = get_viewport().get_visible_rect()
+	var screenSize = rect.position + rect.size
 	toolPos.x = clamp(toolPos.x, 0, screenSize.x - size.x)
 	toolPos.y = clamp(toolPos.y, 0, screenSize.y - size.y)
 	global_position = toolPos

@@ -79,7 +79,7 @@ func getModifierPacket() -> ModifierPacket :
 func getElementalModifierPacket(subclass) -> ModifierPacket :
 	var mult
 	if (subclass == Definitions.subclass.enchant) :
-		mult = 1.3125
+		mult = 1.2625
 	else :
 		mult = 1.25
 	var retVal = ModifierPacket.new()
@@ -172,10 +172,10 @@ func getInventory() -> Node :
 	return $ScrollContainer/CenterContainer/GridContainer
 ##################################
 ##Internal
-func reforge(type, newScalingVal) -> bool :
+func reforge(type, newScalingVal, rows) -> bool :
 	if (equippedEntries[type] == null) :
 		return false
-	equippedEntries[type].reforge(newScalingVal)
+	equippedEntries[type].reforge(newScalingVal, rows)
 	return true
 	
 func findPanel(item) :

@@ -21,11 +21,17 @@ func getEnemy(enemyName) :
 signal enemyDataChanged
 func getEnemyKilled(enemyName : String) -> bool :
 	return killedDictionary.get(enemyName) != null && killedDictionary[enemyName] != 0
-func setEnemyKilled(enemyName : String, val : int) :
-	killedDictionary[enemyName] = val
-	emit_signal("enemyDataChanged", enemyName)
+#func setEnemyKilled(enemyName : String, val : int) :
+	#killedDictionary[enemyName] = val
+	#emit_signal("enemyDataChanged", enemyName)
 func incrementKills(enemyName : String) :
 	killedDictionary[enemyName] += 1
+	var current = SaveManager.getGlobalSettings()
+	if (current["globalEncyclopedia"]["beastiary"].get(enemyName) == null) :
+		current["globalEncyclopedia"]["beastiary"][enemyName] = 1
+	else :
+		current["globalEncyclopedia"]["beastiary"][enemyName] += 1
+	SaveManager.saveGlobalSettings(current)
 	emit_signal("enemyDataChanged", enemyName)
 func getAllEnemyDropsCollected(enemyName : String) -> bool :
 	if (!getEnemyKilled(enemyName)) :
@@ -84,6 +90,14 @@ func resetEntry(key) :
 func onLoad(loadDict : Dictionary) :
 	myReady = false
 	killedDictionary = loadDict["killed"]
+	var current = SaveManager.getGlobalSettings()
+	var changed : bool = false
+	for key in killedDictionary.keys() :
+		if (current["globalEncyclopedia"]["beastiary"].get(key) == null || current["globalEncyclopedia"]["beastiary"][key] < killedDictionary[key]) :
+			current["globalEncyclopedia"]["beastiary"][key] = killedDictionary[key]
+			changed = true
+	if (changed) :
+		SaveManager.saveGlobalSettings(current)
 	itemsObtainedDictionary = loadDict["items"]
 	await get_tree().process_frame
 	emit_signal("enemyDataChanged", "ALL")
@@ -112,6 +126,11 @@ func getSoulCount() :
 
 func _on_enemy_data_changed(_var) :
 	souls = 0
+	var unlock : bool = true
 	for enemy in killedDictionary.keys() :
 		if (killedDictionary[enemy] > 0) :
 			souls += 1
+		else :
+			unlock = false
+	if (unlock) :
+		Helpers.unlockAchievement(Definitions.achievementEnum.all_monsters)

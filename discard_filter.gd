@@ -23,6 +23,11 @@ func getData() -> Dictionary :
 	stopIndexPlus1 = Helpers.findIndexInContainer($PanelContainer/VBoxContainer/Filter, $PanelContainer/VBoxContainer/Filter/Option18)+1
 	for index in range(startIndex, stopIndexPlus1) :
 		retVal["equipmentType"].append(children[index].get_node("CheckBox").button_pressed)
+	retVal["weaponType"] = []
+	startIndex = Helpers.findIndexInContainer($PanelContainer/VBoxContainer/Filter, $PanelContainer/VBoxContainer/Filter/Option19)
+	stopIndexPlus1 = Helpers.findIndexInContainer($PanelContainer/VBoxContainer/Filter, $PanelContainer/VBoxContainer/Filter/Option20)+1
+	for index in range(startIndex, stopIndexPlus1) :
+		retVal["weaponType"].append(children[index].get_node("CheckBox").button_pressed)
 		
 	retVal["directDowngrade"] = []
 	for option in $PanelContainer2/DirectDowngrades/HBoxContainer.get_children() :
@@ -51,6 +56,11 @@ func initialise(loadDict : Dictionary) :
 	stopIndexPlus1 = Helpers.findIndexInContainer($PanelContainer/VBoxContainer/Filter, $PanelContainer/VBoxContainer/Filter/Option18)+1
 	for index in range(startIndex, stopIndexPlus1) :
 		children[index].get_node("CheckBox").set_pressed_no_signal(loadDict["equipmentType"][index-startIndex])
+		
+	startIndex = Helpers.findIndexInContainer($PanelContainer/VBoxContainer/Filter, $PanelContainer/VBoxContainer/Filter/Option19)
+	stopIndexPlus1 = Helpers.findIndexInContainer($PanelContainer/VBoxContainer/Filter, $PanelContainer/VBoxContainer/Filter/Option20)+1
+	for index in range(startIndex, stopIndexPlus1) :
+		children[index].get_node("CheckBox").set_pressed_no_signal(loadDict["weaponType"][index-startIndex])
 		
 	var options = $PanelContainer2/DirectDowngrades/HBoxContainer.get_children()
 	for index in range(0,options.size()) :

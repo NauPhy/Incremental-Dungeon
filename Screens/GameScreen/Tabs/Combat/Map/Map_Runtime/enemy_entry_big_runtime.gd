@@ -27,7 +27,7 @@ func writeDescription(enemy : ActorPreset, killCount) :
 		description += "\t\tPower: " + str(Helpers.myRound(attack.getPower(),3)) + "\n"
 	description += "\t\tWarmup: " + str(Helpers.myRound(attack.getWarmup(),3)) + " seconds\n"
 	description += "\nKilled: " + str(int(killCount)) + "\n\n"
-	description += "\n"
+	#description += "\n"
 	description += enemy.getDesc()
 	setText(description)
 	

@@ -84,7 +84,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 tooltipTitle = "From combat rewards"
-tooltipText = "When a piece of equipment is dropped by an enemy, it will be auto-discarded if it is a direct downgrade of an item you already own."
+tooltipText = "When equipment is dropped by an enemy, it will be auto-discarded if it is a direct downgrade of an item you already own."
 
 [node name="Option2" type="HBoxContainer" parent="PanelContainer2/DirectDowngrades/HBoxContainer"]
 layout_mode = 2
@@ -111,7 +111,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 tooltipTitle = "From inventory"
-tooltipText = "When a new item enters the inventory, all direct downgrades of that item will be discarded, unless equipped."
+tooltipText = "When equipment is dropped by an enemy, all direct downgrades of that item will be discarded, unless equipped. If any are discarded, the new item is auto-taken."
 
 [node name="Option3" type="HBoxContainer" parent="PanelContainer2/DirectDowngrades/HBoxContainer"]
 layout_mode = 2
@@ -138,7 +138,7 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 tooltipTitle = "From equipped items"
-tooltipText = "When a new item enters the inventory, if it is a direct upgrade of a currently equipped item, it will be auto-equipped and the old item will be discarded."
+tooltipText = "When equipment is dropped by an enemy, if it is a direct upgrade of a currently equipped item, it will be auto-equipped and the old item will be discarded."
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2
@@ -546,6 +546,54 @@ layout_mode = 2
 layout_mode = 2
 bbcode_enabled = true
 text = " Accessory "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Control11" type="Control" parent="PanelContainer/VBoxContainer/Filter"]
+layout_mode = 2
+
+[node name="Control13" type="Control" parent="PanelContainer/VBoxContainer/Filter"]
+layout_mode = 2
+
+[node name="Control14" type="Control" parent="PanelContainer/VBoxContainer/Filter"]
+layout_mode = 2
+
+[node name="RichTextLabel5" type="RichTextLabel" parent="PanelContainer/VBoxContainer/Filter"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = " Weapon Type"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Option19" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Filter"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/Filter/Option19"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/Filter/Option19"]
+layout_mode = 2
+bbcode_enabled = true
+text = " Melee "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Option20" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Filter"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/Filter/Option20"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/Filter/Option20"]
+layout_mode = 2
+bbcode_enabled = true
+text = " Ranged "
 fit_content = true
 scroll_active = false
 autowrap_mode = 0

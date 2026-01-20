@@ -31,11 +31,17 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = " Key Bindings "
 
-[node name="Control" type="Control" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="2"]
+[node name="Credits" type="Button" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="2"]
+layout_mode = 2
+theme = ExtResource("4_o4ltu")
+theme_override_font_sizes/font_size = 20
+text = " Credits "
+
+[node name="Control" type="Control" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="3"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="DiscardFilter" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="3" instance=ExtResource("5_evtk7")]
+[node name="DiscardFilter" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="4" instance=ExtResource("5_evtk7")]
 layout_mode = 2
 theme = null
 
@@ -63,5 +69,6 @@ layout_mode = 2
 
 [connection signal="pressed" from="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/Encyclopedia" to="." method="_on_encyclopedia_pressed"]
 [connection signal="pressed" from="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/keybinds" to="." method="_on_keybinds_pressed"]
+[connection signal="pressed" from="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer2/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer2/Return" to="." method="_on_return_pressed"]

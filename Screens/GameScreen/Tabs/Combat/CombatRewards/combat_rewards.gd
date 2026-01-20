@@ -38,6 +38,8 @@ func initialise(rewards : Dictionary) :
 		encounteredItems.sort_custom(func(a,b) : a<b)
 		optionsCopy["encounteredItems"] = encounteredItems
 		IGOptions.saveAndUpdateIGOptions(optionsCopy)
+		IGOptions.updateGlobalSettings_items()
+		IGOptions.checkEquipmentEncyclopedia()
 	
 	for entry in getItemList() :
 		if (entry.getItemSceneRef().getType() == Definitions.equipmentTypeEnum.currency) :
@@ -63,11 +65,15 @@ func initialise(rewards : Dictionary) :
 				delete = delete && !(filter["element"][element])
 			delete = delete || !(filter["quality"][grouping.quality])
 			delete = delete || !(filter["equipmentType"][entry.getItemSceneRef().getType()])
+			if (grouping.weaponClass != -1) :
+				delete = delete || !(filter["weaponType"][grouping.weaponClass])
 		else :
 			for element in grouping.getElements() :
 				delete = delete || filter["element"][element]
 			delete = delete || filter["quality"][grouping.quality]
 			delete = delete || filter["equipmentType"][entry.getItemSceneRef().getType()]
+			if (grouping.weaponClass != -1) :
+				delete = delete || filter["weaponType"][grouping.weaponClass]
 		if (delete) :
 			itemsToDelete.append(entry.getItemSceneRef())
 			continue
@@ -136,6 +142,7 @@ func removeItemsFromList_internal(items : Array[Node]) :
 	if (newItemList.size()-1>=newIndex && newItemList[newIndex] != null) :
 		$Content/Details.setItemSceneRefBase(newItemList[newIndex].getItemSceneRef())
 	newItemList[newIndex].getItemSceneRef().select()
+	_on_entry_selected(newItemList[newIndex].getItemSceneRef())
 		
 func removeItemFromList(itemSceneRef) :
 	removeItemsFromList_internal([itemSceneRef])
@@ -179,3 +186,7 @@ var finishedBool : bool = false
 func isFinished() -> bool :
 	return finishedBool
 	
+
+signal currentlyEquippedItemRequested
+func _on_details_currently_equipped_item_requested(emitter, type) -> void:
+	emit_signal("currentlyEquippedItemRequested", emitter, type)

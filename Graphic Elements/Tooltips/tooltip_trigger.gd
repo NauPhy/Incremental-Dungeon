@@ -43,7 +43,7 @@ func _process(_delta) :
 		if (!$ExpirationTimer.is_stopped()) :
 			$ExpirationTimer.stop()
 	##Mouse off while not extended -> destroy
-	elif (!extended) :
+	elif (!extended && !onTooltip) :
 		destroyTooltip()
 		return
 	elif (extended) :

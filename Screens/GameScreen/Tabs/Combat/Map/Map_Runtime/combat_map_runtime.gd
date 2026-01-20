@@ -63,6 +63,7 @@ signal mapCompleted
 func completeRoom(completedRoom) :
 	checkHerophile(completedRoom)
 	checkApophis(completedRoom)
+	checkDragon(completedRoom)
 	var firstCompletion = !completedRoom.isCompleted()
 	completedRoom.onCombatComplete()
 	if (firstCompletion || completedRoom.has_method("isEmpty") && completedRoom.isEmpty()) :
@@ -457,6 +458,14 @@ func checkHerophile(room) :
 				if (enemy.getResourceName() == "champion_of_poseidon") :
 					emit_signal("tutorialRequested", Encyclopedia.tutorialName.herophile, Vector2(0,0))
 					return
+func checkDragon(room) :
+	if (room.has_method("getEncounterRef")) :
+		var encounter : Encounter = room.getEncounterRef()
+		if (encounter != null) :
+			for enemy in encounter.enemies :
+				var myName = enemy.getName()
+				if (myName.to_upper().find("DRAGON") != -1) :
+					Helpers.unlockAchievement(Definitions.achievementEnum.legend)
 signal apophisKilled
 func checkApophis(room) :
 	if (room.has_method("getEncounterRef")) :

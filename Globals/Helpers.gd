@@ -350,11 +350,54 @@ func engineeringNotation(val) -> String :
 	else :
 		return str(newVal) + suffix
 
+var oneHundredAchCache : bool = false
+func unlockAchievement(val : Definitions.achievementEnum) :
+	if (!Definitions.steamEnabled) :
+		return
+	if (!Steam.setAchievement(Definitions.achievementDictionary[val])) :
+		print("Failed to unlock achievement: " + Definitions.achievementDictionary[val])
+	if (!Steam.storeStats()) :
+		print("Failed to store achievement: " + Definitions.achievementDictionary[val])
+	if (oneHundredAchCache) :
+		return
+	var oneHundredAch = Steam.getAchievement(Definitions.achievementDictionary[Definitions.achievementEnum.all_complete]) 
+	var oneHundredCompleted : bool = oneHundredAch["achieved"]
+	if (oneHundredCompleted) :
+		oneHundredAchCache = true
+		return
+	var unlock : bool = true
+	for key in Definitions.achievementDictionary.keys() :
+		var ach = Steam.getAchievement(Definitions.achievementDictionary[key])
+		if (!ach["achieved"]) :
+			unlock = false
+			break
+	if (unlock) :
+		if (!Steam.setAchievement(Definitions.achievementDictionary[Definitions.achievementEnum.all_complete])) :
+			print("Failed to unlock achievement: " + Definitions.achievementDictionary[Definitions.achievementEnum.all_complete])
+		if (!Steam.storeStats()) :
+			print("Failed to store achievement: " + Definitions.achievementDictionary[Definitions.achievementEnum.all_complete])
+
+func isDLC(item : Equipment) -> bool :
+	return false
+	
+func handleBiomeAchievement(biome : MyEnvironment) :
+	var achEnum = Definitions.biomeAchievementMap.get(biome.getFileName())
+	if (achEnum != null) :
+		unlockAchievement(achEnum)
+
 func engineeringRound(val, sigFigs : int) -> String :
+	var myVal = abs(val)
 	if (abs(val) < 1) :
-		return str(val).substr(0,2+sigFigs)
-	var rounded = myRound(val, sigFigs)
-	return engineeringNotation(rounded)
+		var symbol = ""
+		if (val < 0) :
+			symbol = "-"
+		return symbol + str(myVal).substr(0,2+sigFigs)
+	var rounded = myRound(myVal, sigFigs)
+	var ret = engineeringNotation(rounded)
+	if (val < 0) :
+		var pos = ret.find("]")
+		ret = ret.insert(pos+1,"-")
+	return ret
 	
 var internalPopupBool : bool = false
 func notifyPopupStart() :

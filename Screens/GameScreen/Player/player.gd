@@ -278,6 +278,7 @@ func setFromCharacter(character : CharacterPacket) :
 	setName(character.getName())
 func setClass(character : CharacterClass) :
 	characterClass = character
+	myCharacter.setClass(character)
 	for key in Definitions.attributeDictionary.keys() :
 		attributeObjects[key].setPrebonus("Class", round(character.getBaseAttribute(key)/character.getAttributeScaling(key)*100.0)/100.0)
 		attributeObjects[key].setPremultiplier("Class", character.getAttributeScaling(key))

@@ -3,10 +3,27 @@ extends Panel
 const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
 
 var currentItemSceneRef = null
+var currentlyEquippedItem : Equipment = null
 func getItemSceneRef() :
 	return currentItemSceneRef
 @export var isInIGOptions : bool = false
+@export var isInRewards : bool = false
 @export var spriteScale : int = 12
+
+signal currentlyEquippedItemRequested()
+signal currentlyEquippedItemReceived
+var currentlyEquipped_comm : Equipment = null
+var waitingOnCurrentlyEquipped : bool = false
+func getCurrentlyEquipped(type) -> Equipment :
+	waitingOnCurrentlyEquipped = true
+	emit_signal("currentlyEquippedItemRequested", self, type)
+	if (waitingOnCurrentlyEquipped) :
+		await currentlyEquippedItemReceived
+	return currentlyEquipped_comm
+func provideCurrentlyEquippedItem(val) :
+	currentlyEquipped_comm = val
+	waitingOnCurrentlyEquipped = false
+	emit_signal("currentlyEquippedItemReceived")
 
 var currentLayer = 0
 func _ready() :
@@ -21,6 +38,8 @@ func _ready() :
 	
 func setItemSceneRefBase(itemSceneRef) :
 	currentItemSceneRef = itemSceneRef
+	if (isInRewards && itemSceneRef != null) :
+		currentlyEquippedItem = await getCurrentlyEquipped(itemSceneRef.getType())
 	updateElements()
 	if (currentItemSceneRef == null) :
 		resetDetails()
@@ -91,11 +110,42 @@ func updateText_weapon(myText) :
 	$VBoxContainer/Text/VBoxContainer/Extra.text = ""
 	if (isInIGOptions) :
 		myText += "Typical "
-	myText += "Bonus to Base DR:\n\t" + Helpers.engineeringRound(currentItemSceneRef.getAttack(),3) + "\n\n"
+	myText += "Bonus to Base DR:\n\t" + Helpers.engineeringRound(currentItemSceneRef.getAttack(),3)
+	if (isInRewards && currentlyEquippedItem != null) :
+		var current = currentlyEquippedItem as Weapon
+		myText += getImprovementText(currentItemSceneRef.getAttack(), current.attackBonus, false,false)
+	myText += "\n\n"
 	myText = updateText_weapon_scaling(myText)
 	myText = updateText_weapon_action(myText)
 	myText += "\n"
 	return myText
+
+func getImprovementText(newVal, oldVal, inverted : bool, includeBrackets : bool) -> String :
+	var improvement = newVal-oldVal
+	var retVal : String = ""
+	retVal += "\t\t"
+	if (true) :
+		retVal += "["
+	if (is_equal_approx(improvement,0)) :
+		retVal += "--"
+	elif (improvement < 0) :
+		if (inverted) :
+			retVal += "[color=green]"
+		else :
+			retVal += "[color=red]"
+	else :
+		if (inverted) :
+			retVal += "[color=red]+"
+		else :
+			retVal += "[color=green]+"
+	retVal += Helpers.engineeringRound(improvement, 3)
+	if (is_equal_approx(improvement,0)) :
+		retVal += ""
+	else :
+		retVal += "[/color]"
+	if (true) :
+		retVal += "]"
+	return retVal
 	
 func updateText_weapon_scaling(myText) :
 	myText = myText + "Scaling:\n\t"
@@ -113,22 +163,48 @@ func updateText_weapon_scaling(myText) :
 	return myText
 	
 func updateText_weapon_action(myText) :
+	var current : Weapon
+	if (currentlyEquippedItem != null) :
+		current = currentlyEquippedItem as Weapon
 	myText += "Primary Attack: "
 	var attack = currentItemSceneRef.getBasicAttack()
 	myText += attack.getName() + "\n"
-	myText += "\t\tType: " + Definitions.damageTypeDictionary[attack.getDamageType()] + "\n"
-	myText += "\t\tAction Power: " + Helpers.engineeringRound(attack.getPower(),3) + "\n"
-	myText += "\t\tWarmup: " + Helpers.engineeringRound(attack.getWarmup(),3) + " seconds\n"
+	myText += "\t\tType: " + Definitions.damageTypeDictionary[attack.getDamageType()]
+	if (isInRewards && currentlyEquippedItem != null) :
+		var newType = attack.getDamageType()
+		var oldType = current.basicAttack.getDamageType()
+		if (newType == oldType) :
+			myText += "\t\t--"
+		else :
+			myText += "\t\t[color=red]"+Definitions.damageTypeDictionary[oldType]+"[/color]"
+	myText += "\n"
+	myText += "\t\tAction Power: " + Helpers.engineeringRound(attack.getPower(),3)
+	if (isInRewards && currentlyEquippedItem != null) :
+		myText += getImprovementText(attack.getPower(),current.basicAttack.getPower(), false,false)
+	myText += "\n"
+	myText += "\t\tWarmup: " + Helpers.engineeringRound(attack.getWarmup(),3) + " seconds"
+	if (isInRewards && currentlyEquippedItem != null) :
+		myText += getImprovementText(attack.getWarmup(), current.basicAttack.getWarmup(), true,false)
+	myText += "\n"
 	return myText
 
 func updateText_armor(myText) :
+	var current : Armor
+	if (currentlyEquippedItem != null) :
+		current = currentlyEquippedItem as Armor
 	$VBoxContainer/Text/VBoxContainer/Extra.text = ""
 	if (isInIGOptions) :
 		myText += "Typical "
-	myText += "Bonus to Base Physical Defense:\n    " + Helpers.engineeringRound(currentItemSceneRef.getPhysicalDefense(),3) + "\n"
+	myText += "Bonus to Base Physical Defense:\n    " + Helpers.engineeringRound(currentItemSceneRef.getPhysicalDefense(),3)
+	if (isInRewards && currentlyEquippedItem != null) :
+		myText += getImprovementText(currentItemSceneRef.getPhysicalDefense(), current.PHYSDEF, false,false)
+	myText += "\n"
 	if (isInIGOptions) :
 		myText += "Typical "
-	myText = myText + "Bonus to Base Magic Defense:\n    " + Helpers.engineeringRound(currentItemSceneRef.getMagicDefense(),3) + "\n"
+	myText = myText + "Bonus to Base Magic Defense:\n    " + Helpers.engineeringRound(currentItemSceneRef.getMagicDefense(),3)
+	if (isInRewards && currentlyEquippedItem != null) :
+		myText += getImprovementText(currentItemSceneRef.getMagicDefense(), current.MAGDEF, false,false)
+	myText += "\n"
 	myText = myText + "\n"
 	return myText
 	
@@ -170,6 +246,114 @@ func updateText_modifiers(myText) :
 	if (addEndl) :
 		myText += "\n"
 	return myText
+
+func getNewTempstr(subkey) :
+	if (subkey == "Premultiplier") :
+		return " Multiplier"
+	elif (subkey == "Postmultiplier") :
+		return " Standard Multiplier Bonus"
+	elif (subkey == "Prebonus") :
+		return " Base Bonus"
+	else :
+		return ""
+	
+func updateText_modifiers_REWARDS(myText) :
+	var modifiers : ModifierPacket = currentItemSceneRef.core.getModifierPacket().duplicate(true)
+	var currentMods = currentlyEquippedItem.getModifierPacket().duplicate(true)
+	var addEndl : bool = false
+	var stringList : Dictionary = {
+		0 : [],
+		1 : [],
+		2 : [],
+		3 : []
+	}
+	for key in Definitions.attributeDictionary.keys() :
+		for subkey in ModifierPacket.StandardModifier.keys() :
+			var tempStr : String = Definitions.attributeDictionaryShort[key] + getNewTempstr(subkey) + "   "
+			var newVal = modifiers.getMod("attribute",key,subkey)
+			var oldVal = currentMods.getMod("attribute",key,subkey)
+			if (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0))) && !((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
+				tempStr += "--"
+				if (subkey == "Premultiplier") :
+					tempStr += getImprovementText(0,(oldVal-1),false,true)
+				else :
+					tempStr += getImprovementText(0,oldVal,false,true)
+				stringList[0].append(tempStr+"\n")
+			elif (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0)))&&((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
+				tempStr = ""
+			elif (!((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0)))&&!((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
+				tempStr = modifiers.getModStringOrNull_attr(key,subkey)
+				tempStr += getImprovementText(newVal,oldVal,false,true)
+				stringList[2].append(tempStr+"\n")
+			else :
+				tempStr = modifiers.getModStringOrNull_attr(key,subkey)
+				tempStr += getImprovementText(newVal,oldVal,false,true)
+				stringList[3].append(tempStr+"\n")
+			if (tempStr != "") :
+				addEndl = true
+	for key in Definitions.baseStatDictionary.keys() :
+		for subkey in ModifierPacket.StandardModifier.keys() :
+			var tempStr : String = Definitions.baseStatDictionaryShort[key] + getNewTempstr(subkey) + " \t"
+			var newVal = modifiers.getMod("stat",key,subkey)
+			var oldVal = currentMods.getMod("stat",key,subkey)
+			if (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0))) && !((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
+				tempStr += "--"
+				if (subkey == "Premultiplier") :
+					tempStr += getImprovementText(0,(oldVal-1),false,true)
+				else :
+					tempStr += getImprovementText(0,oldVal,false,true)
+				stringList[0].append(tempStr+"\n")
+			elif (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0)))&&((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
+				tempStr = ""
+			elif (!((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0)))&&!((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
+				tempStr = modifiers.getModStringOrNull_attr(key,subkey)
+				tempStr += getImprovementText(newVal,oldVal,false,true)
+				stringList[2].append(tempStr+"\n")
+			else :
+				tempStr = modifiers.getModStringOrNull_combatStat(key,subkey)
+				tempStr += getImprovementText(newVal,oldVal,false,true)
+				stringList[3].append(tempStr+"\n")
+			if (tempStr != "") :
+				addEndl = true
+	for key in Definitions.otherStatDictionary.keys() :
+		if (Definitions.otherStatEnum.routineSpeed_0 <= key && key <= Definitions.otherStatEnum.routineSpeed_4) :
+			continue
+		var localInverted : bool = false
+		if (key == Definitions.otherStatEnum.physicalDamageTaken || key == Definitions.otherStatEnum.magicDamageTaken) :
+			localInverted = true
+		for subkey in ModifierPacket.StandardModifier.keys() :
+			var tempStr : String = Definitions.otherStatDictionary[key] + getNewTempstr(subkey) + " \t"
+			var newVal = modifiers.getMod("otherStat",key,subkey)
+			var oldVal = currentMods.getMod("otherStat",key,subkey)
+			if (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0))) && !((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
+				tempStr += "--"
+				if (subkey == "Premultiplier") :
+					tempStr += getImprovementText(0,(oldVal-1),true,true)
+				else :
+					tempStr += getImprovementText(0,oldVal,false,true)
+				stringList[0].append(tempStr+"\n")
+			elif (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0)))&&((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
+				tempStr = ""
+			elif (!((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0)))&&!((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
+				tempStr = modifiers.getModStringOrNull_attr(key,subkey)
+				tempStr += getImprovementText(newVal,oldVal,localInverted,true)
+				stringList[2].append(tempStr+"\n")
+			else :
+				tempStr = modifiers.getModStringOrNull_otherStat(key,subkey)
+				tempStr += getImprovementText(newVal,oldVal,false,true)
+				stringList[3].append(tempStr+"\n")
+			if (tempStr != "") :
+				addEndl = true
+	for str in stringList[2] :
+		myText += str
+	for str in stringList[3] :
+		myText += str
+	for str in stringList[0] :
+		myText += str
+
+	if (addEndl) :
+		myText += "\n"
+	return myText
 	
 func updateText() :
 	if (currentItemSceneRef == null) :
@@ -183,7 +367,10 @@ func updateText() :
 	updateText_sprite()
 	$VBoxContainer/Text/VBoxContainer/Title.text = currentItemSceneRef.getTitle()
 	var myText : String = ""
-	myText = EquipmentGroups.getColouredQualityString(currentItemSceneRef.getQuality(), false) + " " + Definitions.equipmentTypeDictionary[currentItemSceneRef.getType()] + "\n"
+	myText = EquipmentGroups.getColouredQualityString(currentItemSceneRef.getQuality(), false) + " " + Definitions.equipmentTypeDictionary[currentItemSceneRef.getType()]
+	if (isInRewards && currentlyEquippedItem != null) :
+		myText += "\t\t[vs Equipped]"
+	myText += "\n"
 	if (currentItemSceneRef.core is Weapon) :
 		myText = updateText_weapon(myText)
 	elif (currentItemSceneRef.core is Armor) :
@@ -195,7 +382,10 @@ func updateText() :
 	else :
 		myText = ""
 		$VBoxContainer/Text/VBoxContainer/Extra.text = ""
-	myText = updateText_modifiers(myText)
+	if (isInRewards && currentlyEquippedItem != null) :
+		myText = updateText_modifiers_REWARDS(myText)
+	else :
+		myText = updateText_modifiers(myText)
 	if (currentItemSceneRef.getType() == Definitions.equipmentTypeEnum.weapon || currentItemSceneRef.getType() == Definitions.equipmentTypeEnum.armor) :
 		myText += "Times reforged: " + str(currentItemSceneRef.getReforges()) + "\n\n"
 	var description : String = currentItemSceneRef.getDesc()
@@ -285,8 +475,8 @@ func addWeaponScalingTooltips() :
 	for key in Definitions.attributeDictionary.keys() :
 		if (key == Definitions.attributeEnum.DUR || key == Definitions.attributeEnum.SKI) :
 			continue
-		if (currentItemSceneRef.core.getScaling(key) == 0) :
-			continue
+		#if (currentItemSceneRef.core.getScaling(key) == 0) :
+			#continue
 		var lineHeight = myText.get_theme_font("normal_font").get_height(fontSize)
 		var yCoord1 = (lineNumber-1) * lineHeight# + lineHeight/4.0
 		var xCoord1
@@ -319,7 +509,10 @@ func addWeaponScalingTooltips() :
 		myTooltips.append(newTooltip)
 		#newTooltip.setTitle(Definitions.attributeDictionaryShort[key] + " Scaling: " + letterCache[key])
 		#newTooltip.setDesc(str(currentItemSceneRef.core.getScaling(key)))
-		newTooltip.setTitle(Helpers.engineeringRound(currentItemSceneRef.core.getScaling(key),3))
+		var tempTitle = Helpers.engineeringRound(currentItemSceneRef.core.getScaling(key),3)
+		if (isInRewards && currentlyEquippedItem != null) :
+			tempTitle += getImprovementText(currentItemSceneRef.core.getScaling(key),currentlyEquippedItem.getScaling(key), false,false)
+		newTooltip.setTitle(tempTitle)
 		newTooltip.setDesc("")
 		newTooltip.setTooltipWidth(80)
 		newTooltip.setPos(Vector2(xCoord1, yCoord1), Vector2(xCoord2, yCoord2))

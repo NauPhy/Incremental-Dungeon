@@ -21,7 +21,7 @@ func setHP(val) :
 		var Y0
 		var Y1
 		if (isEnemy) :
-			Y0 = clamp(global_position.y-50,100,screenSize.y-estimatedSize.y)
+			Y0 = clamp(global_position.y-50,get_parent().global_position.y+100,screenSize.y-estimatedSize.y)
 			Y1 = global_position.y+size.y-estimatedSize.y
 		else :
 			Y0 = global_position.y+100
@@ -34,12 +34,12 @@ func setHP(val) :
 #Add more sophisticated AI later
 func _ready() :
 	$TitleCard/Title.text = core.text
+	$Graphic.texture = core.portrait
 	var width = await Helpers.getTextWidthWaitFrame($TitleCard/Title,null,core.text)
 	originalSize.x = max(originalSize.x, width+20)
 	#$TitleCard/Title.custom_minimum_size.x = width
 	#$TitleCard.custom_minimum_size.x = width+20
 	#custom_minimum_size.x = width+20
-	$Graphic.texture = core.portrait
 	setHP(core.MAXHP)
 	var chosenAction = randi_range(0,core.actions.size()-1)
 	takeAction(core.actions[chosenAction])

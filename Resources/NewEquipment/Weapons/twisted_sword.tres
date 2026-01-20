@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DLCWeapon" load_steps=2 format=3 uid="uid://c04e22tkgvu1x"]
+
+[ext_resource type="Script" uid="uid://dnakooitktof8" path="res://Resources/OldEquipment/DLCWeapon.gd" id="1_vbxoo"]
+
+[resource]
+script = ExtResource("1_vbxoo")
+scaling = {}
+attackBonus = 0.0
+isUnarmed = false
+title = "Sample title"
+description = "Sample description"
+metadata/_custom_type_script = "uid://dnakooitktof8"

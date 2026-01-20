@@ -158,7 +158,8 @@ func _shopping_reforge_item_requested(type : Definitions.equipmentTypeEnum) :
 	else :
 		Shopping.lastBought["equipmentReforged"] = $MyTabContainer/InnerContainer/Equipment.getCurrentArmor()
 	var newScalingVal = $MyTabContainer/InnerContainer/Combat.getMostRecentEquipmentScaling()
-	Shopping.provideConfirmation($MyTabContainer/InnerContainer/Equipment.reforge(type, newScalingVal))
+	var rows = $MyTabContainer/InnerContainer/Combat.getScalingRows()
+	Shopping.provideConfirmation($MyTabContainer/InnerContainer/Equipment.reforge(type, newScalingVal, rows))
 	
 func _shopping_set_subclass_requested(subclass : Definitions.subclass) :
 	var confirmationPopup = binaryPopupLoader.instantiate()
@@ -343,10 +344,16 @@ func _on_floor_clear(typicalEnemyDefense) :
 const routineShopLoader = preload("res://Graphic Elements/Shop/routine_shop.tscn")
 const equipmentShopLoader = preload("res://Graphic Elements/Shop/equipment_shop.tscn")
 const soulShopLoader = preload("res://Graphic Elements/Shop/soul_shop.tscn")
+
+
+func getShopOrNull() :
+	if (!$MyTabContainer/InnerContainer/Combat.has_node("Shop")) :
+		return null
+	return $MyTabContainer/InnerContainer/Combat.get_node("Shop")
 func _on_shop_requested(details : ShopDetails) :
 	var oldShopExists = $MyTabContainer/InnerContainer/Combat.has_node("Shop")
 	if (oldShopExists) :
-		var oldShop = $MyTabContainer/InnerContainer/Combat.get_node("Shop")
+		var oldShop = getShopOrNull()
 		$MyTabContainer/InnerContainer/Combat.remove_child(oldShop)
 		oldShop.queue_free()
 		await get_tree().process_frame
@@ -367,6 +374,8 @@ func _on_shop_requested(details : ShopDetails) :
 		newShop.connect("playerClassRequested", _on_player_class_requested)
 	if (newShop.has_signal("playerSubclassRequested")) :
 		newShop.connect("playerSubclassRequested", _on_player_subclass_requested)
+	if (newShop.has_signal("currentlyEquippedItemRequested")) :
+		newShop.connect("currentlyEquippedItemRequested", _on_currently_equipped_item_requested)
 	$MyTabContainer/InnerContainer/Combat.disableUI()
 	if (details.shopName == Shopping.shopNames["routine"]) :
 		Shopping.routineUnlocked = true
@@ -379,6 +388,13 @@ func _on_shop_requested(details : ShopDetails) :
 	elif (details.shopName == Shopping.shopNames["armor"]) :
 		$MyTabContainer/InnerContainer/Combat.enableShopShortcut("armor")
 	newShop.setFromDetails(details)
+	
+func _on_currently_equipped_item_requested(emitter, type) :
+	var ret = $MyTabContainer/InnerContainer/Equipment.getEquippedItem(type)
+	if (ret != null) :
+		emitter.provideCurrentlyEquippedItem(ret.core)
+	else :
+		emitter.provideCurrentlyEquippedItem(null)
 
 func _on_shop_shortcut_selected(type : String) :
 	var details
@@ -466,6 +482,8 @@ func handleEsc(event) :
 			elif (enemyEntryBigPopup != null) :
 				enemyEntryBigPopup.queue_free()
 				enemyEntryBigPopup = null
+			elif (getShopOrNull() != null) :
+				getShopOrNull()._on_exit_pressed()
 			else :
 				_on_save_button_pressed(self)
 		escWasPressed = false
@@ -537,6 +555,7 @@ func beforeLoad(newSave) :
 	Shopping.connect("setSubclassRequested", _shopping_set_subclass_requested)
 	Shopping.connect("respecRequested", _shopping_respec_requested)
 	Shopping.connect("increaseInventorySizeRequested", _shopping_inventory_size_requested)
+	Shopping.connect("playerClassRequested", _on_player_class_requested)
 	if (newSave) :
 		permanentMods = {}
 		Shopping.resetItemPrices()
@@ -575,6 +594,8 @@ func beforeLoad(newSave) :
 			tab.connect("shopShortcutSelected", _on_shop_shortcut_selected)
 		if (tab.has_signal("itemListForYourInspectionGoodSir")) :
 			tab.connect("itemListForYourInspectionGoodSir", _item_list_inspection)
+		if (tab.has_signal("currentlyEquippedItemRequested")) :
+			tab.connect("currentlyEquippedItemRequested", _on_currently_equipped_item_requested)
 		#if (tab.has_signal("isReforgedHoveredRequested")) :
 			#tab.connect("isReforgedHoveredRequested", _on_reforge_hovered_requested)
 		#if (tab.has_signal("playerAttributeModsRequested")) :

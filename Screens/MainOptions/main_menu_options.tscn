@@ -78,6 +78,14 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = " Key Bindings "
 
+[node name="Reset Global" type="HBoxContainer" parent="Content/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ResetGlobalEncyclopedia" type="Button" parent="Content/VBoxContainer/ScrollContainer/VBoxContainer/Reset Global"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = " Reset Global Encyclopedia "
+
 [node name="VBoxContainer" type="VBoxContainer" parent="Content/VBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
@@ -98,5 +106,6 @@ text = " Return "
 
 [connection signal="item_selected" from="Content/VBoxContainer/ScrollContainer/VBoxContainer/WindowMode/WindowMode" to="." method="_on_window_mode_item_selected"]
 [connection signal="pressed" from="Content/VBoxContainer/ScrollContainer/VBoxContainer/Keybinds/Keybinds" to="." method="_on_keybinds_pressed"]
+[connection signal="pressed" from="Content/VBoxContainer/ScrollContainer/VBoxContainer/Reset Global/ResetGlobalEncyclopedia" to="." method="_on_reset_global_encyclopedia_pressed"]
 [connection signal="pressed" from="Content/VBoxContainer/VBoxContainer/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Content/VBoxContainer/VBoxContainer/ReturnButton" to="." method="_on_return_button_pressed"]

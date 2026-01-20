@@ -100,7 +100,8 @@ func getSaveDictionary() -> Dictionary :
 		return retVal 
 	retVal["resourceName"] = getResourceName()
 	if retVal["resourceName"] == null :
-		print("problem")
+		pass
+		#print("problem")
 	retVal["myScalingFactor"] = myScalingFactor
 	#if (myScalingFactor != -1) :
 		#retVal["drops"] = []

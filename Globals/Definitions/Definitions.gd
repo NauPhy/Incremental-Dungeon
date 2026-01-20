@@ -1,15 +1,25 @@
 extends Node
-const currentVersion : String = "V0.6 development"
+const currentVersion : String = "V1.0 development"
 var GODMODE : bool = true
-var DEVMODE : bool = false
-
+var DEVMODE : bool = true
+var steamEnabled : bool = false
 func _ready() :
 	attributeCount = 0
 	for key in attributeDictionary :
 		attributeCount += 1
-	if (currentVersion != "V0.6 development") :
+	if (currentVersion != "V1.0 development") :
 		GODMODE = false
 		DEVMODE = false
+	if (steamInitialise()) :
+		steamEnabled = true
+
+func steamInitialise() -> bool :
+	var initialize_response: Dictionary = Steam.steamInitEx()
+	if initialize_response['status'] <= Steam.STEAM_API_INIT_RESULT_OK:
+		return true
+	return false
+	
+	
 
 ## Not every saveable scene needs to have a load dependency name, but every saveable scene
 ## that has a dependency or is a dependency does.
@@ -21,7 +31,80 @@ const loadDependencyNameArray = [
 	loadDependencyName.player,
 	loadDependencyName.inventory
 ]
-		
+enum achievementEnum {
+	biome_chaos,
+	all_complete,
+	all_equipment,
+	all_monsters,
+	biome_boreal,
+	biome_demonCity,
+	biome_demonFort,
+	biome_desert,
+	biome_freezeflame,
+	biome_glacial,
+	biome_greenskinFort,
+	biome_hellforge,
+	biome_hellpit,
+	biome_jungle,
+	biome_lakeFire,
+	biome_merfolkFort,
+	biome_pitDepravity,
+	biome_reef,
+	biome_fortUndead,
+	biome_unholyAlliance,
+	biome_unlikelyAlliance,
+	biome_volcana,
+	biome_water,
+	legend
+}
+const achievementDictionary = {
+	achievementEnum.biome_chaos : "biome_chaos",
+	achievementEnum.all_complete : "all_complete",
+	achievementEnum.all_equipment : "all_equipment",
+	achievementEnum.all_monsters : "all_monsters",
+	achievementEnum.biome_boreal : "biome_boreal",
+	achievementEnum.biome_demonCity : "biome_demonCity",
+	achievementEnum.biome_demonFort : "biome_demonFort",
+	achievementEnum.biome_desert : "biome_desert",
+	achievementEnum.biome_freezeflame : "biome_freezeflame",
+	achievementEnum.biome_glacial : "biome_glacial",
+	achievementEnum.biome_greenskinFort : "biome_greenskinFort",
+	achievementEnum.biome_hellforge : "biome_hellforge",
+	achievementEnum.biome_hellpit : "biome_hellpit",
+	achievementEnum.biome_jungle : "biome_jungle",
+	achievementEnum.biome_lakeFire : "biome_lakeFire",
+	achievementEnum.biome_merfolkFort : "biome_merfolkFort",
+	achievementEnum.biome_pitDepravity : "biome_pitDepravity",
+	achievementEnum.biome_reef : "biome_reef",
+	achievementEnum.biome_fortUndead : "biome_fortUndead",
+	achievementEnum.biome_unholyAlliance : "biome_unholyAlliance",
+	achievementEnum.biome_unlikelyAlliance : "biome_unlikelyAlliance",
+	achievementEnum.biome_volcana : "biome_volcana",
+	achievementEnum.biome_water : "biome_water",
+	achievementEnum.legend : "legend"
+}
+const biomeAchievementMap = {
+	"chaos" : achievementEnum.biome_chaos,
+	"demonic_city" : achievementEnum.biome_demonCity,
+	"desert" : achievementEnum.biome_desert,
+	"element_earth" : achievementEnum.biome_jungle,
+	"element_fire" : achievementEnum.biome_lakeFire,
+	"element_fire_earth" : achievementEnum.biome_volcana,
+	"element_fire_ice" : achievementEnum.biome_freezeflame,
+	"element_ice" : achievementEnum.biome_glacial,
+	"element_ice_earth" : achievementEnum.biome_boreal, 
+	"element_water" : achievementEnum.biome_water,
+	"fort_demon" : achievementEnum.biome_demonFort,
+	"fort_greenskin" : achievementEnum.biome_greenskinFort,
+	"fort_merfolk" : achievementEnum.biome_merfolkFort,
+	"fort_undead" : achievementEnum.biome_fortUndead,
+	"hell" : achievementEnum.biome_hellpit,
+	"hellforge" : achievementEnum.biome_hellforge,
+	"pit_of_depravity" : achievementEnum.biome_pitDepravity,
+	"reef_community" : achievementEnum.biome_reef,
+	"unholy_alliance" : achievementEnum.biome_unholyAlliance,
+	"unlikely_alliance" : achievementEnum.biome_unlikelyAlliance
+}
 ## Doesn't need to be all inclusive, but you shouldn't save any dictionaries
 ## that have enum keys not included in this list
 #enum enumType {
@@ -215,8 +298,8 @@ const subclassDictionary= {
 const subclassDescriptions = {
 	subclass.barb : "-MAGDEF Multiplier [color=red]x0.8[/color].\n-PHYSDEF Multiplier [color=red]x0.8[/color].\n-Attack speed Multiplier [color=green]x1.25[/color].\n-DR Multiplier [color=green]x1.25[/color]\n\nAH-KLORAAAA!",
 	subclass.knight : "-DR Multiplier [color=red]x0.75[/color].\n-Bonus to Base DR of [color=green]+N[/color], where N = 190% of the average of your equipped Armor's PHYSDEF and MAGDEF.\n\nYou feel naked in anything less than full plate.",
-	subclass.ammo : "While a ranged (or neither) weapon is equipped:\n-AR Multiplier [color=green]x1.35[/color].\n-All damage is dealt to the lower of your enemy's resistances.\n\nYour custom ammunition always hits the enemy where it's weakest.",
-	subclass.whirl : "While a melee (or neither) weapon is equipped:\n-Attack speed Multiplier [color=green]x1.16[/color]\n-PHYSDEF Multiplier [color=green]x1.08[/color]\n-MAGDEF Multiplier [color=green]x1.08[/color]\n\nYou fight with such ferocity that no opponent can get within arms reach unharmed.",
-	subclass.enchant : "While an elemental weapon is equipped:\n-DR Multiplier [color=green]x1.1[/color].\nWhile an elemental armor is equipped:\n-MAGDEF and PHYSDEF Multiplier [color=green]x1.1[/color].\nWhile an elemental accessory is equipped:\n-Skill Multiplier [color=green]x1.05[/color].\n-The effect of Elemental synergy is increased from [color=green]1.25x[/color] to [color=green]1.3125x[/color]\n\nYou've spent countless hours studying and attuning to enchanted equipment, and can use it expertly.",
+	subclass.ammo : "-HP Multiplier [color=red]x0.9[/color]\n-While a non-melee weapon is equipped:\n-AR Multiplier [color=green]x1.35[/color].\n-All damage is dealt to the lower of your enemy's resistances.\n\nYour custom ammunition always hits the enemy where it's weakest.",
+	subclass.whirl : "While a non-ranged weapon is equipped:\n-Attack speed Multiplier [color=green]x1.16[/color]\n-PHYSDEF Multiplier [color=green]x1.08[/color]\n-MAGDEF Multiplier [color=green]x1.08[/color]\n\nYou fight with such ferocity that no opponent can get within arms reach unharmed.",
+	subclass.enchant : "While an elemental weapon is equipped:\n-DR Multiplier [color=green]x1.1[/color].\nWhile an elemental armor is equipped:\n-MAGDEF and PHYSDEF Multiplier [color=green]x1.1[/color].\nWhile an elemental accessory is equipped:\n-Skill Multiplier [color=green]x1.05[/color].\n-The effect of Elemental synergy is increased from [color=green]1.25x[/color] to [color=green]1.2625x[/color]\n\nYou've spent countless hours studying and attuning to enchanted equipment, and can use it expertly.",
 	subclass.soul : "-HP Multiplier [color=red]x0.85[/color]\n-Bonus to HP Standard Multiplier of [color=green]+N[/color]\n-Bonus to DR Standard Multiplier of [color=green]+N[/color]\n-N=-0.00004x^2+0.0105x-0.25\n\nYou performed a ritual that allows your body to gain power from the souls of your enemies. Your heart stopped for a couple seconds and now you have jaundice, but it's probably nothing to worry about."
 }
