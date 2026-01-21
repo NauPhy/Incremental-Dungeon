@@ -882,9 +882,14 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 		emit_signal("upgradeRoutineRequested", upgraded)
 	else :
 		return
-
+		
+var herophileUnlocked : bool = false
 func unlockHerophile() :
 	unlockedRoutines.append(MegaFile.getRoutine("spar_herophile"))
+	var settings = SaveManager.getGlobalSettings()
+	settings["herophile"] = true
+	SaveManager.saveGlobalSettings(settings)
+	SaveManager.saveGame(Definitions.saveSlots.current)
 signal addToInventoryRequested
 signal reforgeItemRequested
 func givePurchaseBenefit_armor(item : armorPurchasable, purchase : Purchasable) :

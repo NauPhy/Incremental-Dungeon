@@ -7,9 +7,11 @@ const equipmentSceneDictionary = {
 	"adamantium_greataxe" : preload("res://ScenePreloads/Equipment_new/Weapon/adamantium_greataxe.tscn"),
 	"amelia_wand" : preload("res://ScenePreloads/Equipment_new/Weapon/amelia_wand.tscn"),
 	"arming_sword" : preload("res://ScenePreloads/Equipment_new/Weapon/arming_sword.tscn"),
+	"asmodeus_staff" : preload("res://ScenePreloads/Equipment_new/Weapon/asmodeus_staff.tscn"),
 	"bardiche" : preload("res://ScenePreloads/Equipment_new/Weapon/bardiche.tscn"),
 	"blade_of_darkness" : preload("res://ScenePreloads/Equipment_new/Weapon/blade_of_darkness.tscn"),
 	"blade_of_sin" : preload("res://ScenePreloads/Equipment_new/Weapon/blade_of_sin.tscn"),
+	"blade_of_the_lich_king" : preload("res://ScenePreloads/Equipment_new/Weapon/blade_of_the_lich_king.tscn"),
 	"blunderbuss" : preload("res://ScenePreloads/Equipment_new/Weapon/blunderbuss.tscn"),
 	"club" : preload("res://ScenePreloads/Equipment_new/Weapon/club.tscn"),
 	"crackling_greataxe" : preload("res://ScenePreloads/Equipment_new/Weapon/crackling_greataxe.tscn"),
@@ -22,6 +24,7 @@ const equipmentSceneDictionary = {
 	"divine_greatmace" : preload("res://ScenePreloads/Equipment_new/Weapon/divine_greatmace.tscn"),
 	"earth_hammer" : preload("res://ScenePreloads/Equipment_new/Weapon/earth_hammer.tscn"),
 	"earth_staff" : preload("res://ScenePreloads/Equipment_new/Weapon/earth_staff.tscn"),
+	"emerald_lance" : preload("res://ScenePreloads/Equipment_new/Weapon/emerald_lance.tscn"),
 	"emerald_staff" : preload("res://ScenePreloads/Equipment_new/Weapon/emerald_staff.tscn"),
 	"estoc" : preload("res://ScenePreloads/Equipment_new/Weapon/estoc.tscn"),
 	"fire_spitter" : preload("res://ScenePreloads/Equipment_new/Weapon/fire_spitter.tscn"),
@@ -54,6 +57,7 @@ const equipmentSceneDictionary = {
 	"morning_star" : preload("res://ScenePreloads/Equipment_new/Weapon/morning_star.tscn"),
 	"muramasa" : preload("res://ScenePreloads/Equipment_new/Weapon/muramasa.tscn"),
 	"occult_wand" : preload("res://ScenePreloads/Equipment_new/Weapon/occult_wand.tscn"),
+	"phantasm" : preload("res://ScenePreloads/Equipment_new/Weapon/phantasm.tscn"),
 	"pike" : preload("res://ScenePreloads/Equipment_new/Weapon/pike.tscn"),
 	"rapier" : preload("res://ScenePreloads/Equipment_new/Weapon/rapier.tscn"),
 	"recurve_bow" : preload("res://ScenePreloads/Equipment_new/Weapon/recurve_bow.tscn"),
@@ -74,6 +78,7 @@ const equipmentSceneDictionary = {
 	"throwing_axe" : preload("res://ScenePreloads/Equipment_new/Weapon/throwing_axe.tscn"),
 	"topaz_staff" : preload("res://ScenePreloads/Equipment_new/Weapon/topaz_staff.tscn"),
 	"trident" : preload("res://ScenePreloads/Equipment_new/Weapon/trident.tscn"),
+	"twisted_sword" : preload("res://ScenePreloads/Equipment_new/Weapon/twisted_sword.tscn"),
 	"umbral_dagger" : preload("res://ScenePreloads/Equipment_new/Weapon/umbral_dagger.tscn"),
 	"void_blade" : preload("res://ScenePreloads/Equipment_new/Weapon/void_blade.tscn"),
 	"wand_of_disintigration" : preload("res://ScenePreloads/Equipment_new/Weapon/wand_of_disintigration.tscn"),
@@ -186,3 +191,4 @@ func createEquipmentScene(itemName : String) :
 	var newScene = equipmentSceneDictionary[itemName].instantiate()
 	newScene.core = EquipmentDatabase.getEquipment(itemName)
 	return newScene
+

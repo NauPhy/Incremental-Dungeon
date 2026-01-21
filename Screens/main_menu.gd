@@ -6,6 +6,8 @@ signal swapToMainMenuOptions
 
 func _ready() :
 	checkLoadGame()
+	if (Definitions.hasDLC) :
+		$DLC.visible = true
 	SaveManager.connect("newGameReady", _new_game_ready)
 	SaveManager.connect("loadRequested", _load_game_ready)
 	

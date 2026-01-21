@@ -1,13 +1,14 @@
 extends Node
-const currentVersion : String = "V1.0 development"
-var GODMODE : bool = true
-var DEVMODE : bool = true
+const currentVersion : String = "DLC release"
+var GODMODE : bool = false
+var DEVMODE : bool = false
 var steamEnabled : bool = false
+var hasDLC : bool = true
 func _ready() :
 	attributeCount = 0
 	for key in attributeDictionary :
 		attributeCount += 1
-	if (currentVersion != "V1.0 development") :
+	if (currentVersion != "DLC development") :
 		GODMODE = false
 		DEVMODE = false
 	if (steamInitialise()) :
@@ -17,9 +18,18 @@ func steamInitialise() -> bool :
 	var initialize_response: Dictionary = Steam.steamInitEx()
 	if initialize_response['status'] <= Steam.STEAM_API_INIT_RESULT_OK:
 		return true
+		var dlc = Steam.getDLCData()
+		if (dlc.size() != 0 && dlc[0]["available"]) :
+			Definitions.hasDLC = true
 	return false
 	
-	
+const DLCWeapons = [
+	"phantasm",
+	"twisted_sword",
+	"emerald_lance",
+	"blade_of_the_lich_king",
+	"asmodeus_staff"
+]
 
 ## Not every saveable scene needs to have a load dependency name, but every saveable scene
 ## that has a dependency or is a dependency does.

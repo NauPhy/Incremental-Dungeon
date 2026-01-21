@@ -3,6 +3,64 @@ extends Node
 ## createX() -> X implies that X.new() or X.duplicate() is called-- it returns a runtime instance
 ## getX() -> X implies that the "readonly" disk version of X is returned- or a reference to a member in another class
 
+var athenaGenerated : bool = false
+var athenaFloor : int = -1
+func handleAthena(mapInProgress : MapData) -> MapData :
+	var retVal : MapData = mapInProgress.duplicate(true)
+	if (!Definitions.hasDLC) :
+		return retVal
+	if (athenaGenerated) :
+		return retVal
+	var load = SaveManager.getGlobalSettings()
+	if (load["herophile"] == false) :
+		return retVal
+	var currentFloor = previousMaps.size()+1
+	if (athenaFloor == -1) :
+		var maxFloor = 10
+		athenaFloor = randi_range(currentFloor, maxFloor)
+	if (currentFloor == athenaFloor) :
+		var athenaEncounter : Encounter = Encounter.new()
+		var athena : ActorPreset = EnemyDatabase.getEnemy("athena").getAdjustedCopy(getEnemyScaling(getScalingRows_mapFinished(12,0)))
+		var dummyDragon = EnemyDatabase.getEnemy("fire_dragon")
+		var dummyChaos = MegaFile.getEnvironment("chaos")
+		$ItemPoolHandler.reset(dummyChaos, getAllItems())
+		$DropHandler.reset($ItemPoolHandler.getItemPoolForEnemy(dummyDragon))
+		for index in range(0, 3) :
+			var drop : Equipment = $DropHandler.getItemOfQuality(EquipmentGroups.qualityEnum.legendary, $DropHandler.rollType())
+			athena.drops.append(drop.getAdjustedCopy(getEquipmentScaling(getScalingRows_mapFinished(13,0))))
+		var otherDropQualities = $DropHandler.getDropQualities(5, 2)
+		for index in range(0, otherDropQualities.size()) :
+			var drop = $DropHandler.getItemOfQuality(otherDropQualities[index],$DropHandler.rollType())
+			athena.drops.append(drop.getAdjustedCopy(getEquipmentScaling(getScalingRows_mapFinished(13,0))))
+		athena.drops.append(EquipmentDatabase.getEquipment("shield_5").getAdjustedCopy(getEquipmentScaling(getScalingRows_mapFinished(13,3))))
+		athenaEncounter.enemies.append(athena)
+		
+		var deadEndCount = 0
+		for row in retVal.rows :
+			if (row.leftEncounters.size() > 0) :
+				deadEndCount += 1
+			if (row.rightEncounters.size() > 0) :
+				deadEndCount += 1
+		var athenaDeadEnd = randi_range(0,deadEndCount-1)
+		var index = 0
+		
+		for row in retVal.rows :
+			if (row.leftEncounters.size() > 0) :
+				if (index == athenaDeadEnd) :
+					row.leftEncounters[row.leftEncounters.size()-1] = athenaEncounter
+					athenaGenerated = true
+					return retVal
+				else :
+					index += 1
+			if(row.rightEncounters.size() >0) :
+				if (index == athenaDeadEnd) :
+					row.rightEncounters[row.rightEncounters.size()-1] = athenaEncounter
+					athenaGenerated = true
+					return retVal
+				else :
+					index += 1
+	return retVal
+
 var previousMaps : Array[MapData] = []
 func createMap() -> MapData :
 	var environment : MyEnvironment = getEnvironment()
@@ -31,11 +89,17 @@ func createMap() -> MapData :
 		for room in newMap.rows[0].rightEncounters :
 			for enemy in room.enemies :
 				enemy.MAXHP *= 0.7
+	newMap = handleAthena(newMap)
 	previousMaps.append(newMap)
 	return newMap
 	
 ## moderately inefficent
 func generateDrops(currentFloor : int, room : Node, environment : MyEnvironment, magicFind : float) -> Dictionary :
+	if (Definitions.hasDLC && room.has_method("getEncounterRef") && room.getEncounterRef().enemies[0].getResourceName() == "athena") :
+		return {
+			"equipment" : room.getEncounterRef().enemies[0].drops.duplicate(true),
+			"currency" : [0,0,0]
+			}
 	var retVal1 : Array[Equipment] = []
 	$ItemPoolHandler.reset(environment, getAllItems())
 	var roomName : String = room.name
@@ -101,6 +165,8 @@ func getAllItems() :
 	var index = 0
 	while (index < list.size()) :
 		if (!list[index].equipmentGroups.isEligible) :
+			list.remove_at(index)
+		if (!Definitions.hasDLC && Helpers.isDLC(list[index])) :
 			list.remove_at(index)
 		else :
 			index += 1
@@ -404,6 +470,8 @@ func _ready() :
 	emit_signal("myReadySignal")
 func getSaveDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
+	retVal["athenaGenerated"] = athenaGenerated
+	retVal["athenaFloor"] = athenaFloor
 	retVal["previousMaps"] = []
 	for map in previousMaps :
 		retVal["previousMaps"].append(map.getSaveDictionary())
@@ -422,6 +490,10 @@ func onLoad(loadDict : Dictionary) :
 	if (loadDict.get("previousMaps") != null) :
 		for map in loadDict.get("previousMaps") :
 			previousMaps.append(MapData.createFromSaveDictionary(map))
+	if (loadDict.get("athenaGenerated") != null) :
+		athenaGenerated = loadDict["athenaGenerated"]
+	if (loadDict.get("athenaFloor") != null) :
+		athenaFloor = loadDict["athenaFloor"]
 	myReady = true
 	emit_signal("myReadySignal")
 	doneLoading = true

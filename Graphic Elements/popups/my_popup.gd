@@ -19,7 +19,8 @@ func setText(newText) :
 		$Panel/CenterContainer/Window/VBoxContainer/Text.text = newText
 	
 func nestedPopupInit(parentPopup) :
-	visible = false
+	var oldPos = $Panel.position
+	$Panel.position = Vector2(9999,9999)
 	$Panel/Background.color = Color(0,0,0,0)
 	layer = parentPopup.layer + 1
 	$Panel/CenterContainer/Window.queue_sort()
@@ -32,7 +33,7 @@ func nestedPopupInit(parentPopup) :
 	if (parentSize.y > newSize.y) :
 		newSize.y = parentSize.y
 	$Panel/CenterContainer/Window.custom_minimum_size = newSize
-	visible = true
+	$Panel.position = oldPos
 	
 func hasNestedPopup() -> bool :
 	return getFirstNestedPopup() != null

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bgvolld461y5t" path="res://Screens/GameScreen/Tabs/Combat/Actors/combat_actor.gd" id="1_8w7gt"]
 [ext_resource type="Script" uid="uid://chv44hxopmvat" path="res://Graphic Elements/ProgressBars/action_progress_bar.gd" id="2_7ro7t"]
 [ext_resource type="PackedScene" uid="uid://bkh8nowfmt124" path="res://Screens/GameScreen/Tabs/Combat/Actors/hp_bar.tscn" id="3_6t05j"]
-[ext_resource type="Texture2D" uid="uid://cj5bws4w4gpvw" path="res://Images/Sprites/goose_hydra.png" id="3_eeri8"]
+[ext_resource type="Texture2D" uid="uid://dkmj7wpqwvk4y" path="res://Images/CC0 Assets/Dungeon Crawl Stone Soup Full/monster/daeva.png" id="4_6t05j"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u1t73"]
 bg_color = Color(1, 1, 1, 1)
@@ -154,7 +154,7 @@ offset_left = 22.0
 offset_top = 20.0
 offset_right = -22.0
 offset_bottom = -20.0
-texture = ExtResource("3_eeri8")
+texture = ExtResource("4_6t05j")
 expand_mode = 1
 stretch_mode = 5
 

@@ -90,7 +90,15 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 			"currency" : [0]
 		}
 	hideMapAndUI()
-	await handleCombatRewards(rewards)
+	if (Definitions.hasDLC && currentRoom.has_method("getEncounterRef") && currentRoom.getEncounterRef().enemies.size() != 0 && currentRoom.getEncounterRef().enemies[0].getResourceName() == "athena") :
+		var oldSettings = IGOptions.getIGOptionsCopy()
+		var newSettings = oldSettings.duplicate(true)
+		newSettings["filter"] = IGOptions.getDefaultOptionDict().duplicate()["filter"]
+		IGOptions.saveIGOptionsNoUpdate(newSettings)
+		await handleCombatRewards(rewards)
+		IGOptions.saveIGOptionsNoUpdate(oldSettings)
+	else :
+		await handleCombatRewards(rewards)
 	#showMapAndUI()
 	if ($MapContainer.get_child_count() >= 2 && currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N0") :
 		emit_signal("tutorialRequested", Encyclopedia.tutorialName.row1, Vector2(0,0))

@@ -257,7 +257,7 @@ func initialise(val) :
 		goHome()
 		fullyInitialised = true
 		emit_signal("fullyInitialisedSignal")
-	elif (val == null) :
+	elif (val == null || (val is String && val == "null")) :
 		return
 	else :
 		initialise(MapData.createFromSaveDictionary(val["mapData"]))
@@ -336,7 +336,10 @@ func getSaveDictionary() -> Dictionary :
 	var rooms = $CombatMap/RoomContainer.get_children()
 	for index in range (rooms.size()) :
 		tempDict["room"+str(index)] = rooms[index].getSaveDictionary()
-	tempDict["mapData"] = mapData.getSaveDictionary()
+	if (mapData == null) :
+		tempDict["mapData"] = "null"
+	else :
+		tempDict["mapData"] = mapData.getSaveDictionary()
 	return tempDict
 
 func onLoad(loadDict) -> void :

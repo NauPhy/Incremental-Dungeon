@@ -200,10 +200,14 @@ func rollType() :
 		return 2
 	
 func getItemOfQuality(quality, type) :
-	var roll = randi_range(0,countDict["T"+str(type)][quality]-1)
+	var realType = type
+	if (quality == EquipmentGroups.qualityEnum.legendary && type == Definitions.equipmentTypeEnum.accessory) :
+		while (realType == Definitions.equipmentTypeEnum.accessory) :
+			realType = rollType()
+	var roll = randi_range(0,countDict["T"+str(realType)][quality]-1)
 	var current = 0
 	for item : Equipment in itemPool :
-		if (item.getType() == type && item.equipmentGroups.quality == quality) :
+		if (item.getType() == realType && item.equipmentGroups.quality == quality) :
 			if (roll == current) :
 				return item
 			current += 1

@@ -101,7 +101,6 @@ layout_mode = 2
 custom_minimum_size = Vector2(460, 0)
 theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_epeks")
-bbcode_enabled = true
 text = "Enemy Description"
 
 [node name="Button" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="0"]

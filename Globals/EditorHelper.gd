@@ -2,7 +2,7 @@
 extends EditorScript
 
 func _run() :
-	performOnEquipmentFiles(func(a):a.resetOtherModsIfWrong())
+	performOnEquipmentFiles(func(a):a.resetNew())
 	
 func resetAllEquipmentFiles() :
 	performOnEquipmentFiles(func(a):a.reset())

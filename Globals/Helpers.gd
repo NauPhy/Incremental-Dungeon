@@ -305,7 +305,7 @@ func myRound(val : float, sigFigs : int) :
 		return int(0)
 	var magnitude = floor(log(val)/log(10))
 	var base = val/pow(10,magnitude)
-	var roundedBase = round(base*pow(10.0,sigFigs-1))/pow(10.0,sigFigs-1)
+	var roundedBase = round(base*pow(10.0,sigFigs-1)+1e-5)/pow(10.0,sigFigs-1)
 	var finalValue = roundedBase*pow(10,magnitude)
 	if (finalValue >= pow(10,sigFigs-1)) :
 		return int(finalValue)
@@ -378,6 +378,8 @@ func unlockAchievement(val : Definitions.achievementEnum) :
 			print("Failed to store achievement: " + Definitions.achievementDictionary[Definitions.achievementEnum.all_complete])
 
 func isDLC(item : Equipment) -> bool :
+	if (Definitions.DLCWeapons.find(item.getItemName()) != -1) :
+		return true
 	return false
 	
 func handleBiomeAchievement(biome : MyEnvironment) :

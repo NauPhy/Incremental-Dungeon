@@ -10,6 +10,7 @@ static func getDefaultSettings() -> Dictionary :
 		"beastiary" : {},
 		"items" : []
 	}
+	tempDict["herophile"] = false
 	return tempDict
 
 static func applyWindowMode(val) :
@@ -30,6 +31,8 @@ static func loadSettings() :
 			"beastiary" : {},
 			"items" : []
 		}
+	if (dict.get("herophile") == null) :
+		dict["herophile"] = dict["globalEncyclopedia"]["beastiary"]["champion_of_poseidon"] >= 1
 	return dict
 	
 static func saveSettings(settings) :

@@ -6,7 +6,7 @@
 
 [sub_resource type="Resource" id="Resource_iyltx"]
 script = ExtResource("1_jgq7u")
-isEligible = true
+isEligible = false
 quality = 4
 technology = 0
 weaponClass = -1
@@ -15,7 +15,7 @@ isFire = false
 isIce = false
 isEarth = false
 isWater = true
-isSignature = false
+isSignature = true
 
 [sub_resource type="Resource" id="Resource_jgq7u"]
 script = ExtResource("2_8in5p")

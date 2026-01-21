@@ -19,12 +19,12 @@ func initialise(rewards : Dictionary) :
 		if (rewards["currency"][index] == 0) :
 			continue
 		var entry = entryLoader.instantiate()
-		$Content/InventoryPanel/VBoxContainer.add_child(entry)
+		$Content/InventoryPanel/ScrollContainer/VBoxContainer.add_child(entry)
 		entry.initialise_currency(index, rewards["currency"][index])
 		entry.connect("wasSelected", _on_entry_selected)
 	for index in range(0,rewards["equipment"].size()) :
 		var entry = entryLoader.instantiate()
-		$Content/InventoryPanel/VBoxContainer.add_child(entry)
+		$Content/InventoryPanel/ScrollContainer/VBoxContainer.add_child(entry)
 		entry.initialise(rewards["equipment"][index])
 		entry.connect("wasSelected", _on_entry_selected)
 	var changed : bool = false
@@ -82,7 +82,7 @@ func initialise(rewards : Dictionary) :
 	if (getItemList().is_empty()) :
 		suicide()
 	else :
-		var firstEntry = $Content/InventoryPanel/VBoxContainer.get_child(0)
+		var firstEntry = $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_child(0)
 		firstEntry.getItemSceneRef().select()
 		$Content/Details.setItemSceneRefBase(firstEntry.getItemSceneRef())
 		self.visible = true
@@ -106,13 +106,13 @@ func _on_details_option_pressed(itemSceneRef, val : int) -> void:
 		removeItemFromList(itemSceneRef)
 	
 func findItem(item : Equipment) :
-	for child in $Content/InventoryPanel/VBoxContainer.get_children() :
+	for child in $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_children() :
 		if (child.getItemSceneRef() == item) :
 			return child
 	return null
 	
 func getItemList() :
-	return $Content/InventoryPanel/VBoxContainer.get_children()
+	return $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_children()
 	
 func removeItemsFromList_internal(items : Array[Node]) :
 	if (items.size() == 0) :
@@ -120,17 +120,17 @@ func removeItemsFromList_internal(items : Array[Node]) :
 	var killableIndex
 	var killableScene
 	for itemSceneRef in items :
-		var itemList = $Content/InventoryPanel/VBoxContainer.get_children()
+		var itemList = $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_children()
 		for index in range(0,itemList.size()) :
 			if (itemList[index].getItemSceneRef() == itemSceneRef) :
 				killableIndex = index
 				killableScene = itemList[index]
 				break
 		#Explicitly remove child because sometimes it seems to take more than 1 frame
-		$Content/InventoryPanel/VBoxContainer.remove_child(killableScene)
+		$Content/InventoryPanel/ScrollContainer/VBoxContainer.remove_child(killableScene)
 		killableScene.queue_free()
 	await get_tree().process_frame
-	var newItemList = $Content/InventoryPanel/VBoxContainer.get_children()
+	var newItemList = $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_children()
 	if (newItemList.is_empty()) :
 		suicide()
 		return

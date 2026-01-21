@@ -31,7 +31,7 @@ func getContainer() :
 func _on_my_pressed(emitter) :
 	var enemy : ActorPreset = EnemyDatabase.getEnemy(enemyDict[emitter.getText()])
 	var bigEntry
-	if (enemy.enemyGroups != null && (enemy.enemyGroups.isEligible || enemy.getResourceName() == "apophis")) :
+	if (enemy.enemyGroups != null && (enemy.enemyGroups.isEligible || enemy.getResourceName() == "apophis") || enemy.getResourceName() == "athena") :
 		bigEntry = bigEntryLoaderNew.instantiate()
 	else :
 		bigEntry = bigEntryLoader.instantiate()

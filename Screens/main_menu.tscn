@@ -84,6 +84,20 @@ grow_vertical = 2
 texture = ExtResource("4_kqc0l")
 expand_mode = 1
 
+[node name="DLC" type="RichTextLabel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+offset_left = 15.0
+offset_top = 15.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 35
+text = " DLC Enabled! "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
 [connection signal="pressed" from="ButtonContainer/NewButton" to="." method="_on_new_button_pressed"]
 [connection signal="pressed" from="ButtonContainer/LoadButton" to="." method="_on_load_button_pressed"]
 [connection signal="pressed" from="ButtonContainer/OptionsButton" to="." method="_on_options_button_pressed"]

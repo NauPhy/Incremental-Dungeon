@@ -12,6 +12,8 @@ func setEnemy(enemy : ActorPreset) :
 	setFactionSymbol(enemy)
 	var killCount = EnemyDatabase.getKillCount(enemy.getResourceName())
 	writeDescription(enemy, killCount)
+	if (Definitions.hasDLC && enemy.resourceName == "athena") :
+		getTagContainer().visible = false
 
 func writeDescription(enemy : ActorPreset, killCount) :
 	var description : String = ""
@@ -19,17 +21,28 @@ func writeDescription(enemy : ActorPreset, killCount) :
 	var baseEnemy = enemy.getAdjustedCopy(1)
 	for key in Definitions.baseStatDictionary.keys() :
 		description += "\t" + Definitions.baseStatDictionary[key] + ": " + str(Helpers.myRound(baseEnemy.getStat(key),3)) + "\n"
-	description += "\nAttack - "
-	var attack = enemy.actions[0]
+	if (enemy.getResourceName() == "apophis" || enemy.getResourceName() == "athena") :
+		description += "\n[font_size=25]Attacks[/font_size]\n"
+		for attack in enemy.actions :
+			description = writeAttack(attack, description)
+	else :
+		description += "\nAttack - "
+		var attack = enemy.actions[0]
+		description = writeAttack(attack, description)
+	
+	description += "\nKilled: " + str(int(killCount)) + "\n\n"
+	#description += "\n"
+	description += enemy.getDesc()
+	setText(description)
+
+func writeAttack(attack, val) -> String :
+	var description = val
 	description += attack.getName() + "\n"
 	if (attack is AttackAction) :
 		description += "\t\tType: " + Definitions.damageTypeDictionary[attack.getDamageType()] + "\n"
 		description += "\t\tPower: " + str(Helpers.myRound(attack.getPower(),3)) + "\n"
 	description += "\t\tWarmup: " + str(Helpers.myRound(attack.getWarmup(),3)) + " seconds\n"
-	description += "\nKilled: " + str(int(killCount)) + "\n\n"
-	#description += "\n"
-	description += enemy.getDesc()
-	setText(description)
+	return description
 	
 const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
 func setFactionSymbol(enemy : ActorPreset) :

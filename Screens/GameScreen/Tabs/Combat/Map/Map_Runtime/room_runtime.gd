@@ -115,6 +115,8 @@ func onCombatComplete() :
 	for index in range(0,enemyEntries.size()) :
 		enemyEntries[index].incrementKilled()
 	enableEnemyList()
+	if (Definitions.hasDLC && encounter != null && encounter.enemies.size() != 0 && encounter.enemies[0].getResourceName() == "athena") :
+		self.set_disabled(true)
 func onCombatLoss() :
 	enableEnemyList()
 func onCombatRetreat() :
@@ -146,6 +148,9 @@ func onLoad(loadDict) :
 	visited = loadDict["visited"]
 	completed = loadDict["completed"]
 	setVisibility(loadDict["visibility"])
+	if (Definitions.hasDLC) :
+		if (completed && encounter != null && encounter.enemies.size() != 0 && encounter.enemies[0].getResourceName() == "athena") :
+			self.set_disabled(true)
 	#var enemies = $VBoxContainer.get_children()
 	#for index in range(0, enemies.size()) :
 		#enemies[index].onLoad(loadDict["enemies"][index])

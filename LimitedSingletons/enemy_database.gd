@@ -130,7 +130,7 @@ func _on_enemy_data_changed(_var) :
 	for enemy in killedDictionary.keys() :
 		if (killedDictionary[enemy] > 0) :
 			souls += 1
-		else :
+		elif (enemy != "athena") :
 			unlock = false
 	if (unlock) :
 		Helpers.unlockAchievement(Definitions.achievementEnum.all_monsters)
