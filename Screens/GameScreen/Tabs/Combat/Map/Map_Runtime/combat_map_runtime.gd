@@ -66,7 +66,7 @@ func completeRoom(completedRoom) :
 	checkDragon(completedRoom)
 	var firstCompletion = !completedRoom.isCompleted()
 	completedRoom.onCombatComplete()
-	if (firstCompletion || completedRoom.has_method("isEmpty") && completedRoom.isEmpty()) :
+	if (firstCompletion || (completedRoom.has_method("isEmpty") && completedRoom.isEmpty())) :
 		#For all rooms, find rooms linked to this one
 		for connection in $CombatMap/ConnectionContainer.get_children() :
 			var adjacentRoom = null
@@ -420,24 +420,30 @@ func _unhandled_input(event: InputEvent) -> void :
 		return
 	if (debounceTimer < 0.1 && !event.is_echo()) :
 		return
+	var changed : bool = false
 	if (event.is_action("ui_left")) :
 		accept_event()
 		if ($CombatMap.position.x < maxX - 0.9*scrollStepSize) :
 				$CombatMap.position.x += scrollStepSize
+		changed = true
 	elif (event.is_action("ui_right")) :
 		accept_event()
 		if ($CombatMap.position.x > minX + 0.9*scrollStepSize) :
 				$CombatMap.position.x -= scrollStepSize
+		changed = true
 	elif (event.is_action("ui_up")) :
 		accept_event()
 		if ($CombatMap.position.y < maxY - 0.9*scrollStepSize) :
 				$CombatMap.position.y += scrollStepSize
+		changed = true
 	elif (event.is_action("ui_down")) :
 		accept_event()
 		if ($CombatMap.position.y > minY + 0.9*scrollStepSize) :
 				$CombatMap.position.y -= scrollStepSize
-	setMapPosRatio()
-	debounceTimer = 0
+		changed = true
+	if (changed) :
+		setMapPosRatio()
+		debounceTimer = 0
 
 func goHome() :
 	$CombatMap.position = homePosition

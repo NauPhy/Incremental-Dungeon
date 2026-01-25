@@ -4,7 +4,7 @@ extends Panel
 
 var selectedEntry : Node = null
 var equippedEntries : Array[Node] = []
-@export var inventorySize : int = 10
+@export var inventorySize : int = 8
 
 #################################
 ##Setters
@@ -62,10 +62,12 @@ func getEquippedItem(type : Definitions.equipmentTypeEnum) :
 func isInventoryFull() -> bool : 
 	return (getNextEmptySlot() == null)
 func getModifierPacket() -> ModifierPacket :
-	var retVal = ModifierPacket.new()
+	#var retVal = ModifierPacket.new()
+	var modPacketRefs : Array[ModifierPacket] = []
 	for key in Definitions.equipmentTypeDictionary.keys() :
 		if (equippedEntries[key] != null) :
-			retVal = equippedEntries[key].addToModifierPacket(retVal)
+			modPacketRefs.append(equippedEntries[key].getModPacketRef())
+	var retVal = ModifierPacket.add_array(modPacketRefs)
 	if (equippedEntries[2] != null && equippedEntries[2].getItemName() == "coating_divine" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass != EquipmentGroups.weaponClassEnum.ranged) :
 		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.11
 		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Prebonus"] += 0.11
@@ -167,7 +169,11 @@ func sortByType(type : Definitions.equipmentTypeEnum) :
 				#item.get_child(0).deselect()
 	
 func getInventoryList() -> Array[Node] : 
-	return $ScrollContainer/CenterContainer/GridContainer.get_children()
+	var ret = $ScrollContainer/CenterContainer/GridContainer.get_children()
+	var pos = ret.find(oldPosPanel)
+	if (pos != -1) : 
+		ret.remove_at(pos)
+	return ret
 func getInventory() -> Node :
 	return $ScrollContainer/CenterContainer/GridContainer
 ##################################
@@ -370,6 +376,8 @@ func _process(_delta) :
 func getSaveDictionary() -> Dictionary :
 	var tempDict = {}
 	var children = getInventoryList()
+	if (oldPosPanel != null) :
+		children.append(draggingPanel)
 	if (children.is_empty()) :
 		return tempDict
 	for index in range(0,children.size()) :
@@ -440,7 +448,6 @@ func onLoad(loadDict) -> void :
 	emit_signal("myReadySignal")
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
-
 
 func _on_line_edit_text_submitted(new_text: String) -> void:
 	if (EquipmentDatabase.getEquipment(new_text) != null) :

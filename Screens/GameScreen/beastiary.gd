@@ -7,6 +7,8 @@ var enemyDict : Dictionary = {}
 
 func _ready() :
 	var enemyList : Array = EnemyDatabase.getEnemyList()
+	$Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/RichTextLabel2.text = str(EnemyDatabase.getSoulCount())
+	$Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/RichTextLabel/TooltipTrigger.currentLayer = layer+1
 	for enemy in enemyList :
 		var newEntry = getContainer().get_node("Sample").duplicate()
 		getContainer().add_child(newEntry)

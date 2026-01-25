@@ -37,7 +37,7 @@ func createSoftNotification(child : Node) :
 		text = EquipmentGroups.colourText(newItem.equipmentGroups.quality, "Forged " + newItem.getName(), true)
 	elif (iname == Shopping.armorPurchasableDictionary[Shopping.armorPurchasable.reforge] || iname == Shopping.weaponPurchasableDictionary[Shopping.weaponPurchasable.reforge]) :
 		var reforged : Equipment = Shopping.getLastReforgedItem()
-		text = EquipmentGroups.colourText(reforged.equipmentGroups.quality, "Reforged" + reforged.getName(), true)
+		text = EquipmentGroups.colourText(reforged.equipmentGroups.quality, "Reforged " + reforged.getName(), true)
 	elif (iname == Shopping.soulPurchasableDictionary[Shopping.soulPurchasable.randomStat]) :
 		var upgraded : Array[String] = Shopping.getLastUpgradedString()
 		if (upgraded.size() == 1) :

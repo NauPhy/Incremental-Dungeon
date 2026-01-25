@@ -51,7 +51,7 @@ func getDefaultOptionDict() -> Dictionary :
 		"quality" : [true,true,true,true,true,true],
 		"equipmentType" : [true,true,true],
 		"weaponType" : [true,true],
-		"directDowngrade" : [true,false,false]
+		"directDowngrade" : [true,false,false,false,false]
 		}
 	tempDict["hyperMode"] = false
 	return tempDict
@@ -134,8 +134,12 @@ func onLoad(loadDict : Dictionary) :
 	
 func compensateForOldSaves(myLoadDict) -> Dictionary :
 	var temp = myLoadDict
+	if (temp.get("filter") == null) :
+		temp["filter"] = getDefaultOptionDict()["filter"].duplicate(true)
 	if (temp["filter"].get("weaponType") == null) :
-		temp["filter"]["weaponType"] = getDefaultOptionDict()["filter"]["weaponType"]
+		temp["filter"]["weaponType"] = getDefaultOptionDict()["filter"]["weaponType"].duplicate(true)
+	if (temp["filter"]["directDowngrade"].size() != getDefaultOptionDict()["filter"]["directDowngrade"].size()) :
+		temp["filter"]["directDowngrade"] = getDefaultOptionDict()["filter"]["directDowngrade"].duplicate(true)
 	for key in optionDefaultDictionary :
 		if (temp.get(key) == null) :
 			temp[key] = optionDefaultDictionary[key]

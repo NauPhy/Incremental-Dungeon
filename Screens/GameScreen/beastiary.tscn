@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://cnewip8lp4cus"]
+[gd_scene load_steps=9 format=3 uid="uid://cnewip8lp4cus"]
 
 [ext_resource type="PackedScene" uid="uid://bha3i0vfrpvx5" path="res://Graphic Elements/popups/my_popup_button.tscn" id="1_21j4d"]
 [ext_resource type="Script" uid="uid://dh4oaow711eiv" path="res://Screens/GameScreen/beastiary.gd" id="2_fbp8q"]
+[ext_resource type="PackedScene" uid="uid://c77w5pwarx82n" path="res://Graphic Elements/Tooltips/tooltip_trigger.tscn" id="3_cy7mb"]
 [ext_resource type="PackedScene" uid="uid://do805ikixd6a4" path="res://Graphic Elements/Buttons/my_check_box.tscn" id="3_p8put"]
 [ext_resource type="PackedScene" uid="uid://c5uhhdm6s5ims" path="res://Graphic Elements/Buttons/my_button.tscn" id="3_per2i"]
 [ext_resource type="Theme" uid="uid://c8cfcbe6ioxu5" path="res://Graphic Elements/Themes/subTab.tres" id="4_p8put"]
@@ -44,7 +45,45 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_per2i")
 [node name="Title" parent="Panel/CenterContainer/Window/VBoxContainer" index="0"]
 text = "Encyclopedia - Beastiary"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="1"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="1"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/CenterContainer/Window/VBoxContainer/HBoxContainer" index="0"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "[color=#8A50A1]Discovered enemies:[/color]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="TooltipTrigger" parent="Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/RichTextLabel" index="1" instance=ExtResource("3_cy7mb")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+tooltipTitle = "Discovered Enemies"
+tooltipText = "This count is only for the current save file- it does not include the Global Encyclopedia, even if enabled.
+
+This is the number used for the Soul Collector subclass."
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="Panel/CenterContainer/Window/VBoxContainer/HBoxContainer" index="1"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 20
+text = "count"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="2"]
 layout_mode = 2
 theme_override_constants/separation = 30
 
@@ -59,7 +98,7 @@ size_flags_horizontal = 1
 myText = "Include Undiscovered"
 pressedOnStartup = true
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="2"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="3"]
 z_index = 1
 layout_mode = 2
 size_flags_vertical = 3
@@ -77,10 +116,10 @@ visible = false
 layout_mode = 2
 theme = ExtResource("4_p8put")
 
-[node name="Text" parent="Panel/CenterContainer/Window/VBoxContainer" index="3"]
+[node name="Text" parent="Panel/CenterContainer/Window/VBoxContainer" index="4"]
 text = ""
 
-[node name="VBoxContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="4"]
+[node name="VBoxContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="5"]
 size_flags_vertical = 1
 
 [node name="Button" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="0"]

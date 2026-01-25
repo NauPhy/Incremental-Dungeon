@@ -57,8 +57,6 @@ func onLoad(loadDict) :
 	applyScale()
 	textureNames = loadDict["textures"]
 	for key in textureNames.keys() :
-		if (textureNames[key] == null || textureNames[key] == "null") :
-			continue
 		var tempKey
 		if (key == "Base") :
 			tempKey = "base"
@@ -66,5 +64,8 @@ func onLoad(loadDict) :
 			tempKey = "felids"
 		else :
 			tempKey = key
-		setTexture(key, MegaFile.getPlayerTextureDictionary("PlayerTexture_"+tempKey)[textureNames[key]], textureNames[key])
+		if (textureNames[key] == null || textureNames[key] == "null") :
+			setTexture(key, null, "null")
+		else :
+			setTexture(key, MegaFile.getPlayerTextureDictionary("PlayerTexture_"+tempKey)[textureNames[key]], textureNames[key])
 	

@@ -511,13 +511,13 @@ const itemPriceBase : Dictionary = {
 	"armor" : {
 		armorPurchasable.premadeArmor: 24,
 		armorPurchasable.newArmor : 18,
-		armorPurchasable.reforge : 16,
+		armorPurchasable.reforge : 24,
 		armorPurchasable.statUpgrade_phys : 40,
 		armorPurchasable.statUpgrade_mag : 40
 	},
 	"weapon" : {
 		weaponPurchasable.premadeWeapon : 24,
-		weaponPurchasable.newWeapon : 18,
+		weaponPurchasable.newWeapon : 24,
 		weaponPurchasable.reforge : 16,
 		weaponPurchasable.statUpgrade_DR : 95
 	},
@@ -930,6 +930,7 @@ func givePurchaseBenefit_weapon(item : weaponPurchasable, purchase : Purchasable
 	elif (item == weaponPurchasable.newWeapon) :
 		var newWeapon = await createRandomWeapon()
 		awaitingConfirmation = true
+		lastBought["equipmentBought"] = newWeapon
 		emit_signal("addToInventoryRequested", newWeapon)
 	elif (item == weaponPurchasable.reforge) :
 		##Inventory keeps track of what's dragged off

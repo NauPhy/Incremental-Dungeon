@@ -12,9 +12,11 @@ func swapScreen(screenLoader) -> void :
 	if currentScreen :
 		currentScreen.process_mode = Node.PROCESS_MODE_DISABLED
 		await(get_tree().process_frame)
+		#await RenderingServer.frame_post_draw
 		currentScreen.queue_free()
+		await currentScreen.tree_exited
 		currentScreen = null
-		await(get_tree().process_frame)
+		#await(get_tree().process_frame)
 	currentScreen = screenLoader.instantiate()
 	add_child(currentScreen)
 
@@ -69,12 +71,17 @@ func getSaveDictionary() -> Dictionary :
 	var key : String = "Version"
 	tempDict[key] = Definitions.currentVersion
 	return tempDict
-	
+
+#const cursor = preload("res://Images/mouse_2.png")
 var myReady : bool = false
 signal myReadySignal
 var doneLoading : bool = false
 signal doneLoadingSignal
 func _ready() : 
+	Input.set_use_accumulated_input(false)
+	#Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	#Input.set_custom_mouse_cursor(cursor, Input.CURSOR_ARROW)
+	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	mainSettingsInit()
 	randomize()
 	swapToMenu()

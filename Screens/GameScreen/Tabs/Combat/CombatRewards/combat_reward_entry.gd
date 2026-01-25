@@ -48,6 +48,8 @@ func setCount(val) :
 	myText.text = myItemScene.getTitle() + " (" + str(val) + ")"#
 func select():
 	myItemScene.select()
+func isSelected() :
+	return myItemScene.isSelected()
 	
 func getCount() :
 	return myItemScene.getCount()

@@ -102,7 +102,8 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 	#showMapAndUI()
 	if ($MapContainer.get_child_count() >= 2 && currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N0") :
 		emit_signal("tutorialRequested", Encyclopedia.tutorialName.row1, Vector2(0,0))
-	currentFloor.completeRoom(currentRoom)
+	if (currentRoom != null) :
+		currentFloor.completeRoom(currentRoom)
 	if (automaticReset && currentRoom != null) :
 		friendlyParty[0] = await getPlayerCore()
 		var copy : Array[ActorPreset]
@@ -280,6 +281,9 @@ func disableUI() :
 func enableUI() :
 	currentFloor.enableUI()
 	$FloorDisplay.visible = true
+func enableUIIfPaused() :
+	if ($CombatPanel.paused) :
+		enableUI()
 
 #######################################
 var defeatCoroutineRunning : bool = false

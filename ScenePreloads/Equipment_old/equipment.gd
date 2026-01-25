@@ -33,6 +33,10 @@ func addToModifierPacket(packetRef : ModifierPacket) -> ModifierPacket :
 	if (core == null) :
 		return
 	return ModifierPacket.add(packetRef, core.getModifierPacket())
+func getModPacketRef() -> ModifierPacket :
+	if (core == null) :
+		return null
+	return core.getModifierPacket()
 func getRewardBehaviour() -> rewardBehaviour :
 	return myBehaviour
 func getQuality() -> EquipmentGroups.qualityEnum :
@@ -89,6 +93,8 @@ func select() :
 	$SuperButton.select()
 func deselect() :
 	$SuperButton.deselect()
+func isSelected() :
+	return $SuperButton.isSelected()
 func setTheme(val) :
 	theme = val
 	$SuperButton.setTheme(val)

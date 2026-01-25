@@ -6,8 +6,10 @@ const binaryPopup = preload("res://Graphic Elements/popups/binary_decision.tscn"
 	
 ##########################################
 ## Other
+var last = Vector2.ZERO
 var firstProcess : bool = true
 func _process(_delta) :
+	
 	if (!doneLoading) :
 		return
 	if (!myReady) :
@@ -16,6 +18,16 @@ func _process(_delta) :
 		var numberRefs = $Player.getRoutineSpeedByReference()
 		$MyTabContainer/InnerContainer/Training.initialiseNumberRefs(numberRefs)
 		firstProcess = false
+
+	#var temp = get_global_mouse_position()
+	#Input.warp_mouse(temp+motion)
+	#motion = Vector2(0,0)
+	#var p = get_global_mouse_position()
+	#if p == last:
+		#print("Mouse frozen frame")
+	#last = p
+
+
 	var attributeMods = $Player.getAttributeMods()
 	#var modDictionary = $Player.getModifierDictionary()
 	#var routineSpeeds : Array[float] = []
@@ -48,7 +60,6 @@ func updatePlayer() :
 	$Player.updateArmor(newArmor)
 	var newAccessory : Accessory = $MyTabContainer/InnerContainer/Equipment.getCurrentAccessory()
 	$Player.updateAccessory(newAccessory)
-	
 	$Player.myUpdate()
 #############################################
 ## New game initialisation
@@ -61,6 +72,8 @@ func _item_list_inspection(itemList : Array[Node], emitter : Node) :
 	var discardFromCombatRewards = directUpgradeSettings[0]
 	var discardFromInventory = directUpgradeSettings[1]
 	var discardFromEquipped = directUpgradeSettings[2]
+	var discardLegendaries = directUpgradeSettings[3]
+	var discardSignatures = directUpgradeSettings[4]
 	if !discardFromCombatRewards && !discardFromInventory && !discardFromEquipped :
 		emitter.waitingForResponse = false
 		emitter.emit_signal("responseReceived")
@@ -69,13 +82,16 @@ func _item_list_inspection(itemList : Array[Node], emitter : Node) :
 		var deleteList : Array[Node] = []
 		for index in range(0, itemList.size()) :
 			if ($MyTabContainer/InnerContainer/Equipment.hasDirectUpgrade(itemList[index].getItemSceneRef().core)) :
+				var groups : EquipmentGroups = itemList[index].getItemSceneRef().core.equipmentGroups
+				if ((groups.quality == EquipmentGroups.qualityEnum.legendary&&!discardLegendaries) || (groups.isSignature && !discardSignatures)) :
+					continue
 				deleteList.append(itemList[index].getItemSceneRef())
 		await emitter.removeItemsFromList_internal(deleteList)
 		itemList = emitter.getItemList()
 	if (discardFromInventory || discardFromEquipped) :
 		var deleteList : Array[Node] = []
 		for index in range(0,itemList.size()) :
-			var replaced = $MyTabContainer/InnerContainer/Equipment.replaceDirectDowngrades(itemList[index].getItemSceneRef().core, discardFromInventory, discardFromEquipped)
+			var replaced = $MyTabContainer/InnerContainer/Equipment.replaceDirectDowngrades(itemList[index].getItemSceneRef().core, discardFromInventory, discardFromEquipped, discardLegendaries, discardSignatures)
 			if (replaced) :
 				deleteList.append(itemList[index].getItemSceneRef())
 		await emitter.removeItemsFromList_internal(deleteList)
@@ -411,7 +427,7 @@ func _on_shop_shortcut_selected(type : String) :
 	_on_shop_requested(details)
 	
 func _on_shop_finished() :
-	$MyTabContainer/InnerContainer/Combat.enableUI()
+	$MyTabContainer/InnerContainer/Combat.enableUIIfPaused()
 	
 func _on_currency_amount_requested(item : Currency, emitter : Node) :
 	emitter.provideCurrencyAmount($TopRibbon/Ribbon/Currency.getCurrencyAmount(item))
@@ -532,6 +548,9 @@ signal myReadySignal
 var doneLoading : bool = false
 signal doneLoadingSignal
 func _ready() :
+	#Input.set_use_accumulated_input(false)
+	#Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	myReady = true
 	emit_signal("myReadySignal")
 	
@@ -679,3 +698,11 @@ func _on_change_appearance_button_pressed() -> void:
 const altTheme = preload("res://Graphic Elements/Themes/mainTab_red.tres")
 func _on_reward_pending() :
 	$MyTabContainer.setThemeOfButtonUntilActive($MyTabContainer/InnerContainer/Combat, altTheme)
+
+#var motion = Vector2(0,0)
+#func _input(event):
+	#if (event is InputEventMouseMotion) :
+		#motion += event.relative
+	#if event is InputEventMouseMotion:
+		#if Engine.get_frames_drawn() % 300 == 0:
+			#print("delta:", event.relative.length())

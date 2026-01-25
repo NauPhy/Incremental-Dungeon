@@ -1,10 +1,16 @@
 extends Resource
 
 class_name NumberClass
+@export var referenceMode : bool = false
 var prebonuses : Dictionary = {}
 var postbonuses : Dictionary = {}
 var premultipliers : Dictionary = {}
 var postmultipliers : Dictionary = {}
+
+var trimmedPrebonuses : Dictionary = {}
+var trimmedPostbonuses : Dictionary = {}
+var trimmedPremultipliers : Dictionary = {}
+var trimmedPostmultipliers : Dictionary = {}
 
 func getFinal() -> float :
 	var prebon : Array[float] = []
@@ -29,6 +35,14 @@ func getPremultipliers() -> Dictionary:
 	return trimDict(premultipliers, true)
 func getPostmultipliers() -> Dictionary:
 	return trimDict(postmultipliers, false)
+func getPrebonusesReference() -> Dictionary :
+	return trimmedPrebonuses
+func getPostbonusesReference() -> Dictionary :
+	return trimmedPostbonuses
+func getPremultipliersReference() -> Dictionary :
+	return trimmedPremultipliers
+func getPostmultipliersReference() -> Dictionary : 
+	return trimmedPostmultipliers
 func getPrebonusesRaw() :
 	return prebonuses.duplicate()
 func getPostbonusesRaw() :
@@ -38,18 +52,42 @@ func getPremultipliersRaw() :
 func getPostmultipliersRaw() :
 	return postmultipliers.duplicate()
 	
+	
 func setPrebonus(key, val : float) :
 	prebonuses[key] = val
+	if (referenceMode) :
+		if (!is_equal_approx(val,0)) :
+			trimmedPrebonuses[key] = val
+		elif (trimmedPrebonuses.get(key) != null) :
+			trimmedPrebonuses.erase(key)
 	removeZeroEntry(key)
 func setPostbonus(key, val : float) :
 	postbonuses[key] = val
+	if (referenceMode) :
+		if (!is_equal_approx(val,0)) :
+			trimmedPostbonuses[key] = val
+		elif (trimmedPrebonuses.get(key) != null) :
+			trimmedPostbonuses.erase(key)
 	removeZeroEntry(key)
 func setPremultiplier(key, val : float) :
 	premultipliers[key] = val
+	if (referenceMode) :
+		if (!is_equal_approx(val,1)) :
+			trimmedPremultipliers[key] = val
+		elif (trimmedPremultipliers.get(key) != null) :
+			trimmedPremultipliers.erase(key)
 	removeZeroEntry(key)
 func setPostmultiplier(key, val : float) :
 	postmultipliers[key] = val
+	if (referenceMode) :
+		if (!is_equal_approx(val,0)) :
+			trimmedPostmultipliers[key] = val
+		elif (trimmedPostmultipliers.get(key) != null) :
+			trimmedPostmultipliers.erase(key)
 	removeZeroEntry(key)
+	
+func enableReferenceMode() :
+	referenceMode = true
 	
 func removeZeroEntry(key : String) :
 	var prebonus = prebonuses.get(key)

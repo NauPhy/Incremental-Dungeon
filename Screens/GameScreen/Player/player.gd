@@ -181,6 +181,7 @@ func myUpdate() :
 	## Learning Curve
 	if (learningCurveEnabled) :
 		var learningCurveMod = getLearningCurveMod()
+		#var learningCurveMod = ModifierPacket.new()
 		updateDirectModifier("Learning Curve", learningCurveMod)
 	updateDirectModifier("Softcap", getSoftcapMod())
 	####################################################
@@ -203,7 +204,6 @@ func myUpdate() :
 		changed = true
 	if changed :
 		updateDirectModifier("Hard cap", capModifier)
-
 	## Attributes
 	#equippedWeapon
 	pass
@@ -261,7 +261,7 @@ var typicalEnemyDefense : float = 10
 func updateDerivedStats() :
 	getDerivedStatList().get_node("AttackSpeed").get_node("Number").text = str(Helpers.myRound(10.0/equippedWeapon.basicAttack.getWarmup(),3))
 	var averageAttackRating = (derivedStatObjects[Definitions.baseStatEnum.AR].getFinal()*derivedStatObjects[Definitions.baseStatEnum.DR].getFinal()) / typicalEnemyDefense
-	getDerivedStatList().get_node("DamagePerHit").get_node("Number").text = str(Helpers.myRound(averageAttackRating * equippedWeapon.basicAttack.getPower(),3))
+	getDerivedStatList().get_node("DamagePerHit").get_node("Number").text = Helpers.engineeringRound(averageAttackRating * equippedWeapon.basicAttack.getPower(),3)
 	
 func getDerivedStatList() :
 	return $ScrollContainer/VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay

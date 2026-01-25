@@ -301,16 +301,80 @@ func findIndexInContainer(container : Node, child) :
 	return null
 	
 func myRound(val : float, sigFigs : int) :
+	var myVal = abs(val)
+	var magnitude = floor(log(myVal)/log(10))
+	var strVal = str(val)
+	
+	## trailingZeroes >= 0 if the last significant figure is in the 1s place or higher, and -1 otherwise
+	var trailingZeroes = max((magnitude+1)-(sigFigs),-1)
+	
+	## CASE 1: the last significant figure is before the "."
+	if (trailingZeroes != -1) :
+		var retStr = strVal.substr(0,sigFigs)
+		for index in range(0,trailingZeroes) :
+			retStr += "0"
+		return int(retStr)
+	
+	## CASE 2: the last significant figure is after the "."
+	var expectedLength = 1
+	var leadingZeroes
+	
+	## leadingZeroes = 0 if abs(number) >= 1, leadingZeroes > 0 otherwise
+	if (myVal >= 1) :
+		leadingZeroes = 0
+	else :
+		leadingZeroes = -(magnitude)
+	
+	## a negative sign increases the expected length by 1
+	if (val < 0) :
+		expectedLength += 1
+	
+	## If abs(number) >= 1, expectedLength = 1 (".") + 1 ("-") + sigFigs. ex. 1.00 (4), -1.23 (5), 1.23 (4)
+	## Otherwise, leading zeroes (including 1s place) are added for free. ex. 0.0000123 (9), -0.0000123 (10), 0.123 (5)
+	expectedLength += sigFigs+leadingZeroes
+	
+	var ret = val
+	if (strVal.length() > expectedLength) :
+		var newStr = strVal.substr(0,expectedLength)
+		var earliestDiscardedDigit = expectedLength
+		if (strVal.substr(earliestDiscardedDigit,1) == ".") :
+			earliestDiscardedDigit += 1
+		# This line here is the reason this function took me so goddamn long. It's the only way I found to avoid floating point errors.
+		if (int(strVal.substr(earliestDiscardedDigit,1)) >= 5) :
+			newStr = newStr.substr(0,newStr.length()-1) + str(int(newStr.substr(newStr.length()-1,1))+1)
+		var earliestExcludedDigit = int(strVal.substr(expectedLength,1))
+		ret = float(newStr)
+	if (is_equal_approx(ret, round(ret))) :
+		return int(ret)
+	return ret
+	
+func myRound_old(val : float, sigFigs : int) :
 	if (val == 0) :
 		return int(0)
-	var magnitude = floor(log(val)/log(10))
-	var base = val/pow(10,magnitude)
-	var roundedBase = round(base*pow(10.0,sigFigs-1)+1e-5)/pow(10.0,sigFigs-1)
-	var finalValue = roundedBase*pow(10,magnitude)
-	if (finalValue >= pow(10,sigFigs-1)) :
+	var tempVal = abs(val)
+	var magnitude = floor(log(tempVal)/log(10))
+	var base = tempVal/pow(10,magnitude)
+	
+	var num = pow(10.0,sigFigs-1)
+	var num2 = base*num
+	var num3 = actualRound(num2)
+	var num4 = num3/num
+	var finalValue = num4*pow(10,magnitude)
+	if (val < 0) :
+		finalValue *= -1
+	if (abs(finalValue) >= pow(10,sigFigs-1)) :
 		return int(finalValue)
 	else :
 		return finalValue
+		
+## Assumes the number has a magnitude of 1 (1s place)
+func actualRound(val) -> float :
+	var magnitude = floor(log(val)/log(10))
+	var tenthsPlace = int(str(val).substr(2+magnitude,1))
+	if (tenthsPlace >= 5) :
+		return ceil(val)
+	else :
+		return floor(val)
 		
 func engineeringNotation(val) -> String :
 	var newVal = val
@@ -349,6 +413,9 @@ func engineeringNotation(val) -> String :
 		return str(int(newVal)) + suffix
 	else :
 		return str(newVal) + suffix
+		
+func pythag(val : Vector2) :
+	return sqrt(pow(val.x,2)+pow(val.y,2))
 
 var oneHundredAchCache : bool = false
 func unlockAchievement(val : Definitions.achievementEnum) :
@@ -388,17 +455,53 @@ func handleBiomeAchievement(biome : MyEnvironment) :
 		unlockAchievement(achEnum)
 
 func engineeringRound(val, sigFigs : int) -> String :
-	var myVal = abs(val)
-	if (abs(val) < 1) :
-		var symbol = ""
-		if (val < 0) :
-			symbol = "-"
-		return symbol + str(myVal).substr(0,2+sigFigs)
-	var rounded = myRound(myVal, sigFigs)
+	if (val == 0) :
+		return "0"
+	#var myVal = abs(val)
+	#if (abs(val) < 1) :
+		#var magnitude = floor(log(myVal)/log(10))
+		#var symbol = ""
+		#if (val < 0) :
+			#symbol = "-"
+		#
+		#var lastPos = 2+(-magnitude)+(sigFigs-1)-1
+		#var valString = str(myVal)
+		#var retString = symbol + str(myVal).substr(0,2+(-magnitude)+(sigFigs-1))
+		#if (int(valString.substr(lastPos,1)) >= 5) :
+			#retString = retString.substr(0,retString.length()-1) + str(int(retString.substr(retString.length()-1,1))+1)
+	var rounded = myRound(val, sigFigs)
+	#var expectedLength = 0
+	#var leadingZeroes
+	#var trailingZeroes
+	#var magnitude = floor(log(myVal)/log(10))
+	#if (rounded is int) :
+		#expectedLength = magnitude+1
+	#else :
+		##period
+		#if (abs(val) >= 1) :
+			#leadingZeroes = 0
+		#else :
+			#leadingZeroes = -(magnitude)
+		#if (abs(val) >= 1) :
+			#trailingZeroes = max(magnitude-1-(sigFigs-1),0)
+		#else :
+			#trailingZeroes = 0
+		#if (val < 0) :
+			#expectedLength += 1
+		#expectedLength += 1+sigFigs+leadingZeroes+trailingZeroes
+	#var roundStr = str(rounded)
+	#if (roundStr.length() > expectedLength) :
+		#var newStr = roundStr.substr(0,expectedLength)
+		#if (int(roundStr.substr(expectedLength,1)) >= 5) :
+			#newStr = newStr.substr(0,newStr.length()-1) + str(int(newStr.substr(newStr.length()-1,1))+1)
+		#var earliestExcludedDigit = int(roundStr.substr(expectedLength,1))
+		#rounded = float(newStr)
+			
+
 	var ret = engineeringNotation(rounded)
-	if (val < 0) :
-		var pos = ret.find("]")
-		ret = ret.insert(pos+1,"-")
+	#if (val < 0) :
+		#var pos = ret.find("]")
+		#ret = ret.insert(pos+1,"-")
 	return ret
 	
 var internalPopupBool : bool = false

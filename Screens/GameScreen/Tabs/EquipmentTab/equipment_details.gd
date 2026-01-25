@@ -121,7 +121,29 @@ func updateText_weapon(myText) :
 	return myText
 
 func getImprovementText(newVal, oldVal, inverted : bool, includeBrackets : bool) -> String :
+	var oldMagnitude
+	if (is_equal_approx(oldVal,0)) :
+		oldMagnitude=99
+	else :
+		oldMagnitude = floor(log(abs(oldVal))/log(10))
+	var newMagnitude
+	if (is_equal_approx(newVal,0)) :
+		newMagnitude = 99
+	else :
+		newMagnitude = floor(log(abs(newVal))/log(10))
 	var improvement = newVal-oldVal
+	var improvementMagnitude = floor(log(abs(improvement))/log(10))
+	var resultantSigFigs
+	if (improvementMagnitude >= oldMagnitude && improvementMagnitude >= newMagnitude) :
+		resultantSigFigs = 3
+	elif (improvementMagnitude < oldMagnitude && improvementMagnitude < newMagnitude) :
+		resultantSigFigs = 3-(min(oldMagnitude,newMagnitude)-improvementMagnitude)
+		if (resultantSigFigs <= 0) :
+			improvement = 0
+			resultantSigFigs = 3
+	else :
+		resultantSigFigs = 3
+	
 	var retVal : String = ""
 	retVal += "\t\t"
 	if (true) :
@@ -138,7 +160,8 @@ func getImprovementText(newVal, oldVal, inverted : bool, includeBrackets : bool)
 			retVal += "[color=red]+"
 		else :
 			retVal += "[color=green]+"
-	retVal += Helpers.engineeringRound(improvement, 3)
+	if (!is_equal_approx(improvement,0)) :
+		retVal += Helpers.engineeringRound(improvement, resultantSigFigs)
 	if (is_equal_approx(improvement,0)) :
 		retVal += ""
 	else :
@@ -174,9 +197,9 @@ func updateText_weapon_action(myText) :
 		var newType = attack.getDamageType()
 		var oldType = current.basicAttack.getDamageType()
 		if (newType == oldType) :
-			myText += "\t\t--"
+			myText += "\t\t[--]"
 		else :
-			myText += "\t\t[color=red]"+Definitions.damageTypeDictionary[oldType]+"[/color]"
+			myText += "\t\t[[color=red]"+Definitions.damageTypeDictionary[oldType]+"[/color]]"
 	myText += "\n"
 	myText += "\t\tAction Power: " + Helpers.engineeringRound(attack.getPower(),3)
 	if (isInRewards && currentlyEquippedItem != null) :
@@ -275,7 +298,7 @@ func updateText_modifiers_REWARDS(myText) :
 			if (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0))) && !((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
 				tempStr += "--"
 				if (subkey == "Premultiplier") :
-					tempStr += getImprovementText(0,(oldVal-1),false,true)
+					tempStr += getImprovementText(1,(oldVal),false,true)
 				else :
 					tempStr += getImprovementText(0,oldVal,false,true)
 				stringList[0].append(tempStr+"\n")
@@ -299,14 +322,14 @@ func updateText_modifiers_REWARDS(myText) :
 			if (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0))) && !((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
 				tempStr += "--"
 				if (subkey == "Premultiplier") :
-					tempStr += getImprovementText(0,(oldVal-1),false,true)
+					tempStr += getImprovementText(1,(oldVal),false,true)
 				else :
 					tempStr += getImprovementText(0,oldVal,false,true)
 				stringList[0].append(tempStr+"\n")
 			elif (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0)))&&((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
 				tempStr = ""
 			elif (!((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0)))&&!((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
-				tempStr = modifiers.getModStringOrNull_attr(key,subkey)
+				tempStr = modifiers.getModStringOrNull_combatStat(key,subkey)
 				tempStr += getImprovementText(newVal,oldVal,false,true)
 				stringList[2].append(tempStr+"\n")
 			else :
@@ -328,19 +351,19 @@ func updateText_modifiers_REWARDS(myText) :
 			if (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0))) && !((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
 				tempStr += "--"
 				if (subkey == "Premultiplier") :
-					tempStr += getImprovementText(0,(oldVal-1),true,true)
+					tempStr += getImprovementText(1,(oldVal),localInverted,true)
 				else :
-					tempStr += getImprovementText(0,oldVal,false,true)
+					tempStr += getImprovementText(0,oldVal,localInverted,true)
 				stringList[0].append(tempStr+"\n")
 			elif (((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0)))&&((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
 				tempStr = ""
 			elif (!((subkey == "Premultiplier" && is_equal_approx(newVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(newVal,0.0)))&&!((subkey == "Premultiplier" && is_equal_approx(oldVal,1.0)) || (subkey != "Premultiplier" && is_equal_approx(oldVal,0.0)))) :
-				tempStr = modifiers.getModStringOrNull_attr(key,subkey)
+				tempStr = modifiers.getModStringOrNull_otherStat(key,subkey)
 				tempStr += getImprovementText(newVal,oldVal,localInverted,true)
 				stringList[2].append(tempStr+"\n")
 			else :
 				tempStr = modifiers.getModStringOrNull_otherStat(key,subkey)
-				tempStr += getImprovementText(newVal,oldVal,false,true)
+				tempStr += getImprovementText(newVal,oldVal,localInverted,true)
 				stringList[3].append(tempStr+"\n")
 			if (tempStr != "") :
 				addEndl = true

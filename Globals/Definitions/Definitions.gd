@@ -1,9 +1,9 @@
 extends Node
-const currentVersion : String = "DLC release"
+const currentVersion : String = "DLC development"
 var GODMODE : bool = false
 var DEVMODE : bool = false
 var steamEnabled : bool = false
-var hasDLC : bool = true
+var hasDLC : bool = false
 func _ready() :
 	attributeCount = 0
 	for key in attributeDictionary :
@@ -230,6 +230,8 @@ enum saveSlots {
 }
 const tempSlot = "user://temp_save_slot.json"
 const emergencySlot = "user://backup_save_slot.json"
+const tempMainSlot = "user://temp_main_slot.json"
+const emergencyMainSlot = "user://backup_main_save_slot.json"
 var slotPaths = {
 	saveSlots.current : "",
 	saveSlots.slot0 : "user://save_slot_0.json",

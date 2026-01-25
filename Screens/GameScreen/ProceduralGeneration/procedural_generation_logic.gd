@@ -161,12 +161,12 @@ func getAllMisc() :
 	return list
 		
 func getAllItems() :
-	var list = EquipmentDatabase.getAllEquipment()
+	var list = EquipmentDatabase.getAllEquipment().duplicate()
 	var index = 0
 	while (index < list.size()) :
 		if (!list[index].equipmentGroups.isEligible) :
 			list.remove_at(index)
-		if (!Definitions.hasDLC && Helpers.isDLC(list[index])) :
+		elif (!Definitions.hasDLC && Helpers.isDLC(list[index])) :
 			list.remove_at(index)
 		else :
 			index += 1
@@ -288,8 +288,11 @@ func compensateForMultiEnemy(encounter : Encounter,row, type) -> Encounter :
 		enemy.MAXHP *= correctionRatio
 		enemy.PHYSDEF *= correctionRatio
 		enemy.MAGDEF *= correctionRatio
+		## This is so that the enemy can be reconstructed from its save file without calling this function
+		enemy.myScalingFactor *= 1.0/(actualPower/roomBudget)
 	if (actualPower > 1.5*roomBudget) :
-		print("corrected " + type + " room with " + str(retVal.enemies.size()) + " enemies from " + str(actualPower) + " to " + str(roomBudget))
+		pass
+		#print("corrected " + type + " room with " + str(retVal.enemies.size()) + " enemies from " + str(actualPower) + " to " + str(roomBudget))
 	return retVal
 
 ## Side encounters have a unit power of 1, but use stronger enemies- halfway to the next node.

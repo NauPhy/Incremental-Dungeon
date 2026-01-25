@@ -43,6 +43,8 @@ func disableWrapping() :
 	autowrap_mode = TextServer.AUTOWRAP_OFF
 	
 func setTextExceptKey(val, key) :
+	if (isOnNestedTooltip()) :
+		return
 	if (get_black_text() == val.replace("`","")) :
 		var index = text.find(key)
 		if (index == -1) :
@@ -55,6 +57,8 @@ func setTextExceptKey(val, key) :
 	await updateHyperlinksExceptBadKey()
 	
 func setText(val : String) :
+	if (isOnNestedTooltip()) :
+		return
 	if (get_black_text() == val.replace("`","")) :
 		return
 	#print("TEXT:" + text + ": ", text.to_utf8_buffer())

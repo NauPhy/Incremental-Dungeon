@@ -94,11 +94,18 @@ const titleFont = 18/367.5
 const actionFont = 16/367.5
 const progressFont = 15/367.5
 const HPFont = 15/367.5
+
+var oldSize
+var firstProcess : bool = true
 func _process(_delta) :
-	$TitleCard/Title.add_theme_font_size_override("normal_font_size", titleFont*size.y)
-	$ResourceCard/ActionLabel.add_theme_font_size_override("normal_font_size", actionFont*size.y)
-	$ResourceCard/VBoxContainer/ActionProgressBar.add_theme_font_size_override("font_size",progressFont*size.y)
-	$ResourceCard/VBoxContainer/HPBar.setFontSize(HPFont*size.y)
+	if (firstProcess) :
+		firstProcess = false
+		updateFontSizes()
+		oldSize = size
+	else :
+		if (!(is_equal_approx(size.x,oldSize.x)&&(is_equal_approx(size.y,oldSize.y)))) : 
+			updateFontSizes()
+			oldSize = size
 	var windowSize = Engine.get_singleton("DisplayServer").window_get_size()
 	#if (windowSize.x < windowSize.y) :
 	var actorCount = get_parent().get_child_count()
@@ -117,6 +124,12 @@ func _process(_delta) :
 		return
 	HPBar().setMaxHP(core.MAXHP)
 	HPBar().setCurrentHP(HP)
+	
+func updateFontSizes() :
+	$TitleCard/Title.add_theme_font_size_override("normal_font_size", titleFont*size.y)
+	$ResourceCard/ActionLabel.add_theme_font_size_override("normal_font_size", actionFont*size.y)
+	$ResourceCard/VBoxContainer/ActionProgressBar.add_theme_font_size_override("font_size",progressFont*size.y)
+	$ResourceCard/VBoxContainer/HPBar.setFontSize(HPFont*size.y)
 
 func pause() :
 	$ResourceCard/VBoxContainer/ActionProgressBar.paused = true
