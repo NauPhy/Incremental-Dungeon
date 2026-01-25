@@ -7,10 +7,10 @@ script = ExtResource("1_0pqfe")
 text = "Fence with swordfish"
 hidden = true
 scaling = {
-"Dexterity": 0.6,
+"Dexterity": 0.75,
 "Durability": 0.0,
 "Intelligence": 0.0,
 "Skill": 0.0,
-"Strength": 0.6
+"Strength": 0.75
 }
 metadata/_custom_type_script = "uid://dqi4f2avtalvt"

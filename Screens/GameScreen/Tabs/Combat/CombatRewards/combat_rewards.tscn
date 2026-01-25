@@ -68,6 +68,7 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 offset_left = 8.0
+isInRewards = true
 
 [node name="InventoryPanel" type="Panel" parent="Content"]
 layout_mode = 1
@@ -77,15 +78,23 @@ anchor_bottom = 1.0
 offset_right = -7.0
 theme = ExtResource("3_devvd")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Content/InventoryPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Content/InventoryPanel"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.9
 offset_left = 15.0
 offset_top = 15.0
 offset_right = -15.0
 offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Content/InventoryPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="TakeAllButton" parent="Content/InventoryPanel" instance=ExtResource("4_rqq3e")]
 layout_mode = 1
@@ -102,5 +111,6 @@ size_flags_vertical = 8
 theme_override_font_sizes/font_size = 25
 text = " Take All "
 
+[connection signal="currentlyEquippedItemRequested" from="Content/Details" to="." method="_on_details_currently_equipped_item_requested"]
 [connection signal="optionPressed" from="Content/Details" to="." method="_on_details_option_pressed"]
 [connection signal="pressed" from="Content/InventoryPanel/TakeAllButton" to="." method="_on_take_all_button_pressed"]

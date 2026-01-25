@@ -89,4 +89,5 @@ func refreshSaveInformation() :
 			currentButton.setName((loadDict["/root/Main/GameScreen/Player"])["myCharacter"]["name"])
 			currentButton.setTime((loadDict[SaveManager.get_path() as String])["playtime"])
 			currentButton.showExtra()
+			currentButton.setCompleted((loadDict["/root/Main/GameScreen"])["apophisKilled"])
 			currentButton.set_disabled(false)

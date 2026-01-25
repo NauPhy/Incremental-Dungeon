@@ -11,7 +11,13 @@ func _ready() :
 		var newEntry = getContainer().get_node("Sample").duplicate()
 		getContainer().add_child(newEntry)
 		newEntry.visible = true
-		if (EnemyDatabase.getKillCount(enemy) == 0) :
+		var isDiscovered : bool
+		if (IGOptions.getIGOptionsCopy()[IGOptions.options.globalEncyclopedia]) :
+			var val = SaveManager.getGlobalSettings()["globalEncyclopedia"]["beastiary"].get(enemy)
+			isDiscovered = val != null && val != 0
+		else :
+			isDiscovered = EnemyDatabase.getKillCount(enemy) != 0
+		if (!isDiscovered) :
 			newEntry.setText("Undiscovered")
 			newEntry.set_disabled(true)
 		else :
@@ -25,7 +31,7 @@ func getContainer() :
 func _on_my_pressed(emitter) :
 	var enemy : ActorPreset = EnemyDatabase.getEnemy(enemyDict[emitter.getText()])
 	var bigEntry
-	if (enemy.enemyGroups != null && (enemy.enemyGroups.isEligible || enemy.getResourceName() == "apophis")) :
+	if (enemy.enemyGroups != null && (enemy.enemyGroups.isEligible || enemy.getResourceName() == "apophis") || enemy.getResourceName() == "athena") :
 		bigEntry = bigEntryLoaderNew.instantiate()
 	else :
 		bigEntry = bigEntryLoader.instantiate()

@@ -26,6 +26,8 @@ signal playerPortraitRequested
 func _on_player_portrait_requested(emitter) :
 	emit_signal("playerPortraitRequested", emitter)
 ##########################
+func getScalingRows() :
+	return $ProceduralGenerationLogic.getScalingRows_mapFinished(maxFloor, getFurthestProgression())
 func getMostRecentEquipmentScaling() -> float :
 	var currentRow = getFurthestProgression()
 	var scalingRows = $ProceduralGenerationLogic.getScalingRows_mapFinished(maxFloor,currentRow)
@@ -88,7 +90,15 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 			"currency" : [0]
 		}
 	hideMapAndUI()
-	await handleCombatRewards(rewards)
+	if (Definitions.hasDLC && currentRoom.has_method("getEncounterRef") && currentRoom.getEncounterRef().enemies.size() != 0 && currentRoom.getEncounterRef().enemies[0].getResourceName() == "athena") :
+		var oldSettings = IGOptions.getIGOptionsCopy()
+		var newSettings = oldSettings.duplicate(true)
+		newSettings["filter"] = IGOptions.getDefaultOptionDict().duplicate()["filter"]
+		IGOptions.saveIGOptionsNoUpdate(newSettings)
+		await handleCombatRewards(rewards)
+		IGOptions.saveIGOptionsNoUpdate(oldSettings)
+	else :
+		await handleCombatRewards(rewards)
 	#showMapAndUI()
 	if ($MapContainer.get_child_count() >= 2 && currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N0") :
 		emit_signal("tutorialRequested", Encyclopedia.tutorialName.row1, Vector2(0,0))
@@ -154,6 +164,8 @@ func _on_map_completed(emitter) :
 	$CombatPanel.pauseCombat()
 	$CombatPanel.visible = false
 	showMapAndUI()
+	if (emitter.has_method("getEnvironment")) :
+		Helpers.handleBiomeAchievement(emitter.getEnvironment())
 	var completedIndex = Helpers.findIndexInContainer($MapContainer, emitter)
 	if (completedIndex == maxFloor) :
 		## The only boss that starts with Hell Knight is the final boss
@@ -265,11 +277,9 @@ func disableUI() :
 	if (currentFloor != null) :
 		currentFloor.disableUI()
 	$FloorDisplay.visible = false
-	$CanvasLayer.visible = false
 func enableUI() :
 	currentFloor.enableUI()
 	$FloorDisplay.visible = true
-	$CanvasLayer.visible = true
 
 #######################################
 var defeatCoroutineRunning : bool = false
@@ -331,6 +341,7 @@ func handleCombatRewards(rewards : Dictionary) :
 	rewardHandler.connect("addToInventoryRequested", _on_add_to_inventory_request)
 	rewardHandler.connect("waitingForUser", _on_reward_pending)
 	rewardHandler.connect("itemListForYourInspectionGoodSir", _item_list_inspection)
+	rewardHandler.connect("currentlyEquippedItemRequested", _on_currently_equipped_item_requested)
 	rewardHandler.initialise(rewards)
 	#if (rewardHandler.initialisationPending) :
 		#await rewardHandler.initialisationComplete
@@ -340,6 +351,10 @@ func handleCombatRewards(rewards : Dictionary) :
 signal itemListForYourInspectionGoodSir
 func _item_list_inspection(val, val2) :
 	emit_signal("itemListForYourInspectionGoodSir", val, val2)
+	
+signal currentlyEquippedItemRequested
+func _on_currently_equipped_item_requested(emitter, type) :
+	emit_signal("currentlyEquippedItemRequested", emitter, type)
 		
 signal rewardPending
 func _on_reward_pending() :
@@ -492,3 +507,7 @@ func enableShopShortcut(val : String) :
 
 func _on_visibility_changed() -> void:
 	$CanvasLayer.visible = self.is_visible_in_tree()
+
+
+func _on_resized() -> void:
+	onLoad_2()

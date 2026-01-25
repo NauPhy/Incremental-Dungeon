@@ -34,14 +34,14 @@ func resetOtherModsIfWrong() :
 	var partialReset : bool = myPacket.otherMods.size() != Definitions.otherStatDictionary.keys().size()
 	var fullReset = partialReset && myPacket.otherMods.size() < Definitions.otherStatEnum.routineSpeed_0 +1
 	if (fullReset) :
-		print("Full reset: " + getItemName())
+		#print("Full reset: " + getItemName())
 		var oldPacket = myPacket.duplicate()
 		myPacket = ModifierPacket.new()
 		myPacket.attributeMods = oldPacket.attributeMods
 		myPacket.statMods = oldPacket.statMods
-		print(resource_path.get_file().get_basename())
+		#print(resource_path.get_file().get_basename())
 	elif (partialReset) :
-		print("Partial reset: " + getItemName())
+		#print("Partial reset: " + getItemName())
 		var oldPacket = myPacket.duplicate()
 		myPacket = ModifierPacket.new()
 		myPacket.attributeMods = oldPacket.attributeMods
@@ -53,12 +53,17 @@ func resetOtherModsIfWrong() :
 		for index in range(Definitions.otherStatEnum.routineSpeed_0,Definitions.otherStatEnum.routineSpeed_5+1) :
 			myPacket.otherMods[Definitions.otherStatDictionary[index]] = oldPacket.otherMods["Routine Speed"]
 	else :
-		print("NO RESET: " + getItemName())
+		pass
+		#print("NO RESET: " + getItemName())
 
 func getModifierPacket() -> ModifierPacket :
 	return myPacket
 func getName() :
 	return title
+func getTitle() :
+	return getName()
+func setTitle(val) :
+	title = val
 func getType() :
 	return Definitions.equipmentTypeEnum.currency
 func getSaveDictionary() -> Dictionary :

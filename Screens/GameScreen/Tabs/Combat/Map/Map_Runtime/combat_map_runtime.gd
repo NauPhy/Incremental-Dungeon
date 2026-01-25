@@ -63,6 +63,7 @@ signal mapCompleted
 func completeRoom(completedRoom) :
 	checkHerophile(completedRoom)
 	checkApophis(completedRoom)
+	checkDragon(completedRoom)
 	var firstCompletion = !completedRoom.isCompleted()
 	completedRoom.onCombatComplete()
 	if (firstCompletion || completedRoom.has_method("isEmpty") && completedRoom.isEmpty()) :
@@ -256,7 +257,7 @@ func initialise(val) :
 		goHome()
 		fullyInitialised = true
 		emit_signal("fullyInitialisedSignal")
-	elif (val == null) :
+	elif (val == null || (val is String && val == "null")) :
 		return
 	else :
 		initialise(MapData.createFromSaveDictionary(val["mapData"]))
@@ -335,7 +336,10 @@ func getSaveDictionary() -> Dictionary :
 	var rooms = $CombatMap/RoomContainer.get_children()
 	for index in range (rooms.size()) :
 		tempDict["room"+str(index)] = rooms[index].getSaveDictionary()
-	tempDict["mapData"] = mapData.getSaveDictionary()
+	if (mapData == null) :
+		tempDict["mapData"] = "null"
+	else :
+		tempDict["mapData"] = mapData.getSaveDictionary()
 	return tempDict
 
 func onLoad(loadDict) -> void :
@@ -457,6 +461,14 @@ func checkHerophile(room) :
 				if (enemy.getResourceName() == "champion_of_poseidon") :
 					emit_signal("tutorialRequested", Encyclopedia.tutorialName.herophile, Vector2(0,0))
 					return
+func checkDragon(room) :
+	if (room.has_method("getEncounterRef")) :
+		var encounter : Encounter = room.getEncounterRef()
+		if (encounter != null) :
+			for enemy in encounter.enemies :
+				var myName = enemy.getName()
+				if (myName.to_upper().find("DRAGON") != -1) :
+					Helpers.unlockAchievement(Definitions.achievementEnum.legend)
 signal apophisKilled
 func checkApophis(room) :
 	if (room.has_method("getEncounterRef")) :

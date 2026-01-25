@@ -53,11 +53,11 @@ static func add(left : ModifierPacket, right : ModifierPacket) -> ModifierPacket
 	return newPacket
 
 func getModStringOrNull_attr(attribute : Definitions.attributeEnum, tag : String) :
-	return internalGetStrOrNull(internalCallType.attribute, tag, Definitions.attributeDictionary[attribute])
+	return internalGetStrOrNull(internalCallType.attribute, tag, Definitions.attributeDictionary[attribute], Definitions.attributeDictionaryShort[attribute])
 func getModStringOrNull_combatStat(combatStat : Definitions.baseStatEnum, tag : String) :
-	return internalGetStrOrNull(internalCallType.stat, tag, Definitions.baseStatDictionary[combatStat])
+	return internalGetStrOrNull(internalCallType.stat, tag, Definitions.baseStatDictionary[combatStat], Definitions.baseStatDictionaryShort[combatStat])
 func getModStringOrNull_otherStat(otherStat : Definitions.otherStatEnum, tag : String) :
-	var retVal = internalGetStrOrNull(internalCallType.other, tag, Definitions.otherStatDictionary[otherStat])
+	var retVal = internalGetStrOrNull(internalCallType.other, tag, Definitions.otherStatDictionary[otherStat],Definitions.otherStatDictionary[otherStat])
 	if (retVal == null) :
 		return retVal
 	elif (otherStat == Definitions.otherStatEnum.physicalDamageTaken || otherStat == Definitions.otherStatEnum.magicDamageTaken) :
@@ -68,7 +68,7 @@ func getModStringOrNull_otherStat(otherStat : Definitions.otherStatEnum, tag : S
 	return retVal
 	
 enum internalCallType{attribute, stat, other}
-func internalGetStrOrNull(type : internalCallType, tag : String, key : String,) :
+func internalGetStrOrNull(type : internalCallType, tag : String, key : String,otherKey : String) :
 	var val
 	if (type == internalCallType.attribute) :
 		val = attributeMods.get(key)
@@ -80,7 +80,7 @@ func internalGetStrOrNull(type : internalCallType, tag : String, key : String,) 
 		return null
 	if (val == null) :
 		return null
-	var callKey = key
+	var callKey = otherKey
 	if (callKey != "") :
 		callKey += " "
 	return getStrOrNull_static(tag, val[tag], callKey, true)

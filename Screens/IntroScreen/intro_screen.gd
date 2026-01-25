@@ -11,8 +11,8 @@ func _on_reason_carousel_end(chosenOption) :
 	#$CharacterCreator.initialise(options, details, index)
 	currentState = state.Character
 	
-func _on_character_creator_end(character) :
-	emit_signal("characterDone", character)
+func _on_character_creator_end(character, val) :
+	emit_signal("characterDone", character, val)
 
 #var options : Array[String] = [
 	#"I want to protect my village",

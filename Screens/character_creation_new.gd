@@ -133,6 +133,8 @@ func _on_my_button_pressed() -> void:
 	tempPop.connect("binaryChosen", _on_binary_chosen)
 	if (get_parent() is CanvasLayer) :
 		tempPop.layer = get_parent().layer
+		
+const hyperLoader = preload("res://Graphic Elements/popups/hyperModePopup.tscn")
 func _on_binary_chosen(chosen : int) :
 	if (chosen == 0) :
 		var myClass = $ClassContainer/CharacterCreator/VBoxContainer2/StatDescription.currentStats
@@ -143,7 +145,15 @@ func _on_binary_chosen(chosen : int) :
 		myCharacter.setClass(myClass)
 		myCharacter.setName(myName)
 		myCharacter.setPortraitExtraSafe($Portrait)
-		emit_signal("characterDone", myCharacter)
+		
+		var options = MainOptionsHelpers.loadSettings()
+		if (!options["gameCompleted"]) :
+			emit_signal("characterDone", myCharacter, false)
+		else :
+			var hyperScreen = hyperLoader.instantiate()
+			add_child(hyperScreen)
+			var hyperMode = await hyperScreen.hyperChosen
+			emit_signal("characterDone", myCharacter, hyperMode)
 	elif (chosen == 1) :
 		return
 

@@ -19,12 +19,12 @@ func initialise(rewards : Dictionary) :
 		if (rewards["currency"][index] == 0) :
 			continue
 		var entry = entryLoader.instantiate()
-		$Content/InventoryPanel/VBoxContainer.add_child(entry)
+		$Content/InventoryPanel/ScrollContainer/VBoxContainer.add_child(entry)
 		entry.initialise_currency(index, rewards["currency"][index])
 		entry.connect("wasSelected", _on_entry_selected)
 	for index in range(0,rewards["equipment"].size()) :
 		var entry = entryLoader.instantiate()
-		$Content/InventoryPanel/VBoxContainer.add_child(entry)
+		$Content/InventoryPanel/ScrollContainer/VBoxContainer.add_child(entry)
 		entry.initialise(rewards["equipment"][index])
 		entry.connect("wasSelected", _on_entry_selected)
 	var changed : bool = false
@@ -38,6 +38,8 @@ func initialise(rewards : Dictionary) :
 		encounteredItems.sort_custom(func(a,b) : a<b)
 		optionsCopy["encounteredItems"] = encounteredItems
 		IGOptions.saveAndUpdateIGOptions(optionsCopy)
+		IGOptions.updateGlobalSettings_items()
+		IGOptions.checkEquipmentEncyclopedia()
 	
 	for entry in getItemList() :
 		if (entry.getItemSceneRef().getType() == Definitions.equipmentTypeEnum.currency) :
@@ -63,11 +65,15 @@ func initialise(rewards : Dictionary) :
 				delete = delete && !(filter["element"][element])
 			delete = delete || !(filter["quality"][grouping.quality])
 			delete = delete || !(filter["equipmentType"][entry.getItemSceneRef().getType()])
+			if (grouping.weaponClass != -1) :
+				delete = delete || !(filter["weaponType"][grouping.weaponClass])
 		else :
 			for element in grouping.getElements() :
 				delete = delete || filter["element"][element]
 			delete = delete || filter["quality"][grouping.quality]
 			delete = delete || filter["equipmentType"][entry.getItemSceneRef().getType()]
+			if (grouping.weaponClass != -1) :
+				delete = delete || filter["weaponType"][grouping.weaponClass]
 		if (delete) :
 			itemsToDelete.append(entry.getItemSceneRef())
 			continue
@@ -76,7 +82,7 @@ func initialise(rewards : Dictionary) :
 	if (getItemList().is_empty()) :
 		suicide()
 	else :
-		var firstEntry = $Content/InventoryPanel/VBoxContainer.get_child(0)
+		var firstEntry = $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_child(0)
 		firstEntry.getItemSceneRef().select()
 		$Content/Details.setItemSceneRefBase(firstEntry.getItemSceneRef())
 		self.visible = true
@@ -100,13 +106,13 @@ func _on_details_option_pressed(itemSceneRef, val : int) -> void:
 		removeItemFromList(itemSceneRef)
 	
 func findItem(item : Equipment) :
-	for child in $Content/InventoryPanel/VBoxContainer.get_children() :
+	for child in $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_children() :
 		if (child.getItemSceneRef() == item) :
 			return child
 	return null
 	
 func getItemList() :
-	return $Content/InventoryPanel/VBoxContainer.get_children()
+	return $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_children()
 	
 func removeItemsFromList_internal(items : Array[Node]) :
 	if (items.size() == 0) :
@@ -114,17 +120,17 @@ func removeItemsFromList_internal(items : Array[Node]) :
 	var killableIndex
 	var killableScene
 	for itemSceneRef in items :
-		var itemList = $Content/InventoryPanel/VBoxContainer.get_children()
+		var itemList = $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_children()
 		for index in range(0,itemList.size()) :
 			if (itemList[index].getItemSceneRef() == itemSceneRef) :
 				killableIndex = index
 				killableScene = itemList[index]
 				break
 		#Explicitly remove child because sometimes it seems to take more than 1 frame
-		$Content/InventoryPanel/VBoxContainer.remove_child(killableScene)
+		$Content/InventoryPanel/ScrollContainer/VBoxContainer.remove_child(killableScene)
 		killableScene.queue_free()
 	await get_tree().process_frame
-	var newItemList = $Content/InventoryPanel/VBoxContainer.get_children()
+	var newItemList = $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_children()
 	if (newItemList.is_empty()) :
 		suicide()
 		return
@@ -136,6 +142,7 @@ func removeItemsFromList_internal(items : Array[Node]) :
 	if (newItemList.size()-1>=newIndex && newItemList[newIndex] != null) :
 		$Content/Details.setItemSceneRefBase(newItemList[newIndex].getItemSceneRef())
 	newItemList[newIndex].getItemSceneRef().select()
+	_on_entry_selected(newItemList[newIndex].getItemSceneRef())
 		
 func removeItemFromList(itemSceneRef) :
 	removeItemsFromList_internal([itemSceneRef])
@@ -179,3 +186,7 @@ var finishedBool : bool = false
 func isFinished() -> bool :
 	return finishedBool
 	
+
+signal currentlyEquippedItemRequested
+func _on_details_currently_equipped_item_requested(emitter, type) -> void:
+	emit_signal("currentlyEquippedItemRequested", emitter, type)

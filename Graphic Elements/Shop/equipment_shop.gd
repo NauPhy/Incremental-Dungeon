@@ -45,3 +45,7 @@ func _process(_delta) :
 	#super(newDet)
 	#$VBoxContainer/Shop.move_child($VBoxContainer/Shop/ReforgeColumn, myReforgeIndex)
 	#
+
+signal currentlyEquippedItemRequested
+func _on_details_right_currently_equipped_item_requested(val1, val2) -> void:
+	emit_signal("currentlyEquippedItemRequested", val1, val2)

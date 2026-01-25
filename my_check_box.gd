@@ -24,3 +24,13 @@ func is_pressed() :
 	return $HBoxContainer/CheckBox.is_pressed()
 func set_pressed_no_signal(val) :
 	$HBoxContainer/CheckBox.set_pressed_no_signal(val)
+
+func getTextRef() -> Node :
+	return $HBoxContainer/RichTextLabel
+func setTooltipCurrentLayer(val : int) :
+	if ($HBoxContainer/RichTextLabel.get_child_count() == 0) : 
+		return
+	var tooltip = $HBoxContainer/RichTextLabel.get_child(0)
+	if (!tooltip.has_method("setCurrentLayer")) :
+		return
+	tooltip.setCurrentLayer(val)

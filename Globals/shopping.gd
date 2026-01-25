@@ -57,18 +57,22 @@ func getSaveDictionary() -> Dictionary :
 	else :
 		retVal["weaponTime"] = weaponTimer.time_left
 	retVal["myArmor"] = []
+	retVal["myArmorNames"] = []
 	for armor in myArmor :
 		if (armor == null) :
 			retVal["myArmor"].append("null")
 		else :
 			retVal["myArmor"].append(armor.getItemName())
+			retVal["myArmorNames"].append(armor.getName())
 	retVal["armorScaling"] = armorScaling
 	retVal["myWeapons"] = []
+	retVal["myWeaponNames"] = []
 	for weapon in myWeapons :
 		if (weapon == null) :
 			retVal["myWeapons"].append("null")
 		else :
 			retVal["myWeapons"].append(weapon.getItemName())
+			retVal["myWeaponNames"].append(weapon.getName())
 	retVal["weaponScaling"] = weaponScaling
 	retVal["subclassPurchased"] = subclassPurchased
 	return retVal
@@ -120,16 +124,24 @@ func onLoad(loadDict) :
 		weaponTimer.start(tempWeapon)
 	weaponScaling = loadDict["weaponScaling"]
 	armorScaling = loadDict["armorScaling"]
-	for weapon in loadDict["myWeapons"] :
+	var weapons = loadDict["myWeapons"]
+	for index in range(0, weapons.size()) :
+		var weapon = weapons[index]
 		if (weapon == "null") :
 			myWeapons.append(null)
 		else :
 			myWeapons.append(EquipmentDatabase.getEquipment(weapon).getAdjustedCopy(weaponScaling))
-	for armor in loadDict["myArmor"] :
+			if (loadDict.get("myWeaponNames") != null) :
+				myWeapons.back().setTitle(loadDict["myWeaponNames"][index])
+	var armors = loadDict["myArmor"]
+	for index in range(0,armors.size()) :
+		var armor = armors[index]
 		if (armor == "null") :
 			myArmor.append(null)
 		else :
 			myArmor.append(EquipmentDatabase.getEquipment(armor).getAdjustedCopy(armorScaling))
+			if (loadDict.get("myArmorNames") != null) :
+				myArmor.back().setTitle(loadDict["myArmorNames"][index])
 	subclassPurchased = loadDict["subclassPurchased"]
 	myReady = true
 	emit_signal("myReadySignal")
@@ -291,7 +303,7 @@ func getNextItemPrice_soul(item) -> int :
 		return currentVal
 	## arbitrary
 	elif (item == soulPurchasable.inventorySpace) :
-		return round(currentVal * 1.2)
+		return round(currentVal * 1.5)
 	## Sould be able to use it 12 times before the final boss.
 	elif (item == soulPurchasable.randomStat) :
 		return round(currentVal * 1.59)
@@ -497,16 +509,16 @@ const itemPriceBase : Dictionary = {
 	## Currency is 1x ore
 	## Expected currency/node at start is 48
 	"armor" : {
-		armorPurchasable.premadeArmor: 40,
-		armorPurchasable.newArmor : 30,
-		armorPurchasable.reforge : 27,
+		armorPurchasable.premadeArmor: 24,
+		armorPurchasable.newArmor : 18,
+		armorPurchasable.reforge : 16,
 		armorPurchasable.statUpgrade_phys : 40,
 		armorPurchasable.statUpgrade_mag : 40
 	},
 	"weapon" : {
-		weaponPurchasable.premadeWeapon : 40,
-		weaponPurchasable.newWeapon : 30,
-		weaponPurchasable.reforge : 27,
+		weaponPurchasable.premadeWeapon : 24,
+		weaponPurchasable.newWeapon : 18,
+		weaponPurchasable.reforge : 16,
 		weaponPurchasable.statUpgrade_DR : 95
 	},
 	"soul" : {
@@ -518,7 +530,7 @@ const itemPriceBase : Dictionary = {
 		soulPurchasable.mageSubclass_2 : 1,
 		soulPurchasable.respec : -1,
 		soulPurchasable.randomStat : 80,
-		soulPurchasable.inventorySpace : 10
+		soulPurchasable.inventorySpace : 20
 	}
 }
 enum soulPurchasable{
@@ -776,6 +788,21 @@ func createSoulShop() :
 	retVal.shopContents = columnArr
 	return retVal
 	
+var playerClass_comm : CharacterClass = null
+var waitingForPlayerClass : bool = false
+signal playerClassRequested
+signal playerClassReceived
+func getPlayerClass() -> CharacterClass:
+	waitingForPlayerClass = true
+	emit_signal("playerClassRequested", self)
+	if (waitingForPlayerClass) :
+		await playerClassReceived
+	return playerClass_comm
+func providePlayerClass(val : CharacterClass) :
+	playerClass_comm = val
+	waitingForPlayerClass = false
+	emit_signal("playerClassReceived")
+	
 ################################################################################
 ## Purchase benefits
 signal unlockRoutineRequested
@@ -804,7 +831,7 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 		awaitingConfirmation = true
 		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	elif (item == routinePurchasable.mixed) :
-		value = [0.1, 11]
+		value = [0.1, 10.9]
 		type = "otherStat"
 		statEnum = [Definitions.otherStatEnum.routineSpeed_5, Definitions.otherStatEnum.routineEffect]
 		isMultiplicative = true
@@ -812,6 +839,21 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 
 	elif (item == routinePurchasable.randomRoutine) :
+		if (unlockedRoutines.size() == 5) :
+			var sublist = ["fence_swordfish","fire","ice"]
+			var playerClass = (await getPlayerClass()).classEnum
+			if (playerClass == Definitions.classEnum.fighter) :
+				sublist.remove_at(2)
+			elif (playerClass == Definitions.classEnum.mage) :
+				sublist.remove_at(0)
+			else :
+				sublist.remove_at(1)
+			var chosenRoutine = sublist[randi_range(0,1)]
+			unlockedRoutines.append(chosenRoutine)
+			lastBought["boughtRoutine"] = MegaFile.getRoutine(chosenRoutine)
+			emit_signal("unlockRoutineRequested", self, lastBought["boughtRoutine"])
+			return
+			
 		var routineList = MegaFile.getAllRoutine()
 		var optionCount = routineList.size()-1-unlockedRoutines.size()
 		var roll = randi_range(0, optionCount-1)
@@ -840,9 +882,14 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 		emit_signal("upgradeRoutineRequested", upgraded)
 	else :
 		return
-
+		
+var herophileUnlocked : bool = false
 func unlockHerophile() :
 	unlockedRoutines.append(MegaFile.getRoutine("spar_herophile"))
+	var settings = SaveManager.getGlobalSettings()
+	settings["herophile"] = true
+	SaveManager.saveGlobalSettings(settings)
+	SaveManager.saveGame(Definitions.saveSlots.current)
 signal addToInventoryRequested
 signal reforgeItemRequested
 func givePurchaseBenefit_armor(item : armorPurchasable, purchase : Purchasable) :
@@ -931,12 +978,12 @@ func givePurchaseBenefitSoul(item : soulPurchasable, _purchase : Purchasable) :
 		if (typeRoll < attrCount-1) :
 			type = "attribute"
 			var roll = randi_range(0,attrCount-1)
-			value.append(0.01)
+			value.append(0.02)
 			statEnum.append(roll)
 		elif (typeRoll < attrCount + statCount-1) :
 			type = "stat"
 			var roll = randi_range(0,statCount-1)
-			value.append(0.02)
+			value.append(0.04)
 			statEnum.append(roll)
 		else :
 			type = "otherStat"
@@ -979,10 +1026,10 @@ func upgradeAllStats() :
 	lastBought["statsBought"] = temp
 	type = "attribute"
 	for key in Definitions.attributeDictionary.keys() :
-		value.append(0.005)
+		value.append(0.01)
 		statEnum.append(key)
 		statName = Definitions.attributeDictionary[key]
-		var temp_2 : String = statName + " Mult +0.005"
+		var temp_2 : String = statName + " Mult +0.01"
 		lastBought["statsBought"].append(temp_2)
 	awaitingConfirmation = true
 	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
@@ -994,10 +1041,10 @@ func upgradeAllStats() :
 	statEnum = []
 	type = "stat"
 	for key in Definitions.baseStatDictionary.keys() :
-		value.append(0.01)
+		value.append(0.02)
 		statEnum.append(key)
 		statName = Definitions.baseStatDictionary[key]
-		var temp_2 : String = statName + " Mult +0.01"
+		var temp_2 : String = statName + " Mult +0.02"
 		lastBought["statsBought"].append(temp_2)
 	awaitingConfirmation = true
 	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
@@ -1029,21 +1076,21 @@ func getOtherStatUpgrade(key : Definitions.otherStatEnum, isAllStat : bool) :
 		return 0
 	elif (key == Definitions.otherStatEnum.routineSpeed_5 || key == Definitions.otherStatEnum.routineEffect) :
 		if (isAllStat) :
-			return 0.01
+			return 0.02
 		else :
-			return 0.025
+			return 0.04
 	elif (key == Definitions.otherStatEnum.magicDamageDealt || key == Definitions.otherStatEnum.physicalDamageDealt) :
 		if (isAllStat) :
-			return 0.005
-		else :
 			return 0.01
+		else :
+			return 0.02
 	elif (key == Definitions.otherStatEnum.physicalDamageTaken || key == Definitions.otherStatEnum.magicDamageTaken) :
 		if (isAllStat) :
-			return -0.005
-		else :
 			return -0.01
+		else :
+			return -0.02
 	else :
-		return 0.01
+		return 0.02
 
 func setupDescriptions() :
 	var standardScaling = pow(2,0.125)
@@ -1052,7 +1099,7 @@ func setupDescriptions() :
 	dict1[routinePurchasable.speed] = Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5] + " Multiplier [color=green]x" + standardScalingString + "[/color]."
 	dict1[routinePurchasable.effect] = Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect] + " Multiplier [color=green]x" + standardScalingString + "[/color]."
 	dict1[routinePurchasable.mixed] = Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5] + " Multiplier [color=red]x" + "0.1" + "[/color]." + "\n"
-	dict1[routinePurchasable.mixed] += Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect] + " Multiplier [color=green]x" + "1.2" + "[/color]."
+	dict1[routinePurchasable.mixed] += Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect] + " Multiplier [color=green]x" + "10.9" + "[/color]."
 	dict1[routinePurchasable.randomRoutine] = "Unlock a random new Routine!"
 	dict1[str(routinePurchasable.randomRoutine)+"alt"] = "All routines unlocked!"
 	dict1[routinePurchasable.upgradeRoutine] = "Upgrade a random routine! For a single routine, all RGR Standard Multiplier Bonuses [color=green]+" + "0.25" + "[/color]."

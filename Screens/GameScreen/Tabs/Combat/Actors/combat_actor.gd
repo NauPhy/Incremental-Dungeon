@@ -21,7 +21,7 @@ func setHP(val) :
 		var Y0
 		var Y1
 		if (isEnemy) :
-			Y0 = clamp(global_position.y-50,100,screenSize.y-estimatedSize.y)
+			Y0 = clamp(global_position.y-50,get_parent().global_position.y+100,screenSize.y-estimatedSize.y)
 			Y1 = global_position.y+size.y-estimatedSize.y
 		else :
 			Y0 = global_position.y+100
@@ -33,16 +33,20 @@ func setHP(val) :
 
 #Add more sophisticated AI later
 func _ready() :
+	if (Definitions.hasDLC && core.resourceName == "athena") :
+		var style : StyleBoxFlat = get_theme_stylebox("panel").duplicate()
+		style.bg_color = Color("ff7160")
+		add_theme_stylebox_override("panel", style)
 	$TitleCard/Title.text = core.text
+	$Graphic.texture = core.portrait
 	var width = await Helpers.getTextWidthWaitFrame($TitleCard/Title,null,core.text)
 	originalSize.x = max(originalSize.x, width+20)
 	#$TitleCard/Title.custom_minimum_size.x = width
 	#$TitleCard.custom_minimum_size.x = width+20
 	#custom_minimum_size.x = width+20
-	$Graphic.texture = core.portrait
 	setHP(core.MAXHP)
-	var chosenAction = randi_range(0,core.actions.size()-1)
-	takeAction(core.actions[chosenAction])
+	#var chosenAction = chooseAction()
+	takeAction(chooseAction())
 	var screenSize : Vector2i = Engine.get_singleton("DisplayServer").screen_get_size()
 	isEnemy = global_position.y < screenSize.y/2
 	if (!isEnemy) :
@@ -141,4 +145,17 @@ func _on_action_progress_bar_action_ready(action) -> void:
 		return
 	emit_signal("actionTaken", self, action)
 	#add more sophisticated AI later
-	takeAction(core.actions[0])
+	takeAction(chooseAction())
+	
+var flurryCounter : int = 0
+func chooseAction() -> Action :
+	var chosenAction = core.actions[randi_range(0,core.actions.size()-1)]
+	if (Definitions.hasDLC && core.getResourceName() == "athena") :
+		if (flurryCounter != 0) :
+			flurryCounter -= 1
+			return MegaFile.getNewAction("flurry")
+		if (chosenAction == MegaFile.getNewAction("flurry")) :
+			flurryCounter = 4
+			return MegaFile.getNewAction("flurry")
+	return chosenAction
+	

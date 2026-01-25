@@ -57,3 +57,6 @@ func setTheme(newTheme) :
 	else :
 		theme = newTheme
 		set_disabled(true)
+
+func setCompleted(val) :
+	$HBoxContainer/Sprite.visible = val

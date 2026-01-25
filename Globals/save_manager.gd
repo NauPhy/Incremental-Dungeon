@@ -1,6 +1,12 @@
 extends Node
 var currentSlot : Definitions.saveSlots
 
+var globalSettings : Dictionary = {}
+func getGlobalSettings() -> Dictionary :
+	return globalSettings.duplicate(true)
+func saveGlobalSettings(newVal : Dictionary) -> void :
+	globalSettings = newVal.duplicate(true)
+
 ##################################
 ## Internal
 var secondsElapsed : int = 0
@@ -121,6 +127,7 @@ signal myReadySignal
 var doneLoading : bool = false
 signal doneLoadingSignal
 func _ready() :
+	globalSettings = MainOptionsHelpers.loadSettings()
 	myReady = true
 	emit_signal("myReadySignal")
 func beforeLoad(_newGame) :
@@ -140,7 +147,15 @@ func onLoad(loadDict) -> void :
 	emit_signal("doneLoadingSignal")
 ##################################
 ## Other
+var saveActive : bool = false
+var saveMutex = Mutex.new()
 func saveGame(slot : Definitions.saveSlots) :
+	saveMutex.lock()
+	if (saveActive) :
+		saveMutex.unlock()
+		return
+	saveActive = true
+	saveMutex.unlock()
 	var filePath : String
 	if (slot == Definitions.saveSlots.current) :
 		filePath = Definitions.slotPaths[currentSlot]
@@ -150,10 +165,16 @@ func saveGame(slot : Definitions.saveSlots) :
 	centralisedGameState[self.get_path()] = self.getSaveDictionary()
 	for node in get_tree().get_nodes_in_group("Saveable") :
 		centralisedGameState[node.get_path()] = node.getSaveDictionary()
+	WorkerThreadPool.add_task(func():handleDiskAccess(centralisedGameState.duplicate(true), filePath, globalSettings.duplicate(true)))
+	
+func handleDiskAccess(centralisedGameState, filePath, globalSettings) :
+	MainOptionsHelpers.saveSettings(globalSettings)
 	var tempFile = FileAccess.open(Definitions.tempSlot, FileAccess.WRITE)
-	tempFile.store_string(JSON.stringify(centralisedGameState))
+	var toStore = JSON.stringify(centralisedGameState)
+	tempFile.store_string(toStore)
 	tempFile.close()
 	## With this pattern there is no point in time where your save file exists only in RAM.
+
 	var dir = DirAccess.open("user://")
 	if (FileAccess.file_exists(Definitions.emergencySlot) && FileAccess.file_exists(filePath)) :
 		dir.remove(Definitions.emergencySlot)
@@ -162,9 +183,9 @@ func saveGame(slot : Definitions.saveSlots) :
 	if (FileAccess.file_exists(filePath)) :
 		dir.remove(filePath)
 	dir.rename(Definitions.tempSlot, filePath)
-	var saveFile = FileAccess.open(filePath, FileAccess.WRITE)
-	saveFile.store_string(JSON.stringify(centralisedGameState))
-	saveFile.close()
+	saveMutex.lock()
+	saveActive = false
+	saveMutex.unlock()
 	
 func loadSaveDict(slot : Definitions.saveSlots) :
 	if (slot == Definitions.saveSlots.current) :
@@ -203,7 +224,7 @@ func postLoad(scenes) :
 		if (node.has_method("onLoad_2")) :
 			node.onLoad_2()
 	
-func newGame(gameScreenRef : Node, character : CharacterPacket) :
+func newGame(gameScreenRef : Node, character : CharacterPacket, hyperMode : bool) :
 	var saveableScenes : Array[NodePath]
 	for node in get_tree().get_nodes_in_group("Saveable") :
 		saveableScenes.append(node.get_path())
@@ -213,6 +234,9 @@ func newGame(gameScreenRef : Node, character : CharacterPacket) :
 	postLoad(saveableScenes)
 	secondsElapsed = 0
 	createTimer()
+	var dict = IGOptions.getIGOptionsCopy()
+	dict["hyperMode"] = hyperMode
+	IGOptions.saveIGOptionsNoUpdate(dict)
 	
 const loadGameMenu = preload("res://SaveManager/load_game_menu.tscn")
 signal loadRequested

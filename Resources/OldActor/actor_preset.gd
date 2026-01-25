@@ -47,7 +47,7 @@ func getAdjustedCopy(scalingFactor : float) -> ActorPreset :
 	var retVal = self.duplicate()
 	retVal.resourceName = self.getResourceName()
 	retVal.myScalingFactor = scalingFactor
-	if (!enemyGroups.isEligible && !(getResourceName() == "apophis")) :
+	if (!enemyGroups.isEligible && !(getResourceName() == "apophis") && !(getResourceName() == "athena")) :
 		return retVal
 	var strengthMultiplier
 	if (enemyGroups.enemyQuality == enemyGroups.enemyQualityEnum.normal) :
@@ -96,11 +96,12 @@ func getDesc() : return description
 
 func getSaveDictionary() -> Dictionary :
 	var retVal = {}
-	if (!enemyGroups.isEligible && !(getResourceName() == "apophis")) :
+	if (!enemyGroups.isEligible && !(getResourceName() == "apophis") && !(getResourceName() == "athena")) :
 		return retVal 
 	retVal["resourceName"] = getResourceName()
 	if retVal["resourceName"] == null :
-		print("problem")
+		pass
+		#print("problem")
 	retVal["myScalingFactor"] = myScalingFactor
 	#if (myScalingFactor != -1) :
 		#retVal["drops"] = []

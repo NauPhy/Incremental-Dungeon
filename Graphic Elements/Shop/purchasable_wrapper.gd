@@ -34,6 +34,8 @@ func setFromDetails(val : Purchasable) :
 		$PurchasableScene.theme = otherTheme
 		$PurchasableScene.updatePanel()
 	$PurchasableScene.setFromDetails(val)
+	if ($PanelContainer/EncyclopediaTextLabel.get_line_count() >= 13) :
+		$PanelContainer/EncyclopediaTextLabel.add_theme_font_size_override("normal_font_size", 15)
 func getName() :
 	return $PurchasableScene.getName()
 func getPrice() :

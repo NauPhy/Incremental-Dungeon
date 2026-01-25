@@ -2,16 +2,28 @@ extends "res://Graphic Elements/popups/my_popup.gd"
 
 const myCheckBox = preload("res://Graphic Elements/Buttons/my_check_box.tscn")
 const labelLoader = preload("res://Graphic Elements/Tooltips/encyclopedia_text_label.tscn")
-const myOffset : int = 2
+const myOffset : int = 3
 var optionDictCopy : Dictionary = {}
 
+const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
 func _ready() :
 	optionDictCopy = IGOptions.getIGOptionsCopy()
 	for key in IGOptions.optionNameDictionary.keys() :
 		if (IGOptions.optionTypeDictionary[key] == IGOptions.optionType.checkBox) :
 			var newElement = myCheckBox.instantiate()
 			redLambda(newElement, key)
-			newElement.setText(IGOptions.optionNameDictionary[key])
+			var text
+			if (key == IGOptions.options.globalEncyclopedia) :
+				text = "[color=#8A50A1]" + IGOptions.optionNameDictionary[key] + "[/color]"
+				var tooltip : Control = tooltipLoader.instantiate()
+				newElement.getTextRef().add_child(tooltip)
+				tooltip.setTitle(IGOptions.optionNameDictionary[key])
+				tooltip.setDesc("Use the encyclopedia maintained across all save files. This is intended for achievement hunters.\n\nTo reset this encyclopedia, see the settings in the main menu.")
+				tooltip.set_anchors_preset(Control.PRESET_FULL_RECT)
+				tooltip.setCurrentLayer(layer)
+			else :
+				text = IGOptions.optionNameDictionary[key]
+			newElement.setText(text)
 			newElement.set_pressed_no_signal(optionDictCopy[key])
 			getOptionsContainer().queue_sort()
 		elif (IGOptions.optionTypeDictionary[key] == IGOptions.optionType.dropdown) :
@@ -80,3 +92,9 @@ func _on_keybinds_pressed() -> void:
 	var keybinds = keybindsLoader.instantiate()
 	add_child(keybinds)
 	keybinds.nestedPopupInit(self)
+
+const creditsLoader = preload("res://Graphic Elements/popups/credits.tscn")
+func _on_credits_pressed() -> void:
+	var credits = creditsLoader.instantiate()
+	add_child(credits)
+	credits.nestedPopupInit(self)

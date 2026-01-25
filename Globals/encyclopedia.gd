@@ -358,7 +358,7 @@ var descriptions : Dictionary = {
 	
 	"Intelligence" : "Intelligence is an Attribute measuring your quick thinking, learning capacity, and accumulated knowledge, and psionic power.\n\t-When a suitable weapon is equipped, Intelligence provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\t-Intelligence provides a Bonus to Base Magic Defense of <MAGDEF CONTRIBUTION> to reflect the fortitude of your psyche.",
 	
-	"Skill" : "Skill is an Attribute measuring your practice and innate ability in the art of combat.\n\t-Skill provides a Bonus to Base AR of <AR CONTRIBUTION>.\n\t-Skill provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your ability to anticipate their opponents' attacks and execute defensive maneuvers",
+	"Skill" : "Skill is an Attribute measuring your practice and innate ability in the art of combat.\n\t-Skill provides a Bonus to Base AR of <AR CONTRIBUTION>.\n\t-Skill provides a Bonus to Base Physical Defense and Magic Defense of <PHYSDEF CONTRIBUTION> to reflect your ability to anticipate your opponents' attacks and execute defensive maneuvers",
 	
 	"Strength" : "Strength is an Attribute measuring your raw physical power.\n\t-When a suitable weapon is equipped, Strength provides a Bonus to Base DR of <DR CONTRIBUTION>.\n\t-Strength provides a Bonus to Base Physical Defense of <PHYSDEF CONTRIBUTION> to reflect your physical health and the hardness of their body.",
 	
@@ -374,7 +374,7 @@ var descriptions : Dictionary = {
 	
 	"Base" : "A Base value is a value before any multipliers are applied. This is an important distinction, because if you've got 10 Base DR and x1000 DR Multiplier, getting another +10 to Base DR will double your damage!\n\nBase values have no direct effect on gameplay (see Final values) though the Final value can be equal to the Base if the product of all multipliers is 1.",
 	
-	"Bonus" : "Bonus is a term indicating an additive change. It has 2 use cases:\n\t-\"Bonus to Base X of Y\" or \n\t-\"X Base Bonus +Y\"\n\t-\tindicates a flat increase Y to the Base of X.\n\t-\"Bonus to X Standard Multiplier of Y\" or\n\t-\"X Standard Multiplier Bonus +Y\"\n\t-\tindicates an additive multiplier to X of value Y(see Final)",
+	"Bonus" : "Bonus is a term indicating an additive change. It has 2 use cases:\n\t\"Bonus to Base X of Y\" or \n\t\"X Base Bonus +Y\"\n\t-indicates a flat increase Y to the Base of X.\n\t\"Bonus to X Standard Multiplier of Y\" or\n\t\"X Standard Multiplier Bonus +Y\"\n\t-indicates an additive multiplier to X of value Y(see Final)",
 	
 	"Final" : "A final value is the value after all multipliers have been applied. In practice, the Final value of X is always used in any formula containing X, such as DR in the Damage formula.\n\t-Final = Base * product of Multipliers.\n\t-Or, with the Standard Multiplier factored out,\n\t-Final = Base * (product of non-standard Multipliers) * (1+sum of bonuses to Standard Multiplier)",
 	
@@ -422,7 +422,7 @@ var descriptions : Dictionary = {
 	
 	"Player Panel" : "Located on the left side of the game screen, the Player Panel lists important stats for your character. Hover over the stats to see all of the Bonuses to the Base and Standard Multiplier as well as all non-Standard multipliers.",
 	
-	"Magic Find" : "Magic Find increases the quantity and quality of item drops from enemies. Currency is unaffected.\n\nWith a Magic Find of 1.0, the drop rarity chances are 60/25/10/3.5/1.5/0 (common/uncommon/rare/epic/legendary/signature), or for bosses, 58.2/24.25/9.7/3.395/1.455/3.\n\nWith a Magic Find of 1.5, 50% more items would drop, and the rarity distribution would instead be 40/37.5/15/5.25/2.25/0, or 34.3/36.375/14.55/5.093/2.183/4.5.\n\nMagic Find is capped at 2.297, at which point common items drop 1% of the time.",
+	"Magic Find" : "Magic Find increases the quantity and quality of item drops from enemies. Currency is unaffected.\n\nWith a Magic Find of 1.0, the drop rarity chances are 60/25/10/3.5/1.5 (common/uncommon/rare/epic/legendary), although bosses have a 15% chance of replacing their first dropped item in a given victory with their signature.\n\nWith a Magic Find of 1.5, 50% more items would drop, and the rarity distribution would instead be 40/37.5/15/5.25/2.25, with a 22.5% signature drop rate from bosses.\n\nMagic Find is capped at 2.297, at which point common items drop 1% of the time.",
 	################################################################
 	## Tags
 	"Tag" : "Tags determine what equipment an enemy can drop. Both equipment and enemies have Tags, and either can disqualify an item from dropping. See Equipment tags and Enemy tags.",

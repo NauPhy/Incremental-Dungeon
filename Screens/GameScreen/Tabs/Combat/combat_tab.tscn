@@ -202,6 +202,7 @@ grow_horizontal = 0
 [node name="ProceduralGenerationLogic" parent="." index="6" instance=ExtResource("13_y6o0r")]
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="wasSelected" from="CanvasLayer/ShopShortcuts/routineButton" to="." method="_on_routine_button_was_selected"]
 [connection signal="wasSelected" from="CanvasLayer/ShopShortcuts/armorButton" to="." method="_on_armor_button_was_selected"]

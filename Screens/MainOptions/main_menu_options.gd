@@ -79,3 +79,19 @@ func _unhandled_input(event: InputEvent) -> void:
 	if (event.is_action("ui_cancel")) :
 		accept_event()
 		emit_signal("swapToMainMenu")
+
+const popupLoader2 = preload("res://Graphic Elements/popups/binary_decision.tscn")
+func _on_reset_global_encyclopedia_pressed() -> void:
+	var popup = popupLoader2.instantiate()
+	add_child(popup)
+	popup.setTitle("Reset Global Encyclopedia")
+	popup.setText("The Global Encyclopedia is the record of encountered enemies and items maintained across all save files, and is used for achievements. It can be toggled in the in-game options.\n\nResetting this encyclopedia will allow you to experience the game anew, but erase all progress towards the 2 100% encyclopedia achievements.")
+	popup.setButton0Name(" I know what I'm doing ")
+	popup.setButton1Name(" Sorry ma'am I thought this was a W****'s ")
+	var choice = await popup.binaryChosen
+	if (choice == 0) :
+		var current = MainOptionsHelpers.loadSettings()
+		var default = MainOptionsHelpers.getDefaultSettings()
+		current["globalEncyclopedia"] = default["globalEncyclopedia"]
+		MainOptionsHelpers.saveSettings(current)
+		SaveManager.globalSettings = current.duplicate()

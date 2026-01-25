@@ -9,7 +9,7 @@ const signatureEquipmentList = {
 	"lich2" : "lich_crown",
 	"amelia" : "amelia_wand",
 	"lindwurm" : "coating_earth_2",
-	"fire_snake" : "coating_fire_2",
+	"lava_snake" : "coating_fire_2",
 	"ice_hydra" : "tome_ice_2",
 	"arch_fiend" : "tome_fire_2",
 	"ilsuiw" : "tome_water_2",
@@ -27,7 +27,8 @@ const signatureEquipmentList = {
 	"swamp_dragon" : "dragonbone_plate",
 	"iron_dragon" : "dragonbone_plate",
 	"bone_dragon" : "dragonbone_plate",
-	"apophis" : "dragonbone_plate"
+	"apophis" : "dragonbone_plate",
+	"polyphemus" : "guantlets_cyclops_strength"
 }
 
 var itemPool : Array
@@ -112,7 +113,7 @@ func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float, penaliseEle
 	var signatureDropped : bool = false
 	if (enemy.enemyGroups.enemyQuality == EnemyGroups.enemyQualityEnum.elite) :
 		var roll = randf_range(0,100)
-		if (roll < 3*magicFind) : 
+		if (roll < 15*magicFind) : 
 			signatureDropped = true
 	if (signatureDropped) :
 		retVal.append(getSignature(enemy).getAdjustedCopy(scalingFactor))
@@ -134,7 +135,13 @@ func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float, penaliseEle
 	return retVal
 	
 func getSignature(enemy : ActorPreset) :
-	return EquipmentDatabase.getEquipment(signatureEquipmentList[enemy.getResourceName()])
+	if (enemy.getResourceName() == "lich") :
+		if (randi_range(0,1)==0) :
+			return EquipmentDatabase.getEquipment(signatureEquipmentList["lich1"])
+		else :
+			return EquipmentDatabase.getEquipment(signatureEquipmentList["lich2"])
+	else :
+		return EquipmentDatabase.getEquipment(signatureEquipmentList[enemy.getResourceName()])
 	
 const qualityThresholds : Array[float] = [1.5,5,15,40,100]
 func getDropQualities(count : int, magicFind : float) -> Array[EquipmentGroups.qualityEnum] :
@@ -145,7 +152,8 @@ func getDropQualities(count : int, magicFind : float) -> Array[EquipmentGroups.q
 			if (roll <= qualityThresholds[qualityIndex]*magicFind) :
 				retVal.append((4-qualityIndex) as EquipmentGroups.qualityEnum)
 				if (4-qualityIndex == EquipmentGroups.qualityEnum.legendary) :
-					print("legendary drop")
+					pass
+					#print("legendary drop")
 				break
 	return retVal
 	
@@ -192,10 +200,14 @@ func rollType() :
 		return 2
 	
 func getItemOfQuality(quality, type) :
-	var roll = randi_range(0,countDict["T"+str(type)][quality]-1)
+	var realType = type
+	if (quality == EquipmentGroups.qualityEnum.legendary && type == Definitions.equipmentTypeEnum.accessory) :
+		while (realType == Definitions.equipmentTypeEnum.accessory) :
+			realType = rollType()
+	var roll = randi_range(0,countDict["T"+str(realType)][quality]-1)
 	var current = 0
 	for item : Equipment in itemPool :
-		if (item.getType() == type && item.equipmentGroups.quality == quality) :
+		if (item.getType() == realType && item.equipmentGroups.quality == quality) :
 			if (roll == current) :
 				return item
 			current += 1

@@ -40,8 +40,12 @@ func getQuality() -> EquipmentGroups.qualityEnum :
 func getTextureCopy() -> Texture2D :
 	return getSprite().get_node("Icon").texture.duplicate()
 var reforges : int = 0
-func reforge(scalingVal) :
+func reforge(scalingVal, rows) :
 	core = core.getAdjustedCopy(scalingVal)
+	if (rows != 0) :
+		var baseTitle = EquipmentDatabase.getEquipment(core.getItemName()).getTitle()
+		var newTitle = baseTitle + " +" + str(rows-1)
+		core.setTitle(newTitle)
 	reforges += 1
 func getReforges() -> int :
 	return reforges

@@ -37,12 +37,12 @@ func _onNewGame() :
 func _on_intro_cancel() :
 	await swapToMenu()
 	
-func _onIntroEnd(character : CharacterPacket) :
+func _onIntroEnd(character : CharacterPacket, hyperMode : bool) :
 	await swapToGame()
 	while(!currentScreen.myReady) : 
 		await get_tree().process_frame
 	#Gives ownership of class struct to Player
-	SaveManager.newGame(currentScreen, character)
+	SaveManager.newGame(currentScreen, character, hyperMode)
 	
 func _onLoadGame() :
 	await swapToGame()

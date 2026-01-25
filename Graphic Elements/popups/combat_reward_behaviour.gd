@@ -3,10 +3,17 @@ extends "res://Graphic Elements/popups/my_popup.gd"
 var workingDict : Dictionary = {}
 
 func initialise() :
+	var options = IGOptions.getIGOptionsCopy()
+	var globalEncyclopedia = IGOptions["optionDict"][IGOptions.options.globalEncyclopedia]
 	var allItems = EquipmentDatabase.getAllEquipment()
 	allItems.sort_custom(func(a,b):return a.getName()<b.getName())
 	#workingDict = startingSettings
-	for item in IGOptions.getIGOptionsCopy()["encounteredItems"] :
+	var encounteredItems
+	if (globalEncyclopedia) :
+		encounteredItems = SaveManager.getGlobalSettings()["globalEncyclopedia"]["items"]
+	else :
+		encounteredItems = IGOptions.getIGOptionsCopy()["encounteredItems"]
+	for item in encounteredItems :
 		if (workingDict.get(item) == null) :
 			workingDict[item] = 0
 	for item in allItems :
