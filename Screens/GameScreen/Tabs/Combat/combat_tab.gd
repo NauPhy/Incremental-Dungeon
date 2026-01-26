@@ -437,7 +437,7 @@ func onLoad(loadDict : Dictionary) :
 			newMap.initialise(loadDict["maps"][index])
 	var maps = $MapContainer.get_children()
 	for index in range(0, maps.size()) :
-		var child = maps[index]
+		var child : Control = maps[index]
 		if (child.has_signal("fullyInitialisedSignal") && !child.fullyInitialised) :
 			await child.fullyInitialisedSignal
 		if (child.has_signal("fullyInitialisedSignal")) :

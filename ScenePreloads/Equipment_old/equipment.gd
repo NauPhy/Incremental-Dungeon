@@ -119,3 +119,13 @@ func use48x48() :
 func setMouseFilter(enumVal) :
 	mouse_filter = enumVal
 	$SuperButton.mouse_filter = enumVal
+
+const passiveLoader = preload("res://Graphic Elements/Buttons/passive_super_button.tscn")
+func createGhostCopy() -> Node :
+	var topLevel = HBoxContainer.new()
+	var button = passiveLoader.instantiate()
+	topLevel.add_child(button)
+	button.contentMargin = $SuperButton.contentMargin
+	var spriteDuplicate = $SuperButton/HBoxContainer/Sprite.duplicate(true)
+	button.addToContainer(spriteDuplicate)
+	return topLevel

@@ -65,7 +65,7 @@ func saveSettings(settings) :
 	WorkerThreadPool.add_task(func():handleDiskAccess(settings))
 	
 func handleDiskAccess(settings) :
-	print("saving main settings. Window mode is " + str(settings["Window Mode"]) + ". Time is " + Time.get_datetime_string_from_system())
+	#print("saving main settings. Window mode is " + str(settings["Window Mode"]) + ". Time is " + Time.get_datetime_string_from_system())
 	var tempFile = FileAccess.open(Definitions.tempMainSlot, FileAccess.WRITE)
 	var toStore = JSON.stringify(settings)
 	tempFile.store_string(toStore)

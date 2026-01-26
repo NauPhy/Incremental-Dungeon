@@ -13,18 +13,10 @@ var trimmedPremultipliers : Dictionary = {}
 var trimmedPostmultipliers : Dictionary = {}
 
 func getFinal() -> float :
-	var prebon : Array[float] = []
-	for key in prebonuses.keys() :
-		prebon.append(prebonuses[key])
-	var premul : Array[float] = []
-	for key in premultipliers.keys() :
-		premul.append(premultipliers[key])
-	var postbon : Array[float] = []
-	for key in postbonuses.keys() :
-		postbon.append(postbonuses[key])
-	var postmul : Array[float] = []
-	for key in postmultipliers.keys() :
-		postmul.append(postmultipliers[key])
+	var prebon : Array = prebonuses.values()
+	var postbon : Array = postbonuses.values()
+	var premul : Array = premultipliers.values()
+	var postmul : Array = postmultipliers.values()
 	var base : float = Helpers.calculateBase(prebon, premul)
 	return Helpers.calculateFinal(base, postbon, postmul)
 func getPrebonuses() -> Dictionary:

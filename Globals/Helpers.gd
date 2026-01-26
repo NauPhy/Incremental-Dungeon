@@ -273,7 +273,7 @@ func equipmentIsNew(item : Equipment) :
 			#tempDict[key] = dict[key]
 	#return tempDict
 	
-func calculateBase(preBonuses : Array[float], preMultipliers : Array[float]) -> float :
+func calculateBase(preBonuses : Array, preMultipliers : Array) -> float :
 	var bonusSum : float = 0
 	for bonus in preBonuses :
 		bonusSum += bonus
@@ -282,7 +282,7 @@ func calculateBase(preBonuses : Array[float], preMultipliers : Array[float]) -> 
 		multiplierProduct *= multiplier
 	return bonusSum*multiplierProduct
 
-func calculateFinal(base : float, postBonuses : Array[float], postMultipliers : Array[float]) :
+func calculateFinal(base : float, postBonuses : Array, postMultipliers : Array) :
 	var multiplierSum = 1
 	for multiplier in postMultipliers :
 		multiplierSum += multiplier
@@ -302,15 +302,32 @@ func findIndexInContainer(container : Node, child) :
 	
 func myRound(val : float, sigFigs : int) :
 	var myVal = abs(val)
-	var magnitude = floor(log(myVal)/log(10))
+	var rawMagnitude = log(myVal)/log(10)
+	var magnitude
+	if (is_equal_approx(rawMagnitude, ceil(rawMagnitude))) :
+		magnitude = ceil(rawMagnitude)
+	else :
+		magnitude = floor(rawMagnitude)
 	var strVal = str(val)
+	
+	## For some reason the below logic does not work with powers of 10. So we'll just do them separately. Obviously because all powers of 10 are already rounded to 1 sig fig it's pretty simple.
+	if (is_equal_approx(myVal, pow(10, magnitude))) :
+		if (myVal >= 1) :
+			return int(val)
+		else :
+			return val
 	
 	## trailingZeroes >= 0 if the last significant figure is in the 1s place or higher, and -1 otherwise
 	var trailingZeroes = max((magnitude+1)-(sigFigs),-1)
 	
 	## CASE 1: the last significant figure is before the "."
 	if (trailingZeroes != -1) :
-		var retStr = strVal.substr(0,sigFigs)
+		var offset
+		if (val < 0) :
+			offset = 1
+		else :
+			offset = 0
+		var retStr = strVal.substr(0,sigFigs+offset)
 		for index in range(0,trailingZeroes) :
 			retStr += "0"
 		return int(retStr)
@@ -352,7 +369,12 @@ func myRound_old(val : float, sigFigs : int) :
 	if (val == 0) :
 		return int(0)
 	var tempVal = abs(val)
-	var magnitude = floor(log(tempVal)/log(10))
+	var rawMagnitude = log(tempVal)/log(10)
+	var magnitude
+	if (is_equal_approx(rawMagnitude, ceil(rawMagnitude))) :
+		magnitude = ceil(rawMagnitude)
+	else :
+		magnitude = floor(rawMagnitude)
 	var base = tempVal/pow(10,magnitude)
 	
 	var num = pow(10.0,sigFigs-1)
@@ -376,38 +398,39 @@ func actualRound(val) -> float :
 	else :
 		return floor(val)
 		
-func engineeringNotation(val) -> String :
-	var newVal = val
+func engineeringNotation(origVal) -> String :
+	var val = abs(origVal)
+	var newVal = origVal
 	var suffix : String = ""
 	if (val >= pow(10,30)) :
-		newVal = val/pow(10,30)
+		newVal = origVal/pow(10,30)
 		suffix = "No"
 	elif (val >= pow(10,27)) :
-		newVal = val/pow(10,27)
+		newVal = origVal/pow(10,27)
 		suffix = "Oc"
 	elif (val >= pow(10,24)) :
-		newVal = val/pow(10,24)
+		newVal = origVal/pow(10,24)
 		suffix = "Sp"
 	elif (val >= pow(10,21)) :
-		newVal = val/pow(10,21)
+		newVal = origVal/pow(10,21)
 		suffix = "Sx"
 	elif (val >= pow(10,18)) :
-		newVal = val/pow(10,18)
+		newVal = origVal/pow(10,18)
 		suffix = "Qi"
 	elif (val >= pow(10,15)) :
-		newVal = val/pow(10,15)
+		newVal = origVal/pow(10,15)
 		suffix = "Qa"
 	elif (val >= pow(10,12)) :
-		newVal = val/pow(10,12)
+		newVal = origVal/pow(10,12)
 		suffix = "T"
 	elif (val >= pow(10,9)) :
-		newVal = val/pow(10,9)
+		newVal = origVal/pow(10,9)
 		suffix = "B"
 	elif (val >= pow(10,6)) :
-		newVal = val/pow(10,6)
+		newVal = origVal/pow(10,6)
 		suffix = "M"
 	elif (val >= pow(10,3)) :
-		newVal = val/pow(10,3)
+		newVal = origVal/pow(10,3)
 		suffix = "K"
 	if (round(newVal) == newVal) :
 		return str(int(newVal)) + suffix

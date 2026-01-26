@@ -259,8 +259,9 @@ func getNextItemPrice_routine(item) -> int :
 	## It's 25x more expensive (5000) at the end of floor 5, after 9 purchases
 	elif (item == routinePurchasable.randomRoutine) :
 		return round(currentVal * 1.43)
+	## Buy once per floor ad infinitum
 	elif (item == routinePurchasable.upgradeRoutine) :
-		return round(currentVal * standardScale)
+		return round(currentVal * 2.3784)
 	else :
 		return -1
 		
@@ -501,7 +502,7 @@ const itemPriceBase : Dictionary = {
 		##10 minutes of farming at node 5 yields 2 of each (40)
 		routinePurchasable.speed : 6,
 		routinePurchasable.effect : 8,
-		routinePurchasable.mixed : 2000,
+		routinePurchasable.mixed : 130000,
 		routinePurchasable.randomRoutine : 40, 
 		## 8 routines
 		routinePurchasable.upgradeRoutine : 1000

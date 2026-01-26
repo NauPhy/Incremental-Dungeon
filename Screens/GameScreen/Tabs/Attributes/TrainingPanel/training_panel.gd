@@ -85,8 +85,8 @@ func sortTraining(type) :
 		entries.sort_custom(func(a,b):return a.getResource().text<b.getResource().text)
 	else :
 		entries.sort_custom(func(a,b):
-			var aScaling = a.getResource().scaling[Definitions.attributeDictionary[currentSortAttribute]]
-			var bScaling = b.getResource().scaling[Definitions.attributeDictionary[currentSortAttribute]]
+			var aScaling = a.getResource().scaling[Definitions.attributeDictionary[currentSortAttribute]]*(1+0.25*routineUpgradeLevels[a.getResource().getResourceName()])
+			var bScaling = b.getResource().scaling[Definitions.attributeDictionary[currentSortAttribute]]*(1+0.25*routineUpgradeLevels[b.getResource().getResourceName()])
 			return (aScaling>bScaling || (aScaling==bScaling&&a.name<b.name)))
 	for index in range(0, entries.size()) :
 		$Con.move_child(entries[index], index+3)

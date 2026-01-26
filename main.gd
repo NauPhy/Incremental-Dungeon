@@ -20,16 +20,20 @@ func swapScreen(screenLoader) -> void :
 	currentScreen = screenLoader.instantiate()
 	add_child(currentScreen)
 
+signal mainMenuLoaded
 func swapToMenu() -> void :
 	await swapScreen(mainMenuLoader)
 	currentScreen.connect("newGame", _onNewGame)
 	currentScreen.connect("loadGame", _onLoadGame)
 	currentScreen.connect("swapToMainMenuOptions", _onSwapToMainMenuOptions)
+	emit_signal("mainMenuLoaded")
 	
+signal gameLoaded
 func swapToGame() -> void :
 	await swapScreen(gameScreenLoader)
 	currentScreen.connect("exitToMenu", swapToMenu)
 	currentScreen.connect("loadGameNow", _onLoadGame)
+	emit_signal("gameLoaded")
 
 func _onNewGame() :
 	await swapScreen(introScreenLoader)
@@ -85,6 +89,8 @@ func _ready() :
 	mainSettingsInit()
 	randomize()
 	swapToMenu()
+	connect("mainMenuLoaded", AudioHandler._on_main_menu_loaded)
+	connect("gameLoaded", AudioHandler._on_game_loaded)
 	myReady = true
 	emit_signal("myReadySignal")
 

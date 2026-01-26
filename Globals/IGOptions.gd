@@ -87,12 +87,13 @@ func updateGlobalSettings_items() :
 func checkEquipmentEncyclopedia() :
 	if (!Definitions.steamEnabled) :
 		return
+	var globalItemList = SaveManager.getGlobalSettings()["globalEncyclopedia"]["items"]
 	var unlock : bool = true
 	var items = EquipmentDatabase.getAllEquipment()
 	for item in items :
 		if (Helpers.isDLC(item)) :
 			continue
-		if (optionDict["encounteredItems"].get(item) == null) :
+		if (globalItemList.find(item) == -1) :
 			unlock = false
 			break
 	if (unlock) :

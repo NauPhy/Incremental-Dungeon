@@ -1,5 +1,5 @@
 extends Node
-const currentVersion : String = "DLC development"
+const currentVersion : String = "DLC release"
 var GODMODE : bool = false
 var DEVMODE : bool = false
 var steamEnabled : bool = false
