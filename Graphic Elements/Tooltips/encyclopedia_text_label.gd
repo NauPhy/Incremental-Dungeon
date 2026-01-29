@@ -119,7 +119,8 @@ func updateHyperlinksExceptBadKey() :
 			if (Encyclopedia.problemDictionary.get(key) != null) :
 				var outerContinue : bool = false
 				for otherKey in Encyclopedia.problemDictionary[key] :
-					var otherIndex = foundIndex + key.length() - otherKey.length()
+					var nestedPos = otherKey.find(key)
+					var otherIndex = foundIndex - nestedPos
 					if (otherIndex != -1 && get_parsed_text().find(otherKey, otherIndex) == otherIndex) :
 						currentIndex = otherIndex + otherKey.length()
 						foundIndex = get_parsed_text().find(key, currentIndex)

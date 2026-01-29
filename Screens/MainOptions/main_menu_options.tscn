@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cmihk3wsee86g"]
+[gd_scene load_steps=6 format=3 uid="uid://cmihk3wsee86g"]
 
 [ext_resource type="Theme" uid="uid://blwnh8rwgc0eh" path="res://Graphic Elements/Themes/mainTab.tres" id="1_1bkrm"]
 [ext_resource type="Script" uid="uid://ckeuiupfho21k" path="res://Screens/MainOptions/main_menu_options.gd" id="2_7wgqa"]
+[ext_resource type="PackedScene" uid="uid://bgjlwljhs8ia8" path="res://master_volume.tscn" id="3_7wgqa"]
 [ext_resource type="PackedScene" uid="uid://c5uhhdm6s5ims" path="res://Graphic Elements/Buttons/my_button.tscn" id="3_yapp8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f6618"]
@@ -85,6 +86,9 @@ layout_mode = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 text = " Reset Global Encyclopedia "
+
+[node name="masterVolume" parent="Content/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource("3_7wgqa")]
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Content/VBoxContainer"]
 custom_minimum_size = Vector2(300, 0)

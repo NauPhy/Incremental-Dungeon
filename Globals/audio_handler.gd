@@ -12,7 +12,16 @@ var nextMusicMode : musicMode = musicMode.silent
 var myTimer : Timer = null
 var timerPing : bool = false
 var musicFinishedPing : bool = false
+var myReady : bool = false
+signal myReadySignal
 func _ready() :
+	await waitForDependencies()
+	
+	var musicBus = AudioServer.get_bus_index("Music")
+	AudioServer.set_bus_volume_db(musicBus, -6.012)
+	
+	loadMainOptions()
+	
 	musicStream = AudioStreamPlayer.new()
 	add_child(musicStream)
 	musicStream.bus = "Music"
@@ -21,9 +30,10 @@ func _ready() :
 	myTimer = Timer.new()
 	add_child(myTimer)
 	myTimer.connect("timeout", _on_timeout)
-	
 	makeConnections()
 	_on_main_menu_loaded()
+	myReady = true
+	emit_signal("myReadySignal")
 
 func _on_timeout() :
 	timerPing = true
@@ -135,3 +145,53 @@ func _on_game_loaded() :
 
 func makeConnections() :
 	pass
+
+func setMasterVolume(val) :
+	var idx = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_volume_db(idx, val)
+	
+func getMasterVolume() :
+	var idx = AudioServer.get_bus_index("Master")
+	return AudioServer.get_bus_volume_db(idx)
+	
+func setMasterMute(val) :
+	var idx = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_mute(idx, val)
+
+func getMasterMute() -> bool :
+	var idx = AudioServer.get_bus_index("Master")
+	return AudioServer.is_bus_mute(idx)
+
+func loadMainOptions() :
+	var allSettings = SaveManager.getGlobalSettings()
+	var settings = allSettings.get("audio")
+	if (settings == null) :
+		return
+	if (settings.get("masterVolume") != null) :
+		setMasterVolume(settings["masterVolume"])
+	if (settings.get("masterMute") != null) :
+		setMasterMute(settings["masterMute"])
+	
+func saveMainOptions() :
+	var currentSettings = SaveManager.getGlobalSettings()
+	currentSettings["audio"] = getMainOptionsDictionary()
+	#print("global settings: ")
+	#print(currentSettings)
+	SaveManager.queueSaveGlobalSettings_immediate(currentSettings)
+	
+func getMainOptionsDictionary() -> Dictionary :
+	var retVal : Dictionary = {}
+	var masterID = AudioServer.get_bus_index("Master")
+	retVal["masterVolume"] = AudioServer.get_bus_volume_db(masterID)
+	retVal["masterMute"] = AudioServer.is_bus_mute(masterID)
+	return retVal
+	
+func getDefaultMainOptionsDictionary() -> Dictionary :
+	var retVal : Dictionary = {}
+	retVal["masterVolume"] = -6.012
+	retVal["masterMute"] = false
+	return retVal
+	
+func waitForDependencies() :
+	if (SaveManager.myReady == false) :
+		await SaveManager.myReadySignal

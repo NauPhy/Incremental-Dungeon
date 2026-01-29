@@ -2,7 +2,7 @@ extends "res://Graphic Elements/popups/my_popup.gd"
 
 const myCheckBox = preload("res://Graphic Elements/Buttons/my_check_box.tscn")
 const labelLoader = preload("res://Graphic Elements/Tooltips/encyclopedia_text_label.tscn")
-const myOffset : int = 3
+const myOffset : int = 4
 var optionDictCopy : Dictionary = {}
 
 var tooltipRef = null
@@ -67,10 +67,13 @@ func getOptionsContainer() :
 
 func _on_save_pressed() -> void:
 	updateOptionDict()
+	$Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/masterVolume.onSave()
 	IGOptions.saveAndUpdateIGOptions(optionDictCopy)
+	SaveManager.queueSaveGame(Definitions.saveSlots.current)
 
 signal finished
 func _on_return_pressed() -> void:
+	$Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/masterVolume.onExit()
 	emit_signal("finished")
 	queue_free()
 	

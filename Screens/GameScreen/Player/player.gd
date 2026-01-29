@@ -49,6 +49,7 @@ func initialiseNumberObjects() :
 		derivedStatObjects.append(NumberClass.new())
 	for key in Definitions.otherStatDictionary.keys() :
 		otherStatObjects.append(NumberClass.new())
+		otherStatObjects.back().enableReferenceMode()
 	otherStatObjects[Definitions.otherStatEnum.magicFind].setPrebonus("Humanoid", 1.0)
 	otherStatObjects[Definitions.otherStatEnum.physicalDamageDealt].setPrebonus("Humanoid",1.0)
 	otherStatObjects[Definitions.otherStatEnum.physicalDamageTaken].setPrebonus("Humanoid",1.0)
@@ -284,6 +285,7 @@ func setClass(character : CharacterClass) :
 		attributeObjects[key].setPremultiplier("Class", character.getAttributeScaling(key))
 	$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.text = "Class: " + character.getText()
 	unarmedWeapon = SceneLoader.createEquipmentScene("unarmed_" + Definitions.classDictionary[characterClass.classEnum])
+	$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.visible = true
 func setName(val) :
 	characterName = val
 	$ScrollContainer/VBoxContainer/NameLabel.text = val

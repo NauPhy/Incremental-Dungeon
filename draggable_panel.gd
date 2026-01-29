@@ -40,11 +40,6 @@ func _on_mouse_entered() -> void:
 func _on_mouse_exited() -> void:
 	if (!isDragging) :
 		isHovered = false
-		
-##diagnostic
-func _exit_tree():
-	if (isDragging) :
-		print("PANEL LOST TREE DURING DRAG")
 
 func cancelDrag() :
 	isDragging = false

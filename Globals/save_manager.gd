@@ -127,6 +127,7 @@ signal myReadySignal
 var doneLoading : bool = false
 signal doneLoadingSignal
 func _ready() :
+	await waitForDependencies()
 	globalSettings = MainOptionsHelpers.loadSettings()
 	myReady = true
 	emit_signal("myReadySignal")
@@ -263,7 +264,7 @@ func saveGameSaveSelection(parent : Node) :
 	if (parent.has_method("nestedPopupInit")) :
 		menu.nestedPopupInit(parent)
 func _on_save_menu_option_chosen(slot : Definitions.saveSlots) :
-	saveGame(slot)
+	queueSaveGame(slot)
 	
 signal newGameReady
 const newGameMenu = preload("res://SaveManager/new_game_menu.tscn")
@@ -272,3 +273,22 @@ func newGameSaveSelection() :
 	add_child(menu)
 	menu.connect("optionChosen", _on_new_game_option_chosen)
 	return menu
+
+func waitForDependencies() :
+	if (!MainOptionsHelpers.myReady) :
+		await MainOptionsHelpers.myReadySignal
+
+func queueSaveGame(slot) :
+	while (true) :
+		saveMutex.lock()
+		if (!saveActive) :
+			saveMutex.unlock()
+			break
+		saveMutex.unlock()
+		await get_tree().process_frame
+	saveGame(slot)
+	print("queued save success")
+	
+func queueSaveGlobalSettings_immediate(settings) :
+	globalSettings = settings.duplicate(true)
+	MainOptionsHelpers.queueSaveSettings(settings)

@@ -681,7 +681,7 @@ func createApophisScreen() :
 		_exit_to_menu()
 	elif (choice == 0) :
 		apophisKilledOnThisFile = true
-		await SaveManager.saveGame(SaveManager.currentSlot)
+		SaveManager.queueSaveGame(SaveManager.currentSlot)
 
 const characterCreationLoader = preload("res://Screens/character_creation_new.tscn")
 func _on_change_appearance_button_pressed() -> void:

@@ -1,5 +1,5 @@
 extends Node
-const currentVersion : String = "DLC release"
+const currentVersion : String = "V1.03 release"
 var GODMODE : bool = false
 var DEVMODE : bool = false
 var steamEnabled : bool = false
@@ -8,19 +8,25 @@ func _ready() :
 	attributeCount = 0
 	for key in attributeDictionary :
 		attributeCount += 1
-	if (currentVersion != "DLC development") :
-		GODMODE = false
-		DEVMODE = false
+	if (currentVersion != "testing") :
+		GODMODE = true
+		DEVMODE = true
 	if (steamInitialise()) :
 		steamEnabled = true
 
 func steamInitialise() -> bool :
 	var initialize_response: Dictionary = Steam.steamInitEx()
+	print("Initialising steam...")
 	if initialize_response['status'] <= Steam.STEAM_API_INIT_RESULT_OK:
-		return true
 		var dlc = Steam.getDLCData()
-		if (dlc.size() != 0 && dlc[0]["available"]) :
-			Definitions.hasDLC = true
+		var owned = Steam.isSubscribedApp(4352850)
+		var installed = Steam.isDLCInstalled(4352850)
+		print("DLC Data:")
+		print(dlc)
+		print("Owned: " + str(owned)) 
+		print("Installed: " + str(installed))
+		hasDLC = owned && installed
+		return true
 	return false
 	
 const DLCWeapons = [

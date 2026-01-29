@@ -442,7 +442,7 @@ func pythag(val : Vector2) :
 
 var oneHundredAchCache : bool = false
 func unlockAchievement(val : Definitions.achievementEnum) :
-	if (!Definitions.steamEnabled) :
+	if (!Definitions.steamEnabled || Definitions.GODMODE || Definitions.DEVMODE) :
 		return
 	if (!Steam.setAchievement(Definitions.achievementDictionary[val])) :
 		print("Failed to unlock achievement: " + Definitions.achievementDictionary[val])

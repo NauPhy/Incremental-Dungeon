@@ -9,6 +9,7 @@ func getDefaultSettings() -> Dictionary :
 		"items" : []
 	}
 	tempDict["herophile"] = false
+	tempDict["audio"] = AudioHandler.getDefaultMainOptionsDictionary()
 	return tempDict
 
 func applyWindowMode(val) :
@@ -20,7 +21,10 @@ func applyWindowMode(val) :
 		return
 		
 func loadSettings() :
-	var text = FileAccess.open(Definitions.mainSettingsPath, FileAccess.READ).get_as_text()
+	var disk = FileAccess.open(Definitions.mainSettingsPath, FileAccess.READ)
+	if (disk == null) :
+		return getDefaultSettings()
+	var text = disk.get_as_text()
 	if (text == null || text == "") :
 		return getDefaultSettings()
 	var dict = JSON.parse_string(text)
@@ -31,7 +35,9 @@ func loadSettings() :
 			"beastiary" : {},
 			"items" : []
 		}
-		createGlobalDictionary(dict)
+	if (dict.get("audio") == null) :
+		dict["audio"] = AudioHandler.getDefaultMainOptionsDictionary()
+	createGlobalDictionary(dict)
 	## because createGlobalDictionary is called before this line, old save files will unlock Athena if they've bought the DLC.
 	## If the save files are new, this will not trigger, but that's fine because new save files track whether Herophile has been killed whether you have the DLC or note
 	if (dict.get("herophile") == null) :
@@ -57,6 +63,7 @@ var saveMutex = Mutex.new()
 func saveSettings(settings) :
 	saveMutex.lock()
 	if (saveActive) :
+		#print("skipping save due to mutex")
 		saveMutex.unlock()
 		return
 	saveActive = true
@@ -82,3 +89,20 @@ func handleDiskAccess(settings) :
 	saveMutex.lock()
 	saveActive = false
 	saveMutex.unlock()
+
+var myReady : bool = false
+signal myReadySignal
+func _ready() :
+	myReady = true
+	emit_signal("myReadySignal")
+
+func queueSaveSettings(settings) :
+	while (true) :
+		saveMutex.lock()
+		if (!saveActive) :
+			saveMutex.unlock()
+			break
+		saveMutex.unlock()
+		await get_tree().process_frame
+	saveSettings(settings)
+	print("queued main settings success")

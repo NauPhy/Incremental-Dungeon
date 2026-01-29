@@ -142,6 +142,7 @@ func onEquipmentSold() :
 var myReady : bool = false
 signal myReadySignal
 func _ready() :
+	$VBoxContainer/CategoryName.currentLayer += 1
 	myReady = true
 	emit_signal("myReadySignal")
 	

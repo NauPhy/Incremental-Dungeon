@@ -875,7 +875,7 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 	elif (item == routinePurchasable.upgradeRoutine) :
 		var routineList = MegaFile.getAllRoutine()
 		var upgraded = routineList[randi_range(0,routineList.size()-1)]
-		if (!unlockedRoutines.find("spar_herophile")) :
+		if (unlockedRoutines.find("spar_herophile") == -1) :
 			while (upgraded == MegaFile.getRoutine("spar_herophile")) :
 				upgraded = routineList[randi_range(0,routineList.size()-1)]
 		lastBought["upgradedRoutine"] = upgraded
@@ -890,7 +890,7 @@ func unlockHerophile() :
 	var settings = SaveManager.getGlobalSettings()
 	settings["herophile"] = true
 	SaveManager.saveGlobalSettings(settings)
-	SaveManager.saveGame(Definitions.saveSlots.current)
+	SaveManager.queueSaveGame(Definitions.saveSlots.current)
 signal addToInventoryRequested
 signal reforgeItemRequested
 func givePurchaseBenefit_armor(item : armorPurchasable, purchase : Purchasable) :
