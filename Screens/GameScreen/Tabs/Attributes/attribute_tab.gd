@@ -85,8 +85,9 @@ func setPlayerMods(newMods : Array[NumberClass]) :
 	playerModsCache = newMods
 	#routineSpeedCache = routineSpeed
 	#$TrainingPanel.cacheRoutineSpeed(routineSpeed)
-func initialiseNumberRefs(val) :
+func initialiseNumberRefs(val, val2) :
 	$TrainingPanel.initialiseNumberRefs(val)
+	$AttributeLevels.initialiseMultiplicityRef(val2)
 
 func unlockRoutine(routine) :
 	$TrainingPanel.unlockRoutine(routine)

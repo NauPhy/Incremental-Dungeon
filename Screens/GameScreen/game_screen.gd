@@ -16,7 +16,8 @@ func _process(_delta) :
 		return
 	if (firstProcess) :
 		var numberRefs = $Player.getRoutineSpeedByReference()
-		$MyTabContainer/InnerContainer/Training.initialiseNumberRefs(numberRefs)
+		var numberRefs2 = $Player.getRoutineMultiplicityByReference()
+		$MyTabContainer/InnerContainer/Training.initialiseNumberRefs(numberRefs, numberRefs2)
 		firstProcess = false
 
 	#var temp = get_global_mouse_position()
@@ -102,7 +103,18 @@ func _shopping_permanent_modifier(value : Array[float], type : String, statEnum 
 	if (permanentMods.get(source) == null) :
 		permanentMods[source] = ModifierPacket.new()
 	for index in range(0,value.size()) :
-		if (type == "attribute" && isMultiplicative) :
+		if (type == "otherStat" && statEnum[index] == Definitions.otherStatEnum.routineSpeed_5) :
+			var newValue : Array[float] = []
+			var newEnum : Array[int] = []
+			for index2 in range(Definitions.otherStatEnum.routineSpeed_0, Definitions.otherStatEnum.routineSpeed_4+1) :
+				newValue.append(value[index])
+				newEnum.append(index2)
+			_shopping_permanent_modifier(newValue, type, newEnum, source, modType, isMultiplicative, true)
+			if (isMultiplicative) :
+				permanentMods[source].otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5]][modType] *= value[index]
+			else :
+				permanentMods[source].otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5]] += value[index]
+		elif (type == "attribute" && isMultiplicative) :
 			permanentMods[source].attributeMods[Definitions.attributeDictionary[statEnum[index]]][modType] *= value[index]
 		elif (type == "attribute" && !isMultiplicative) :
 			permanentMods[source].attributeMods[Definitions.attributeDictionary[statEnum[index]]][modType] += value[index]
@@ -117,13 +129,6 @@ func _shopping_permanent_modifier(value : Array[float], type : String, statEnum 
 		else :
 			if (!recursiveCall) :
 				Shopping.provideConfirmation(false)
-	if (type == "otherStat" && statEnum.size() == 1 && statEnum[0] == Definitions.otherStatEnum.routineSpeed_5) :
-		var newValue : Array[float] = []
-		var newEnum : Array[int] = []
-		for index in range(Definitions.otherStatEnum.routineSpeed_0, Definitions.otherStatEnum.routineSpeed_4+1) :
-			newValue.append(value[0])
-			newEnum.append(index)
-		_shopping_permanent_modifier(newValue, type, newEnum, source, modType, isMultiplicative, true)
 	if (!recursiveCall) :
 		Shopping.provideConfirmation(true)
 	
@@ -639,6 +644,7 @@ func beforeLoad(newSave) :
 				
 func onLoad(loadDict : Dictionary) -> void :
 	myReady = false
+	updateSaveToV105(loadDict)
 	tabsUnlocked = loadDict["tabsUnlocked"]
 	for index in range(0,tabsUnlocked.size()) :
 		if (!tabsUnlocked[index]) :
@@ -650,6 +656,34 @@ func onLoad(loadDict : Dictionary) -> void :
 	emit_signal("myReadySignal")
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
+
+func updateSaveToV105(loadDict : Dictionary) :
+	for key in loadDict["permanentMods"].keys() :
+		if (key == Shopping.routinePurchasableDictionary[Shopping.routinePurchasable.mixed]) :
+			continue
+		var modPacket = loadDict["permanentMods"][key]
+		var otherSection = modPacket["other"]
+		var tempRoutineMultiplicity = otherSection.get(Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity])
+		if (tempRoutineMultiplicity == null) :
+			otherSection[Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity]] = ModifierPacket.StandardModifier.duplicate()
+			
+	var refinedFundamentals = loadDict["permanentMods"].get(Shopping.routinePurchasableDictionary[Shopping.routinePurchasable.mixed])
+	if (refinedFundamentals == null) :
+		return
+	var routineMultiplicity = refinedFundamentals["other"].get(Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity])
+	if (routineMultiplicity == null) :
+		refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity]] = ModifierPacket.StandardModifier.duplicate()
+		routineMultiplicity = refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity]]
+	else :
+		return
+	var routineEffect = refinedFundamentals["other"].get(Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect])
+	if (routineEffect == null) :
+		refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect]] = ModifierPacket.StandardModifier.duplicate()
+		routineEffect = refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect]]
+	for key in routineMultiplicity.keys() :
+		routineMultiplicity[key] = routineEffect[key]
+	refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect]] = ModifierPacket.StandardModifier.duplicate()
+	
 
 func onLoad_2() :
 	var combat = $MyTabContainer/InnerContainer/Combat

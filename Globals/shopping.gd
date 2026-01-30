@@ -502,7 +502,7 @@ const itemPriceBase : Dictionary = {
 		##10 minutes of farming at node 5 yields 2 of each (40)
 		routinePurchasable.speed : 6,
 		routinePurchasable.effect : 8,
-		routinePurchasable.mixed : 130000,
+		routinePurchasable.mixed : 300000,
 		routinePurchasable.randomRoutine : 40, 
 		## 8 routines
 		routinePurchasable.upgradeRoutine : 1000
@@ -834,7 +834,7 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 	elif (item == routinePurchasable.mixed) :
 		value = [0.1, 10.9]
 		type = "otherStat"
-		statEnum = [Definitions.otherStatEnum.routineSpeed_5, Definitions.otherStatEnum.routineEffect]
+		statEnum = [Definitions.otherStatEnum.routineSpeed_5, Definitions.otherStatEnum.routineMultiplicity]
 		isMultiplicative = true
 		awaitingConfirmation = true
 		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)

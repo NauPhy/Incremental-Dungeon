@@ -478,7 +478,7 @@ func handleBiomeAchievement(biome : MyEnvironment) :
 		unlockAchievement(achEnum)
 
 func engineeringRound(val, sigFigs : int) -> String :
-	if (val == 0) :
+	if (is_equal_approx(0,val)) :
 		return "0"
 	#var myVal = abs(val)
 	#if (abs(val) < 1) :

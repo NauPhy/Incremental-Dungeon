@@ -194,9 +194,9 @@ func createdRecently(newEnv : MyEnvironment) -> bool :
 		return false
 	else :
 		var mostRecentPermitted = previousMaps.size()-4
-		for index in range(0,previousMaps.size()) :
+		for index in range(mostRecentPermitted,previousMaps.size()) :
 			if (previousMaps[index].environmentName == envName) :
-				return index < mostRecentPermitted
+				return true
 		return false
 
 ## The goal is:
@@ -407,34 +407,34 @@ func getEnemyScaling_internal(scalingRows) :
 	
 	var retVal = firstFloorEndValue*pow(2,scalingRows-6)
 	## Compensate for inventory quality
-	print("************************************")
-	print("actualCurrentFloor is" + str(actualCurrentFloor))
-	if (actualCurrentFloor >= 2 && actualCurrentFloor<6) :
-		retVal *= 1.1
-		print("equipment quality scaling is 1.1")
-	elif (actualCurrentFloor >= 6) :
-		retVal *= 1.2
-		print("equipment quality scaling is 1.2")
-	## Compensate for armory
-	if (actualCurrentFloor >= 3) :
-		var mult = getArmoryMultiplier(scalingRows)
-		retVal *= mult
-		print("armoryScaling is " + str(mult))
-	## Compensate for weaponsmith
-	if (actualCurrentFloor >= 4) :
-		var mult = getWeaponSmithMultiplier(scalingRows)
-		retVal *= mult
-		print("weaponScaling is " + str(mult))
-	## Compensate for subclass
-	if (actualCurrentFloor >= 5) :
-		var mult = getSubclassMultiplier(scalingRows)
-		retVal *= mult
-		print("subclass is " + str(mult))
-	if (actualCurrentFloor > 10) :
-		var mult = getInfiniteMultiplier(scalingRows)
-		retVal *= mult
-		print("infinite is " + str(mult))
-	print("************************************")
+	#print("************************************")
+	#print("actualCurrentFloor is" + str(actualCurrentFloor))
+	#if (actualCurrentFloor >= 2 && actualCurrentFloor<6) :
+		#retVal *= 1.1
+		#print("equipment quality scaling is 1.1")
+	#elif (actualCurrentFloor >= 6) :
+		#retVal *= 1.2
+		#print("equipment quality scaling is 1.2")
+	### Compensate for armory
+	#if (actualCurrentFloor >= 3) :
+		#var mult = getArmoryMultiplier(scalingRows)
+		#retVal *= mult
+		#print("armoryScaling is " + str(mult))
+	### Compensate for weaponsmith
+	#if (actualCurrentFloor >= 4) :
+		#var mult = getWeaponSmithMultiplier(scalingRows)
+		#retVal *= mult
+		#print("weaponScaling is " + str(mult))
+	### Compensate for subclass
+	#if (actualCurrentFloor >= 5) :
+		#var mult = getSubclassMultiplier(scalingRows)
+		#retVal *= mult
+		#print("subclass is " + str(mult))
+	#if (actualCurrentFloor > 10) :
+		#var mult = getInfiniteMultiplier(scalingRows)
+		#retVal *= mult
+		#print("infinite is " + str(mult))
+	#print("************************************")
 	return retVal
 	
 const maxArmoryMultiplier = 1.375

@@ -58,6 +58,7 @@ func initialiseNumberObjects() :
 	for index in range(0,6) :
 		otherStatObjects[Definitions.otherStatEnum.routineSpeed_0 + index].setPrebonus("Humanoid",1.0)
 	otherStatObjects[Definitions.otherStatEnum.routineEffect].setPrebonus("Humanoid",1.0)
+	otherStatObjects[Definitions.otherStatEnum.routineMultiplicity].setPrebonus("Humanoid", 1.0)
 ###############################
 ## Specific Modifiers
 func updateTrainingLevels(newLevels : Array[int]) :
@@ -194,7 +195,7 @@ func myUpdate() :
 	updateDirectModifier("Hard cap", capModifier)
 	#capModifier.addMod("otherStat", Definitions.otherStatEnum.routineSpeed, "Premultiplier", 1)
 	var changed : bool = false
-	for index in range(0,5) :
+	for index in range(0,6) :
 		var routineSpeed = otherStatObjects[Definitions.otherStatEnum.routineSpeed_0 + index].getFinal()
 		if (routineSpeed > 100) :
 			capModifier.addMod("otherStat", Definitions.otherStatEnum.routineSpeed_0+index,"Premultiplier",100.0/routineSpeed)
@@ -314,6 +315,8 @@ func getRoutineSpeedByReference() -> Array[NumberClass] :
 		if (Definitions.otherStatEnum.routineSpeed_0 <= key && key <= Definitions.otherStatEnum.routineSpeed_4) :
 			retVal.append(otherStatObjects[key])
 	return retVal
+func getRoutineMultiplicityByReference() -> NumberClass :
+	return otherStatObjects[Definitions.otherStatEnum.routineMultiplicity]
 func getOtherStat(key : Definitions.otherStatEnum) :
 	return otherStatObjects[key].getFinal()
 func getModifierDictionary() -> Dictionary :

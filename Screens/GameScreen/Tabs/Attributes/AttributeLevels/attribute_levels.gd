@@ -28,6 +28,10 @@ func _ready() :
 		
 	for key in Definitions.attributeDictionary.keys() :
 		growthMultipliers.append(0)
+	
+var multiplicityRef : NumberClass = null
+func initialiseMultiplicityRef(val : NumberClass) :
+	multiplicityRef = val
 		
 func setMultipliers(newTraining : AttributeTraining) :
 	if (newTraining == null) :
@@ -36,6 +40,16 @@ func setMultipliers(newTraining : AttributeTraining) :
 	else :
 		for key in Definitions.attributeDictionary.keys() :
 			$Panel/HBoxContainer/Con.get_node(Definitions.attributeDictionary[key]).setGrowthMultiplier(newTraining.getScaling(key))
+
+var vettedCache : bool = false
+func _process(_delta) :
+	if (!vettedCache) :
+		if ($Panel/HBoxContainer/Con.get_child_count() == Definitions.otherStatDictionary.keys().size()) :
+			vettedCache = true
+		else :
+			return
+	for key in Definitions.attributeDictionary.keys() :
+		$Panel/HBoxContainer/Con.get_node(Definitions.attributeDictionary[key]).setMultiplicity(multiplicityRef.getFinal())
 			
 func getLevel(type : Definitions.attributeEnum) :
 	return $Panel/HBoxContainer/Con.get_node(Definitions.attributeDictionary[type]).getLevel()

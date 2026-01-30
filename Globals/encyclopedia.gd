@@ -218,9 +218,10 @@ const problemDictionary = {
 	"Damage" : ["Damage Rating", "Magic Damage Taken", "Physical Damage Taken", "Magic Damage Dealt", "Physical Damage Dealt"],
 	"Multiplier" : ["Standard Multiplier"],
 	"Routine Growth" : ["Routine Growth Ratio"],
-	"Routine" : ["Routine Growth", "Cumulative Routine Levels", "Routine Growth Ratio", "Routine Effect", "Routine Speed"]
+	"Routine" : ["Routine Growth", "Cumulative Routine Levels", "Routine Growth Ratio", "Routine Effect", "Routine Speed", "Routine Multiplicity"]
 }
 const keywords : Array[String] = [
+	"Routine Multiplicity",
 	"Skill",
 	"Routine Speed",
 	"Routine Effect",
@@ -348,6 +349,8 @@ const keyword_alternates : Dictionary = {
 }
 
 var descriptions : Dictionary = {
+	"Routine Multiplicity" : "Your Routine Multiplicity is the number of Cumulative Routine Levels you gain each time the training bar is filled. The non-integer portion of Routine Multiplicity is the chance of gaining +1 CRL.\n\nFor example, if you have a Routine Multiplicity of 4.3, you will have a 30% chance of gaining 5 CRL and a 70% chance of gaining 4 CRL.\n\t-Base Routine Multiplicity = 1.0.",
+	
 	"Learning Curve" : "This stuff is easy! As a bright young adventurer, you're still learning quickly. 3.0x Routine Speed for all attributes, linearly decaying to 1.0x as the attribute's Bonus from Class + Cumulative Routine Levels approaches 106.",
 	
 	#"Softcap" : "Every time the Bonus provided to an attribute by Cumulative Routine Levels reaches a new power of 10 (starting at 100), your Routine Speed for that attribute halves permanently.",
@@ -398,9 +401,9 @@ var descriptions : Dictionary = {
 
 	"Routine" : "Routines passively increase your Cumulative Routine Levels over time, which in turn increases your Attributes. Each Routine improves Cumulative Routine Levels at different rates, and more Routines can be acquired from shops. To view and use Routines, see the Training tab.",
 	
-	"Cumulative Routine Level" : "There are five Cumulative Routine Levels, one for each Attribute. They can be found under \"Routine Levels\" in the Training tab. Cumulative Routine Levels increase constantly at a rate equal to your Routine Growth Rates.\n\t-Cumulative Routine Levels provide a Bonus to the Base of your corresponding Attributes equal to Routine Effect*respective level.",
+	"Cumulative Routine Level" : "There are five Cumulative Routine Levels, one for each Attribute. They can be found under \"Routine Levels\" in the Training tab. Cumulative Routine Levels increase by your Routine Multiplicity (1 for most of the game) every time the corresponding progress bar fills up. CRL fill rates are determined by your Routine Growth rates.\n\t-Cumulative Routine Levels provide a Bonus to the Base of your corresponding Attributes equal to Routine Effect*respective level.",
 	
-	"Routine Growth": "Routine Growth is the amount of levels you gain in Cumulative Routine Levels per second. There are five Routine Growth Rates, one for each Attribute. They can be found at the bottom of the \"Routines\" panel in the Training Tab.\n\t-For a given Attribute, the corresponding Base Routine Growth Rate = RGR*Routine Speed.",
+	"Routine Growth": "Routine Growth is the amount of times per second your training bars are filled. For much of the game, this is also the number of Cumulative Routine Levels you gain per second. There are five Routine Growth Rates, one for each Attribute. They can be found at the bottom of the \"Routines\" panel in the Training Tab.\n\t-For a given Attribute, the corresponding Base Routine Growth Rate = RGR*Routine Speed.",
 	
 	"Routine Speed" : "Listed under \"Other Stats\" in the Player Panel, Routine Speed provides a Multiplier to all Routine Growth of x<Routine Speed>.\n\t-Base Routine Speed = 1.0\n\nRoutine Speed is capped at 100.0.",
 	

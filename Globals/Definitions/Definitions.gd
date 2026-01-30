@@ -1,14 +1,14 @@
 extends Node
-const currentVersion : String = "V1.04 release"
-var GODMODE : bool = false
-var DEVMODE : bool = false
+const currentVersion : String = "V1.05 development"
+var GODMODE : bool = true
+var DEVMODE : bool = true
 var steamEnabled : bool = false
 var hasDLC : bool = false
 func _ready() :
 	attributeCount = 0
 	for key in attributeDictionary :
 		attributeCount += 1
-	if (currentVersion != "testing") :
+	if (currentVersion != "V1.05 development") :
 		GODMODE = false
 		DEVMODE = false
 	if (steamInitialise()) :
@@ -193,6 +193,7 @@ enum otherStatEnum {
 	physicalConversion,
 	magicFind,
 	routineEffect,
+	routineMultiplicity,
 	#dex
 	routineSpeed_0,
 	#dur
@@ -215,6 +216,7 @@ const otherStatDictionary = {
 	otherStatEnum.physicalConversion : "Physical Conversion",
 	otherStatEnum.magicFind : "Magic Find",
 	otherStatEnum.routineEffect : "Routine Effect",
+	otherStatEnum.routineMultiplicity : "Routine Multiplicity",
 	otherStatEnum.routineSpeed_0 : "Routine Speed (DEX)",
 	otherStatEnum.routineSpeed_1 : "Routine Speed (DUR)",
 	otherStatEnum.routineSpeed_2 : "Routine Speed (INT)",

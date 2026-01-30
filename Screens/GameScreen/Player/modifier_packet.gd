@@ -10,6 +10,7 @@ const StandardModifier : Dictionary = {
 @export var attributeMods : Dictionary = {}
 @export var statMods : Dictionary = {}
 @export var otherMods : Dictionary = {}
+
 func _init() :
 	for key in Definitions.attributeDictionary.keys() :
 		attributeMods[Definitions.attributeDictionary[key]] = StandardModifier.duplicate()
