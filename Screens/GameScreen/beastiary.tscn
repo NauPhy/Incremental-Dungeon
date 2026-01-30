@@ -53,7 +53,7 @@ layout_mode = 2
 theme_override_colors/default_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
-text = "[color=#8A50A1]Discovered enemies:[/color]"
+text = "[color=#8A50A1]Unique enemies:[/color]"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0

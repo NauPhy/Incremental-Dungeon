@@ -194,6 +194,7 @@ func loadSaveDict(slot : Definitions.saveSlots) :
 	if (!FileAccess.file_exists(Definitions.slotPaths[slot])) : return null
 	var text = FileAccess.open(Definitions.slotPaths[slot], FileAccess.READ).get_as_text()
 	var centralisedGameState = JSON.parse_string(text)
+	JSON.new().parse(text)
 	if (centralisedGameState == null) :
 		centralisedGameState = {}
 	fixEnumRecursive(centralisedGameState)

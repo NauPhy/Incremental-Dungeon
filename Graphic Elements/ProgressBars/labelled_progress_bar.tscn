@@ -49,6 +49,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_rg8h0")
 show_percentage = false
 
 [node name="LevelLabel" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 20
 text = "lv X"

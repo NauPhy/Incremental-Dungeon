@@ -5,8 +5,26 @@ const bigEntryLoaderNew = preload("res://Screens/GameScreen/Tabs/Combat/Map/Map_
 
 var enemyDict : Dictionary = {}
 
+const forcedInclude = [
+	"goblin",
+	"hobgoblin",
+	"orc",
+	"rat",
+	"zombie",
+	"athena",
+	"apophis"
+]
+
 func _ready() :
-	var enemyList : Array = EnemyDatabase.getEnemyList()
+	var enemyList : Array = EnemyDatabase.getAllEnemies().duplicate()
+	enemyList.sort_custom(func(a,b):return a.getName()<b.getName())
+	var index = 0
+	while (index < enemyList.size()) :
+		var enemy : ActorPreset = enemyList[index]
+		if (!enemy.enemyGroups.isEligible && forcedInclude.find(enemy.getResourceName()) == -1) :
+			enemyList.remove_at(index)
+		else :
+			index += 1
 	$Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/RichTextLabel2.text = str(EnemyDatabase.getSoulCount())
 	$Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/RichTextLabel/TooltipTrigger.currentLayer = layer+1
 	for enemy in enemyList :
@@ -15,15 +33,15 @@ func _ready() :
 		newEntry.visible = true
 		var isDiscovered : bool
 		if (IGOptions.getIGOptionsCopy()[IGOptions.options.globalEncyclopedia]) :
-			var val = SaveManager.getGlobalSettings()["globalEncyclopedia"]["beastiary"].get(enemy)
+			var val = SaveManager.getGlobalSettings()["globalEncyclopedia"]["beastiary"].get(enemy.getResourceName())
 			isDiscovered = val != null && val != 0
 		else :
-			isDiscovered = EnemyDatabase.getKillCount(enemy) != 0
+			isDiscovered = EnemyDatabase.getKillCount(enemy.getResourceName()) != 0
 		if (!isDiscovered) :
 			newEntry.setText("Undiscovered")
 			newEntry.set_disabled(true)
 		else :
-			newEntry.setText(EnemyDatabase.getEnemy(enemy).getName())
+			newEntry.setText(enemy.getName())
 			enemyDict[newEntry.getText()] = enemy
 		newEntry.connect("myPressed", _on_my_pressed)
 		
@@ -31,7 +49,7 @@ func getContainer() :
 	return  $Panel/CenterContainer/Window/VBoxContainer/ScrollContainer/VBoxContainer
 	
 func _on_my_pressed(emitter) :
-	var enemy : ActorPreset = EnemyDatabase.getEnemy(enemyDict[emitter.getText()])
+	var enemy : ActorPreset = EnemyDatabase.getEnemy(enemyDict[emitter.getText()].getResourceName())
 	var bigEntry
 	if (enemy.enemyGroups != null && (enemy.enemyGroups.isEligible || enemy.getResourceName() == "apophis") || enemy.getResourceName() == "athena") :
 		bigEntry = bigEntryLoaderNew.instantiate()

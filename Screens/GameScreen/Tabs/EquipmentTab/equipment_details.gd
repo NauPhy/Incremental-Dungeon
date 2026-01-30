@@ -409,7 +409,7 @@ func updateText() :
 		myText = updateText_modifiers_REWARDS(myText)
 	else :
 		myText = updateText_modifiers(myText)
-	if (currentItemSceneRef.getType() == Definitions.equipmentTypeEnum.weapon || currentItemSceneRef.getType() == Definitions.equipmentTypeEnum.armor) :
+	if (!isInIGOptions && (currentItemSceneRef.getType() == Definitions.equipmentTypeEnum.weapon || currentItemSceneRef.getType() == Definitions.equipmentTypeEnum.armor)) :
 		myText += "Times reforged: " + str(currentItemSceneRef.getReforges()) + "\n\n"
 	var description : String = currentItemSceneRef.getDesc()
 	var usedDescription

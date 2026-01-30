@@ -145,15 +145,7 @@ func _on_binary_chosen(chosen : int) :
 		myCharacter.setClass(myClass)
 		myCharacter.setName(myName)
 		myCharacter.setPortraitExtraSafe($Portrait)
-		
-		var options = MainOptionsHelpers.loadSettings()
-		if (!options["gameCompleted"]) :
-			emit_signal("characterDone", myCharacter, false)
-		else :
-			var hyperScreen = hyperLoader.instantiate()
-			add_child(hyperScreen)
-			var hyperMode = await hyperScreen.hyperChosen
-			emit_signal("characterDone", myCharacter, hyperMode)
+		emit_signal("characterDone", myCharacter, false)
 	elif (chosen == 1) :
 		return
 
@@ -163,6 +155,9 @@ func _on_joke_cat_button_pressed() -> void:
 	add_child(newNotification)
 	newNotification.global_position = $JokeCatButton.global_position
 	newNotification.initialiseAndRun("[color=red]DO NOT THE CAT[/color]", null, null, null, null)
+	
+func setLineEditText(val) :
+	$VBoxContainer/LineEdit.text = val
 
 const magePreset : Array[int] = [1,1,0,1,82,95,0,0,13,1,23]
 const fighterPreset : Array[int] = [0,8,0,3,63,102,26,10,13,49,89]
@@ -207,6 +202,7 @@ func addCancelOption() :
 	
 var currentCharacterCache
 func initialiseAppearanceChange(currentCharacter : CharacterPacket) :
+	$ClassContainer/Title.visible = false
 	currentCharacterCache = currentCharacter
 	disableClassSelection()
 	addCancelOption()

@@ -83,6 +83,13 @@ func updateGlobalSettings_items() :
 		if (current["globalEncyclopedia"]["items"].find(itemName) == -1) :
 			current["globalEncyclopedia"]["items"].append(itemName)
 	SaveManager.saveGlobalSettings(current)
+	
+const forcedInclude = [
+	"scraps",
+	"magic_stick_int",
+	"magic_stick_str",
+	"shiv"
+]
 
 func checkEquipmentEncyclopedia() :
 	if (!Definitions.steamEnabled) :
@@ -90,10 +97,12 @@ func checkEquipmentEncyclopedia() :
 	var globalItemList = SaveManager.getGlobalSettings()["globalEncyclopedia"]["items"]
 	var unlock : bool = true
 	var items = EquipmentDatabase.getAllEquipment()
-	for item in items :
+	for item : Equipment in items :
 		if (Helpers.isDLC(item)) :
 			continue
-		if (globalItemList.find(item) == -1) :
+		if (!item.equipmentGroups.isEligible && !item.equipmentGroups.isSignature && forcedInclude.find(item.getItemName()) == -1) :
+			continue
+		if (globalItemList.find(item.getItemName()) == -1) :
 			unlock = false
 			break
 	if (unlock) :

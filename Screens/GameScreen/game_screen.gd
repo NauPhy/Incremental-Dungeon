@@ -535,7 +535,7 @@ func handleMenu(event) :
 	
 var tabsUnlocked : Array
 func getSaveDictionary() -> Dictionary :
-	var tempDict = {}		
+	var tempDict = {}
 	tempDict["tabsUnlocked"] = tabsUnlocked
 	tempDict["permanentMods"] = {}
 	for key in permanentMods.keys() :
@@ -690,8 +690,11 @@ func _on_change_appearance_button_pressed() -> void:
 	topLayer.layer = 99
 	var newScreen = characterCreationLoader.instantiate()
 	topLayer.add_child(newScreen)
+	var currentChar : CharacterPacket = $Player.getCharacterPacket()
+	newScreen.setLineEditText(currentChar.getName())
 	newScreen.initialiseAppearanceChange($Player.getCharacterPacket())
-	var character : CharacterPacket = await newScreen.characterDone
+	var ret = await newScreen.characterDone
+	var character : CharacterPacket = ret[0]
 	$Player.setFromCharacter(character)
 	topLayer.queue_free()
 	
