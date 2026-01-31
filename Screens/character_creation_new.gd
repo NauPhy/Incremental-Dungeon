@@ -142,7 +142,10 @@ func _on_binary_chosen(chosen : int) :
 		if (myName == "") :
 			myName = " "
 		var myCharacter : CharacterPacket = CharacterPacket.new()
-		myCharacter.setClass(myClass)
+		if (currentCharacterCache != null) :
+			myCharacter.setClass(currentCharacterCache.getClass())
+		else :
+			myCharacter.setClass(myClass)
 		myCharacter.setName(myName)
 		myCharacter.setPortraitExtraSafe($Portrait)
 		emit_signal("characterDone", myCharacter, false)
@@ -200,7 +203,7 @@ func addCancelOption() :
 	newButton.text = " Cancel "
 	newButton.connect("pressed", _on_cancel)
 	
-var currentCharacterCache
+var currentCharacterCache = null
 var currentCharacterName
 func initialiseAppearanceChange(currentCharacter : CharacterPacket) :
 	$ClassContainer/Title.visible = false

@@ -100,6 +100,8 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 	else :
 		await handleCombatRewards(rewards)
 	#showMapAndUI()
+	if (currentRoom == null) :
+		return
 	if ($MapContainer.get_child_count() >= 2 && currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N0") :
 		emit_signal("tutorialRequested", Encyclopedia.tutorialName.row1, Vector2(0,0))
 	if (currentRoom != null) :

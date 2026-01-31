@@ -16,19 +16,25 @@ func getCurrentWeapon() -> Weapon :
 	if (itemSceneRef == null) :
 		return null
 	else :
-		return itemSceneRef.core.duplicate()
+		var temp = itemSceneRef.core.duplicate()
+		temp.resourceName = itemSceneRef.core.resourceName
+		return temp
 func getCurrentArmor() -> Armor :
 	var itemSceneRef = $Inventory.getEquippedItem(Definitions.equipmentTypeEnum.armor)
 	if (itemSceneRef == null) :
 		return null
 	else :
-		return itemSceneRef.core.duplicate()
+		var temp = itemSceneRef.core.duplicate()
+		temp.resourceName = itemSceneRef.core.resourceName
+		return temp
 func getCurrentAccessory() -> Accessory :
 	var itemSceneRef = $Inventory.getEquippedItem(Definitions.equipmentTypeEnum.accessory)
 	if (itemSceneRef == null) :
 		return null
 	else :
-		return itemSceneRef.core.duplicate()
+		var temp = itemSceneRef.core.duplicate()
+		temp.resourceName = itemSceneRef.core.resourceName
+		return temp
 func getEquippedItem(type) :
 	return $Inventory.getEquippedItem(type)
 func getDirectModifiers() -> ModifierPacket :

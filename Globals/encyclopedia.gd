@@ -483,7 +483,7 @@ var descriptions : Dictionary = {
 	"Frostkin" : "The Frostkin Faction includes magical beings aligned with ice.",
 	"Nautikin" : "The Nautikin Faction includes magical beings aligned with water.",
 	"Greenskin" : "The Greenskin Faction includes monstrous surface dwelling humanoids, such as orcs and goblins.",
-	"Wanderkin" : "The Wanderkin Faction includes hermits, travelers, and malfunctioning automotons that go where they please and have allegiance to no one but themselves.",
+	"Wanderkin" : "The Wanderkin Faction includes hermits, travelers, and malfunctioning automotons that go where they please and have allegiance to no one but themselves. Wanderkin can appear in any biome, with increased rarity",
 	"Undead" : "The Undead Faction includes those that practice necromancy and their creations.",
 	"Merfolk" : "The Merfolk Faction are a proud and powerful race, unbothered by the affairs of surface or underworld dwellers.",
 	

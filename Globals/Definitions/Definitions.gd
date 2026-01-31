@@ -1,14 +1,14 @@
 extends Node
-const currentVersion : String = "V1.05 release"
-var GODMODE : bool = false
-var DEVMODE : bool = false
+const currentVersion : String = "V1.06 development"
+var GODMODE : bool = true
+var DEVMODE : bool = true
 var steamEnabled : bool = false
 var hasDLC : bool = false
 func _ready() :
 	attributeCount = 0
 	for key in attributeDictionary :
 		attributeCount += 1
-	if (currentVersion != "V1.05 development") :
+	if (currentVersion != "V1.06 development") :
 		GODMODE = false
 		DEVMODE = false
 	if (steamInitialise()) :
@@ -237,6 +237,10 @@ enum saveSlots {
 	nullVal,slot0,slot1,slot2,slot3,current
 }
 const tempSlot = "user://temp_save_slot.json"
+const tempSlot2 = "user://temp_save_slot2.json"
+const tempSlot3 = "user://temp_save_slot3.json"
+const tempSlot4 = "user://temp_save_slot4.json"
+const tempSlot5 = "user://temp_save_slot5.json"
 const emergencySlot = "user://backup_save_slot.json"
 const tempMainSlot = "user://temp_main_slot.json"
 const emergencyMainSlot = "user://backup_main_save_slot.json"

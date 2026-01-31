@@ -50,10 +50,10 @@ func _ready() :
 	var screenSize : Vector2i = Engine.get_singleton("DisplayServer").screen_get_size()
 	isEnemy = global_position.y < screenSize.y/2
 	if (!isEnemy) :
-		if (await getPlayerSubclass() == Definitions.subclass.knight) :
+		if (await getPlayerSubclass() == Definitions.subclass.barb) :
 			$ResourceCard/VBoxContainer/ActionProgressBar.modifyActionWarmup(0.75)
 		elif (await getPlayerSubclass() == Definitions.subclass.whirl) :
-			var weapon = await getweaponResource()
+			var weapon = await getWeaponResource()
 			if (weapon != null && weapon.equipmentGroups.weaponClass != EquipmentGroups.weaponClassEnum.ranged) :
 				$ResourceCard/VBoxContainer/ActionProgressBar.modifyActionWarmup(0.84)
 	
@@ -78,13 +78,13 @@ signal weaponResourceRequested
 signal weaponResourceReceived
 var waitingForweaponResource : bool = false
 var weaponResource_comm
-func getweaponResource() -> Definitions.subclass :
+func getWeaponResource() -> Weapon :
 	waitingForweaponResource = true
 	emit_signal("weaponResourceRequested", self)
 	if (waitingForweaponResource) :
 		await weaponResourceReceived
 	return weaponResource_comm
-func provideweaponResource(val) :
+func provideWeaponResource(val) :
 	weaponResource_comm = val
 	waitingForweaponResource = false
 	emit_signal("weaponResourceReceived")

@@ -119,8 +119,13 @@ func createDropsForEnemy(enemy : ActorPreset, scalingFactor : float, penaliseEle
 		retVal.append(getSignature(enemy).getAdjustedCopy(scalingFactor))
 		dropCount -= 1
 	var qualities = getDropQualities(dropCount, magicFind)
+	#for quality in qualities :
+		#if (quality == EquipmentGroups.qualityEnum.legendary) :
+			#print ("legendary rolled")
 	for index in range(0,dropCount) :
 		var type = rollType()
+		while (qualities[index] == EquipmentGroups.qualityEnum.legendary && type == Definitions.equipmentTypeEnum.accessory) :
+			type = rollType()
 		var actualQuality = reduceToValidQuality(qualities[index], type)
 		if (actualQuality == null) :
 			continue
@@ -201,9 +206,9 @@ func rollType() :
 	
 func getItemOfQuality(quality, type) :
 	var realType = type
-	if (quality == EquipmentGroups.qualityEnum.legendary && type == Definitions.equipmentTypeEnum.accessory) :
-		while (realType == Definitions.equipmentTypeEnum.accessory) :
-			realType = rollType()
+	#if (quality == EquipmentGroups.qualityEnum.legendary && type == Definitions.equipmentTypeEnum.accessory) :
+		#while (realType == Definitions.equipmentTypeEnum.accessory) :
+			#realType = rollType()
 	var roll = randi_range(0,countDict["T"+str(realType)][quality]-1)
 	var current = 0
 	for item : Equipment in itemPool :

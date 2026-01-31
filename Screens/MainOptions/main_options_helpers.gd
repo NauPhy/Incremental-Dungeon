@@ -22,10 +22,10 @@ func handleSafetySave() :
 		else :
 			oldVersion = settings["version"]
 		var dir = DirAccess.open("user://")
-		if (dir.file_exists(Definitions.tempPath)) :
-			dir.remove_absolute(Definitions.tempPath)
-		dir.copy(Definitions.mainSettingsPath, Definitions.tempPath)
-		dir.rename(Definitions.tempPath, Helpers.removeAffix(Definitions.mainSettingsPath, ".json") + "_" + oldVersion + ".json")
+		if (dir.file_exists(Definitions.tempSlot5)) :
+			dir.remove_absolute(Definitions.tempSlot5)
+		dir.copy(Definitions.mainSettingsPath, Definitions.tempSlot5)
+		dir.rename(Definitions.tempSlot5, Helpers.removeAffix(Definitions.mainSettingsPath, ".json") + "_" + oldVersion + ".json")
 		
 		settings["version"] = Definitions.currentVersion
 		await handleDiskAccess(settings.duplicate(true))
@@ -142,6 +142,7 @@ func _ready() :
 	emit_signal("myReadySignal")
 
 func queueSaveSettings(settings) :
+	SaveManager.globalSettings = settings
 	while (true) :
 		saveMutex.lock()
 		if (!saveActive) :

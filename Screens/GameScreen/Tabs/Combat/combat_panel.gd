@@ -155,8 +155,8 @@ func _process(_delta: float) -> void:
 		return
 	elif (status == combatStatus.victory) :
 		pauseCombat()
-		for enemy in $EnemyParty.get_children() :
-			EnemyDatabase.incrementKills(enemy.core.getResourceName())
+		#for enemy in $EnemyParty.get_children() :
+			#EnemyDatabase.incrementKills(enemy.core.getResourceName())
 		emit_signal("victory",autoMode)
 	elif (status == combatStatus.defeat) :
 		pauseCombat()

@@ -161,10 +161,19 @@ func handleSafetySave() :
 			oldVersion = "Pre-V1.05 release"
 		if (oldVersion != Definitions.currentVersion) :
 			var dir = DirAccess.open("user://")
-			if (dir.file_exists(Definitions.tempPath)) :
-				dir.remove_absolute(Definitions.tempPath)
-			dir.copy(Definitions.slotPaths[slot], Definitions.tempPath)
-			dir.rename(Definitions.tempPath, Helpers.removeAffix(Definitions.slotPaths[slot], ".json") + "_" + oldVersion + ".json")
+			var tempPath
+			if (slot == Definitions.saveSlots.slot0) :
+				tempPath = Definitions.tempSlot
+			elif (slot == Definitions.saveSlots.slot1) :
+				tempPath = Definitions.tempSlot2
+			elif (slot == Definitions.saveSlots.slot2) :
+				tempPath = Definitions.tempSlot3
+			else :
+				tempPath = Definitions.tempSlot4
+			if (dir.file_exists(tempPath)) :
+				dir.remove_absolute(tempPath)
+			dir.copy(Definitions.slotPaths[slot], tempPath)
+			dir.rename(tempPath, Helpers.removeAffix(Definitions.slotPaths[slot], ".json") + "_" + oldVersion + ".json")
 			
 			saveFile["/root/Main"]["Version"] = Definitions.currentVersion
 			queueSaveGame_safety(saveFile, Definitions.slotPaths[slot])

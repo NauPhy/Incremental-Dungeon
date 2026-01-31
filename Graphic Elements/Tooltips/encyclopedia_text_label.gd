@@ -181,7 +181,7 @@ func getExtendedKey(index : int, key : String, parsed : bool) -> String :
 	return myText.substr(index, key.length() + extensionAmount)
 	
 func distanceToDelim(paramText : String, index : int) -> int :
-	const delim = [" ", "\n", ".", ",", "[", "]", ":", "\"", "(", ")"]
+	const delim = [" ", "\n", ".", ",", "[", "]", ":", "\"", "(", ")", "/"]
 	var currentDist = 999
 	for character in delim :
 		var dist = paramText.find(character, index) - index

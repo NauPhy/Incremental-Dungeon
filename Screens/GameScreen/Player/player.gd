@@ -113,7 +113,7 @@ func updateDirectModifier(origin : String, val : ModifierPacket) :
 func getSubclassModPacket() -> ModifierPacket :
 	var subclassMod : ModifierPacket = ModifierPacket.new()
 	if (mySubclass == -1) :
-		pass
+		return subclassMod
 	elif (mySubclass == Definitions.subclass.barb) :
 		subclassMod.addMod("stat",Definitions.baseStatEnum.PHYSDEF,"Premultiplier",0.8)
 		subclassMod.addMod("stat",Definitions.baseStatEnum.MAGDEF,"Premultiplier", 0.8)
@@ -160,6 +160,9 @@ func getSubclass() :
 const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
 var subclassTooltip
 func setSubclass(val : Definitions.subclass) :
+	var currentSubclass = mySubclass
+	if (currentSubclass != -1) :
+		updateDirectModifier(Definitions.subclassDictionary[currentSubclass], ModifierPacket.new())
 	mySubclass = val
 	if (subclassTooltip != null) :
 		$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.remove_child(subclassTooltip)

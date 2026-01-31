@@ -17,7 +17,10 @@ func handleAthena(mapInProgress : MapData) -> MapData :
 	var currentFloor = previousMaps.size()+1
 	if (athenaFloor == -1) :
 		var maxFloor = 10
-		athenaFloor = randi_range(currentFloor, maxFloor)
+		if (currentFloor > maxFloor) :
+			athenaFloor = currentFloor
+		else :
+			athenaFloor = randi_range(currentFloor, maxFloor)
 	if (currentFloor == athenaFloor) :
 		var athenaEncounter : Encounter = Encounter.new()
 		var athena : ActorPreset = EnemyDatabase.getEnemy("athena").getAdjustedCopy(getEnemyScaling(getScalingRows_mapFinished(12,0)))
@@ -26,11 +29,18 @@ func handleAthena(mapInProgress : MapData) -> MapData :
 		$ItemPoolHandler.reset(dummyChaos, getAllItems())
 		$DropHandler.reset($ItemPoolHandler.getItemPoolForEnemy(dummyDragon))
 		for index in range(0, 3) :
-			var drop : Equipment = $DropHandler.getItemOfQuality(EquipmentGroups.qualityEnum.legendary, $DropHandler.rollType())
+			var type = $DropHandler.rollType()
+			while (type == Definitions.equipmentTypeEnum.accessory) :
+				type = $DropHandler.rollType()
+			var drop : Equipment = $DropHandler.getItemOfQuality(EquipmentGroups.qualityEnum.legendary, type)
 			athena.drops.append(drop.getAdjustedCopy(getEquipmentScaling(getScalingRows_mapFinished(13,0))))
 		var otherDropQualities = $DropHandler.getDropQualities(5, 2)
 		for index in range(0, otherDropQualities.size()) :
-			var drop = $DropHandler.getItemOfQuality(otherDropQualities[index],$DropHandler.rollType())
+			var type = $DropHandler.rollType()
+			if (otherDropQualities[index] == EquipmentGroups.qualityEnum.legendary) :
+				while (type == Definitions.equipmentTypeEnum.accessory) :
+					type = $DropHandler.rollType()
+			var drop = $DropHandler.getItemOfQuality(otherDropQualities[index],type)
 			athena.drops.append(drop.getAdjustedCopy(getEquipmentScaling(getScalingRows_mapFinished(13,0))))
 		athena.drops.append(EquipmentDatabase.getEquipment("shield_5").getAdjustedCopy(getEquipmentScaling(getScalingRows_mapFinished(13,3))))
 		athenaEncounter.enemies.append(athena)
