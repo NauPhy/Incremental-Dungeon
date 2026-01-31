@@ -683,7 +683,8 @@ func updateSaveToV105(loadDict : Dictionary) :
 	for key in routineMultiplicity.keys() :
 		routineMultiplicity[key] = routineEffect[key]
 	refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect]] = ModifierPacket.StandardModifier.duplicate()
-	
+	for index in range(Definitions.otherStatEnum.routineSpeed_0, Definitions.otherStatEnum.routineSpeed_4+1) :
+		refinedFundamentals["other"][Definitions.otherStatDictionary[index]]["Premultiplier"] = refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5]]["Premultiplier"]
 
 func onLoad_2() :
 	var combat = $MyTabContainer/InnerContainer/Combat

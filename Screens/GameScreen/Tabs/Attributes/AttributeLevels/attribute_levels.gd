@@ -44,7 +44,7 @@ func setMultipliers(newTraining : AttributeTraining) :
 var vettedCache : bool = false
 func _process(_delta) :
 	if (!vettedCache) :
-		if ($Panel/HBoxContainer/Con.get_child_count() == Definitions.otherStatDictionary.keys().size()) :
+		if ($Panel/HBoxContainer/Con.get_child_count() == Definitions.attributeDictionary.keys().size()) :
 			vettedCache = true
 		else :
 			return

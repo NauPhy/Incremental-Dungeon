@@ -201,6 +201,7 @@ func addCancelOption() :
 	newButton.connect("pressed", _on_cancel)
 	
 var currentCharacterCache
+var currentCharacterName
 func initialiseAppearanceChange(currentCharacter : CharacterPacket) :
 	$ClassContainer/Title.visible = false
 	currentCharacterCache = currentCharacter
@@ -239,7 +240,7 @@ func initialiseAppearanceChange(currentCharacter : CharacterPacket) :
 			$AppearanceContainer/Carousels/Clothes/PanelContainer/VBoxContainer.get_node(tempKey).get_node("Carousel").setPositionNoSignal(pos)
 		
 func _on_cancel() :
-	emit_signal("characterDone", currentCharacterCache)
+	emit_signal("characterDone", currentCharacterCache, false)
 	
 func applyPreset(val : Array[int]) :
 	var wasPristine = pristine

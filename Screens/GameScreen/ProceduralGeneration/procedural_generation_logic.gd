@@ -394,10 +394,12 @@ func getEnemyScaling(scalingRows) :
 		retVal *= 1.25
 	return retVal
 
+func getEnemyScaling_internal_getStandardScaling(scalingRows) :
+	var firstFloorEndValue = enemyScalingLookupTable[6]
+	return firstFloorEndValue*pow(2,scalingRows-6)
 func getEnemyScaling_internal(scalingRows) :
 	if (scalingRows <= 6) :
 		return enemyScalingLookupTable[scalingRows]
-	var firstFloorEndValue = enemyScalingLookupTable[6]
 	var currentFloor = (scalingRows-7)/5.0
 	var actualCurrentFloor
 	if (is_equal_approx(currentFloor, ceil(currentFloor))) :
@@ -405,34 +407,34 @@ func getEnemyScaling_internal(scalingRows) :
 	else :
 		actualCurrentFloor = int(floor(currentFloor))+2
 	
-	var retVal = firstFloorEndValue*pow(2,scalingRows-6)
+	var retVal = getEnemyScaling_internal_getStandardScaling(scalingRows)
 	## Compensate for inventory quality
 	#print("************************************")
 	#print("actualCurrentFloor is" + str(actualCurrentFloor))
-	#if (actualCurrentFloor >= 2 && actualCurrentFloor<6) :
-		#retVal *= 1.1
+	if (actualCurrentFloor >= 2 && actualCurrentFloor<6) :
+		retVal *= 1.1
 		#print("equipment quality scaling is 1.1")
-	#elif (actualCurrentFloor >= 6) :
-		#retVal *= 1.2
+	elif (actualCurrentFloor >= 6) :
+		retVal *= 1.2
 		#print("equipment quality scaling is 1.2")
-	### Compensate for armory
-	#if (actualCurrentFloor >= 3) :
-		#var mult = getArmoryMultiplier(scalingRows)
-		#retVal *= mult
+	## Compensate for armory
+	if (actualCurrentFloor >= 3) :
+		var mult = getArmoryMultiplier(scalingRows)
+		retVal *= mult
 		#print("armoryScaling is " + str(mult))
-	### Compensate for weaponsmith
-	#if (actualCurrentFloor >= 4) :
-		#var mult = getWeaponSmithMultiplier(scalingRows)
-		#retVal *= mult
+	## Compensate for weaponsmith
+	if (actualCurrentFloor >= 4) :
+		var mult = getWeaponSmithMultiplier(scalingRows)
+		retVal *= mult
 		#print("weaponScaling is " + str(mult))
-	### Compensate for subclass
-	#if (actualCurrentFloor >= 5) :
-		#var mult = getSubclassMultiplier(scalingRows)
-		#retVal *= mult
+	## Compensate for subclass
+	if (actualCurrentFloor >= 5) :
+		var mult = getSubclassMultiplier(scalingRows)
+		retVal *= mult
 		#print("subclass is " + str(mult))
-	#if (actualCurrentFloor > 10) :
-		#var mult = getInfiniteMultiplier(scalingRows)
-		#retVal *= mult
+	if (actualCurrentFloor > 10) :
+		var mult = getInfiniteMultiplier(scalingRows)
+		retVal *= mult
 		#print("infinite is " + str(mult))
 	#print("************************************")
 	return retVal
@@ -502,7 +504,7 @@ func getEquipmentScaling(scalingRows) :
 		rows = floor(scalingRows)
 	else :
 		rows = scalingRows
-	return pow(getEnemyScaling(floor(rows)), 0.25)
+	return pow(getEnemyScaling_internal_getStandardScaling(scalingRows),0.25)
 func getGoldScaling(scalingRows) :
 	return pow(2,(scalingRows-1)/4.0)
 func getOreScaling(scalingRows) :

@@ -1,7 +1,7 @@
 extends Node
-const currentVersion : String = "V1.05 development"
-var GODMODE : bool = true
-var DEVMODE : bool = true
+const currentVersion : String = "V1.05 release"
+var GODMODE : bool = false
+var DEVMODE : bool = false
 var steamEnabled : bool = false
 var hasDLC : bool = false
 func _ready() :
@@ -240,6 +240,7 @@ const tempSlot = "user://temp_save_slot.json"
 const emergencySlot = "user://backup_save_slot.json"
 const tempMainSlot = "user://temp_main_slot.json"
 const emergencyMainSlot = "user://backup_main_save_slot.json"
+const tempPath = "user://temp_save.json"
 var slotPaths = {
 	saveSlots.current : "",
 	saveSlots.slot0 : "user://save_slot_0.json",

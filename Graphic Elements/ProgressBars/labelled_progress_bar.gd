@@ -24,12 +24,13 @@ func _process(delta) :
 	
 	var baseLevelGained : int = floor((oldProgress+progressGained)/100)
 	var guaranteedThroughMultiplicity : int = baseLevelGained * floor(multiplicity)
+	var total = guaranteedThroughMultiplicity
 	var chance : float = multiplicity-floor(multiplicity)
-	var extraLevel : int = 0
-	if (randf_range(0,1) <= chance) :
-		extraLevel = 1
+	for index in range(0, baseLevelGained) :
+		if (randf_range(0,1) <= chance) :
+			total += 1
 	var newProgress = oldProgress + (progressGained - 100*baseLevelGained)
-	var newLevel : int = oldLevel + guaranteedThroughMultiplicity + extraLevel
+	var newLevel : int = oldLevel + total
 	actualProgress = newProgress
 	currentLevel = newLevel
 	$LevelLabel.text = "Lv " + Helpers.engineeringRound(newLevel,3)	

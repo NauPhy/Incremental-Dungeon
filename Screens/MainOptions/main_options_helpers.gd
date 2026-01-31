@@ -2,6 +2,7 @@ extends Node
 
 func getDefaultSettings() -> Dictionary :
 	var tempDict : Dictionary = {}
+	tempDict["version"] = Definitions.currentVersion
 	tempDict["Window Mode"] = 0
 	tempDict["gameCompleted"] = false
 	tempDict["globalEncyclopedia"] = {
@@ -11,6 +12,23 @@ func getDefaultSettings() -> Dictionary :
 	tempDict["herophile"] = false
 	tempDict["audio"] = AudioHandler.getDefaultMainOptionsDictionary()
 	return tempDict
+	
+func handleSafetySave() :
+	var settings = loadSettings()
+	if (settings.get("version") == null || settings["version"] != Definitions.currentVersion) :
+		var oldVersion
+		if (settings.get("version") == null) :
+			oldVersion = "Pre-V1.05 release"
+		else :
+			oldVersion = settings["version"]
+		var dir = DirAccess.open("user://")
+		if (dir.file_exists(Definitions.tempPath)) :
+			dir.remove_absolute(Definitions.tempPath)
+		dir.copy(Definitions.mainSettingsPath, Definitions.tempPath)
+		dir.rename(Definitions.tempPath, Helpers.removeAffix(Definitions.mainSettingsPath, ".json") + "_" + oldVersion + ".json")
+		
+		settings["version"] = Definitions.currentVersion
+		await handleDiskAccess(settings.duplicate(true))
 
 func applyWindowMode(val) :
 	if (val == 0) :
@@ -28,6 +46,8 @@ func loadSettings() :
 	if (text == null || text == "") :
 		return getDefaultSettings()
 	var dict = JSON.parse_string(text)
+	if (dict == {}) :
+		return getDefaultSettings()
 	if (dict.get("gameCompleted") == null) :
 		dict["gameCompleted"] = false
 	if (dict.get("globalEncyclopedia") == null) :
@@ -67,10 +87,34 @@ func saveSettings(settings) :
 		saveMutex.unlock()
 		return
 	saveActive = true
+	saveSettings_noCheck(settings)
 	saveMutex.unlock()
-
-	WorkerThreadPool.add_task(func():handleDiskAccess(settings))
+func saveSettings_noCheck(settings) :
+	taskList.append(WorkerThreadPool.add_task(func():handleDiskAccess(settings.duplicate(true))))
 	
+var purgeMutex = Mutex.new()
+var purging : bool = false
+var taskList : Array = []
+func _process(_delta) :
+	purgeMutex.lock()
+	if (purging) :
+		purgeMutex.unlock()
+		return
+	saveMutex.lock()
+	if (taskList.size() > 0 && !saveActive) :
+		purging = true
+		purgeMutex.unlock()
+		for task in taskList :
+			WorkerThreadPool.wait_for_task_completion(task)
+		taskList = []
+		saveMutex.unlock()
+		purgeMutex.lock()
+		purging = false
+		purgeMutex.unlock()
+		return
+	purgeMutex.unlock()
+	saveMutex.unlock()
+		
 func handleDiskAccess(settings) :
 	#print("saving main settings. Window mode is " + str(settings["Window Mode"]) + ". Time is " + Time.get_datetime_string_from_system())
 	var tempFile = FileAccess.open(Definitions.tempMainSlot, FileAccess.WRITE)
@@ -93,6 +137,7 @@ func handleDiskAccess(settings) :
 var myReady : bool = false
 signal myReadySignal
 func _ready() :
+	await handleSafetySave()
 	myReady = true
 	emit_signal("myReadySignal")
 
@@ -100,9 +145,11 @@ func queueSaveSettings(settings) :
 	while (true) :
 		saveMutex.lock()
 		if (!saveActive) :
-			saveMutex.unlock()
 			break
 		saveMutex.unlock()
 		await get_tree().process_frame
-	saveSettings(settings)
+	#saveSettings(settings)
+	saveActive = true
+	saveSettings_noCheck(settings)
+	saveMutex.unlock()
 	print("queued main settings success")

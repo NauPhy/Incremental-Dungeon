@@ -99,6 +99,7 @@ var armorUnlocked : bool = false
 var weaponUnlocked : bool = false
 func onLoad(loadDict) :
 	myReady = false
+	updateToVersion105(loadDict)
 	allRoutinesPurchased = loadDict["allRoutines"]
 	if (loadDict.get("unlockedRoutines") != null) :
 		unlockedRoutines = loadDict["unlockedRoutines"]
@@ -148,6 +149,13 @@ func onLoad(loadDict) :
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
 		
+func updateToVersion105(loadDict : Dictionary) :
+	var oldBase = 130000
+	var oldFactor = 10
+	var currentPrice = loadDict["itemPrices"]["routine"][routinePurchasable.mixed]
+	var magnitude = log(currentPrice/oldBase)/log(10)
+	if (is_equal_approx(magnitude, floor(magnitude)) || is_equal_approx(magnitude, ceil(magnitude))) :
+		loadDict["itemPrices"]["routine"][routinePurchasable.mixed] = itemPriceBase["routine"][routinePurchasable.mixed] * pow(10,magnitude)
 ###################################################################################
 ## General
 var subclassPurchased : bool = false
@@ -886,7 +894,7 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 		
 var herophileUnlocked : bool = false
 func unlockHerophile() :
-	unlockedRoutines.append(MegaFile.getRoutine("spar_herophile"))
+	unlockedRoutines.append("spar_herophile")
 	var settings = SaveManager.getGlobalSettings()
 	settings["herophile"] = true
 	SaveManager.saveGlobalSettings(settings)

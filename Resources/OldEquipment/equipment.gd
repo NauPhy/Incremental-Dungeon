@@ -20,6 +20,9 @@ func getAdjustedCopy(_scalingFactor : float) -> Equipment :
 	return retVal
 func createSampleCopy() -> Equipment :
 	return getAdjustedCopy(1)
+	
+func addMultiplicity() :
+	myPacket.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity]] = ModifierPacket.StandardModifier.duplicate()
 
 func reset() :
 	myPacket = ModifierPacket.new()

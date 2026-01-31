@@ -402,7 +402,15 @@ func engineeringNotation(origVal) -> String :
 	var val = abs(origVal)
 	var newVal = origVal
 	var suffix : String = ""
-	if (val >= pow(10,30)) :
+	if (val >= pow(10,33)) :
+		var magnitude = log(newVal)/log(10)
+		if (is_equal_approx(magnitude, ceil(magnitude))) :
+			magnitude = ceil(magnitude)
+		else :
+			magnitude = floor(magnitude)
+		newVal = origVal/pow(10,magnitude)
+		suffix = "E" + str(magnitude)
+	elif (val >= pow(10,30)) :
 		newVal = origVal/pow(10,30)
 		suffix = "No"
 	elif (val >= pow(10,27)) :
@@ -476,10 +484,24 @@ func handleBiomeAchievement(biome : MyEnvironment) :
 	var achEnum = Definitions.biomeAchievementMap.get(biome.getFileName())
 	if (achEnum != null) :
 		unlockAchievement(achEnum)
+		
+func removeAffix(str : String, affix : String) -> String :
+	var pos = str.find(affix)
+	if (pos == -1) :
+		return str
+	return str.substr(0,pos)
 
 func engineeringRound(val, sigFigs : int) -> String :
 	if (is_equal_approx(0,val)) :
-		return "0"
+		var magnitude = log(abs(val))/log(10)
+		if (is_equal_approx(magnitude, ceil(magnitude))) :
+			magnitude = ceil(magnitude)
+		elif (is_equal_approx(magnitude, floor(magnitude))) :
+			magnitude = floor(magnitude)
+		if (magnitude == -INF) :
+			return "0"
+		var newVal = val*pow(10,-magnitude)
+		return str(myRound(newVal, sigFigs))+"E"+str(int(magnitude))
 	#var myVal = abs(val)
 	#if (abs(val) < 1) :
 		#var magnitude = floor(log(myVal)/log(10))
