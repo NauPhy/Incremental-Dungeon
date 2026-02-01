@@ -88,6 +88,52 @@ func _shopping_reforge_item_requested(type : Definitions.equipmentTypeEnum) :
 	equipped.reforge()
 	Shopping.provideConfirmation(true)
 	
+<<<<<<< Updated upstream
+=======
+const binaryPopupLoader = preload("res://Graphic Elements/popups/binary_decision.tscn")
+const popupLoader2 = preload("res://Graphic Elements/popups/my_popup.tscn")
+const fighterClass = preload("res://Globals/Definitions/Classes/fighter.tres")
+const rogueClass = preload("res://Globals/Definitions/Classes/rogue.tres")
+const mageClass = preload("res://Globals/Definitions/Classes/mage.tres")
+func _shopping_respec_requested() :
+	var confirmationPopup = binaryPopupLoader.instantiate()
+	add_child(confirmationPopup)
+	confirmationPopup.setTitle("Change Class")
+	confirmationPopup.setText("Are you sure you want to change your class? You will lose half your Cumulative Training Levels, but you may select a different class or subclass.")
+	confirmationPopup.setButton0Name(" I'm ready ")
+	confirmationPopup.setButton1Name(" I changed my mind ")
+	var choice = await confirmationPopup.binaryChosen
+	if (choice == 1) :
+		Shopping.provideConfirmation(false)
+		return
+	var classPopup = popupLoader2.instantiate()
+	add_child(classPopup)
+	classPopup.setText("")
+	classPopup.setTitle("Choose Your Class")
+	classPopup.addButtonContainer()
+	classPopup.addButton("Fighter")
+	classPopup.addButton("Rogue")
+	classPopup.addButton("Mage")
+	classPopup.addButton("Cancel")
+	choice = await classPopup.buttonPressed
+	if (choice == 3) :
+		Shopping.provideConfirmation(false)
+	else :
+		$MyTabContainer/InnerContainer/Training.onRespec()
+		var newClass
+		if (choice == 0) :
+			newClass = fighterClass
+		elif (choice == 1) :
+			newClass = rogueClass
+		else :
+			newClass = mageClass
+		$Player.setSubclass(-1)
+		$Player.setClass(newClass)
+		Shopping.resetSubclass()
+		Shopping.provideConfirmation(true)
+	classPopup.queue_free()
+	
+>>>>>>> Stashed changes
 func _shopping_upgrade_routine(routine : AttributeTraining) :
 	$MyTabContainer/InnerContainer/Training.upgradeRoutine(routine)
 	Shopping.provideConfirmation(true)

@@ -170,7 +170,8 @@ func setClass(character : CharacterClass) :
 	for key in Definitions.attributeDictionary.keys() :
 		attributeObjects[key].setPrebonus("Class", round(character.getBaseAttribute(key)/character.getAttributeScaling(key)*100.0)/100.0)
 		attributeObjects[key].setPremultiplier("Class", character.getAttributeScaling(key))
-	$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.text = "Class: " + character.getText()
+	if (mySubclass == -1) :
+		$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.text = "Class: " + character.getText()
 	unarmedWeapon = SceneLoader.createEquipmentScene("unarmed_" + Definitions.classDictionary[characterClass.classEnum])
 func setName(val) :
 	characterName = val

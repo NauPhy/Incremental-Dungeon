@@ -200,14 +200,23 @@ const problemDictionary = {
 	"Routine" : "Routine Growth"
 }
 const keywords : Array[String] = [
+<<<<<<< Updated upstream
+=======
+	"Routine Multiplicity",
+	"Skill",
+	"Routine Speed",
+	"Routine Effect",
+	#"Wait",
+	#"Inventory Behaviour",
+>>>>>>> Stashed changes
 	"Action Power",
-	"Always Discard",
-	"Always Take",
+	#"Always Discard",
+	#"Always Take",
 	"Attack Rating",
 	"Attribute",
 	"Base",
 	"Class",
-	"Combat Reward Behaviour",
+	#"Combat Reward Behaviour",
 	"Combat Stat",
 	"Currency",
 	"Damage Rating",
@@ -311,8 +320,15 @@ const keyword_alternates : Dictionary = {
 	"Physical Damage Taken" : "PDT",
 	"Magic Damage Dealt" : "MDD",
 	"Magic Damage Taken" : "MDT",
+<<<<<<< Updated upstream
 	"Miku Miku Dance" : "MMD",
 	"Routine Growth Ratio" : "RGR"
+=======
+	#"Miku Miku Dance" : "MMD",
+	"Routine Growth Ratio" : "RGR",
+	"Cumulative Routine Level" : "CRL",
+	"Routine Effect" : "RE"
+>>>>>>> Stashed changes
 }
 
 var descriptions : Dictionary = {
@@ -372,15 +388,15 @@ var descriptions : Dictionary = {
 	
 	"Routine Growth Ratio" : "The Routine Growth Ratio (RGR) is the Numbers displayed underneath each Routine under \"Routines\" in the Training tab. A Routine's RGR provides a Bonus to Base Routine Growth Rate of RGR*Routine Speed. Base RGR varies by Routine, and Bonuses to their Standard Multipliers can be bought in shops.",
 	
-	"Combat Reward Behaviour" : "Wait\n\nAlways Take\n\nAlways Discard",
+	#"Combat Reward Behaviour" : "Wait\n\nAlways Take\n\nAlways Discard",
 	
-	"Wait" : "This item must be manually taken or discarded from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).",
+	#"Wait" : "This item must be manually taken or discarded from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).",
+	#
+	#"Always Take" : "Always take this item from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).\n\nBehaviour when inventory is full depends on \"Inventory Behaviour\" in the in-game options (F2)",
+	#
+	#"Always Discard" : "Always discard this item from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).",
 	
-	"Always Take" : "Always take this item from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).\n\nBehaviour when inventory is full depends on \"Inventory Behaviour\" in the in-game options (F2)",
-	
-	"Always Discard" : "Always discard this item from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).",
-	
-	"Inventory Behaviour" : "Determines whether \"Always Take\" will wait or discard when the inventory is full. \"Always Take\" can be set per-item in the Encyclopedia (F1).",
+	#"Inventory Behaviour" : "Determines whether \"Always Take\" will wait or discard when the inventory is full. \"Always Take\" can be set per-item in the Encyclopedia (F1).",
 	
 	"Scaling" : "Weapons provide a Bonus to Base DR based on your Attributes and your Weapon's Scaling for those respective Attributes. Scaling ranges between E and S+, with S+ being the highest. Hover over the letter in game to see the decimal scaling value.",
 	
@@ -448,6 +464,7 @@ var descriptions : Dictionary = {
 	
 	"Biome" : "Each floor beyond the tutorial is generated with a specific Biome. The Biome determines what Elements are eligible to drop and what Factions are eligible to appear.\n\nThe Biome and its effects can be seen in the top right of the Combat Map.\n\nIf no elements are listed for a biome, equipment from any element can drop, but is 4x as rare (75% chance to be rerolled).",
 	##################################################################
+<<<<<<< Updated upstream
 	"Physical Damage Dealt" : "Physical Damage Dealt/PDD, applies after Physical Conversion.\n\tBase PDD = 1.0",
 	"Magic Damage Dealt" : "Magic Damage Dealt/MDD, applies after Magic Conversion.\n\tBase MDD = 1.0",
 	"Physical Damage Taken" : "Physical Damage Taken, aka PDT.\n\tBase PDT = 1.0",
@@ -455,6 +472,15 @@ var descriptions : Dictionary = {
 	"Physical Conversion" : "Applies a portion of physical damage to the enemy's MAGDEF instead of their PHYSDEF.\n\tBase Physical Conversion = 0.0",
 	"Magic Conversion" : "Applies a portion of magic damage to the enemy's PHYSDEF instead of their MAGDEF.\n\tBase Magic Conversion = 0.0",
 	"Miku Miku Dance" : "henlo"
+=======
+	"Physical Damage Dealt" : "Physical Damage Dealt/PDD, applies after Physical Conversion.\n\t-Base PDD = 1.0",
+	"Magic Damage Dealt" : "Magic Damage Dealt/MDD, applies after Magic Conversion.\n\t-Base MDD = 1.0",
+	"Physical Damage Taken" : "Physical Damage Taken, aka PDT.\n\t-Base PDT = 1.0",
+	"Magic Damage Taken" : "Magic Damage Taken, aka MDT.\n\t-Base MDT = 1.0",
+	"Physical Conversion" : "Applies a portion of physical damage to the enemy's MAGDEF instead of their PHYSDEF.\n\t-Base Physical Conversion = 0.0",
+	"Magic Conversion" : "Applies a portion of magic damage to the enemy's PHYSDEF instead of their MAGDEF.\n\t-Base Magic Conversion = 0.0",
+	#"Miku Miku Dance" : "henlo"
+>>>>>>> Stashed changes
 }
 #func getEncyclopediaEntries() -> Dictionary :
 	#var tempDict : Dictionary = {}
