@@ -4,7 +4,7 @@ extends Panel
 
 var selectedEntry : Node = null
 var equippedEntries : Array[Node] = []
-@export var inventorySize : int = 10
+@export var inventorySize : int = 8
 
 #################################
 ##Setters
@@ -55,6 +55,8 @@ func expand(increase : int) :
 	for index in range(0,increase) :
 		var newPanel = draggablePanelLoader.instantiate()
 		$ScrollContainer/CenterContainer/GridContainer.add_child(newPanel)
+		newPanel.connect("dragStart", _on_draggable_drag)
+		newPanel.connect("dragStop", _on_draggable_release)
 #################################
 ##Getters
 func getEquippedItem(type : Definitions.equipmentTypeEnum) :
@@ -62,10 +64,12 @@ func getEquippedItem(type : Definitions.equipmentTypeEnum) :
 func isInventoryFull() -> bool : 
 	return (getNextEmptySlot() == null)
 func getModifierPacket() -> ModifierPacket :
-	var retVal = ModifierPacket.new()
+	#var retVal = ModifierPacket.new()
+	var modPacketRefs : Array[ModifierPacket] = []
 	for key in Definitions.equipmentTypeDictionary.keys() :
 		if (equippedEntries[key] != null) :
-			retVal = equippedEntries[key].addToModifierPacket(retVal)
+			modPacketRefs.append(equippedEntries[key].getModPacketRef())
+	var retVal = ModifierPacket.add_array(modPacketRefs)
 	if (equippedEntries[2] != null && equippedEntries[2].getItemName() == "coating_divine" && equippedEntries[0] != null && equippedEntries[0].core.equipmentGroups.weaponClass != EquipmentGroups.weaponClassEnum.ranged) :
 		retVal.statMods[Definitions.baseStatDictionary[Definitions.baseStatEnum.DR]]["Premultiplier"] *= 1.11
 		retVal.otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.physicalConversion]]["Prebonus"] += 0.11
@@ -167,7 +171,11 @@ func sortByType(type : Definitions.equipmentTypeEnum) :
 				#item.get_child(0).deselect()
 	
 func getInventoryList() -> Array[Node] : 
-	return $ScrollContainer/CenterContainer/GridContainer.get_children()
+	var ret = $ScrollContainer/CenterContainer/GridContainer.get_children()
+	var pos = ret.find(draggingPanel)
+	if (pos != -1) : 
+		ret.remove_at(pos)
+	return ret
 func getInventory() -> Node :
 	return $ScrollContainer/CenterContainer/GridContainer
 ##################################
@@ -239,30 +247,60 @@ func initialiseContainers() :
 	getInventory().get_child(0).connect("dragStart", _on_draggable_drag)
 	getInventory().get_child(0).connect("dragStop", _on_draggable_release)
 	
-var oldPosPanel : Node = null
+#var oldPosPanel : Node = null
 var draggingPanel : Node = null
-#var ghostPanel : Node = null
-#var draggingPanelIndex : int = -1
+var ghostPanel : Node = null
 func _on_draggable_drag(emitter) :
 	draggingPanel = emitter
-	#draggingPanelIndex = Helpers.findIndexInContainer(getInventory(), emitter)
-	await get_tree().process_frame
-	var oldIndex = Helpers.findIndexInContainer(getInventory(), emitter)
-	var oldPos = emitter.global_position
-	getInventory().remove_child(emitter)
-	add_child(emitter)
-	emitter.global_position = oldPos
-	oldPosPanel = draggablePanelLoader.instantiate()
-	getInventory().add_child(oldPosPanel)
-	getInventory().move_child(oldPosPanel, oldIndex)
+	ghostPanel = draggablePanelLoader.instantiate()
+	add_child(ghostPanel)
+	draggingPanel.cancelDrag()
+	ghostPanel.startDragging()
+	ghostPanel.connect("dragStop", _on_draggable_release)
+	if (draggingPanel.get_child_count() > 0) :
+		draggingPanel.get_child(0).visible = false
+		ghostPanel.add_child(draggingPanel.get_child(0).createGhostCopy())
+	#await get_tree().process_frame
+	#var oldIndex = Helpers.findIndexInContainer(getInventory(), emitter)
+	#var oldPos = emitter.global_position
+	#getInventory().remove_child(emitter)
+	#add_child(emitter)
+	#emitter.global_position = oldPos
+	#oldPosPanel = draggablePanelLoader.instantiate()
+	#getInventory().add_child(oldPosPanel)
+	#getInventory().move_child(oldPosPanel, oldIndex)
 	
-	#ghostPanel = Control.new()
-	#getInventory().add_child(ghostPanel)
-	#ghostPanel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	#ghostPanel.custom_minimum_size = emitter.size
-	#getInventory().move_child(ghostPanel, draggingPanelIndex)
-	#updateDraggingSiblings()
-	
+func _on_draggable_release(_emitter) :
+	## Inventory actually does not need to know if reforge is hovered. The player drags the item to the reforge window
+	#var reforgeHovered = await getReforgeHovered()
+	var oldIndex = Helpers.findIndexInContainer(getInventory(), draggingPanel)
+	var newPos = ghostPanel.global_position + ghostPanel.size/2.0
+	var swapTarget : Node = null
+	for child in getInventoryList() :
+		var childPos = child.global_position
+		if (childPos.x <= newPos.x && childPos.x + child.size.x >= newPos.x && childPos.y <= newPos.y && childPos.y + child.size.y >= newPos.y) :
+			swapTarget = child
+			break
+	if (swapTarget == draggingPanel) :
+		swapTarget = null
+	var newIndex
+	if (swapTarget != null) :
+		newIndex = Helpers.findIndexInContainer(getInventory(), swapTarget)
+	remove_child(ghostPanel)
+	ghostPanel.queue_free()
+	ghostPanel = null
+	if (swapTarget == null) :
+		getInventory().move_child(draggingPanel, oldIndex)
+	else :
+		if (oldIndex < newIndex) :
+			getInventory().move_child(swapTarget, oldIndex)
+			getInventory().move_child(draggingPanel, newIndex)
+		else :
+			getInventory().move_child(draggingPanel, newIndex)
+			getInventory().move_child(swapTarget, oldIndex)
+	if (draggingPanel.get_child_count() > 0) :
+		draggingPanel.get_child(0).visible = true
+	draggingPanel = null
 	
 var waitingForReforgeHovered : bool = false
 var reforgeHovered_comm : bool = false
@@ -278,38 +316,6 @@ func provideIsReforgedHovered(val) :
 	reforgeHovered_comm = val
 	waitingForReforgeHovered = false
 	emit_signal("isReforgeHoveredReceived")
-	
-func _on_draggable_release(_emitter) :
-	## Inventory actually does not need to know if reforge is hovered. The player drags the item to the reforge window
-	#var reforgeHovered = await getReforgeHovered()
-	var oldIndex = Helpers.findIndexInContainer(getInventory(), oldPosPanel)
-	var newPos = draggingPanel.global_position + draggingPanel.size/2.0
-	var swapTarget : Node = null
-	for child in getInventoryList() :
-		var childPos = child.global_position
-		if (childPos.x <= newPos.x && childPos.x + child.size.x >= newPos.x && childPos.y <= newPos.y && childPos.y + child.size.y >= newPos.y) :
-			swapTarget = child
-			break
-	if (swapTarget == oldPosPanel) :
-		swapTarget = null
-	var newIndex
-	if (swapTarget != null) :
-		newIndex = Helpers.findIndexInContainer(getInventory(), swapTarget)
-	getInventory().remove_child(oldPosPanel)
-	oldPosPanel.queue_free()
-	oldPosPanel = null
-	remove_child(draggingPanel)
-	getInventory().add_child(draggingPanel)
-	if (swapTarget == null) :
-		getInventory().move_child(draggingPanel, oldIndex)
-	else :
-		if (oldIndex < newIndex) :
-			getInventory().move_child(swapTarget, oldIndex)
-			getInventory().move_child(draggingPanel, newIndex)
-		else :
-			getInventory().move_child(draggingPanel, newIndex)
-			getInventory().move_child(swapTarget, oldIndex)
-	draggingPanel = null
 	
 	#getInventory().remove_child(ghostPanel)
 	#ghostPanel.queue_free()
@@ -370,6 +376,8 @@ func _process(_delta) :
 func getSaveDictionary() -> Dictionary :
 	var tempDict = {}
 	var children = getInventoryList()
+	if (draggingPanel != null) :
+		children.append(draggingPanel)
 	if (children.is_empty()) :
 		return tempDict
 	for index in range(0,children.size()) :
@@ -440,7 +448,6 @@ func onLoad(loadDict) -> void :
 	emit_signal("myReadySignal")
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
-
 
 func _on_line_edit_text_submitted(new_text: String) -> void:
 	if (EquipmentDatabase.getEquipment(new_text) != null) :

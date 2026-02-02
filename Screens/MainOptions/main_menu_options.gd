@@ -3,6 +3,7 @@ extends Control
 signal swapToMainMenu
 
 func _on_return_button_pressed() -> void:
+	$Content/VBoxContainer/ScrollContainer/VBoxContainer/masterVolume.onExit()
 	emit_signal("swapToMainMenu")
 
 var currentSettings : Dictionary = {}
@@ -68,7 +69,9 @@ func _update_window_mode_text() :
 	windowModeConfirmationPopup.setText("Is this Window Mode okay? Reverting in " + str(Helpers.myRound(windowModeTimer.time_left,1)) + " seconds.")
 
 func _on_save_pressed() -> void:
-	MainOptionsHelpers.saveSettings(currentSettings)
+	#$Content/VBoxContainer/ScrollContainer/VBoxContainer/masterVolume.onSave()
+	currentSettings["audio"] = AudioHandler.getMainOptionsDictionary()
+	MainOptionsHelpers.queueSaveSettings(currentSettings)
 
 const keybindsLoader = preload("res://Screens/MainOptions/keybinds.tscn")
 func _on_keybinds_pressed() -> void:
@@ -93,5 +96,6 @@ func _on_reset_global_encyclopedia_pressed() -> void:
 		var current = MainOptionsHelpers.loadSettings()
 		var default = MainOptionsHelpers.getDefaultSettings()
 		current["globalEncyclopedia"] = default["globalEncyclopedia"]
+		current["herophile"] = default["herophile"]
 		MainOptionsHelpers.saveSettings(current)
 		SaveManager.globalSettings = current.duplicate()

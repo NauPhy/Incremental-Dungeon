@@ -140,6 +140,61 @@ grow_vertical = 2
 tooltipTitle = "From equipped items"
 tooltipText = "When equipment is dropped by an enemy, if it is a direct upgrade of a currently equipped item, it will be auto-equipped and the old item will be discarded."
 
+[node name="PanelContainer3" type="PanelContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("4_fwgud")
+
+[node name="DirectDowngrades" type="HBoxContainer" parent="PanelContainer3"]
+layout_mode = 2
+theme = ExtResource("1_v2koq")
+theme_override_constants/separation = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer3/DirectDowngrades"]
+layout_mode = 2
+size_flags_horizontal = 0
+bbcode_enabled = true
+text = "Follow above setting even if item is: "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer3/DirectDowngrades"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 35
+alignment = 2
+
+[node name="Option" type="HBoxContainer" parent="PanelContainer3/DirectDowngrades/HBoxContainer"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="PanelContainer3/DirectDowngrades/HBoxContainer/Option"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer3/DirectDowngrades/HBoxContainer/Option"]
+layout_mode = 2
+bbcode_enabled = true
+text = " Legendary "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
+[node name="Option2" type="HBoxContainer" parent="PanelContainer3/DirectDowngrades/HBoxContainer"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="PanelContainer3/DirectDowngrades/HBoxContainer/Option2"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer3/DirectDowngrades/HBoxContainer/Option2"]
+layout_mode = 2
+bbcode_enabled = true
+text = " Signature "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2
 theme = ExtResource("4_fwgud")

@@ -47,10 +47,6 @@ func initialise(rewards : Dictionary) :
 			emit_signal("addToInventoryRequested", entry.getItemSceneRef())
 			if (waitingForResponse) :
 				await responseReceived
-				
-	emit_signal("itemListForYourInspectionGoodSir", getItemList(), self)
-	if (waitingForResponse) :
-		await responseReceived
 		
 	var filter = IGOptions.getIGOptionsCopy()["filter"]
 	var itemsToDelete : Array[Node] = []
@@ -81,6 +77,15 @@ func initialise(rewards : Dictionary) :
 	await get_tree().process_frame
 	if (getItemList().is_empty()) :
 		suicide()
+		return
+		
+	emit_signal("itemListForYourInspectionGoodSir", getItemList(), self)
+	if (waitingForResponse) :
+		await responseReceived
+		
+	await get_tree().process_frame
+	if (getItemList().is_empty()) :
+		suicide()
 	else :
 		var firstEntry = $Content/InventoryPanel/ScrollContainer/VBoxContainer.get_child(0)
 		firstEntry.getItemSceneRef().select()
@@ -89,6 +94,14 @@ func initialise(rewards : Dictionary) :
 		initialisationPending = false
 		emit_signal("initialisationComplete")
 		emit_signal("waitingForUser")
+	var selectedCount = 0
+	for entry in getItemList() :
+		if (entry.isSelected()) :
+			selectedCount += 1
+	if (selectedCount > 1) :
+		for entry in getItemList() :
+			entry.deselect()
+		getItemList()[0].select()
 		
 func _on_entry_selected(itemSceneRef) :
 	$Content/Details.setItemSceneRefBase(itemSceneRef)

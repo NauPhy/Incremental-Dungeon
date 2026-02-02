@@ -10,6 +10,7 @@ const StandardModifier : Dictionary = {
 @export var attributeMods : Dictionary = {}
 @export var statMods : Dictionary = {}
 @export var otherMods : Dictionary = {}
+
 func _init() :
 	for key in Definitions.attributeDictionary.keys() :
 		attributeMods[Definitions.attributeDictionary[key]] = StandardModifier.duplicate()
@@ -31,26 +32,35 @@ static func createFromSaveDictionary(loadDict) -> ModifierPacket :
 	retVal.otherMods = loadDict["other"]
 	return retVal
 static func add(left : ModifierPacket, right : ModifierPacket) -> ModifierPacket :
-	var newPacket = ModifierPacket.new()
+	return add_array([left, right])
+	
+static func add_array(val : Array[ModifierPacket]) -> ModifierPacket :
+	if (val.size() == 0) :
+		return ModifierPacket.new()
+	var retVal : ModifierPacket = val[0].duplicate(true)
+	for index in range(1, val.size()) :
+		add_nonconst(retVal,val[index])
+	return retVal
+	
+static func add_nonconst(left : ModifierPacket, right : ModifierPacket) -> void :
 	for key in left.attributeMods.keys() :
 		for subkey in StandardModifier.keys() :
 			if (subkey == "Premultiplier") :
-				newPacket.attributeMods[key][subkey] = left.attributeMods[key][subkey] * right.attributeMods[key][subkey]
+				left.attributeMods[key][subkey] *= right.attributeMods[key][subkey]
 			else :
-				newPacket.attributeMods[key][subkey] = left.attributeMods[key][subkey] + right.attributeMods[key][subkey]
+				left.attributeMods[key][subkey] += right.attributeMods[key][subkey]
 	for key in left.statMods.keys() :
 		for subkey in StandardModifier.keys() :
 			if (subkey == "Premultiplier") :
-				newPacket.statMods[key][subkey] = left.statMods[key][subkey]*right.statMods[key][subkey]
+				left.statMods[key][subkey] *= right.statMods[key][subkey]
 			else :
-				newPacket.statMods[key][subkey] = left.statMods[key][subkey] + right.statMods[key][subkey]
+				left.statMods[key][subkey] += right.statMods[key][subkey]
 	for key in left.otherMods.keys() :
 		for subkey in StandardModifier.keys() :
 			if (subkey == "Premultiplier") :
-				newPacket.otherMods[key][subkey] = left.otherMods[key][subkey]*right.otherMods[key][subkey]
+				left.otherMods[key][subkey] *= right.otherMods[key][subkey]
 			else :
-				newPacket.otherMods[key][subkey] = left.otherMods[key][subkey] + right.otherMods[key][subkey]
-	return newPacket
+				left.otherMods[key][subkey] += right.otherMods[key][subkey]
 
 func getModStringOrNull_attr(attribute : Definitions.attributeEnum, tag : String) :
 	return internalGetStrOrNull(internalCallType.attribute, tag, Definitions.attributeDictionary[attribute], Definitions.attributeDictionaryShort[attribute])

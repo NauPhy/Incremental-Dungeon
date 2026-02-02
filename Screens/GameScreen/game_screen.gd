@@ -6,16 +6,29 @@ const binaryPopup = preload("res://Graphic Elements/popups/binary_decision.tscn"
 	
 ##########################################
 ## Other
+var last = Vector2.ZERO
 var firstProcess : bool = true
 func _process(_delta) :
+	
 	if (!doneLoading) :
 		return
 	if (!myReady) :
 		return
 	if (firstProcess) :
 		var numberRefs = $Player.getRoutineSpeedByReference()
-		$MyTabContainer/InnerContainer/Training.initialiseNumberRefs(numberRefs)
+		var numberRefs2 = $Player.getRoutineMultiplicityByReference()
+		$MyTabContainer/InnerContainer/Training.initialiseNumberRefs(numberRefs, numberRefs2)
 		firstProcess = false
+
+	#var temp = get_global_mouse_position()
+	#Input.warp_mouse(temp+motion)
+	#motion = Vector2(0,0)
+	#var p = get_global_mouse_position()
+	#if p == last:
+		#print("Mouse frozen frame")
+	#last = p
+
+
 	var attributeMods = $Player.getAttributeMods()
 	#var modDictionary = $Player.getModifierDictionary()
 	#var routineSpeeds : Array[float] = []
@@ -48,7 +61,6 @@ func updatePlayer() :
 	$Player.updateArmor(newArmor)
 	var newAccessory : Accessory = $MyTabContainer/InnerContainer/Equipment.getCurrentAccessory()
 	$Player.updateAccessory(newAccessory)
-	
 	$Player.myUpdate()
 #############################################
 ## New game initialisation
@@ -61,6 +73,8 @@ func _item_list_inspection(itemList : Array[Node], emitter : Node) :
 	var discardFromCombatRewards = directUpgradeSettings[0]
 	var discardFromInventory = directUpgradeSettings[1]
 	var discardFromEquipped = directUpgradeSettings[2]
+	var discardLegendaries = directUpgradeSettings[3]
+	var discardSignatures = directUpgradeSettings[4]
 	if !discardFromCombatRewards && !discardFromInventory && !discardFromEquipped :
 		emitter.waitingForResponse = false
 		emitter.emit_signal("responseReceived")
@@ -69,13 +83,16 @@ func _item_list_inspection(itemList : Array[Node], emitter : Node) :
 		var deleteList : Array[Node] = []
 		for index in range(0, itemList.size()) :
 			if ($MyTabContainer/InnerContainer/Equipment.hasDirectUpgrade(itemList[index].getItemSceneRef().core)) :
+				var groups : EquipmentGroups = itemList[index].getItemSceneRef().core.equipmentGroups
+				if ((groups.quality == EquipmentGroups.qualityEnum.legendary&&!discardLegendaries) || (groups.isSignature && !discardSignatures)) :
+					continue
 				deleteList.append(itemList[index].getItemSceneRef())
 		await emitter.removeItemsFromList_internal(deleteList)
 		itemList = emitter.getItemList()
 	if (discardFromInventory || discardFromEquipped) :
 		var deleteList : Array[Node] = []
 		for index in range(0,itemList.size()) :
-			var replaced = $MyTabContainer/InnerContainer/Equipment.replaceDirectDowngrades(itemList[index].getItemSceneRef().core, discardFromInventory, discardFromEquipped)
+			var replaced = $MyTabContainer/InnerContainer/Equipment.replaceDirectDowngrades(itemList[index].getItemSceneRef().core, discardFromInventory, discardFromEquipped, discardLegendaries, discardSignatures)
 			if (replaced) :
 				deleteList.append(itemList[index].getItemSceneRef())
 		await emitter.removeItemsFromList_internal(deleteList)
@@ -86,7 +103,18 @@ func _shopping_permanent_modifier(value : Array[float], type : String, statEnum 
 	if (permanentMods.get(source) == null) :
 		permanentMods[source] = ModifierPacket.new()
 	for index in range(0,value.size()) :
-		if (type == "attribute" && isMultiplicative) :
+		if (type == "otherStat" && statEnum[index] == Definitions.otherStatEnum.routineSpeed_5) :
+			var newValue : Array[float] = []
+			var newEnum : Array[int] = []
+			for index2 in range(Definitions.otherStatEnum.routineSpeed_0, Definitions.otherStatEnum.routineSpeed_4+1) :
+				newValue.append(value[index])
+				newEnum.append(index2)
+			_shopping_permanent_modifier(newValue, type, newEnum, source, modType, isMultiplicative, true)
+			if (isMultiplicative) :
+				permanentMods[source].otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5]][modType] *= value[index]
+			else :
+				permanentMods[source].otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5]] += value[index]
+		elif (type == "attribute" && isMultiplicative) :
 			permanentMods[source].attributeMods[Definitions.attributeDictionary[statEnum[index]]][modType] *= value[index]
 		elif (type == "attribute" && !isMultiplicative) :
 			permanentMods[source].attributeMods[Definitions.attributeDictionary[statEnum[index]]][modType] += value[index]
@@ -101,13 +129,6 @@ func _shopping_permanent_modifier(value : Array[float], type : String, statEnum 
 		else :
 			if (!recursiveCall) :
 				Shopping.provideConfirmation(false)
-	if (type == "otherStat" && statEnum.size() == 1 && statEnum[0] == Definitions.otherStatEnum.routineSpeed_5) :
-		var newValue : Array[float] = []
-		var newEnum : Array[int] = []
-		for index in range(Definitions.otherStatEnum.routineSpeed_0, Definitions.otherStatEnum.routineSpeed_4+1) :
-			newValue.append(value[0])
-			newEnum.append(index)
-		_shopping_permanent_modifier(newValue, type, newEnum, source, modType, isMultiplicative, true)
 	if (!recursiveCall) :
 		Shopping.provideConfirmation(true)
 	
@@ -411,7 +432,7 @@ func _on_shop_shortcut_selected(type : String) :
 	_on_shop_requested(details)
 	
 func _on_shop_finished() :
-	$MyTabContainer/InnerContainer/Combat.enableUI()
+	$MyTabContainer/InnerContainer/Combat.enableUIIfPaused()
 	
 func _on_currency_amount_requested(item : Currency, emitter : Node) :
 	emitter.provideCurrencyAmount($TopRibbon/Ribbon/Currency.getCurrencyAmount(item))
@@ -519,7 +540,7 @@ func handleMenu(event) :
 	
 var tabsUnlocked : Array
 func getSaveDictionary() -> Dictionary :
-	var tempDict = {}		
+	var tempDict = {}
 	tempDict["tabsUnlocked"] = tabsUnlocked
 	tempDict["permanentMods"] = {}
 	for key in permanentMods.keys() :
@@ -532,6 +553,9 @@ signal myReadySignal
 var doneLoading : bool = false
 signal doneLoadingSignal
 func _ready() :
+	#Input.set_use_accumulated_input(false)
+	#Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	myReady = true
 	emit_signal("myReadySignal")
 	
@@ -620,6 +644,7 @@ func beforeLoad(newSave) :
 				
 func onLoad(loadDict : Dictionary) -> void :
 	myReady = false
+	updateSaveToV105(loadDict)
 	tabsUnlocked = loadDict["tabsUnlocked"]
 	for index in range(0,tabsUnlocked.size()) :
 		if (!tabsUnlocked[index]) :
@@ -631,6 +656,35 @@ func onLoad(loadDict : Dictionary) -> void :
 	emit_signal("myReadySignal")
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
+
+func updateSaveToV105(loadDict : Dictionary) :
+	for key in loadDict["permanentMods"].keys() :
+		if (key == Shopping.routinePurchasableDictionary[Shopping.routinePurchasable.mixed]) :
+			continue
+		var modPacket = loadDict["permanentMods"][key]
+		var otherSection = modPacket["other"]
+		var tempRoutineMultiplicity = otherSection.get(Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity])
+		if (tempRoutineMultiplicity == null) :
+			otherSection[Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity]] = ModifierPacket.StandardModifier.duplicate()
+			
+	var refinedFundamentals = loadDict["permanentMods"].get(Shopping.routinePurchasableDictionary[Shopping.routinePurchasable.mixed])
+	if (refinedFundamentals == null) :
+		return
+	var routineMultiplicity = refinedFundamentals["other"].get(Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity])
+	if (routineMultiplicity == null) :
+		refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity]] = ModifierPacket.StandardModifier.duplicate()
+		routineMultiplicity = refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineMultiplicity]]
+	else :
+		return
+	var routineEffect = refinedFundamentals["other"].get(Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect])
+	if (routineEffect == null) :
+		refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect]] = ModifierPacket.StandardModifier.duplicate()
+		routineEffect = refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect]]
+	for key in routineMultiplicity.keys() :
+		routineMultiplicity[key] = routineEffect[key]
+	refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineEffect]] = ModifierPacket.StandardModifier.duplicate()
+	for index in range(Definitions.otherStatEnum.routineSpeed_0, Definitions.otherStatEnum.routineSpeed_4+1) :
+		refinedFundamentals["other"][Definitions.otherStatDictionary[index]]["Premultiplier"] = refinedFundamentals["other"][Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5]]["Premultiplier"]
 
 func onLoad_2() :
 	var combat = $MyTabContainer/InnerContainer/Combat
@@ -662,7 +716,7 @@ func createApophisScreen() :
 		_exit_to_menu()
 	elif (choice == 0) :
 		apophisKilledOnThisFile = true
-		await SaveManager.saveGame(SaveManager.currentSlot)
+		SaveManager.queueSaveGame(SaveManager.currentSlot)
 
 const characterCreationLoader = preload("res://Screens/character_creation_new.tscn")
 func _on_change_appearance_button_pressed() -> void:
@@ -671,11 +725,22 @@ func _on_change_appearance_button_pressed() -> void:
 	topLayer.layer = 99
 	var newScreen = characterCreationLoader.instantiate()
 	topLayer.add_child(newScreen)
+	var currentChar : CharacterPacket = $Player.getCharacterPacket()
+	newScreen.setLineEditText(currentChar.getName())
 	newScreen.initialiseAppearanceChange($Player.getCharacterPacket())
-	var character : CharacterPacket = await newScreen.characterDone
+	var ret = await newScreen.characterDone
+	var character : CharacterPacket = ret[0]
 	$Player.setFromCharacter(character)
 	topLayer.queue_free()
 	
 const altTheme = preload("res://Graphic Elements/Themes/mainTab_red.tres")
 func _on_reward_pending() :
 	$MyTabContainer.setThemeOfButtonUntilActive($MyTabContainer/InnerContainer/Combat, altTheme)
+
+#var motion = Vector2(0,0)
+#func _input(event):
+	#if (event is InputEventMouseMotion) :
+		#motion += event.relative
+	#if event is InputEventMouseMotion:
+		#if Engine.get_frames_drawn() % 300 == 0:
+			#print("delta:", event.relative.length())

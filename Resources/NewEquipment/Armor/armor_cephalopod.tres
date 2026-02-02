@@ -132,6 +132,12 @@ otherMods = {
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 },
+"Routine Multiplicity": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
 "Routine Speed": {
 "Postbonus": 0.0,
 "Postmultiplier": 0.0,
@@ -175,7 +181,7 @@ script = ExtResource("3_baidp")
 PHYSDEF = 0.0
 MAGDEF = 0.0
 title = "Armor of Cephalopods"
-description = "Gives your equipped weapon the Water tag.
+description = "Gives your equipped weapon the Water element.
 
 This odd armor gives the wearer many magical abilities, such as active camouflage, the ability to squeeze through gaps, and the ability to drink sea water. "
 myPacket = SubResource("Resource_jgq7u")

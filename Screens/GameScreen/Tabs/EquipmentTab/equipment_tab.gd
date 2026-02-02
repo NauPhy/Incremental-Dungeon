@@ -16,19 +16,25 @@ func getCurrentWeapon() -> Weapon :
 	if (itemSceneRef == null) :
 		return null
 	else :
-		return itemSceneRef.core.duplicate()
+		var temp = itemSceneRef.core.duplicate()
+		temp.resourceName = itemSceneRef.core.resourceName
+		return temp
 func getCurrentArmor() -> Armor :
 	var itemSceneRef = $Inventory.getEquippedItem(Definitions.equipmentTypeEnum.armor)
 	if (itemSceneRef == null) :
 		return null
 	else :
-		return itemSceneRef.core.duplicate()
+		var temp = itemSceneRef.core.duplicate()
+		temp.resourceName = itemSceneRef.core.resourceName
+		return temp
 func getCurrentAccessory() -> Accessory :
 	var itemSceneRef = $Inventory.getEquippedItem(Definitions.equipmentTypeEnum.accessory)
 	if (itemSceneRef == null) :
 		return null
 	else :
-		return itemSceneRef.core.duplicate()
+		var temp = itemSceneRef.core.duplicate()
+		temp.resourceName = itemSceneRef.core.resourceName
+		return temp
 func getEquippedItem(type) :
 	return $Inventory.getEquippedItem(type)
 func getDirectModifiers() -> ModifierPacket :
@@ -93,15 +99,18 @@ func hasDirectUpgrade(oldItem : Equipment) -> bool:
 		if (item.get_child_count() != 1) :
 			continue
 		if (Helpers.equipmentIsDirectUpgrade(item.get_child(0).core,oldItem)) :
-			print("Deleting (probably) a combat reward: " + oldItem.getName() + " because you already have " + item.get_child(0).core.getName())
+			#print("Deleting (probably) a combat reward: " + oldItem.getName() + " because you already have " + item.get_child(0).core.getName())
 			return true
 	return false
 
-func replaceDirectDowngrades(newItem : Equipment, replaceInInventory : bool, replaceInEquipped : bool) -> bool :
+func replaceDirectDowngrades(newItem : Equipment, replaceInInventory : bool, replaceInEquipped : bool, replaceLegendaries : bool, replaceSignatures : bool) -> bool :
 	var replaced : bool = false
 	var equippedDiscarded : bool = false
 	for item in $Inventory.getInventoryList() :
 		if (item.get_child_count() != 1) :
+			continue
+		var groups : EquipmentGroups = item.get_child(0).core.equipmentGroups
+		if ((groups.quality == EquipmentGroups.qualityEnum.legendary&&!replaceLegendaries) || (groups.isSignature && !replaceSignatures)) :
 			continue
 		if (Helpers.equipmentIsDirectUpgrade(newItem, item.get_child(0).core)) :
 			var isEquipped = $Inventory.getEquippedItem(item.get_child(0).getType()) == item.get_child(0)
@@ -113,7 +122,7 @@ func replaceDirectDowngrades(newItem : Equipment, replaceInInventory : bool, rep
 					equippedString = " (equipped) "
 				else :
 					equippedString = ""
-				print("replaced " + item.get_child(0).core.getName() + equippedString + " with " + newItem.getName())
+				#print("replaced " + item.get_child(0).core.getName() + equippedString + " with " + newItem.getName())
 				$Inventory.discardItem(item.get_child(0))
 				replaced = true
 				if (isEquipped) :
@@ -126,3 +135,11 @@ func replaceDirectDowngrades(newItem : Equipment, replaceInInventory : bool, rep
 	if (equippedDiscarded && itemSceneRef != null) :
 		$Inventory.equipItem(itemSceneRef)
 	return replaced
+
+
+func _on_paged_equipment_details_currently_equipped_item_requested(emitter, type) -> void:
+	var item = getEquippedItem(type)
+	if (item == null) :
+		emitter.provideCurrentlyEquippedItem(null)
+	else :
+		emitter.provideCurrentlyEquippedItem(item.core)

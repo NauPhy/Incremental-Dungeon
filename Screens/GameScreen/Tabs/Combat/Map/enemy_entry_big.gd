@@ -31,16 +31,16 @@ func setEnemy(enemy : ActorPreset) :
 	description += "\tPower: " + Helpers.engineeringRound(attack.getPower(),3) + "\n"
 	description += "\tWarmup: " + Helpers.engineeringRound(attack.getWarmup(),3) + " seconds\n"
 	description += "\nKilled: " + str(int(killCount)) + "\n\n"
-	description += "Drops\n"
-	if (enemy.drops.is_empty()) :
-		description += "\t-None-\n"
-	else :
-		for index in range(0,enemy.drops.size()) :
-				## swap to item encyclopedia later???
-				if (EnemyDatabase.getItemObtained(enemy.getResourceName(), enemy.drops[index].getName())) :
-					description += enemy.drops[index].getName() + " - " + str(100*enemy.dropChances[index]) + "%\n"
-				else :
-					description += "??? (" + Definitions.equipmentTypeDictionary[enemy.drops[index].type] + ") - " + str(100*enemy.dropChances[index]) + "%\n"
+	#description += "Drops\n"
+	#if (enemy.drops.is_empty()) :
+		#description += "\t-None-\n"
+	#else :
+		#for index in range(0,enemy.drops.size()) :
+				### swap to item encyclopedia later???
+				#if (EnemyDatabase.getItemObtained(enemy.getResourceName(), enemy.drops[index].getName())) :
+					#description += enemy.drops[index].getName() + " - " + str(100*enemy.dropChances[index]) + "%\n"
+				#else :
+					#description += "??? (" + Definitions.equipmentTypeDictionary[enemy.drops[index].type] + ") - " + str(100*enemy.dropChances[index]) + "%\n"
 	#description += "\n"
 	description += enemy.getDesc()
 	setText(description)

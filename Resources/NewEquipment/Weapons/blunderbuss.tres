@@ -133,6 +133,12 @@ otherMods = {
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 },
+"Routine Multiplicity": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
 "Routine Speed": {
 "Postbonus": 0.0,
 "Postmultiplier": 0.0,
@@ -174,17 +180,19 @@ otherMods = {
 [resource]
 script = ExtResource("3_38hgu")
 scaling = {
-"Dexterity": 0.0,
+"Dexterity": 0.337,
 "Durability": 0.0,
-"Intelligence": 0.0,
+"Intelligence": 0.337,
 "Skill": 0.0,
-"Strength": 0.0
+"Strength": 0.337
 }
-attackBonus = 124.0
+attackBonus = 70.3
 basicAttack = ExtResource("1_8p3c0")
 isUnarmed = false
 title = "Blunderbuss"
-description = "This weapon uses a combination of magics unknown to you. It takes a while to load but oh does it ever pack a punch."
+description = "This weapon uses a combination of magics unknown to you. It takes a while to load but oh does it ever pack a punch.
+
+Fun fact: This weapon used to have more damage and no scaling, but it was too powerful when reforged!"
 myPacket = SubResource("Resource_8p3c0")
 equipmentGroups = SubResource("Resource_ckh67")
 metadata/_custom_type_script = "uid://6qgd3qugycc1"

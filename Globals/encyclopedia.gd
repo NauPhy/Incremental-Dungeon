@@ -15,9 +15,10 @@ enum tutorialName {
 	dropIntro,
 	manticoreKill,
 	herophile,
-	row1,
+	row2,
 	floor1,
-	floor2
+	floor2,
+	tooltips
 	#apophis
 }
 const tutorialTitles : Dictionary = {
@@ -32,9 +33,10 @@ const tutorialTitles : Dictionary = {
 	tutorialName.dropIntro : "Drops Introduction",
 	tutorialName.manticoreKill : "Manticore Defeated",
 	tutorialName.herophile : "Training with Herophile",
-	tutorialName.row1 : "Beastiary and Item Drops",
+	tutorialName.row2 : "Beastiary and Item Drops",
 	tutorialName.floor1 : "Combat Rewards Filter",
-	tutorialName.floor2 : "Elements"
+	tutorialName.floor2 : "Elements",
+	tutorialName.tooltips : "Tooltips"
 	#tutorialName.apophis : "The Demon King is Slain!"
 }
 const tutorialDesc : Dictionary = {
@@ -52,12 +54,14 @@ const tutorialDesc : Dictionary = {
 	tutorialName.equipment : "You just found some equipment! Up until now you've been unarmed and unarmored. You can add the item to your inventory from the loot screen and equip it in the Equipment Tab. Try equipping it and see how it changes your Combat Stats.\n\n[i]The Equipment tab has been unlocked[/i]",
 	#End of first floor
 	tutorialName.tutorialFloorEnd : "Congratulations, you've beaten the tutorial floor. The dungeon from here on out will be a bit slower and more challenging.\n\nRemember to explore the side paths and farm drops from weaker monsters. If you feel progress is too slow, get a cup of coffee or pull up a YouTube video. This is not meant to be a terribly active game.\n\nAlternatively, you could spend some time scrutinising your build to try and squeeze a bit more performance out of it!\n\nOh, and take this Routine Speed buff, you're gonna need it.\n\n[i]The \"Learning Curve\" Routine Speed buff has been added[/i]",
-	tutorialName.dropIntro : "Most enemies have a chance to drop items on death. After completing a room for the first time, enemies and hints about their drops will be added to the beastiary found in the in-game options (F1) menu.\n\nEnemies will also be listed on the room itself. You can access an enemy's beastiary entry by CTRL-clicking its name in the room's enemy list, but only if you've defeated it at least once.",
+	
 	tutorialName.manticoreKill : "Congratulations on defeating the Manticore! Unfortunately this is the end of content in the current version. I hope you enjoyed the game, and I'd be happy to hear any feedback you have!",
 	tutorialName.herophile : "\"I am no match for you. I yield to your strength.\" Herophile says, kneeling. You turn towards the exit.\n\n\"However\"\n\nYou turn back towards the demigoddess, eyebrow raised.\n\n\"Your skill is clearly lacking.\" she says, grinning. \"I believe a mutually beneficial arrangement can be made.\"\n\n[i]The \"Spar with Herophile\" Routine has been unlocked![/i]",
-	tutorialName.row1 : "Not all enemies drop from the same item pool! You can view the item pool Tags of an enemy on the Combat Map if you CTRL-Click their name.\n\nYou can also view the same entries in the Beastiary, found in the Encyclopedia (F1), provided you've won a battle against them at least once.",
+	#tutorialName.dropIntro : "From floor 1 onwards, enemies have a chance to drop items on death. Once a room has been entered, you can CTRL-click the enemies' names on the Combat Map to view their beastiary entries, which contain hints about what items they can drop. You can also access any of the beastiary entries in the Encyclopedia (F1), but only if the enemy has been defeated at least once.",
+	tutorialName.row2 : "From floor 1 onwards, enemies have a chance to drop items on death, but not all enemies drop from the same item pool! You can view the item pool Tags of an enemy on the Combat Map if you CTRL-Click their name.\n\nYou can also view the same entries in the Beastiary, found in the Encyclopedia (F1), provided you've won a battle against them at least once.",
 	tutorialName.floor1 : "Tired of getting irrelevant items? You can filter rewards to be auto-discarded in the in-game options menu (F2). There, you can also choose to have your items auto-replaced when an upgrade drops!",
-	tutorialName.floor2 : "Have you been taking advantage of elemental synergies? Some equipment has one or more Elements. Although nonelemental equipment is 15% stronger, elemental equipment grants a boost of 25% when the synergy is activated!"
+	tutorialName.floor2 : "Have you been taking advantage of elemental synergies? Some equipment has one or more Elements. Although nonelemental equipment is 15% stronger, elemental equipment grants a boost of 25% when the synergy is activated!",
+	tutorialName.tooltips : "Any time you see text in [color=#baa1e6]this color[/color], you can hover over it for a tooltip. If you want to look at tooltips for text inside your new tooltip, wait for the circle in the upper right to fill, then mouse over the new text. You can collapse the whole tree by mousing off of the tooltip (and [color=#baa1e6]original text[/color], or part of the tree by mousing over the topmost tooltip you want to keep.\n\nThe numbers on the Player Panel and under Routine Growth (in the Training Tab, once unlocked) also create tooltips, despite [color=white]being white.[/color])"
 	#tutorialName.apophis : "Congratulations, you've defeated the Demon King! The Surface world is saved! Or something. This game was going to have a more in depth story but game development is hard. In any case, there are actually 20 biomes, 25 bosses, and 10 factions in this game, and levels 1-9 are randomly generated! So I encourage you to check out endless mode or try one of the other classes. Thanks for playing!"
 }
 const tutorialPointers : Dictionary = {
@@ -75,9 +79,10 @@ const oneOffTutorials : Array = [
 	tutorialName.dropIntro,
 	tutorialName.manticoreKill,
 	tutorialName.herophile,
-	tutorialName.row1,
+	tutorialName.row2,
 	tutorialName.floor1,
-	tutorialName.floor2
+	tutorialName.floor2,
+	tutorialName.tooltips
 	#tutorialName.apophis
 ]
 
@@ -214,20 +219,26 @@ func getFormula(formulaKey : String, action : formulaAction, args) :
 	
 	
 const problemDictionary = {
-	"Damage" : ["Damage Rating"],
+	"Damage" : ["Damage Rating", "Magic Damage Taken", "Physical Damage Taken", "Magic Damage Dealt", "Physical Damage Dealt"],
 	"Multiplier" : ["Standard Multiplier"],
 	"Routine Growth" : ["Routine Growth Ratio"],
-	"Routine" : ["Routine Growth", "Cumulative Routine Levels", "Routine Growth Ratio", "Routine Effect", "Routine Speed"]
+	"Routine" : ["Routine Growth", "Cumulative Routine Levels", "Routine Growth Ratio", "Routine Effect", "Routine Speed", "Routine Multiplicity"]
 }
 const keywords : Array[String] = [
+	"Routine Multiplicity",
+	"Skill",
+	"Routine Speed",
+	"Routine Effect",
+	#"Wait",
+	#"Inventory Behaviour",
 	"Action Power",
-	"Always Discard",
-	"Always Take",
+	#"Always Discard",
+	#"Always Take",
 	"Attack Rating",
 	"Attribute",
 	"Base",
 	"Class",
-	"Combat Reward Behaviour",
+	#"Combat Reward Behaviour",
 	"Combat Stat",
 	"Currency",
 	"Damage Rating",
@@ -335,18 +346,20 @@ const keyword_alternates : Dictionary = {
 	"Physical Damage Taken" : "PDT",
 	"Magic Damage Dealt" : "MDD",
 	"Magic Damage Taken" : "MDT",
-	"Miku Miku Dance" : "MMD",
+	#"Miku Miku Dance" : "MMD",
 	"Routine Growth Ratio" : "RGR",
 	"Cumulative Routine Level" : "CRL",
 	"Routine Effect" : "RE"
 }
 
 var descriptions : Dictionary = {
+	"Routine Multiplicity" : "Your Routine Multiplicity is the number of Cumulative Routine Levels you gain each time the training bar is filled. The non-integer portion of Routine Multiplicity is the chance of gaining +1 CRL.\n\nFor example, if you have a Routine Multiplicity of 4.3, you will have a 30% chance of gaining 5 CRL and a 70% chance of gaining 4 CRL.\n\t-Base Routine Multiplicity = 1.0.",
+	
 	"Learning Curve" : "This stuff is easy! As a bright young adventurer, you're still learning quickly. 3.0x Routine Speed for all attributes, linearly decaying to 1.0x as the attribute's Bonus from Class + Cumulative Routine Levels approaches 106.",
 	
 	#"Softcap" : "Every time the Bonus provided to an attribute by Cumulative Routine Levels reaches a new power of 10 (starting at 100), your Routine Speed for that attribute halves permanently.",
 	
-	"Class" : "Your Class determines their starting Attributes, Attribute multipliers, and unarmed Weapon Scaling. Fighter is the tankiest, Mage is the highest damage, and Rogue is balanced. You can respec about halfway through the game at the cost of half of your Cumulative Routine Levels",
+	"Class" : "Your Class determines your starting Attributes, Attribute multipliers, and unarmed Weapon Scaling. Fighter is the tankiest, Mage is the highest damage, and Rogue is balanced. You can respec about halfway through the game at the cost of half of your Cumulative Routine Levels",
 	
 	"Currency" : "Currency items do not take up inventory space and only exist to be exchanged at shops.\n\nThe amount of currency acquired from a victory depends only on how deep in the dungeon it is (except in the case of a particular wandering boss ;3)", 
 		
@@ -392,9 +405,9 @@ var descriptions : Dictionary = {
 
 	"Routine" : "Routines passively increase your Cumulative Routine Levels over time, which in turn increases your Attributes. Each Routine improves Cumulative Routine Levels at different rates, and more Routines can be acquired from shops. To view and use Routines, see the Training tab.",
 	
-	"Cumulative Routine Level" : "There are five Cumulative Routine Levels, one for each Attribute. They can be found under \"Routine Levels\" in the Training tab. Cumulative Routine Levels increase constantly at a rate equal to your Routine Growth Rates.\n\t-Cumulative Routine Levels provide a Bonus to the Base of your corresponding Attributes equal to Routine Effect*respective level.",
+	"Cumulative Routine Level" : "There are five Cumulative Routine Levels, one for each Attribute. They can be found under \"Routine Levels\" in the Training tab. Cumulative Routine Levels increase by your Routine Multiplicity (1 for most of the game) every time the corresponding progress bar fills up. CRL fill rates are determined by your Routine Growth rates.\n\t-Cumulative Routine Levels provide a Bonus to the Base of your corresponding Attributes equal to Routine Effect*respective level.",
 	
-	"Routine Growth": "Routine Growth is the amount of levels you gain in Cumulative Routine Levels per second. There are five Routine Growth Rates, one for each Attribute. They can be found at the bottom of the \"Routines\" panel in the Training Tab.\n\t-For a given Attribute, the corresponding Base Routine Growth Rate = RGR*Routine Speed.",
+	"Routine Growth": "Routine Growth is the amount of times per second your training bars are filled. For much of the game, this is also the number of Cumulative Routine Levels you gain per second. There are five Routine Growth Rates, one for each Attribute. They can be found at the bottom of the \"Routines\" panel in the Training Tab.\n\t-For a given Attribute, the corresponding Base Routine Growth Rate = RGR*Routine Speed.",
 	
 	"Routine Speed" : "Listed under \"Other Stats\" in the Player Panel, Routine Speed provides a Multiplier to all Routine Growth of x<Routine Speed>.\n\t-Base Routine Speed = 1.0\n\nRoutine Speed is capped at 100.0.",
 	
@@ -402,13 +415,13 @@ var descriptions : Dictionary = {
 	
 	"Routine Growth Ratio" : "The Routine Growth Ratio (RGR) is the Numbers displayed underneath each Routine under \"Routines\" in the Training tab. A Routine's RGR provides a Bonus to Base Routine Growth Rate of RGR*Routine Speed. Base RGR varies by Routine, and Bonuses to their Standard Multipliers can be bought in shops.",
 	
-	"Combat Reward Behaviour" : "Wait\n\nAlways Take\n\nAlways Discard",
+	#"Combat Reward Behaviour" : "Wait\n\nAlways Take\n\nAlways Discard",
 	
-	"Wait" : "This item must be manually taken or discarded from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).",
+	#"Wait" : "This item must be manually taken or discarded from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).",
 	
-	"Always Take" : "Always take this item from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).\n\nBehaviour when inventory is full depends on \"Inventory Behaviour\" in the in-game options (F2)",
+	#"Always Take" : "Always take this item from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).\n\nBehaviour when inventory is full depends on \"Inventory Behaviour\" in the in-game options (F2)",
 	
-	"Always Discard" : "Always discard this item from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).",
+	#"Always Discard" : "Always discard this item from combat rewards.\nThis setting can be changed at any time per-item in the Encyclopedia (F1).",
 	
 	"Inventory Behaviour" : "Determines whether \"Always Take\" will wait or discard when the inventory is full. \"Always Take\" can be set per-item in the Encyclopedia (F1).",
 	
@@ -474,7 +487,7 @@ var descriptions : Dictionary = {
 	"Frostkin" : "The Frostkin Faction includes magical beings aligned with ice.",
 	"Nautikin" : "The Nautikin Faction includes magical beings aligned with water.",
 	"Greenskin" : "The Greenskin Faction includes monstrous surface dwelling humanoids, such as orcs and goblins.",
-	"Wanderkin" : "The Wanderkin Faction includes hermits, travelers, and malfunctioning automotons that go where they please and have allegiance to no one but themselves.",
+	"Wanderkin" : "The Wanderkin Faction includes hermits, travelers, and malfunctioning automotons that go where they please and have allegiance to no one but themselves. Wanderkin can appear in any biome, with increased rarity",
 	"Undead" : "The Undead Faction includes those that practice necromancy and their creations.",
 	"Merfolk" : "The Merfolk Faction are a proud and powerful race, unbothered by the affairs of surface or underworld dwellers.",
 	
@@ -486,7 +499,7 @@ var descriptions : Dictionary = {
 	"Magic Damage Taken" : "Magic Damage Taken, aka MDT.\n\t-Base MDT = 1.0",
 	"Physical Conversion" : "Applies a portion of physical damage to the enemy's MAGDEF instead of their PHYSDEF.\n\t-Base Physical Conversion = 0.0",
 	"Magic Conversion" : "Applies a portion of magic damage to the enemy's PHYSDEF instead of their MAGDEF.\n\t-Base Magic Conversion = 0.0",
-	"Miku Miku Dance" : "henlo"
+	#"Miku Miku Dance" : "henlo"
 }
 #func getEncyclopediaEntries() -> Dictionary :
 	#var tempDict : Dictionary = {}

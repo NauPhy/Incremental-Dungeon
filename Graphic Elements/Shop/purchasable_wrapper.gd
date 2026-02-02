@@ -9,6 +9,7 @@ signal myReadySignal
 func _ready() :
 	if (!$PurchasableScene.myReady) :
 		await $PurchasableScene.myReadySignal
+	$PanelContainer/EncyclopediaTextLabel.currentLayer += 1
 	myReady = true
 	emit_signal("myReadySignal")
 

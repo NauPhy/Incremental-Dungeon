@@ -40,3 +40,17 @@ func _on_mouse_entered() -> void:
 func _on_mouse_exited() -> void:
 	if (!isDragging) :
 		isHovered = false
+
+func cancelDrag() :
+	isDragging = false
+	isClicking = false
+	isHovered = false
+	clickStartPos = Vector2(-1,-1)
+	
+func startDragging() :
+	isDragging = true
+	isHovered = true
+	isClicking = false
+	clickStartPos = Vector2(-1,-1)
+	global_position = get_global_mouse_position()
+	

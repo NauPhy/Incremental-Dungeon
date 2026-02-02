@@ -99,6 +99,8 @@ var armorUnlocked : bool = false
 var weaponUnlocked : bool = false
 func onLoad(loadDict) :
 	myReady = false
+	updateToVersion105(loadDict)
+	updateToVersion107(loadDict)
 	allRoutinesPurchased = loadDict["allRoutines"]
 	if (loadDict.get("unlockedRoutines") != null) :
 		unlockedRoutines = loadDict["unlockedRoutines"]
@@ -148,6 +150,37 @@ func onLoad(loadDict) :
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
 		
+func updateToVersion105(loadDict : Dictionary) :
+	var oldBase = 130000
+	var oldFactor = 10
+	var currentPrice = loadDict["itemPrices"]["routine"][routinePurchasable.mixed]
+	var magnitude = log(currentPrice/oldBase)/log(10)
+	if (is_equal_approx(magnitude, floor(magnitude)) || is_equal_approx(magnitude, ceil(magnitude))) :
+		loadDict["itemPrices"]["routine"][routinePurchasable.mixed] = itemPriceBase["routine"][routinePurchasable.mixed] * pow(10,magnitude)
+		
+func updateToVersion107(loadDict : Dictionary) :
+	for index in range(0,loadDict["unlockedRoutines"].size()) :
+		if (loadDict["unlockedRoutines"][index].find("Resource#") != -1) :
+			loadDict["unlockedRoutines"][index] = "spar_herophile"
+	if (loadDict["allRoutines"]) :
+		return
+	var routineList = MegaFile.getAllRoutine()
+	var mySet : bool = true
+	var herophileUnlocked : bool = false
+	for routine in routineList :
+		if (routine.getResourceName() == "spar_herophile" && loadDict["unlockedRoutines"].find("spar_herophile") != -1) :
+			herophileUnlocked = true
+			continue
+		if (loadDict["unlockedRoutines"].find(routine.getResourceName()) == -1) :
+			mySet = false
+			break
+	if (mySet) :
+		loadDict["allRoutines"] = true
+		loadDict["unlockedRoutines"] = []
+		for routine in routineList :
+			if (routine == MegaFile.getRoutine("spar_herophile") && !herophileUnlocked) :
+				continue
+			loadDict["unlockedRoutines"].append(routine.getResourceName())
 ###################################################################################
 ## General
 var subclassPurchased : bool = false
@@ -259,8 +292,9 @@ func getNextItemPrice_routine(item) -> int :
 	## It's 25x more expensive (5000) at the end of floor 5, after 9 purchases
 	elif (item == routinePurchasable.randomRoutine) :
 		return round(currentVal * 1.43)
+	## Buy once per floor ad infinitum
 	elif (item == routinePurchasable.upgradeRoutine) :
-		return round(currentVal * standardScale)
+		return round(currentVal * 2.3784)
 	else :
 		return -1
 		
@@ -393,8 +427,14 @@ func _on_purchase_requested(item, _price, myCurrency, emitter, purchase : Purcha
 			emitter.onSubclassPurchased()
 		elif (type == "soul" && index == soulPurchasable.respec) :
 			emitter.reset()
-		elif (type == "routine" && index == routinePurchasable.randomRoutine && unlockedRoutines.size() == 15) :
-			allRoutinesPurchased = true
+		elif (type == "routine" && index == routinePurchasable.randomRoutine) :
+			var threshold
+			if (unlockedRoutines.find("spar_herophile")) :
+				threshold = 16
+			else :
+				threshold = 15
+			if (unlockedRoutines.size() >= threshold) :
+				allRoutinesPurchased = true
 		else :
 			emitter.refreshPrice(item, itemPrices[type][index])
 		emitter.softNotification(purchase)
@@ -501,7 +541,7 @@ const itemPriceBase : Dictionary = {
 		##10 minutes of farming at node 5 yields 2 of each (40)
 		routinePurchasable.speed : 6,
 		routinePurchasable.effect : 8,
-		routinePurchasable.mixed : 2000,
+		routinePurchasable.mixed : 300000,
 		routinePurchasable.randomRoutine : 40, 
 		## 8 routines
 		routinePurchasable.upgradeRoutine : 1000
@@ -511,13 +551,13 @@ const itemPriceBase : Dictionary = {
 	"armor" : {
 		armorPurchasable.premadeArmor: 24,
 		armorPurchasable.newArmor : 18,
-		armorPurchasable.reforge : 16,
+		armorPurchasable.reforge : 24,
 		armorPurchasable.statUpgrade_phys : 40,
 		armorPurchasable.statUpgrade_mag : 40
 	},
 	"weapon" : {
 		weaponPurchasable.premadeWeapon : 24,
-		weaponPurchasable.newWeapon : 18,
+		weaponPurchasable.newWeapon : 24,
 		weaponPurchasable.reforge : 16,
 		weaponPurchasable.statUpgrade_DR : 95
 	},
@@ -833,7 +873,7 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 	elif (item == routinePurchasable.mixed) :
 		value = [0.1, 10.9]
 		type = "otherStat"
-		statEnum = [Definitions.otherStatEnum.routineSpeed_5, Definitions.otherStatEnum.routineEffect]
+		statEnum = [Definitions.otherStatEnum.routineSpeed_5, Definitions.otherStatEnum.routineMultiplicity]
 		isMultiplicative = true
 		awaitingConfirmation = true
 		emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
@@ -853,7 +893,8 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 			lastBought["boughtRoutine"] = MegaFile.getRoutine(chosenRoutine)
 			emit_signal("unlockRoutineRequested", self, lastBought["boughtRoutine"])
 			return
-			
+		
+		
 		var routineList = MegaFile.getAllRoutine()
 		var optionCount = routineList.size()-1-unlockedRoutines.size()
 		var roll = randi_range(0, optionCount-1)
@@ -874,7 +915,7 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 	elif (item == routinePurchasable.upgradeRoutine) :
 		var routineList = MegaFile.getAllRoutine()
 		var upgraded = routineList[randi_range(0,routineList.size()-1)]
-		if (!unlockedRoutines.find("spar_herophile")) :
+		if (unlockedRoutines.find("spar_herophile") == -1) :
 			while (upgraded == MegaFile.getRoutine("spar_herophile")) :
 				upgraded = routineList[randi_range(0,routineList.size()-1)]
 		lastBought["upgradedRoutine"] = upgraded
@@ -885,11 +926,12 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 		
 var herophileUnlocked : bool = false
 func unlockHerophile() :
-	unlockedRoutines.append(MegaFile.getRoutine("spar_herophile"))
+	if (unlockedRoutines.find("spar_herophile") == -1) :
+		unlockedRoutines.append("spar_herophile")
 	var settings = SaveManager.getGlobalSettings()
 	settings["herophile"] = true
 	SaveManager.saveGlobalSettings(settings)
-	SaveManager.saveGame(Definitions.saveSlots.current)
+	SaveManager.queueSaveGame(Definitions.saveSlots.current)
 signal addToInventoryRequested
 signal reforgeItemRequested
 func givePurchaseBenefit_armor(item : armorPurchasable, purchase : Purchasable) :
@@ -930,6 +972,7 @@ func givePurchaseBenefit_weapon(item : weaponPurchasable, purchase : Purchasable
 	elif (item == weaponPurchasable.newWeapon) :
 		var newWeapon = await createRandomWeapon()
 		awaitingConfirmation = true
+		lastBought["equipmentBought"] = newWeapon
 		emit_signal("addToInventoryRequested", newWeapon)
 	elif (item == weaponPurchasable.reforge) :
 		##Inventory keeps track of what's dragged off

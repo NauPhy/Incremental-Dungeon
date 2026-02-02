@@ -2,10 +2,25 @@ extends "res://Graphic Elements/popups/my_popup.gd"
 
 var workingDict : Dictionary = {}
 
+const forcedInclude = [
+	"scraps",
+	"magic_stick_int",
+	"magic_stick_str",
+	"shiv"
+]
+
 func initialise() :
+	Helpers.highVisScroll($Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/ScrollContainer)
 	var options = IGOptions.getIGOptionsCopy()
 	var globalEncyclopedia = IGOptions["optionDict"][IGOptions.options.globalEncyclopedia]
-	var allItems = EquipmentDatabase.getAllEquipment()
+	var allItems = EquipmentDatabase.getAllEquipment().duplicate()
+	var index = 0
+	while (index < allItems.size()) :
+		var item : Equipment = allItems[index]
+		if (!item.equipmentGroups.isEligible && !item.equipmentGroups.isSignature && forcedInclude.find(item.getItemName()) == -1) :
+			allItems.remove_at(index)
+		else :
+			index += 1
 	allItems.sort_custom(func(a,b):return a.getName()<b.getName())
 	#workingDict = startingSettings
 	var encounteredItems
@@ -17,7 +32,7 @@ func initialise() :
 		if (workingDict.get(item) == null) :
 			workingDict[item] = 0
 	for item in allItems :
-		if (workingDict.get(item.getItemName()) == null) :
+		if (encounteredItems.find(item.getItemName()) == -1) :
 			var newEntry = getEntries().get_node("Sample2").duplicate()
 			getEntries().add_child(newEntry)
 			newEntry.visible = true

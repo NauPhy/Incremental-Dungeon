@@ -32,6 +32,8 @@ func getData() -> Dictionary :
 	retVal["directDowngrade"] = []
 	for option in $PanelContainer2/DirectDowngrades/HBoxContainer.get_children() :
 		retVal["directDowngrade"].append(option.get_node("CheckBox").button_pressed)
+	for option in $PanelContainer3/DirectDowngrades/HBoxContainer.get_children() :
+		retVal["directDowngrade"].append(option.get_node("CheckBox").button_pressed)
 	return retVal
 
 func initialise(loadDict : Dictionary) :
@@ -66,6 +68,10 @@ func initialise(loadDict : Dictionary) :
 	for index in range(0,options.size()) :
 		var option = options[index]
 		option.get_node("CheckBox").set_pressed_no_signal(loadDict["directDowngrade"][index])
+	var options2 = $PanelContainer3/DirectDowngrades/HBoxContainer.get_children()
+	for index in range(0, options2.size()) :
+		var option = options2[index]
+		option.get_node("CheckBox").set_pressed_no_signal(loadDict["directDowngrade"][index+options.size()])
 
 func setCurrentLayer(val : int) :
 	setLayerRecursive(get_children(), val)

@@ -127,6 +127,8 @@ signal myReadySignal
 var doneLoading : bool = false
 signal doneLoadingSignal
 func _ready() :
+	await waitForDependencies()
+	handleSafetySave()
 	globalSettings = MainOptionsHelpers.loadSettings()
 	myReady = true
 	emit_signal("myReadySignal")
@@ -145,6 +147,36 @@ func onLoad(loadDict) -> void :
 	emit_signal("myReadySignal")
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
+	
+func handleSafetySave() :
+	for slot in Definitions.slotNames.keys() :
+		var saveFile = loadSaveDict(slot)
+		if (saveFile == null) :
+			continue
+		var mainSave = saveFile.get("/root/Main")
+		if (mainSave == null) :
+			continue
+		var oldVersion = mainSave.get("Version")
+		if (oldVersion == null) :
+			oldVersion = "Pre-V1.05 release"
+		if (oldVersion != Definitions.currentVersion) :
+			var dir = DirAccess.open("user://")
+			var tempPath
+			if (slot == Definitions.saveSlots.slot0) :
+				tempPath = Definitions.tempSlot
+			elif (slot == Definitions.saveSlots.slot1) :
+				tempPath = Definitions.tempSlot2
+			elif (slot == Definitions.saveSlots.slot2) :
+				tempPath = Definitions.tempSlot3
+			else :
+				tempPath = Definitions.tempSlot4
+			if (dir.file_exists(tempPath)) :
+				dir.remove_absolute(tempPath)
+			dir.copy(Definitions.slotPaths[slot], tempPath)
+			dir.rename(tempPath, Helpers.removeAffix(Definitions.slotPaths[slot], ".json") + "_" + oldVersion + ".json")
+			
+			saveFile["/root/Main"]["Version"] = Definitions.currentVersion
+			queueSaveGame_safety(saveFile, Definitions.slotPaths[slot])
 ##################################
 ## Other
 var saveActive : bool = false
@@ -155,20 +187,53 @@ func saveGame(slot : Definitions.saveSlots) :
 		saveMutex.unlock()
 		return
 	saveActive = true
+	var data = generateSave()
+	var filePath = generateFilepath(slot)
+	saveGame_noCheck(data, filePath)
 	saveMutex.unlock()
+	
+func generateSave() -> Dictionary :
+	var centralisedGameState = {}
+	centralisedGameState[self.get_path()] = self.getSaveDictionary()
+	for node in get_tree().get_nodes_in_group("Saveable") :
+		centralisedGameState[node.get_path()] = node.getSaveDictionary()
+	return centralisedGameState
+
+func generateFilepath(slot : Definitions.saveSlots) :
 	var filePath : String
 	if (slot == Definitions.saveSlots.current) :
 		filePath = Definitions.slotPaths[currentSlot]
 	else :
 		filePath = Definitions.slotPaths[slot]
-	var centralisedGameState = {}
-	centralisedGameState[self.get_path()] = self.getSaveDictionary()
-	for node in get_tree().get_nodes_in_group("Saveable") :
-		centralisedGameState[node.get_path()] = node.getSaveDictionary()
-	WorkerThreadPool.add_task(func():handleDiskAccess(centralisedGameState.duplicate(true), filePath, globalSettings.duplicate(true)))
-	
-func handleDiskAccess(centralisedGameState, filePath, globalSettings) :
-	MainOptionsHelpers.saveSettings(globalSettings)
+	return filePath
+
+func saveGame_noCheck(saveData, filePath) :
+	taskList.append(WorkerThreadPool.add_task(func():handleDiskAccess(saveData.duplicate(true), filePath)))
+
+var purging : bool = false
+var taskList : Array = []
+var purgeMutex = Mutex.new()
+func _process(_delta) :
+	purgeMutex.lock()
+	if (purging) :
+		purgeMutex.unlock()
+		return
+	saveMutex.lock()
+	if (taskList.size() > 0 && !saveActive) :
+		purging = true
+		purgeMutex.unlock()
+		for task in taskList :
+			WorkerThreadPool.wait_for_task_completion(task)
+		taskList = []
+		saveMutex.unlock()
+		purgeMutex.lock()
+		purging = false
+		purgeMutex.unlock()
+		return
+	saveMutex.unlock()
+	purgeMutex.unlock()
+
+func handleDiskAccess(centralisedGameState, filePath) :
 	var tempFile = FileAccess.open(Definitions.tempSlot, FileAccess.WRITE)
 	var toStore = JSON.stringify(centralisedGameState)
 	tempFile.store_string(toStore)
@@ -193,6 +258,7 @@ func loadSaveDict(slot : Definitions.saveSlots) :
 	if (!FileAccess.file_exists(Definitions.slotPaths[slot])) : return null
 	var text = FileAccess.open(Definitions.slotPaths[slot], FileAccess.READ).get_as_text()
 	var centralisedGameState = JSON.parse_string(text)
+	JSON.new().parse(text)
 	if (centralisedGameState == null) :
 		centralisedGameState = {}
 	fixEnumRecursive(centralisedGameState)
@@ -263,7 +329,7 @@ func saveGameSaveSelection(parent : Node) :
 	if (parent.has_method("nestedPopupInit")) :
 		menu.nestedPopupInit(parent)
 func _on_save_menu_option_chosen(slot : Definitions.saveSlots) :
-	saveGame(slot)
+	queueSaveGame(slot)
 	
 signal newGameReady
 const newGameMenu = preload("res://SaveManager/new_game_menu.tscn")
@@ -272,3 +338,35 @@ func newGameSaveSelection() :
 	add_child(menu)
 	menu.connect("optionChosen", _on_new_game_option_chosen)
 	return menu
+
+func waitForDependencies() :
+	if (!MainOptionsHelpers.myReady) :
+		await MainOptionsHelpers.myReadySignal
+
+func queueSaveGame(slot) :
+	while (true) :
+		saveMutex.lock()
+		if (!saveActive) :
+			break
+		saveMutex.unlock()
+		await get_tree().process_frame
+	saveActive = true
+	var data = generateSave()
+	var filePath = generateFilepath(slot)
+	saveGame_noCheck(data, filePath)
+	saveMutex.unlock()
+	print("queued save success")
+	
+func queueSaveGame_safety(saveData : Dictionary, filePath : String) :
+	while (true) :
+		saveMutex.lock()
+		if (!saveActive) :
+			break
+		saveMutex.unlock()
+		await get_tree().process_frame
+	saveActive = true
+	saveGame_noCheck(saveData, filePath)
+	saveMutex.unlock()
+	
+func queueSaveGlobalSettings_immediate(settings) :
+	MainOptionsHelpers.queueSaveSettings(settings)

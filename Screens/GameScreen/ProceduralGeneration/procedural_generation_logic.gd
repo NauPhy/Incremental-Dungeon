@@ -17,7 +17,10 @@ func handleAthena(mapInProgress : MapData) -> MapData :
 	var currentFloor = previousMaps.size()+1
 	if (athenaFloor == -1) :
 		var maxFloor = 10
-		athenaFloor = randi_range(currentFloor, maxFloor)
+		if (currentFloor > maxFloor) :
+			athenaFloor = currentFloor
+		else :
+			athenaFloor = randi_range(currentFloor, maxFloor)
 	if (currentFloor == athenaFloor) :
 		var athenaEncounter : Encounter = Encounter.new()
 		var athena : ActorPreset = EnemyDatabase.getEnemy("athena").getAdjustedCopy(getEnemyScaling(getScalingRows_mapFinished(12,0)))
@@ -26,11 +29,18 @@ func handleAthena(mapInProgress : MapData) -> MapData :
 		$ItemPoolHandler.reset(dummyChaos, getAllItems())
 		$DropHandler.reset($ItemPoolHandler.getItemPoolForEnemy(dummyDragon))
 		for index in range(0, 3) :
-			var drop : Equipment = $DropHandler.getItemOfQuality(EquipmentGroups.qualityEnum.legendary, $DropHandler.rollType())
+			var type = $DropHandler.rollType()
+			while (type == Definitions.equipmentTypeEnum.accessory) :
+				type = $DropHandler.rollType()
+			var drop : Equipment = $DropHandler.getItemOfQuality(EquipmentGroups.qualityEnum.legendary, type)
 			athena.drops.append(drop.getAdjustedCopy(getEquipmentScaling(getScalingRows_mapFinished(13,0))))
 		var otherDropQualities = $DropHandler.getDropQualities(5, 2)
 		for index in range(0, otherDropQualities.size()) :
-			var drop = $DropHandler.getItemOfQuality(otherDropQualities[index],$DropHandler.rollType())
+			var type = $DropHandler.rollType()
+			if (otherDropQualities[index] == EquipmentGroups.qualityEnum.legendary) :
+				while (type == Definitions.equipmentTypeEnum.accessory) :
+					type = $DropHandler.rollType()
+			var drop = $DropHandler.getItemOfQuality(otherDropQualities[index],type)
 			athena.drops.append(drop.getAdjustedCopy(getEquipmentScaling(getScalingRows_mapFinished(13,0))))
 		athena.drops.append(EquipmentDatabase.getEquipment("shield_5").getAdjustedCopy(getEquipmentScaling(getScalingRows_mapFinished(13,3))))
 		athenaEncounter.enemies.append(athena)
@@ -161,12 +171,12 @@ func getAllMisc() :
 	return list
 		
 func getAllItems() :
-	var list = EquipmentDatabase.getAllEquipment()
+	var list = EquipmentDatabase.getAllEquipment().duplicate()
 	var index = 0
 	while (index < list.size()) :
 		if (!list[index].equipmentGroups.isEligible) :
 			list.remove_at(index)
-		if (!Definitions.hasDLC && Helpers.isDLC(list[index])) :
+		elif (!Definitions.hasDLC && Helpers.isDLC(list[index])) :
 			list.remove_at(index)
 		else :
 			index += 1
@@ -194,9 +204,9 @@ func createdRecently(newEnv : MyEnvironment) -> bool :
 		return false
 	else :
 		var mostRecentPermitted = previousMaps.size()-4
-		for index in range(0,previousMaps.size()) :
+		for index in range(mostRecentPermitted,previousMaps.size()) :
 			if (previousMaps[index].environmentName == envName) :
-				return index < mostRecentPermitted
+				return true
 		return false
 
 ## The goal is:
@@ -258,12 +268,15 @@ func compensateForMultiEnemy(encounter : Encounter,row, type) -> Encounter :
 	var retVal = encounter.duplicate(true)
 	var scalingRows = getScalingRows_mapInProgress(row)
 	var roomBudget
-	if (type == "center") :
+	if (encounter.enemies.size() >= 3 && encounter.enemies[2].resourceName == "apophis") :
+		roomBudget = ActorPreset.referencePowerLevel*getEnemyScaling(scalingRows)*(3+2) + ActorPreset.referencePowerLevel*getEnemyScaling(scalingRows+1)*2/1.071777
+	elif (type == "center") :
 		roomBudget = ActorPreset.referencePowerLevel*getEnemyScaling(scalingRows)*2
 	elif (type == "side") :
 		roomBudget = ActorPreset.referencePowerLevel*getEnemyScaling(scalingRows)*sqrt(2)
 	else :
 		roomBudget = ActorPreset.referencePowerLevel*getEnemyScaling(scalingRows)*3
+		
 		
 	var enemyVals : Array[Dictionary] = []
 	for enemy : ActorPreset in retVal.enemies :
@@ -288,8 +301,11 @@ func compensateForMultiEnemy(encounter : Encounter,row, type) -> Encounter :
 		enemy.MAXHP *= correctionRatio
 		enemy.PHYSDEF *= correctionRatio
 		enemy.MAGDEF *= correctionRatio
+		## This is so that the enemy can be reconstructed from its save file without calling this function
+		enemy.myScalingFactor *= 1.0/(actualPower/roomBudget)
 	if (actualPower > 1.5*roomBudget) :
-		print("corrected " + type + " room with " + str(retVal.enemies.size()) + " enemies from " + str(actualPower) + " to " + str(roomBudget))
+		pass
+		#print("corrected " + type + " room with " + str(retVal.enemies.size()) + " enemies from " + str(actualPower) + " to " + str(roomBudget))
 	return retVal
 
 ## Side encounters have a unit power of 1, but use stronger enemies- halfway to the next node.
@@ -378,22 +394,101 @@ func getScalingRows_mapInProgress(currentRow) -> float :
 func getEnemyScaling(scalingRows) :
 	var retVal = enemyScalingLookupTable.get(scalingRows as int)
 	if (retVal== null) :
-		var prev = enemyScalingLookupTable.get((scalingRows as int)-1)
-		if (prev == null) :
-			var currentVal = enemyScalingLookupTable[11]
-			for index in range(12, scalingRows+1) :
-				currentVal *= 2
-				enemyScalingLookupTable[index as int] = currentVal
-			prev = enemyScalingLookupTable[(scalingRows as int)-1]
-		enemyScalingLookupTable[scalingRows as int] = prev*2
+		for index in range(7, scalingRows+5) :
+			if (enemyScalingLookupTable.get(index as int) == null) :
+				enemyScalingLookupTable[index as int] = getEnemyScaling_internal(index)
 		retVal = enemyScalingLookupTable[scalingRows as int]
 	if (is_equal_approx(scalingRows-floor(scalingRows),0.5)) :
 		retVal *= sqrt(2)
 	if ((scalingRows as int - 7)%5 == 0) :
 		retVal *= 1.25
 	return retVal
-				
+
+func getEnemyScaling_internal_getStandardScaling(scalingRows) :
+	var firstFloorEndValue = enemyScalingLookupTable[6]
+	return firstFloorEndValue*pow(2,scalingRows-6)
+func getEnemyScaling_internal(scalingRows) :
+	if (scalingRows <= 6) :
+		return enemyScalingLookupTable[scalingRows]
+	var currentFloor = (scalingRows-7)/5.0
+	var actualCurrentFloor
+	if (is_equal_approx(currentFloor, ceil(currentFloor))) :
+		actualCurrentFloor = int(ceil(currentFloor))+2
+	else :
+		actualCurrentFloor = int(floor(currentFloor))+2
 	
+	var retVal = getEnemyScaling_internal_getStandardScaling(scalingRows)
+	## Compensate for inventory quality
+	#print("************************************")
+	#print("actualCurrentFloor is" + str(actualCurrentFloor))
+	if (actualCurrentFloor >= 2 && actualCurrentFloor<6) :
+		retVal *= 1.1
+		#print("equipment quality scaling is 1.1")
+	elif (actualCurrentFloor >= 6) :
+		retVal *= 1.2
+		#print("equipment quality scaling is 1.2")
+	## Compensate for armory
+	if (actualCurrentFloor >= 3) :
+		var mult = getArmoryMultiplier(scalingRows)
+		retVal *= mult
+		#print("armoryScaling is " + str(mult))
+	## Compensate for weaponsmith
+	if (actualCurrentFloor >= 4) :
+		var mult = getWeaponSmithMultiplier(scalingRows)
+		retVal *= mult
+		#print("weaponScaling is " + str(mult))
+	## Compensate for subclass
+	if (actualCurrentFloor >= 5) :
+		var mult = getSubclassMultiplier(scalingRows)
+		retVal *= mult
+		#print("subclass is " + str(mult))
+	if (actualCurrentFloor > 10) :
+		var mult = getInfiniteMultiplier(scalingRows)
+		retVal *= mult
+		#print("infinite is " + str(mult))
+	#print("************************************")
+	return retVal
+	
+const maxArmoryMultiplier = 1.375
+func getArmoryMultiplier(scalingRows) :
+	var armoryRows = getScalingRows_mapFinished(3,0)
+	var bossRows = getScalingRows_mapFinished(10,5)
+	if (scalingRows <= armoryRows) :
+		return 1
+	if (scalingRows >= bossRows) :
+		return maxArmoryMultiplier
+	var linearProportion = (scalingRows-armoryRows)/float(bossRows-armoryRows)
+	return min(1+linearProportion*(maxArmoryMultiplier-1), maxArmoryMultiplier)
+
+const maxWeaponSmithMultiplier = 1.375
+func getWeaponSmithMultiplier(scalingRows) :
+	var weaponsmithRows = getScalingRows_mapFinished(4,0)
+	var bossRows = getScalingRows_mapFinished(10,5)
+	if (scalingRows < weaponsmithRows) :
+		return 1
+	if (scalingRows >= bossRows) :
+		return maxWeaponSmithMultiplier
+	var linearProportion = (scalingRows-weaponsmithRows)/float(bossRows-weaponsmithRows)
+	return min(1+linearProportion*(maxWeaponSmithMultiplier-1), maxWeaponSmithMultiplier)
+
+func getInfiniteMultiplier(scalingRows) :
+	var bossPlusOneRows = getScalingRows_mapFinished(11, 1)
+	if (scalingRows < bossPlusOneRows) :
+		return 1
+	var expectedEquipmentShopUpgrades = (scalingRows-bossPlusOneRows+1)/5.251
+	var equipmentShopBonus = (1+0.05*(expectedEquipmentShopUpgrades)+0.35)/1.35
+	return max(pow(equipmentShopBonus,2),1)
+	
+func getSubclassMultiplier(scalingRows) :
+	var subclassRows = getScalingRows_mapFinished(5,0)
+	var subclassBossRows = getScalingRows_mapFinished(5,5)
+	if (scalingRows <= subclassRows) :
+		return 1
+	if (scalingRows >= subclassBossRows) :
+		return 1.25
+	var linearProportion = (scalingRows-subclassRows)/float(subclassBossRows-subclassRows)
+	return min(1+linearProportion*0.25, 1.25)
+
 var enemyScalingLookupTable : Dictionary = {}
 ## I'm less likely to make a mistake if I do this a bit at a time, but it's rather computationally expensive so:
 func createLookupTable() :
@@ -407,10 +502,10 @@ func createLookupTable() :
 	for index in range(6,6+1) :
 		currentVal *= 5.284368
 		enemyScalingLookupTable[index] = currentVal
-	## From here on it's x2 every row
-	for index in range(7,11+1) :
-		currentVal *= 2
-		enemyScalingLookupTable[index] = currentVal
+	### From here on it's x2 every row
+	#for index in range(7,11+1) :
+		#currentVal *= 2
+		#enemyScalingLookupTable[index] = currentVal
 
 	
 func getEquipmentScaling(scalingRows) :
@@ -419,7 +514,7 @@ func getEquipmentScaling(scalingRows) :
 		rows = floor(scalingRows)
 	else :
 		rows = scalingRows
-	return pow(getEnemyScaling(floor(rows)), 0.25)
+	return pow(getEnemyScaling_internal_getStandardScaling(scalingRows),0.25)
 func getGoldScaling(scalingRows) :
 	return pow(2,(scalingRows-1)/4.0)
 func getOreScaling(scalingRows) :

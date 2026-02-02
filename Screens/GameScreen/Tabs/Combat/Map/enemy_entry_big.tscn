@@ -85,6 +85,7 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/CenterContainer/Window/VBoxContainer" index="3"]
+visible = false
 layout_mode = 2
 alignment = 1
 

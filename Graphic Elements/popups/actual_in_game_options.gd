@@ -2,9 +2,10 @@ extends "res://Graphic Elements/popups/my_popup.gd"
 
 const myCheckBox = preload("res://Graphic Elements/Buttons/my_check_box.tscn")
 const labelLoader = preload("res://Graphic Elements/Tooltips/encyclopedia_text_label.tscn")
-const myOffset : int = 3
+const myOffset : int = 4
 var optionDictCopy : Dictionary = {}
 
+var tooltipRef = null
 const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
 func _ready() :
 	optionDictCopy = IGOptions.getIGOptionsCopy()
@@ -21,6 +22,8 @@ func _ready() :
 				tooltip.setDesc("Use the encyclopedia maintained across all save files. This is intended for achievement hunters.\n\nTo reset this encyclopedia, see the settings in the main menu.")
 				tooltip.set_anchors_preset(Control.PRESET_FULL_RECT)
 				tooltip.setCurrentLayer(layer)
+				tooltipRef = tooltip
+				newElement.connect("resized", _on_globalEncyclopedia_resized)
 			else :
 				text = IGOptions.optionNameDictionary[key]
 			newElement.setText(text)
@@ -51,6 +54,9 @@ func _ready() :
 	await $Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/DiscardFilter.initialise(optionDictCopy["filter"])
 	$Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/DiscardFilter.setCurrentLayer(layer)
 	
+func _on_globalEncyclopedia_resized() :
+	if (tooltipRef != null) :
+		tooltipRef.custom_minimum_size = tooltipRef.get_parent().size
 		
 func redLambda(elem : Node, key) :
 	getOptionsContainer().add_child(elem)
@@ -61,10 +67,13 @@ func getOptionsContainer() :
 
 func _on_save_pressed() -> void:
 	updateOptionDict()
+	$Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/masterVolume.onSave()
 	IGOptions.saveAndUpdateIGOptions(optionDictCopy)
+	SaveManager.queueSaveGame(Definitions.saveSlots.current)
 
 signal finished
 func _on_return_pressed() -> void:
+	$Panel/CenterContainer/Window/VBoxContainer/VBoxContainer/masterVolume.onExit()
 	emit_signal("finished")
 	queue_free()
 	

@@ -132,6 +132,12 @@ otherMods = {
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 },
+"Routine Multiplicity": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
 "Routine Speed": {
 "Postbonus": 0.0,
 "Postmultiplier": 0.0,
@@ -174,7 +180,7 @@ otherMods = {
 script = ExtResource("3_rgogx")
 boostedAttr1 = 4
 boostedAttr2 = 3
-title = "Guantlets of Cyclops Strength"
+title = "Gauntlets of Cyclops Strength"
 description = "You're not sure why Polyphemus was wearing these, as he already had the strength of a cyclops, but you suppose cyclopses aren't known for their wits."
 myPacket = SubResource("Resource_j4sm8")
 equipmentGroups = SubResource("Resource_8vtgc")

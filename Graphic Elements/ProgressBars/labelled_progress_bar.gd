@@ -7,8 +7,11 @@ const maxGrowth = 10000
 var currentGrowth = baseGrowth
 var actualProgress = 0
 var secondaryMultiplier = 1
+var multiplicity : float = 1
 func setSecondaryGrowthMultiplier(val) :
 	secondaryMultiplier = val
+func setMultiplicity(val) :
+	multiplicity = val
 
 func _process(delta) :
 	updateCurrentGrowth()
@@ -18,9 +21,16 @@ func _process(delta) :
 	var oldProgress = actualProgress
 	var oldLevel : int = currentLevel
 	var progressGained = currentGrowth*delta
-	var levelGained : int = floor((oldProgress+progressGained)/100)
-	var newProgress = oldProgress + (progressGained - 100*levelGained)
-	var newLevel : int = oldLevel + levelGained
+	
+	var baseLevelGained : int = floor((oldProgress+progressGained)/100)
+	var guaranteedThroughMultiplicity : int = baseLevelGained * floor(multiplicity)
+	var total = guaranteedThroughMultiplicity
+	var chance : float = multiplicity-floor(multiplicity)
+	for index in range(0, baseLevelGained) :
+		if (randf_range(0,1) <= chance) :
+			total += 1
+	var newProgress = oldProgress + (progressGained - 100*baseLevelGained)
+	var newLevel : int = oldLevel + total
 	actualProgress = newProgress
 	currentLevel = newLevel
 	$LevelLabel.text = "Lv " + Helpers.engineeringRound(newLevel,3)	

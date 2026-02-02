@@ -85,6 +85,9 @@ func onCombatComplete() :
 		encounterOverride = null
 		overrideOnce = false
 		return
+	if (encounter != null && encounter.enemies != null) :
+		for enemy in encounter.enemies :
+			EnemyDatabase.incrementKills(enemy.getResourceName())
 	completed = true
 	if (isEvent) :
 		setTextEventComplete()

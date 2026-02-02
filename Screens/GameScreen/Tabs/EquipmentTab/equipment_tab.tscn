@@ -95,6 +95,7 @@ offset_left = 8.0
 offset_top = 15.0
 offset_right = -15.0
 offset_bottom = -15.0
+isInRewards = true
 
 [node name="DeveloperConsole" parent="." index="2" instance=ExtResource("9_hoiyj")]
 
@@ -110,6 +111,7 @@ offset_bottom = -15.0
 
 [connection signal="selectRequested" from="CurrentEquips" to="." method="_on_current_equips_select_requested"]
 [connection signal="wasSelected" from="CurrentEquips/HBoxContainer/Weapon/Panel/PassiveSuperButton" to="CurrentEquips" method="_on_equipment_selected"]
+[connection signal="currentlyEquippedItemRequested" from="PagedEquipmentDetails" to="." method="_on_paged_equipment_details_currently_equipped_item_requested"]
 [connection signal="discardItemRequested" from="PagedEquipmentDetails" to="." method="_on_discard_requested_from_details"]
 [connection signal="equipRequested" from="PagedEquipmentDetails" to="." method="_on_equip_requested_from_details"]
 [connection signal="unequipRequested" from="PagedEquipmentDetails" to="." method="_on_unequip_requested_from_details"]

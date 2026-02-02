@@ -6,10 +6,8 @@
 [node name="EquipmentDetailsSingleChoice" instance=ExtResource("1_lvrgk")]
 script = ExtResource("2_wt3lc")
 
-[node name="Button" type="Button" parent="Text/VBoxContainer" index="4"]
+[node name="Text_VBoxContainer#Button" type="Button" parent="." index="1"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 40
 text = " Purchase "
-
-[connection signal="pressed" from="Text/VBoxContainer/Button" to="." method="_on_button_pressed"]

@@ -100,9 +100,14 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 	else :
 		await handleCombatRewards(rewards)
 	#showMapAndUI()
+	if (currentRoom == null) :
+		return
 	if ($MapContainer.get_child_count() >= 2 && currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N0") :
-		emit_signal("tutorialRequested", Encyclopedia.tutorialName.row1, Vector2(0,0))
-	currentFloor.completeRoom(currentRoom)
+		emit_signal("tutorialRequested", Encyclopedia.tutorialName.tooltips, Vector2(0,0))
+	elif ($MapContainer.get_child_count() >= 2 && currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N1") :
+		emit_signal("tutorialRequested", Encyclopedia.tutorialName.row2, Vector2(0,0))
+	if (currentRoom != null) :
+		currentFloor.completeRoom(currentRoom)
 	if (automaticReset && currentRoom != null) :
 		friendlyParty[0] = await getPlayerCore()
 		var copy : Array[ActorPreset]
@@ -280,6 +285,9 @@ func disableUI() :
 func enableUI() :
 	currentFloor.enableUI()
 	$FloorDisplay.visible = true
+func enableUIIfPaused() :
+	if ($CombatPanel.paused) :
+		enableUI()
 
 #######################################
 var defeatCoroutineRunning : bool = false
@@ -433,7 +441,7 @@ func onLoad(loadDict : Dictionary) :
 			newMap.initialise(loadDict["maps"][index])
 	var maps = $MapContainer.get_children()
 	for index in range(0, maps.size()) :
-		var child = maps[index]
+		var child : Control = maps[index]
 		if (child.has_signal("fullyInitialisedSignal") && !child.fullyInitialised) :
 			await child.fullyInitialisedSignal
 		if (child.has_signal("fullyInitialisedSignal")) :

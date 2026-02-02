@@ -43,6 +43,8 @@ func disableWrapping() :
 	autowrap_mode = TextServer.AUTOWRAP_OFF
 	
 func setTextExceptKey(val, key) :
+	if (isOnNestedTooltip()) :
+		return
 	if (get_black_text() == val.replace("`","")) :
 		var index = text.find(key)
 		if (index == -1) :
@@ -55,6 +57,8 @@ func setTextExceptKey(val, key) :
 	await updateHyperlinksExceptBadKey()
 	
 func setText(val : String) :
+	if (isOnNestedTooltip()) :
+		return
 	if (get_black_text() == val.replace("`","")) :
 		return
 	#print("TEXT:" + text + ": ", text.to_utf8_buffer())
@@ -115,7 +119,8 @@ func updateHyperlinksExceptBadKey() :
 			if (Encyclopedia.problemDictionary.get(key) != null) :
 				var outerContinue : bool = false
 				for otherKey in Encyclopedia.problemDictionary[key] :
-					var otherIndex = foundIndex + key.length() - otherKey.length()
+					var nestedPos = otherKey.find(key)
+					var otherIndex = foundIndex - nestedPos
 					if (otherIndex != -1 && get_parsed_text().find(otherKey, otherIndex) == otherIndex) :
 						currentIndex = otherIndex + otherKey.length()
 						foundIndex = get_parsed_text().find(key, currentIndex)
@@ -176,7 +181,7 @@ func getExtendedKey(index : int, key : String, parsed : bool) -> String :
 	return myText.substr(index, key.length() + extensionAmount)
 	
 func distanceToDelim(paramText : String, index : int) -> int :
-	const delim = [" ", "\n", ".", ",", "[", "]", ":", "\"", "(", ")"]
+	const delim = [" ", "\n", ".", ",", "[", "]", ":", "\"", "(", ")", "/"]
 	var currentDist = 999
 	for character in delim :
 		var dist = paramText.find(character, index) - index

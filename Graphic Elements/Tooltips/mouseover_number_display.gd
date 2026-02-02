@@ -12,6 +12,7 @@ func getText() :
 
 func setNumberReference(val : NumberClass) :
 	myNumberRef = val
+	val.enableReferenceMode()
 	
 func createNumberList(items : Dictionary) -> String :
 	var retVal : String = ""	
@@ -76,6 +77,8 @@ func getSymbol(type : number_createFormulaString_type) :
 		return ""
 	
 func _process(_delta) :
+	if (!is_visible_in_tree()) :
+		return
 	if (myNumberRef == null) :
 		return
 	setText(Helpers.engineeringRound(myNumberRef.getFinal(),3))
@@ -83,10 +86,10 @@ func _process(_delta) :
 		#return
 	if (!$TooltipTrigger.isOnNestedTooltip()) :
 		return
-	var prebonuses = myNumberRef.getPrebonuses()
-	var premultipliers = myNumberRef.getPremultipliers()
+	var prebonuses = myNumberRef.getPrebonusesReference()
+	var premultipliers = myNumberRef.getPremultipliersReference()
 	#var postbonuses = myNumberRef.getPostbonuses()
-	var postmultipliers = myNumberRef.getPostmultipliers()
+	var postmultipliers = myNumberRef.getPostmultipliersReference()
 	
 	var prebonusText = createNumberList(prebonuses)
 	var premultiplierText = createNumberList(premultipliers)
@@ -117,3 +120,6 @@ func _process(_delta) :
 	## This is the final value
 	tooltipText += getText()
 	$TooltipTrigger.setDesc(tooltipText)
+
+func _ready() :
+	$TooltipTrigger.currentLayer += 1

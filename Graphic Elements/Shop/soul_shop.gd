@@ -71,7 +71,7 @@ func setFromDetails(det : ShopDetails) :
 		$VBoxContainer/Shop.get_child(0).get_child(0).get_child(3).set_disabled(true)
 	if (playerClass.classEnum == Definitions.classEnum.mage) :
 		var soul = $SoulCollectorPic.duplicate()
-		remove_child(soul)
+		#remove_child(soul)
 		$VBoxContainer/Shop.get_child(0).get_child(0).get_child(3).get_child(1).add_child(soul)
 		soul.size_flags_horizontal = Control.SIZE_SHRINK_END
 		soul.size_flags_vertical = Control.SIZE_SHRINK_BEGIN

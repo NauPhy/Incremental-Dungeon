@@ -79,7 +79,7 @@ func filterEnemyPool_env() :
 		#if (remove) :
 			#enemyPool.remove_at(enemyPool.find(preEnemy))
 func getEnemyOfType(type : EnemyGroups.enemyQualityEnum) :
-	var isMisc = miscEnemyCounts[type] != 0 && randi_range(0,4) == 0
+	var isMisc = miscEnemyCounts[type] != 0 && randi_range(0,7) == 0
 	var currentCount = 0
 	if (isMisc) :
 		var roll = randi_range(0, miscEnemyCounts[type]-1)

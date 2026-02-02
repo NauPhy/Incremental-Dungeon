@@ -273,7 +273,7 @@ func equipmentIsNew(item : Equipment) :
 			#tempDict[key] = dict[key]
 	#return tempDict
 	
-func calculateBase(preBonuses : Array[float], preMultipliers : Array[float]) -> float :
+func calculateBase(preBonuses : Array, preMultipliers : Array) -> float :
 	var bonusSum : float = 0
 	for bonus in preBonuses :
 		bonusSum += bonus
@@ -282,7 +282,7 @@ func calculateBase(preBonuses : Array[float], preMultipliers : Array[float]) -> 
 		multiplierProduct *= multiplier
 	return bonusSum*multiplierProduct
 
-func calculateFinal(base : float, postBonuses : Array[float], postMultipliers : Array[float]) :
+func calculateFinal(base : float, postBonuses : Array, postMultipliers : Array) :
 	var multiplierSum = 1
 	for multiplier in postMultipliers :
 		multiplierSum += multiplier
@@ -301,58 +301,156 @@ func findIndexInContainer(container : Node, child) :
 	return null
 	
 func myRound(val : float, sigFigs : int) :
+	var myVal = abs(val)
+	var rawMagnitude = log(myVal)/log(10)
+	var magnitude
+	if (is_equal_approx(rawMagnitude, ceil(rawMagnitude))) :
+		magnitude = ceil(rawMagnitude)
+	else :
+		magnitude = floor(rawMagnitude)
+	var strVal = str(val)
+	
+	## For some reason the below logic does not work with powers of 10. So we'll just do them separately. Obviously because all powers of 10 are already rounded to 1 sig fig it's pretty simple.
+	if (is_equal_approx(myVal, pow(10, magnitude))) :
+		if (myVal >= 1) :
+			return int(val)
+		else :
+			return val
+	
+	## trailingZeroes >= 0 if the last significant figure is in the 1s place or higher, and -1 otherwise
+	var trailingZeroes = max((magnitude+1)-(sigFigs),-1)
+	
+	## CASE 1: the last significant figure is before the "."
+	if (trailingZeroes != -1) :
+		var offset
+		if (val < 0) :
+			offset = 1
+		else :
+			offset = 0
+		var retStr = strVal.substr(0,sigFigs+offset)
+		for index in range(0,trailingZeroes) :
+			retStr += "0"
+		return int(retStr)
+	
+	## CASE 2: the last significant figure is after the "."
+	var expectedLength = 1
+	var leadingZeroes
+	
+	## leadingZeroes = 0 if abs(number) >= 1, leadingZeroes > 0 otherwise
+	if (myVal >= 1) :
+		leadingZeroes = 0
+	else :
+		leadingZeroes = -(magnitude)
+	
+	## a negative sign increases the expected length by 1
+	if (val < 0) :
+		expectedLength += 1
+	
+	## If abs(number) >= 1, expectedLength = 1 (".") + 1 ("-") + sigFigs. ex. 1.00 (4), -1.23 (5), 1.23 (4)
+	## Otherwise, leading zeroes (including 1s place) are added for free. ex. 0.0000123 (9), -0.0000123 (10), 0.123 (5)
+	expectedLength += sigFigs+leadingZeroes
+	
+	var ret = val
+	if (strVal.length() > expectedLength) :
+		var newStr = strVal.substr(0,expectedLength)
+		var earliestDiscardedDigit = expectedLength
+		if (strVal.substr(earliestDiscardedDigit,1) == ".") :
+			earliestDiscardedDigit += 1
+		# This line here is the reason this function took me so goddamn long. It's the only way I found to avoid floating point errors.
+		if (int(strVal.substr(earliestDiscardedDigit,1)) >= 5) :
+			newStr = newStr.substr(0,newStr.length()-1) + str(int(newStr.substr(newStr.length()-1,1))+1)
+		var earliestExcludedDigit = int(strVal.substr(expectedLength,1))
+		ret = float(newStr)
+	if (is_equal_approx(ret, round(ret))) :
+		return int(ret)
+	return ret
+	
+func myRound_old(val : float, sigFigs : int) :
 	if (val == 0) :
 		return int(0)
-	var magnitude = floor(log(val)/log(10))
-	var base = val/pow(10,magnitude)
-	var roundedBase = round(base*pow(10.0,sigFigs-1)+1e-5)/pow(10.0,sigFigs-1)
-	var finalValue = roundedBase*pow(10,magnitude)
-	if (finalValue >= pow(10,sigFigs-1)) :
+	var tempVal = abs(val)
+	var rawMagnitude = log(tempVal)/log(10)
+	var magnitude
+	if (is_equal_approx(rawMagnitude, ceil(rawMagnitude))) :
+		magnitude = ceil(rawMagnitude)
+	else :
+		magnitude = floor(rawMagnitude)
+	var base = tempVal/pow(10,magnitude)
+	
+	var num = pow(10.0,sigFigs-1)
+	var num2 = base*num
+	var num3 = actualRound(num2)
+	var num4 = num3/num
+	var finalValue = num4*pow(10,magnitude)
+	if (val < 0) :
+		finalValue *= -1
+	if (abs(finalValue) >= pow(10,sigFigs-1)) :
 		return int(finalValue)
 	else :
 		return finalValue
 		
-func engineeringNotation(val) -> String :
-	var newVal = val
+## Assumes the number has a magnitude of 1 (1s place)
+func actualRound(val) -> float :
+	var magnitude = floor(log(val)/log(10))
+	var tenthsPlace = int(str(val).substr(2+magnitude,1))
+	if (tenthsPlace >= 5) :
+		return ceil(val)
+	else :
+		return floor(val)
+		
+func engineeringNotation(origVal) -> String :
+	var val = abs(origVal)
+	var newVal = origVal
 	var suffix : String = ""
-	if (val >= pow(10,30)) :
-		newVal = val/pow(10,30)
+	if (val >= pow(10,33)) :
+		var magnitude = log(newVal)/log(10)
+		if (is_equal_approx(magnitude, ceil(magnitude))) :
+			magnitude = ceil(magnitude)
+		else :
+			magnitude = floor(magnitude)
+		newVal = origVal/pow(10,magnitude)
+		suffix = "E" + str(magnitude)
+	elif (val >= pow(10,30)) :
+		newVal = origVal/pow(10,30)
 		suffix = "No"
 	elif (val >= pow(10,27)) :
-		newVal = val/pow(10,27)
+		newVal = origVal/pow(10,27)
 		suffix = "Oc"
 	elif (val >= pow(10,24)) :
-		newVal = val/pow(10,24)
+		newVal = origVal/pow(10,24)
 		suffix = "Sp"
 	elif (val >= pow(10,21)) :
-		newVal = val/pow(10,21)
+		newVal = origVal/pow(10,21)
 		suffix = "Sx"
 	elif (val >= pow(10,18)) :
-		newVal = val/pow(10,18)
+		newVal = origVal/pow(10,18)
 		suffix = "Qi"
 	elif (val >= pow(10,15)) :
-		newVal = val/pow(10,15)
+		newVal = origVal/pow(10,15)
 		suffix = "Qa"
 	elif (val >= pow(10,12)) :
-		newVal = val/pow(10,12)
+		newVal = origVal/pow(10,12)
 		suffix = "T"
 	elif (val >= pow(10,9)) :
-		newVal = val/pow(10,9)
+		newVal = origVal/pow(10,9)
 		suffix = "B"
 	elif (val >= pow(10,6)) :
-		newVal = val/pow(10,6)
+		newVal = origVal/pow(10,6)
 		suffix = "M"
 	elif (val >= pow(10,3)) :
-		newVal = val/pow(10,3)
+		newVal = origVal/pow(10,3)
 		suffix = "K"
 	if (round(newVal) == newVal) :
 		return str(int(newVal)) + suffix
 	else :
 		return str(newVal) + suffix
+		
+func pythag(val : Vector2) :
+	return sqrt(pow(val.x,2)+pow(val.y,2))
 
 var oneHundredAchCache : bool = false
 func unlockAchievement(val : Definitions.achievementEnum) :
-	if (!Definitions.steamEnabled) :
+	if (!Definitions.steamEnabled || Definitions.GODMODE || Definitions.DEVMODE) :
 		return
 	if (!Steam.setAchievement(Definitions.achievementDictionary[val])) :
 		print("Failed to unlock achievement: " + Definitions.achievementDictionary[val])
@@ -386,19 +484,81 @@ func handleBiomeAchievement(biome : MyEnvironment) :
 	var achEnum = Definitions.biomeAchievementMap.get(biome.getFileName())
 	if (achEnum != null) :
 		unlockAchievement(achEnum)
+		
+func highVisScroll(scrollContainer : ScrollContainer) :
+	var scroll : VScrollBar = scrollContainer.get_v_scroll_bar()
+	#scroll.custom_minimum_size = Vector2(10,0)
+	var styleBox : StyleBox = scroll.get_theme_stylebox("grabber").duplicate()
+	styleBox.bg_color = Color("ffffff")
+	styleBox.border_color = Color("000000")
+	styleBox.border_width_left = 1
+	styleBox.border_width_right = 1
+	styleBox.border_width_top = 2
+	styleBox.border_width_bottom = 2
+	scroll.add_theme_stylebox_override("grabber", styleBox)
+		
+func removeAffix(str : String, affix : String) -> String :
+	var pos = str.find(affix)
+	if (pos == -1) :
+		return str
+	return str.substr(0,pos)
 
 func engineeringRound(val, sigFigs : int) -> String :
-	var myVal = abs(val)
-	if (abs(val) < 1) :
-		var symbol = ""
-		if (val < 0) :
-			symbol = "-"
-		return symbol + str(myVal).substr(0,2+sigFigs)
-	var rounded = myRound(myVal, sigFigs)
+	if (is_equal_approx(0,val)) :
+		var magnitude = log(abs(val))/log(10)
+		if (is_equal_approx(magnitude, ceil(magnitude))) :
+			magnitude = ceil(magnitude)
+		elif (is_equal_approx(magnitude, floor(magnitude))) :
+			magnitude = floor(magnitude)
+		if (magnitude == -INF) :
+			return "0"
+		var newVal = val*pow(10,-magnitude)
+		return str(myRound(newVal, sigFigs))+"E"+str(int(magnitude))
+	#var myVal = abs(val)
+	#if (abs(val) < 1) :
+		#var magnitude = floor(log(myVal)/log(10))
+		#var symbol = ""
+		#if (val < 0) :
+			#symbol = "-"
+		#
+		#var lastPos = 2+(-magnitude)+(sigFigs-1)-1
+		#var valString = str(myVal)
+		#var retString = symbol + str(myVal).substr(0,2+(-magnitude)+(sigFigs-1))
+		#if (int(valString.substr(lastPos,1)) >= 5) :
+			#retString = retString.substr(0,retString.length()-1) + str(int(retString.substr(retString.length()-1,1))+1)
+	var rounded = myRound(val, sigFigs)
+	#var expectedLength = 0
+	#var leadingZeroes
+	#var trailingZeroes
+	#var magnitude = floor(log(myVal)/log(10))
+	#if (rounded is int) :
+		#expectedLength = magnitude+1
+	#else :
+		##period
+		#if (abs(val) >= 1) :
+			#leadingZeroes = 0
+		#else :
+			#leadingZeroes = -(magnitude)
+		#if (abs(val) >= 1) :
+			#trailingZeroes = max(magnitude-1-(sigFigs-1),0)
+		#else :
+			#trailingZeroes = 0
+		#if (val < 0) :
+			#expectedLength += 1
+		#expectedLength += 1+sigFigs+leadingZeroes+trailingZeroes
+	#var roundStr = str(rounded)
+	#if (roundStr.length() > expectedLength) :
+		#var newStr = roundStr.substr(0,expectedLength)
+		#if (int(roundStr.substr(expectedLength,1)) >= 5) :
+			#newStr = newStr.substr(0,newStr.length()-1) + str(int(newStr.substr(newStr.length()-1,1))+1)
+		#var earliestExcludedDigit = int(roundStr.substr(expectedLength,1))
+		#rounded = float(newStr)
+			
+
 	var ret = engineeringNotation(rounded)
-	if (val < 0) :
-		var pos = ret.find("]")
-		ret = ret.insert(pos+1,"-")
+	#if (val < 0) :
+		#var pos = ret.find("]")
+		#ret = ret.insert(pos+1,"-")
 	return ret
 	
 var internalPopupBool : bool = false

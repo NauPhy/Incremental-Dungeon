@@ -132,6 +132,12 @@ otherMods = {
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 },
+"Routine Multiplicity": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
 "Routine Speed": {
 "Postbonus": 0.0,
 "Postmultiplier": 0.0,
@@ -174,7 +180,7 @@ otherMods = {
 script = ExtResource("3_bhjss")
 boostedAttr1 = 4
 boostedAttr2 = -1
-title = "Vial of Fire Snake Venom"
+title = "Vial of Lava Snake Venom"
 description = "This oxidizing venom is so potent that it sets the very air around it ablaze, and can continue to burn when fully submerged in water. It will make an excellent weapon coating."
 myPacket = SubResource("Resource_ycwfw")
 equipmentGroups = SubResource("Resource_4fu20")

@@ -133,6 +133,12 @@ otherMods = {
 "Prebonus": 0.0,
 "Premultiplier": 1.0
 },
+"Routine Multiplicity": {
+"Postbonus": 0.0,
+"Postmultiplier": 0.0,
+"Prebonus": 0.0,
+"Premultiplier": 1.0
+},
 "Routine Speed": {
 "Postbonus": 0.0,
 "Postmultiplier": 0.0,
@@ -183,9 +189,9 @@ scaling = {
 attackBonus = 99.2
 basicAttack = ExtResource("1_ybwi2")
 isUnarmed = false
-title = "Wand of Disintigration"
+title = "Wand of Disintegration"
 description = "Its victims stop being biology and start being physics. Side effects of use include:
-disintigration"
+disintegration"
 myPacket = SubResource("Resource_ybwi2")
 equipmentGroups = SubResource("Resource_8q4s3")
 metadata/_custom_type_script = "uid://6qgd3qugycc1"

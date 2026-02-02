@@ -51,7 +51,7 @@ func getDefaultOptionDict() -> Dictionary :
 		"quality" : [true,true,true,true,true,true],
 		"equipmentType" : [true,true,true],
 		"weaponType" : [true,true],
-		"directDowngrade" : [true,false,false]
+		"directDowngrade" : [true,false,false,false,false]
 		}
 	tempDict["hyperMode"] = false
 	return tempDict
@@ -83,16 +83,26 @@ func updateGlobalSettings_items() :
 		if (current["globalEncyclopedia"]["items"].find(itemName) == -1) :
 			current["globalEncyclopedia"]["items"].append(itemName)
 	SaveManager.saveGlobalSettings(current)
+	
+const forcedInclude = [
+	"scraps",
+	"magic_stick_int",
+	"magic_stick_str",
+	"shiv"
+]
 
 func checkEquipmentEncyclopedia() :
 	if (!Definitions.steamEnabled) :
 		return
+	var globalItemList = SaveManager.getGlobalSettings()["globalEncyclopedia"]["items"]
 	var unlock : bool = true
 	var items = EquipmentDatabase.getAllEquipment()
-	for item in items :
+	for item : Equipment in items :
 		if (Helpers.isDLC(item)) :
 			continue
-		if (optionDict["encounteredItems"].get(item) == null) :
+		if (!item.equipmentGroups.isEligible && !item.equipmentGroups.isSignature && forcedInclude.find(item.getItemName()) == -1) :
+			continue
+		if (globalItemList.find(item.getItemName()) == -1) :
 			unlock = false
 			break
 	if (unlock) :
@@ -134,8 +144,12 @@ func onLoad(loadDict : Dictionary) :
 	
 func compensateForOldSaves(myLoadDict) -> Dictionary :
 	var temp = myLoadDict
+	if (temp.get("filter") == null) :
+		temp["filter"] = getDefaultOptionDict()["filter"].duplicate(true)
 	if (temp["filter"].get("weaponType") == null) :
-		temp["filter"]["weaponType"] = getDefaultOptionDict()["filter"]["weaponType"]
+		temp["filter"]["weaponType"] = getDefaultOptionDict()["filter"]["weaponType"].duplicate(true)
+	if (temp["filter"]["directDowngrade"].size() != getDefaultOptionDict()["filter"]["directDowngrade"].size()) :
+		temp["filter"]["directDowngrade"] = getDefaultOptionDict()["filter"]["directDowngrade"].duplicate(true)
 	for key in optionDefaultDictionary :
 		if (temp.get(key) == null) :
 			temp[key] = optionDefaultDictionary[key]

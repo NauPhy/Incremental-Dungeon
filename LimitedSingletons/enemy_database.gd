@@ -106,11 +106,22 @@ func onLoad(loadDict : Dictionary) :
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
 
-func getEnemyList() :
-	var retVal : Array = []
-	retVal = killedDictionary.keys()
-	retVal.sort_custom(func(a,b):return a<b)
-	return retVal
+const forcedInclude = [
+	"goblin",
+	"hobgoblin",
+	"orc",
+	"rat",
+	"zombie",
+	"athena",
+	"apophis"
+]
+
+#func getEnemyList() :
+	#var retVal : Array = []
+	#retVal = killedDictionary.keys().duplicate()
+	#
+	#retVal.sort_custom(func(a,b):return )
+	#return retVal
 	
 func getItemObtained(enemy, item) :
 	if (!getEnemyKilled(enemy)) :
@@ -120,7 +131,7 @@ func getItemObtained(enemy, item) :
 func getKillCount(enemy) :
 	return killedDictionary[enemy]
 	
-var souls : int = 27
+var souls : int = 0
 func getSoulCount() :
 	return souls
 
@@ -130,7 +141,7 @@ func _on_enemy_data_changed(_var) :
 	for enemy in killedDictionary.keys() :
 		if (killedDictionary[enemy] > 0) :
 			souls += 1
-		elif (enemy != "athena") :
+		elif (enemy != "athena" && (forcedInclude.find(enemy) != -1 || getEnemy(enemy).enemyGroups.isEligible)) :
 			unlock = false
-	if (unlock) :
+	if (unlock && Definitions.steamEnabled) :
 		Helpers.unlockAchievement(Definitions.achievementEnum.all_monsters)

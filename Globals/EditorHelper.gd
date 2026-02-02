@@ -2,7 +2,7 @@
 extends EditorScript
 
 func _run() :
-	performOnEquipmentFiles(func(a):a.resetNew())
+	performOnEquipmentFiles(func(a):a.addMultiplicity())
 	
 func resetAllEquipmentFiles() :
 	performOnEquipmentFiles(func(a):a.reset())
@@ -65,7 +65,7 @@ func performOnResourcesInFolderRecursive(directory : String, toCall : Callable) 
 	var directories = dir.get_directories()
 	var currentIndex = 0
 	while (currentIndex < directories.size()) :
-		print ("Entering directory: " + directories[currentIndex])
+		#print ("Entering directory: " + directories[currentIndex])
 		performOnResourcesInFolderRecursive(directory + "/" + directories[currentIndex], toCall)
 		currentIndex += 1
 	var files = dir.get_files()

@@ -49,6 +49,7 @@ func initialiseNumberObjects() :
 		derivedStatObjects.append(NumberClass.new())
 	for key in Definitions.otherStatDictionary.keys() :
 		otherStatObjects.append(NumberClass.new())
+		otherStatObjects.back().enableReferenceMode()
 	otherStatObjects[Definitions.otherStatEnum.magicFind].setPrebonus("Humanoid", 1.0)
 	otherStatObjects[Definitions.otherStatEnum.physicalDamageDealt].setPrebonus("Humanoid",1.0)
 	otherStatObjects[Definitions.otherStatEnum.physicalDamageTaken].setPrebonus("Humanoid",1.0)
@@ -57,6 +58,7 @@ func initialiseNumberObjects() :
 	for index in range(0,6) :
 		otherStatObjects[Definitions.otherStatEnum.routineSpeed_0 + index].setPrebonus("Humanoid",1.0)
 	otherStatObjects[Definitions.otherStatEnum.routineEffect].setPrebonus("Humanoid",1.0)
+	otherStatObjects[Definitions.otherStatEnum.routineMultiplicity].setPrebonus("Humanoid", 1.0)
 ###############################
 ## Specific Modifiers
 func updateTrainingLevels(newLevels : Array[int]) :
@@ -111,7 +113,7 @@ func updateDirectModifier(origin : String, val : ModifierPacket) :
 func getSubclassModPacket() -> ModifierPacket :
 	var subclassMod : ModifierPacket = ModifierPacket.new()
 	if (mySubclass == -1) :
-		pass
+		return subclassMod
 	elif (mySubclass == Definitions.subclass.barb) :
 		subclassMod.addMod("stat",Definitions.baseStatEnum.PHYSDEF,"Premultiplier",0.8)
 		subclassMod.addMod("stat",Definitions.baseStatEnum.MAGDEF,"Premultiplier", 0.8)
@@ -158,6 +160,9 @@ func getSubclass() :
 const tooltipLoader = preload("res://Graphic Elements/Tooltips/tooltip_trigger.tscn")
 var subclassTooltip
 func setSubclass(val : Definitions.subclass) :
+	var currentSubclass = mySubclass
+	if (currentSubclass != -1) :
+		updateDirectModifier(Definitions.subclassDictionary[currentSubclass], ModifierPacket.new())
 	mySubclass = val
 	if (subclassTooltip != null) :
 		$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.remove_child(subclassTooltip)
@@ -181,6 +186,7 @@ func myUpdate() :
 	## Learning Curve
 	if (learningCurveEnabled) :
 		var learningCurveMod = getLearningCurveMod()
+		#var learningCurveMod = ModifierPacket.new()
 		updateDirectModifier("Learning Curve", learningCurveMod)
 	updateDirectModifier("Softcap", getSoftcapMod())
 	####################################################
@@ -192,7 +198,7 @@ func myUpdate() :
 	updateDirectModifier("Hard cap", capModifier)
 	#capModifier.addMod("otherStat", Definitions.otherStatEnum.routineSpeed, "Premultiplier", 1)
 	var changed : bool = false
-	for index in range(0,5) :
+	for index in range(0,6) :
 		var routineSpeed = otherStatObjects[Definitions.otherStatEnum.routineSpeed_0 + index].getFinal()
 		if (routineSpeed > 100) :
 			capModifier.addMod("otherStat", Definitions.otherStatEnum.routineSpeed_0+index,"Premultiplier",100.0/routineSpeed)
@@ -203,7 +209,6 @@ func myUpdate() :
 		changed = true
 	if changed :
 		updateDirectModifier("Hard cap", capModifier)
-
 	## Attributes
 	#equippedWeapon
 	pass
@@ -261,7 +266,7 @@ var typicalEnemyDefense : float = 10
 func updateDerivedStats() :
 	getDerivedStatList().get_node("AttackSpeed").get_node("Number").text = str(Helpers.myRound(10.0/equippedWeapon.basicAttack.getWarmup(),3))
 	var averageAttackRating = (derivedStatObjects[Definitions.baseStatEnum.AR].getFinal()*derivedStatObjects[Definitions.baseStatEnum.DR].getFinal()) / typicalEnemyDefense
-	getDerivedStatList().get_node("DamagePerHit").get_node("Number").text = str(Helpers.myRound(averageAttackRating * equippedWeapon.basicAttack.getPower(),3))
+	getDerivedStatList().get_node("DamagePerHit").get_node("Number").text = Helpers.engineeringRound(averageAttackRating * equippedWeapon.basicAttack.getPower(),3)
 	
 func getDerivedStatList() :
 	return $ScrollContainer/VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay
@@ -282,11 +287,15 @@ func setClass(character : CharacterClass) :
 	for key in Definitions.attributeDictionary.keys() :
 		attributeObjects[key].setPrebonus("Class", round(character.getBaseAttribute(key)/character.getAttributeScaling(key)*100.0)/100.0)
 		attributeObjects[key].setPremultiplier("Class", character.getAttributeScaling(key))
-	$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.text = "Class: " + character.getText()
+	if (mySubclass == -1) :
+		$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.text = "Class: " + character.getText()
 	unarmedWeapon = SceneLoader.createEquipmentScene("unarmed_" + Definitions.classDictionary[characterClass.classEnum])
+	$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/ClassLabel.visible = true
+	$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/AttributeLabel.visible = true
+	$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/NameLabel.visible = true
 func setName(val) :
 	characterName = val
-	$ScrollContainer/VBoxContainer/NameLabel.text = val
+	$ScrollContainer/VBoxContainer/AttributePanel/VBoxContainer/NameLabel.text = val
 	core.text = val
 ###############################
 ## Getters
@@ -312,6 +321,8 @@ func getRoutineSpeedByReference() -> Array[NumberClass] :
 		if (Definitions.otherStatEnum.routineSpeed_0 <= key && key <= Definitions.otherStatEnum.routineSpeed_4) :
 			retVal.append(otherStatObjects[key])
 	return retVal
+func getRoutineMultiplicityByReference() -> NumberClass :
+	return otherStatObjects[Definitions.otherStatEnum.routineMultiplicity]
 func getOtherStat(key : Definitions.otherStatEnum) :
 	return otherStatObjects[key].getFinal()
 func getModifierDictionary() -> Dictionary :
@@ -349,6 +360,8 @@ signal myReadySignal
 var doneLoading : bool = false
 signal doneLoadingSignal
 func _ready() :
+	Helpers.highVisScroll($ScrollContainer)
+	
 	initialiseNumberObjects()
 	$CustomMouseover.initialise($ScrollContainer/VBoxContainer, $ScrollContainer/VBoxContainer/DerivedStatPanel/StatTitle, $ScrollContainer/VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay/AttackSpeed/Number, $ScrollContainer/VBoxContainer/DerivedStatPanel/PanelContainer/OtherStatDisplay/DamagePerHit/Number)
 	$ScrollContainer/VBoxContainer/CombatStatPanel.initialise(derivedStatObjects)
