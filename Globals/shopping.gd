@@ -100,6 +100,7 @@ var weaponUnlocked : bool = false
 func onLoad(loadDict) :
 	myReady = false
 	updateToVersion105(loadDict)
+	updateToVersion107(loadDict)
 	allRoutinesPurchased = loadDict["allRoutines"]
 	if (loadDict.get("unlockedRoutines") != null) :
 		unlockedRoutines = loadDict["unlockedRoutines"]
@@ -156,6 +157,30 @@ func updateToVersion105(loadDict : Dictionary) :
 	var magnitude = log(currentPrice/oldBase)/log(10)
 	if (is_equal_approx(magnitude, floor(magnitude)) || is_equal_approx(magnitude, ceil(magnitude))) :
 		loadDict["itemPrices"]["routine"][routinePurchasable.mixed] = itemPriceBase["routine"][routinePurchasable.mixed] * pow(10,magnitude)
+		
+func updateToVersion107(loadDict : Dictionary) :
+	for index in range(0,loadDict["unlockedRoutines"].size()) :
+		if (loadDict["unlockedRoutines"][index].find("Resource#") != -1) :
+			loadDict["unlockedRoutines"][index] = "spar_herophile"
+	if (loadDict["allRoutines"]) :
+		return
+	var routineList = MegaFile.getAllRoutine()
+	var mySet : bool = true
+	var herophileUnlocked : bool = false
+	for routine in routineList :
+		if (routine.getResourceName() == "spar_herophile" && loadDict["unlockedRoutines"].find("spar_herophile") != -1) :
+			herophileUnlocked = true
+			continue
+		if (loadDict["unlockedRoutines"].find(routine.getResourceName()) == -1) :
+			mySet = false
+			break
+	if (mySet) :
+		loadDict["allRoutines"] = true
+		loadDict["unlockedRoutines"] = []
+		for routine in routineList :
+			if (routine == MegaFile.getRoutine("spar_herophile") && !herophileUnlocked) :
+				continue
+			loadDict["unlockedRoutines"].append(routine.getResourceName())
 ###################################################################################
 ## General
 var subclassPurchased : bool = false
@@ -402,8 +427,14 @@ func _on_purchase_requested(item, _price, myCurrency, emitter, purchase : Purcha
 			emitter.onSubclassPurchased()
 		elif (type == "soul" && index == soulPurchasable.respec) :
 			emitter.reset()
-		elif (type == "routine" && index == routinePurchasable.randomRoutine && unlockedRoutines.size() == 15) :
-			allRoutinesPurchased = true
+		elif (type == "routine" && index == routinePurchasable.randomRoutine) :
+			var threshold
+			if (unlockedRoutines.find("spar_herophile")) :
+				threshold = 16
+			else :
+				threshold = 15
+			if (unlockedRoutines.size() >= threshold) :
+				allRoutinesPurchased = true
 		else :
 			emitter.refreshPrice(item, itemPrices[type][index])
 		emitter.softNotification(purchase)
@@ -862,7 +893,8 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 			lastBought["boughtRoutine"] = MegaFile.getRoutine(chosenRoutine)
 			emit_signal("unlockRoutineRequested", self, lastBought["boughtRoutine"])
 			return
-			
+		
+		
 		var routineList = MegaFile.getAllRoutine()
 		var optionCount = routineList.size()-1-unlockedRoutines.size()
 		var roll = randi_range(0, optionCount-1)
@@ -894,7 +926,8 @@ func givePurchaseBenefit_routine(item : routinePurchasable) :
 		
 var herophileUnlocked : bool = false
 func unlockHerophile() :
-	unlockedRoutines.append("spar_herophile")
+	if (unlockedRoutines.find("spar_herophile") == -1) :
+		unlockedRoutines.append("spar_herophile")
 	var settings = SaveManager.getGlobalSettings()
 	settings["herophile"] = true
 	SaveManager.saveGlobalSettings(settings)

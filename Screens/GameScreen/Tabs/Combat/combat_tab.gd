@@ -103,7 +103,9 @@ func _on_combat_panel_victory(automaticReset : bool) -> void:
 	if (currentRoom == null) :
 		return
 	if ($MapContainer.get_child_count() >= 2 && currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N0") :
-		emit_signal("tutorialRequested", Encyclopedia.tutorialName.row1, Vector2(0,0))
+		emit_signal("tutorialRequested", Encyclopedia.tutorialName.tooltips, Vector2(0,0))
+	elif ($MapContainer.get_child_count() >= 2 && currentFloor == $MapContainer.get_child(1) && (currentRoom.name as String) == "N1") :
+		emit_signal("tutorialRequested", Encyclopedia.tutorialName.row2, Vector2(0,0))
 	if (currentRoom != null) :
 		currentFloor.completeRoom(currentRoom)
 	if (automaticReset && currentRoom != null) :

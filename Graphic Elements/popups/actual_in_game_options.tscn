@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://des8iakulwgr5"]
+[gd_scene load_steps=7 format=3 uid="uid://des8iakulwgr5"]
 
 [ext_resource type="PackedScene" uid="uid://48l2vnrueam4" path="res://Graphic Elements/popups/my_popup.tscn" id="1_o4ltu"]
 [ext_resource type="Script" uid="uid://y2nd61es75ct" path="res://Graphic Elements/popups/actual_in_game_options.gd" id="2_evtk7"]
@@ -6,7 +6,6 @@
 [ext_resource type="Theme" uid="uid://c8cfcbe6ioxu5" path="res://Graphic Elements/Themes/subTab.tres" id="4_o4ltu"]
 [ext_resource type="PackedScene" uid="uid://cj8ilswgtmol3" path="res://discard_filter.tscn" id="5_evtk7"]
 [ext_resource type="PackedScene" uid="uid://bgjlwljhs8ia8" path="res://master_volume.tscn" id="5_wq30p"]
-[ext_resource type="Script" uid="uid://cectcxesb42m" path="res://master_volume.gd" id="6_kshf8"]
 
 [node name="ActualInGameOptions" instance=ExtResource("1_o4ltu")]
 script = ExtResource("2_evtk7")
@@ -44,7 +43,6 @@ text = " Credits "
 
 [node name="masterVolume" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="3" instance=ExtResource("5_wq30p")]
 layout_mode = 2
-script = ExtResource("6_kshf8")
 
 [node name="DiscardFilter" parent="Panel/CenterContainer/Window/VBoxContainer/VBoxContainer" index="4" instance=ExtResource("5_evtk7")]
 layout_mode = 2

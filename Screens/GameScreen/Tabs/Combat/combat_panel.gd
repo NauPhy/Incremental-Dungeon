@@ -265,6 +265,8 @@ func searchPartyAlive(party, pos:int) :
 	return null
 
 func executeAction(emitter, action, target) :
+	if (target == null) :
+		return
 	if (Definitions.hasDLC && emitter.core.getResourceName() == "athena") :
 		if (action == MegaFile.getNewAction("blur")) :
 			var damage = 99999999

@@ -485,6 +485,18 @@ func handleBiomeAchievement(biome : MyEnvironment) :
 	if (achEnum != null) :
 		unlockAchievement(achEnum)
 		
+func highVisScroll(scrollContainer : ScrollContainer) :
+	var scroll : VScrollBar = scrollContainer.get_v_scroll_bar()
+	#scroll.custom_minimum_size = Vector2(10,0)
+	var styleBox : StyleBox = scroll.get_theme_stylebox("grabber").duplicate()
+	styleBox.bg_color = Color("ffffff")
+	styleBox.border_color = Color("000000")
+	styleBox.border_width_left = 1
+	styleBox.border_width_right = 1
+	styleBox.border_width_top = 2
+	styleBox.border_width_bottom = 2
+	scroll.add_theme_stylebox_override("grabber", styleBox)
+		
 func removeAffix(str : String, affix : String) -> String :
 	var pos = str.find(affix)
 	if (pos == -1) :

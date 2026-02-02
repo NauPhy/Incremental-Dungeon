@@ -10,6 +10,7 @@ const forcedInclude = [
 ]
 
 func initialise() :
+	Helpers.highVisScroll($Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/ScrollContainer)
 	var options = IGOptions.getIGOptionsCopy()
 	var globalEncyclopedia = IGOptions["optionDict"][IGOptions.options.globalEncyclopedia]
 	var allItems = EquipmentDatabase.getAllEquipment().duplicate()
