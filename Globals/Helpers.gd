@@ -516,6 +516,10 @@ func engineeringRound(val, sigFigs : int) -> String :
 		if (magnitude == -INF) :
 			return "0"
 		var newVal = val*pow(10,-magnitude)
+		if (is_equal_approx(newVal, floor(newVal))) :
+			newVal = floor(newVal)
+		elif (is_equal_approx(newVal, ceil(newVal))) :
+			newVal = ceil(newVal)
 		return str(myRound(newVal, sigFigs))+"E"+str(int(magnitude))
 	#var myVal = abs(val)
 	#if (abs(val) < 1) :

@@ -1,14 +1,14 @@
 extends Node
-const currentVersion : String = "V1.08 release"
+const currentVersion : String = "V1.09 development"
 var GODMODE : bool = false
-var DEVMODE : bool = false
+var DEVMODE : bool = true
 var steamEnabled : bool = false
 var hasDLC : bool = false
 func _ready() :
 	attributeCount = 0
 	for key in attributeDictionary :
 		attributeCount += 1
-	if (currentVersion != "V1.08 development") :
+	if (currentVersion != "V1.09 development") :
 		GODMODE = false
 		DEVMODE = false
 	if (steamInitialise()) :

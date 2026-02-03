@@ -2,7 +2,35 @@ extends Node
 
 const originalTheme = preload("res://Audio/OST/theme_01.wav")
 const mainMenuTheme = originalTheme
+
+enum sfx {rangedPhysical,rangedMagic,meleeSlice}
+const combatSounds = {
+	sfx.rangedPhysical : [
+		preload("res://Audio/SFX/Combat/bow_01.wav"),
+		preload("res://Audio/SFX/Combat/bow_02.wav")
+	],
+	sfx.rangedMagic : [
+		preload("res://Audio/SFX/Combat/magic_01.wav"),
+		preload("res://Audio/SFX/Combat/magic_02.wav")
+	],
+	sfx.meleeSlice : [
+		preload("res://Audio/SFX/Combat/sword_01.wav"),
+		preload("res://Audio/SFX/Combat/sword_02.wav"),
+		preload("res://Audio/SFX/Combat/sword_03.wav")
+	]
+}
+
+enum bus {master,music,sfx}
+const busDict = {
+	bus.master : "Master",
+	bus.music : "Music",
+	bus.sfx : "Sfx"
+}
 var musicStream : AudioStreamPlayer = null
+var sfxStream : AudioStreamPlayer = null
+var masterBus : int = -1
+var musicBus : int = -1
+var sfxBus : int = -1
 
 enum musicMode {silent,playlist,mainMenu}
 var musicModeMutex = Mutex.new()
@@ -16,16 +44,21 @@ var myReady : bool = false
 signal myReadySignal
 func _ready() :
 	await waitForDependencies()
+	musicBus = AudioServer.get_bus_index("Music")
+	masterBus = AudioServer.get_bus_index("Master")
+	sfxBus = AudioServer.get_bus_index("Sfx")
 	
-	var musicBus = AudioServer.get_bus_index("Music")
-	AudioServer.set_bus_volume_db(musicBus, -6.012)
-	
+	#setVolume(bus.music, -6.012)
+	#AudioServer.set_bus_volume_db(musicBus, -6.012)
 	loadMainOptions()
 	
 	musicStream = AudioStreamPlayer.new()
 	add_child(musicStream)
-	musicStream.bus = "Music"
+	musicStream.bus = busDict[bus.music]
 	musicStream.connect("finished", _on_music_finished)
+	sfxStream = AudioStreamPlayer.new()
+	add_child(sfxStream)
+	sfxStream.bus = busDict[bus.sfx]
 	
 	myTimer = Timer.new()
 	add_child(myTimer)
@@ -145,22 +178,40 @@ func _on_game_loaded() :
 
 func makeConnections() :
 	pass
-
+	
+func getIdx(type : bus) :
+	if (type == bus.master) :
+		return masterBus
+	elif (type == bus.music) :
+		return musicBus
+	elif (type == bus.sfx) :
+		return sfxBus
+	else :
+		return -1
+func setVolume(type : bus, val : float) :
+	var idx = getIdx(type)
+	if (idx != -1) :
+		if (is_equal_approx(val, -999)) :
+			AudioServer.set_bus_mute(idx, true)
+		else :
+			AudioServer.set_bus_mute(idx, false)
+			AudioServer.set_bus_volume_db(idx, val)
 func setMasterVolume(val) :
-	var idx = AudioServer.get_bus_index("Master")
-	AudioServer.set_bus_volume_db(idx, val)
-	
-func getMasterVolume() :
-	var idx = AudioServer.get_bus_index("Master")
-	return AudioServer.get_bus_volume_db(idx)
-	
+	setVolume(bus.master, val)
 func setMasterMute(val) :
-	var idx = AudioServer.get_bus_index("Master")
-	AudioServer.set_bus_mute(idx, val)
+	setVolume(bus.master, -999)
 
+func getVolume(type : bus) -> float :
+	var idx = getIdx(type)
+	if (idx == -1) :
+		return -999
+	if (AudioServer.is_bus_mute(idx)) :
+		return -999
+	return AudioServer.get_bus_volume_db(idx)
+func getMasterVolume() :
+	return getVolume(bus.master)
 func getMasterMute() -> bool :
-	var idx = AudioServer.get_bus_index("Master")
-	return AudioServer.is_bus_mute(idx)
+	return is_equal_approx(getVolume(bus.master),-999)
 
 func loadMainOptions() :
 	var allSettings = SaveManager.getGlobalSettings()
@@ -169,29 +220,66 @@ func loadMainOptions() :
 		return
 	if (settings.get("masterVolume") != null) :
 		setMasterVolume(settings["masterVolume"])
-	if (settings.get("masterMute") != null) :
-		setMasterMute(settings["masterMute"])
+	if (settings.get("musicVolume") != null) :
+		setVolume(bus.music, settings["musicVolume"])
+	if (settings.get("sfxVolume") != null) :
+		setVolume(bus.sfx, settings["sfxVolume"])
 	
 func saveMainOptions() :
 	var currentSettings = SaveManager.getGlobalSettings()
 	currentSettings["audio"] = getMainOptionsDictionary()
-	#print("global settings: ")
-	#print(currentSettings)
 	SaveManager.queueSaveGlobalSettings_immediate(currentSettings)
 	
 func getMainOptionsDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
-	var masterID = AudioServer.get_bus_index("Master")
-	retVal["masterVolume"] = AudioServer.get_bus_volume_db(masterID)
-	retVal["masterMute"] = AudioServer.is_bus_mute(masterID)
+	retVal["masterVolume"] = getVolume(bus.master)
+	retVal["musicVolume"] = getVolume(bus.music)
+	retVal["sfxVolume"] = getVolume(bus.sfx)
 	return retVal
 	
 func getDefaultMainOptionsDictionary() -> Dictionary :
 	var retVal : Dictionary = {}
 	retVal["masterVolume"] = -6.012
-	retVal["masterMute"] = false
+	retVal["musicVolume"] = -6.012
+	retVal["sfxVolume"] = -6.012
 	return retVal
 	
 func waitForDependencies() :
 	if (SaveManager.myReady == false) :
 		await SaveManager.myReadySignal
+		
+## Only allows 1 sfx at a time. Ask ChatGPT how to cleanly implement multiple sfx?
+var sfxMutex = Mutex.new()
+var sfxPlaying : bool = false
+var lastPlayed = null
+func playSfx(type : sfx, lowerVolume : bool) :
+	sfxMutex.lock()
+	if (sfxPlaying || AudioServer.is_bus_mute(getIdx(bus.sfx))) :
+		sfxMutex.unlock()
+		return
+	if (combatSounds.get(type) == null) :
+		sfxMutex.unlock()
+		return
+	sfxPlaying = true
+	sfxMutex.unlock()
+	
+	var oldVolume = getVolume(bus.sfx)
+	var newVolume = oldVolume-6
+	if (lowerVolume) :
+		setVolume(bus.sfx,newVolume)
+	var roll = randi_range(0, combatSounds[type].size()-1)
+	while (combatSounds[type][roll] == lastPlayed) :
+		roll = randi_range(0, combatSounds[type].size()-1)
+	sfxStream.stream = combatSounds[type][roll]
+	lastPlayed = combatSounds[type][roll]
+	sfxStream.play()
+	##Make sure to test what happens when you save and quit or Alt-F4 while sfx is playing
+	await sfxStream.finished
+	sfxStream.stop()
+	if (lowerVolume) :
+		if (is_equal_approx(newVolume, getVolume(bus.sfx))) :
+			setVolume(bus.sfx, oldVolume)
+	sfxMutex.lock()
+	sfxPlaying = false
+	sfxMutex.unlock()
+	

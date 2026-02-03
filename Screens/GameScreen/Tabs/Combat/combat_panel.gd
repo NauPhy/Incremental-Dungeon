@@ -268,6 +268,7 @@ func searchPartyAlive(party, pos:int) :
 func executeAction(emitter, action, target) :
 	if (target == null) :
 		return
+	playSfx(emitter, action)
 	if (Definitions.hasDLC && emitter.core.getResourceName() == "athena") :
 		if (action == MegaFile.getNewAction("blur")) :
 			var damage = 999999999999999999
@@ -366,3 +367,12 @@ func onLoad(loadDict : Dictionary) :
 	emit_signal("myReadySignal")
 	doneLoading = true
 	emit_signal("doneLoadingSignal")
+
+func playSfx(emitter : Node, action : Action) :
+	if (!is_visible_in_tree()) :
+		return
+	var sfx = $attackSfx.getSfx(action)
+	if (sfx == null) :
+		return
+	var reduceVolume = emitter != $FriendlyParty.get_child(0)
+	AudioHandler.playSfx(sfx, reduceVolume)

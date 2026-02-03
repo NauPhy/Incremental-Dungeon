@@ -55,8 +55,14 @@ func loadSettings() :
 			"beastiary" : {},
 			"items" : []
 		}
+	var audioDict = AudioHandler.getDefaultMainOptionsDictionary()
 	if (dict.get("audio") == null) :
-		dict["audio"] = AudioHandler.getDefaultMainOptionsDictionary()
+		dict["audio"] = audioDict
+	else :
+		for key in audioDict.keys() :
+			if (dict["audio"].get(key) == null) :
+				dict["audio"][key] = audioDict[key]
+	
 	createGlobalDictionary(dict)
 	## because createGlobalDictionary is called before this line, old save files will unlock Athena if they've bought the DLC.
 	## If the save files are new, this will not trigger, but that's fine because new save files track whether Herophile has been killed whether you have the DLC or note

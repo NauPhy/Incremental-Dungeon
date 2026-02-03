@@ -69,6 +69,7 @@ func updateWeapon(val : Weapon) :
 	else :
 		equippedWeapon = val
 	core.actions[0] = equippedWeapon.basicAttack
+	core.actions[0].resourceName = equippedWeapon.basicAttack.getResourceName()
 func updateArmor(val : Armor) :
 	equippedArmor = val
 func updateAccessory(val : Accessory) :
