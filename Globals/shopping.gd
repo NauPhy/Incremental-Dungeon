@@ -235,7 +235,11 @@ func purchaseItem(type : String, item : int, purchase : Purchasable) -> bool:
 		emit_signal("removeCurrencyRequested", currency, purchase.purchasablePrice)
 	else :
 		return false
-	itemPrices[type][item] = getNextItemPrice(type, item)
+	var price = getNextItemPrice(type, item)
+	if (price < 9*pow(10,18)) :
+		itemPrices[type][item] = int(price)
+	else :
+		itemPrices[type][item] = price
 	return true
 	
 func givePurchaseBenefit(type : String, item : int, purchase : Purchasable) -> bool:
@@ -255,7 +259,7 @@ func givePurchaseBenefit(type : String, item : int, purchase : Purchasable) -> b
 		await confirmationReceived
 	return confirmed
 
-func getNextItemPrice(type, item) -> int :
+func getNextItemPrice(type, item) -> float :
 	var currentVal = itemPrices[type][item]
 	if (currentVal == -1) :
 		return -1
@@ -270,7 +274,7 @@ func getNextItemPrice(type, item) -> int :
 	else :
 		return -1
 
-func getNextItemPrice_routine(item) -> int :
+func getNextItemPrice_routine(item) -> float :
 	var standardScale = pow(2,0.25)
 	var currentVal = itemPrices["routine"][item]
 	if (item == routinePurchasable.speed) :
@@ -288,7 +292,7 @@ func getNextItemPrice_routine(item) -> int :
 		else :
 			return currentVal * standardScale
 	elif (item == routinePurchasable.mixed) :
-		return round(currentVal * 10)
+		return round(currentVal * 100.0)
 	## It's 25x more expensive (5000) at the end of floor 5, after 9 purchases
 	elif (item == routinePurchasable.randomRoutine) :
 		return round(currentVal * 1.43)
@@ -298,7 +302,7 @@ func getNextItemPrice_routine(item) -> int :
 	else :
 		return -1
 		
-func getNextItemPrice_armor(item) -> int :
+func getNextItemPrice_armor(item) -> float :
 	var currentVal = itemPrices["armor"][item]
 	if (item == armorPurchasable.premadeArmor) :
 		## One time purchase
@@ -313,7 +317,7 @@ func getNextItemPrice_armor(item) -> int :
 		return round(currentVal * 2.484)
 	else :
 		return -1
-func getNextItemPrice_weapon(item) -> int :
+func getNextItemPrice_weapon(item) -> float :
 	var currentVal = itemPrices["weapon"][item]
 	if (item == weaponPurchasable.premadeWeapon) :
 		## One time purchase
@@ -329,7 +333,7 @@ func getNextItemPrice_weapon(item) -> int :
 	else :
 		return -1
 		
-func getNextItemPrice_soul(item) -> int :
+func getNextItemPrice_soul(item) -> float :
 	var currentVal = itemPrices["soul"][item]
 	if ((soulPurchasable.fighterSubclass_1 as int) <= (item as int) && (item as int) <= (soulPurchasable.mageSubclass_2 as int)) :
 		return currentVal
@@ -387,9 +391,9 @@ func provideConfirmation(val) :
 
 signal currencyAmountRequested
 signal currencyAmountReceived
-var currencyAmount_comm : int
+var currencyAmount_comm : float
 var waitingForCurrencyAmount : bool = false
-func getCurrencyAmount(item : Currency) -> int :
+func getCurrencyAmount(item : Currency) -> float :
 	waitingForCurrencyAmount = true
 	emit_signal("currencyAmountRequested", item, self)
 	if (waitingForCurrencyAmount) :
@@ -1009,8 +1013,8 @@ func givePurchaseBenefitSoul(item : soulPurchasable, _purchase : Purchasable) :
 		var isMultiplicative = false
 		
 		var attrCount = Definitions.attributeDictionary.keys().size()
-		var statCount = Definitions.attributeDictionary.keys().size()
-		var otherCount = Definitions.attributeDictionary.keys().size()
+		var statCount = Definitions.baseStatDictionary.keys().size()
+		var otherCount = Definitions.otherStatDictionary.keys().size()
 		var totalCount = attrCount + statCount + otherCount
 		
 		var allUpgradedRoll = randi_range(0,99)
@@ -1031,7 +1035,7 @@ func givePurchaseBenefitSoul(item : soulPurchasable, _purchase : Purchasable) :
 		else :
 			type = "otherStat"
 			var roll = randi_range(0,otherCount-1)
-			while (roll == Definitions.otherStatEnum.physicalConversion || roll == Definitions.otherStatEnum.magicConversion) :
+			while (roll == Definitions.otherStatEnum.physicalConversion || roll == Definitions.otherStatEnum.magicConversion || (roll >= Definitions.otherStatEnum.routineSpeed_0 && roll < Definitions.otherStatEnum.routineSpeed_5)) :
 				roll = randi_range(0,otherCount-1)
 			value.append(getOtherStatUpgrade(roll as Definitions.otherStatEnum, false))
 			statEnum.append(roll)
@@ -1115,7 +1119,7 @@ func upgradeAllStats() :
 	emit_signal("addPermanentModifierRequested", value, type, statEnum, source, modType, isMultiplicative, false)
 	
 func getOtherStatUpgrade(key : Definitions.otherStatEnum, isAllStat : bool) :
-	if (key == Definitions.otherStatEnum.magicConversion || key == Definitions.otherStatEnum.physicalConversion) :
+	if (key == Definitions.otherStatEnum.magicConversion || key == Definitions.otherStatEnum.physicalConversion || (key >= Definitions.otherStatEnum.routineSpeed_0 && key < Definitions.otherStatEnum.routineSpeed_5)) :
 		return 0
 	elif (key == Definitions.otherStatEnum.routineSpeed_5 || key == Definitions.otherStatEnum.routineEffect) :
 		if (isAllStat) :

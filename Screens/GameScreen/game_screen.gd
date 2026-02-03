@@ -52,7 +52,7 @@ func updatePlayer() :
 	$Player.updateDirectModifier("Element Synergy", elementDirect)
 	## Specific
 	#Training
-	var newTrainingLevels : Array[int] = $MyTabContainer/InnerContainer/Training.getAttributeLevels()
+	var newTrainingLevels : Array[float] = $MyTabContainer/InnerContainer/Training.getAttributeLevels()
 	$Player.updateTrainingLevels(newTrainingLevels)
 	#Weapon
 	var newWeapon : Weapon = $MyTabContainer/InnerContainer/Equipment.getCurrentWeapon()
@@ -113,7 +113,7 @@ func _shopping_permanent_modifier(value : Array[float], type : String, statEnum 
 			if (isMultiplicative) :
 				permanentMods[source].otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5]][modType] *= value[index]
 			else :
-				permanentMods[source].otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5]] += value[index]
+				permanentMods[source].otherMods[Definitions.otherStatDictionary[Definitions.otherStatEnum.routineSpeed_5]][modType] += value[index]
 		elif (type == "attribute" && isMultiplicative) :
 			permanentMods[source].attributeMods[Definitions.attributeDictionary[statEnum[index]]][modType] *= value[index]
 		elif (type == "attribute" && !isMultiplicative) :
@@ -249,7 +249,7 @@ func _shopping_upgrade_routine(routine : AttributeTraining) :
 	$MyTabContainer/InnerContainer/Training.upgradeRoutine(routine)
 	Shopping.provideConfirmation(true)
 	
-func _shopping_remove_currency(item : Currency, val : int) :
+func _shopping_remove_currency(item : Currency, val : float) :
 	var currentAmount = $TopRibbon/Ribbon/Currency.getCurrencyAmount(item)
 	var newAmount = max(currentAmount-val,0)
 	$TopRibbon/Ribbon/Currency.setCurrencyAmount(item, newAmount)

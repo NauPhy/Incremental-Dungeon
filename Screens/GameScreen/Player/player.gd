@@ -38,7 +38,7 @@ var unarmedWeapon : Node = null
 var equippedWeapon : Weapon = null
 var equippedArmor : Armor = null
 var equippedAccessory : Accessory = null
-var trainingLevels : Array[int] = []
+var trainingLevels : Array[float] = []
 
 ###############################
 ## Initialisation
@@ -61,7 +61,7 @@ func initialiseNumberObjects() :
 	otherStatObjects[Definitions.otherStatEnum.routineMultiplicity].setPrebonus("Humanoid", 1.0)
 ###############################
 ## Specific Modifiers
-func updateTrainingLevels(newLevels : Array[int]) :
+func updateTrainingLevels(newLevels : Array[float]) :
 	trainingLevels = newLevels
 func updateWeapon(val : Weapon) :
 	if (val == null) :

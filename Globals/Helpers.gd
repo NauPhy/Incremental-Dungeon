@@ -330,7 +330,10 @@ func myRound(val : float, sigFigs : int) :
 		var retStr = strVal.substr(0,sigFigs+offset)
 		for index in range(0,trailingZeroes) :
 			retStr += "0"
-		return int(retStr)
+		if (val > 9000000000000000000) :
+			return float(retStr)
+		else :
+			return int(retStr)
 	
 	## CASE 2: the last significant figure is after the "."
 	var expectedLength = 1
@@ -409,7 +412,7 @@ func engineeringNotation(origVal) -> String :
 		else :
 			magnitude = floor(magnitude)
 		newVal = origVal/pow(10,magnitude)
-		suffix = "E" + str(magnitude)
+		suffix = "E" + str(int(magnitude))
 	elif (val >= pow(10,30)) :
 		newVal = origVal/pow(10,30)
 		suffix = "No"

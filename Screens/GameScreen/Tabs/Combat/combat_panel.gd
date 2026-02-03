@@ -92,6 +92,7 @@ func resetCombat(friendlyCores : Array[ActorPreset], enemyCores : Array[ActorPre
 		newActor.size_flags_vertical = 0
 	initPartyPositions($FriendlyParty.get_children())
 	initPartyPositions($EnemyParty.get_children())
+	handleAthena()
 	if (Definitions.hasDLC) :
 		handleAthena()
 	else :
@@ -101,7 +102,7 @@ func handleAthena() :
 	if ($EnemyParty.get_child(0).core.getResourceName() != "athena") :
 		resumeCombat()
 		return
-	var skillcheck = 614000
+	var skillcheck = $EnemyParty.get_child(0).core.getSkillcheck()
 	if (currentPlayerMods["attribute"][Definitions.attributeDictionary[Definitions.attributeEnum.SKI]] < skillcheck) :
 		var newActions : Array[Action] = [MegaFile.getNewAction("blur")]
 		$EnemyParty.get_child(0).core.actions = newActions
@@ -269,7 +270,7 @@ func executeAction(emitter, action, target) :
 		return
 	if (Definitions.hasDLC && emitter.core.getResourceName() == "athena") :
 		if (action == MegaFile.getNewAction("blur")) :
-			var damage = 99999999
+			var damage = 999999999999999999
 			target.setHP(target.HP-damage)
 			return
 	## Not that it'll matter in Release, but the third term is to force me to playtest this obscure item effect if I forget.

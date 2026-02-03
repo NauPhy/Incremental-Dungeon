@@ -6,6 +6,57 @@ func getGlobalSettings() -> Dictionary :
 	return globalSettings.duplicate(true)
 func saveGlobalSettings(newVal : Dictionary) -> void :
 	globalSettings = newVal.duplicate(true)
+	
+const requiredNodes = [
+	"/root/Main/GameScreen/TopRibbon/Ribbon/Currency",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Equipment/Inventory",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Training/TrainingPanel",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Training",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Combat/ProceduralGenerationLogic",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Combat/MapContainer/TutorialMap/CombatMap/RoomContainer/OrcRoom",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Combat/MapContainer/TutorialMap/CombatMap/RoomContainer/ZombieRoom",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Combat/MapContainer/TutorialMap/CombatMap/RoomContainer/Room3",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Combat/MapContainer/TutorialMap/CombatMap/RoomContainer/WeaponRoom",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Combat/MapContainer/TutorialMap/CombatMap/RoomContainer/Room2",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Combat/MapContainer/TutorialMap/CombatMap/RoomContainer/Room1",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Combat/MapContainer/TutorialMap",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Combat/CombatPanel",
+	"/root/Main/GameScreen/MyTabContainer/InnerContainer/Combat",
+	"/root/Main/GameScreen/Player",
+	"/root/Main/GameScreen",
+	"/root/Main",
+	"/root/Shopping",
+	"/root/EnemyDatabase",
+	"/root/IGOptions",
+	"/root/SaveManager"
+]
+const popupLoader = preload("res://Graphic Elements/popups/my_popup_button.tscn")
+func saveCheck(saveDict : Dictionary) :
+	var OK : bool = true
+	var missing : Array = []
+	var keys = saveDict.keys()
+	var nodeStrs : Array = []
+	for key in keys :
+		nodeStrs.append(str(key))
+	for nodeStr in requiredNodes :
+		if (nodeStrs.find(nodeStr) == -1) :
+			OK = false
+			missing.append(nodeStr)
+	if (OK) :
+		return true
+	var warning = popupLoader.instantiate()
+	add_child(warning)
+	warning.layer = 999
+	warning.setTitle("Uh oh!")
+	warning.setText("The game just tried to corrupt your save data, but a failsafe introduced in patch 1.07 stopped it. Please let the developer know that this triggered and send them your most recent log file, located in C:\\Users\\<Username>\\AppData\\Roaming\\Godot\\app_userdata\\Incremental Dungeon\\logs. The best way to reach them is via the Discord on the store page.")
+	warning.setButtonText("Whoops")
+	print("V1.07 failsafe triggered. Missing nodes :")
+	for nodeStr in missing :
+		print(nodeStr)
+	print("*****************************************")
+	print("Save dictionary:") 
+	print(saveDict)
+	return false
 
 ##################################
 ## Internal
@@ -207,8 +258,13 @@ func generateFilepath(slot : Definitions.saveSlots) :
 		filePath = Definitions.slotPaths[slot]
 	return filePath
 
-func saveGame_noCheck(saveData, filePath) :
-	taskList.append(WorkerThreadPool.add_task(func():handleDiskAccess(saveData.duplicate(true), filePath)))
+func saveGame_noCheck(saveData : Dictionary, filePath) :
+	if (saveCheck(saveData)) :
+		taskList.append(WorkerThreadPool.add_task(func():handleDiskAccess(saveData.duplicate(true), filePath)))
+	else :
+		saveMutex.lock()
+		saveActive = false
+		saveMutex.unlock()
 
 var purging : bool = false
 var taskList : Array = []

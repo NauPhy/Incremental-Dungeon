@@ -2,7 +2,7 @@ extends Control
 
 var currencyList : Array[Node] = []
 
-func getCurrencyAmount(type) -> int :
+func getCurrencyAmount(type) -> float :
 	var equip = getEquip(type)
 	if (equip == null) :
 		return -1

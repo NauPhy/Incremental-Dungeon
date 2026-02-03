@@ -25,6 +25,13 @@ func setStat(type : Definitions.baseStatEnum, val : float) :
 	elif (type == Definitions.baseStatEnum.MAGDEF) : MAGDEF = val
 	else :
 		return
+		
+const defaultSkillcheck = 614000
+var actualSkillcheck = defaultSkillcheck
+func adjustSkillcheck(floorDifference : int) :
+	actualSkillcheck = defaultSkillcheck * pow(2,5.0*floorDifference/4.0)
+func getSkillcheck() :
+	return actualSkillcheck
 
 func getStat(type : Definitions.baseStatEnum) -> float :
 	if (Engine.is_editor_hint()) :
@@ -101,6 +108,8 @@ func getSaveDictionary() -> Dictionary :
 	retVal["resourceName"] = getResourceName()
 	if retVal["resourceName"] == null :
 		pass
+	if (getResourceName() == "athena") :
+		retVal["actualSkillcheck"] = actualSkillcheck
 		#print("problem")
 	retVal["myScalingFactor"] = myScalingFactor
 	#if (myScalingFactor != -1) :
@@ -116,8 +125,12 @@ static func createFromSaveDictionary(val : Dictionary) -> ActorPreset :
 	if (val.is_empty()) :
 		return ActorPreset.new()
 	var scalingFactor = val["myScalingFactor"]
+	
 	#if (scalingFactor == -1) :
-	return EnemyDatabase.getEnemy(val["resourceName"]).getAdjustedCopy(scalingFactor)
+	var enemy = EnemyDatabase.getEnemy(val["resourceName"]).getAdjustedCopy(scalingFactor)
+	if (val.get("actualSkillcheck") != null) :
+		enemy.actualSkillcheck = val.get("actualSkillcheck")
+	return enemy
 	#else :
 		#var retVal = EnemyDatabase.getEnemy(val["resourceName"]).duplicate()
 		#retVal.resourceName = val["resourceName"]
