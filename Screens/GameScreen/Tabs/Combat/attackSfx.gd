@@ -4,9 +4,11 @@ const dict : Dictionary = {
 	"axe_1h" : AudioHandler.sfx.meleeSlice,
 	"axe_2h" : AudioHandler.sfx.meleeSlice,
 	"blunderbuss" : null,
+	## An attack too fast to be seen- for the OP secret boss
 	"blur" : null,
 	"bow" : AudioHandler.sfx.rangedPhysical,
 	"club_1h" : null,
+	## Whipcrack
 	"crack" : null,
 	## Crossbows have a rather distinctive sound but I'll use ranged for now
 	"crossbow" : AudioHandler.sfx.rangedPhysical,
@@ -20,6 +22,7 @@ const dict : Dictionary = {
 	## Called "Exanguinate" in game
 	"generic_brutal" : AudioHandler.sfx.meleeSlice,
 	"icicle_spike" : AudioHandler.sfx.rangedPhysical,
+	"katana_attack" : AudioHandler.sfx.meleeSlice,
 	"kinetic_blast" : null,
 	"lance" : AudioHandler.sfx.meleeSlice,
 	"laser" : null,
@@ -43,6 +46,7 @@ const dict : Dictionary = {
 	"split_man" : AudioHandler.sfx.meleeSlice,
 	"thresh" : null,
 	"throw_axe" : AudioHandler.sfx.rangedPhysical,
+	## For the earth staff
 	"throw_boulder" : null,
 	"throw_kunai" : AudioHandler.sfx.rangedPhysical,
 	"thrust_sword_1h" : AudioHandler.sfx.meleeSlice,
@@ -91,6 +95,7 @@ const dict : Dictionary = {
 	"poison_spore" : null,
 	## Exclusive to the Siren
 	"psychic_scream" : null,
+	## Giant attacks
 	"stomp_fire" : null,
 	"stomp_generic" : null,
 	"stomp_ice" : null,
@@ -112,7 +117,7 @@ const dict : Dictionary = {
 	"punch_2" : AudioHandler.sfx.rangedMagic,
 	"weak_stab" : AudioHandler.sfx.meleeSlice,
 	"dagger_basic" : AudioHandler.sfx.meleeSlice,
-	"sling_basic" : null
+	"sling_basic" : AudioHandler.sfx.rangedPhysical
 }
 
 static func getSfx(action : Action) :

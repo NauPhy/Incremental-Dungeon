@@ -267,6 +267,7 @@ func saveGame_noCheck(saveData : Dictionary, filePath) :
 		saveMutex.unlock()
 
 var purging : bool = false
+signal purgeComplete
 var taskList : Array = []
 var purgeMutex = Mutex.new()
 func _process(_delta) :
@@ -285,6 +286,7 @@ func _process(_delta) :
 		purgeMutex.lock()
 		purging = false
 		purgeMutex.unlock()
+		emit_signal("purgeComplete")
 		return
 	saveMutex.unlock()
 	purgeMutex.unlock()
@@ -385,7 +387,24 @@ func saveGameSaveSelection(parent : Node) :
 	if (parent.has_method("nestedPopupInit")) :
 		menu.nestedPopupInit(parent)
 func _on_save_menu_option_chosen(slot : Definitions.saveSlots) :
+	queueSaveGame_playSfx(slot)
+
+func queueSaveGame_playSfx(slot : Definitions.saveSlots) :
 	queueSaveGame(slot)
+	while (saveQueueSemaphore > 0) :
+		await saveFinished
+	while (true) :
+		purgeMutex.lock()
+		if (purging) :
+			purgeMutex.unlock()
+			await purgeComplete
+			break
+		elif (taskList.size() > 0) :
+			await purgeComplete
+			continue
+		else :
+			break
+	AudioHandler.playMenuSfx(AudioHandler.menuSfx.save)
 	
 signal newGameReady
 const newGameMenu = preload("res://SaveManager/new_game_menu.tscn")
@@ -399,9 +418,15 @@ func waitForDependencies() :
 	if (!MainOptionsHelpers.myReady) :
 		await MainOptionsHelpers.myReadySignal
 
+var saveQueueSemaphore = 0
+signal saveFinished
 func queueSaveGame(slot) :
+	var first : bool = true
 	while (true) :
 		saveMutex.lock()
+		if (first) :
+			first = false
+			saveQueueSemaphore += 1
 		if (!saveActive) :
 			break
 		saveMutex.unlock()
@@ -410,8 +435,9 @@ func queueSaveGame(slot) :
 	var data = generateSave()
 	var filePath = generateFilepath(slot)
 	saveGame_noCheck(data, filePath)
+	saveQueueSemaphore -= 1
 	saveMutex.unlock()
-	print("queued save success")
+	emit_signal("saveFinished")
 	
 func queueSaveGame_safety(saveData : Dictionary, filePath : String) :
 	while (true) :

@@ -55,3 +55,8 @@ func _unhandled_input(event : InputEvent) :
 			newMenu.queue_free()
 			newMenu = null
 		
+
+const creditsLoader = preload("res://Graphic Elements/popups/credits.tscn")
+func _on_credits_button_pressed() -> void:
+	var credits = creditsLoader.instantiate()
+	add_child(credits)

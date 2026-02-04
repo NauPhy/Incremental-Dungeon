@@ -211,7 +211,7 @@ func _shopping_respec_requested() :
 	var confirmationPopup = binaryPopupLoader.instantiate()
 	add_child(confirmationPopup)
 	confirmationPopup.setTitle("Change Class")
-	confirmationPopup.setText("Are you sure you want to change your class? You will lose half your Cumulative Training Levels, but you may select a different class or subclass.")
+	confirmationPopup.setText("Are you sure you want to change your class? You will lose 25% of your Cumulative Training Levels, but you may select a different class or subclass.")
 	confirmationPopup.setButton0Name(" I'm ready ")
 	confirmationPopup.setButton1Name(" I changed my mind ")
 	var choice = await confirmationPopup.binaryChosen

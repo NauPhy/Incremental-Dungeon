@@ -96,7 +96,7 @@ func upgradeRoutine(routine) :
 func onRespec() :
 	for key in Definitions.attributeDictionary.keys() :
 		var oldVal = $AttributeLevels.getLevel(key)
-		$AttributeLevels.setLevel(key, round(oldVal/2.0))
+		$AttributeLevels.setLevel(key, round(oldVal*3.0/4.0))
 
 signal playerPortraitRequested
 signal playerPortraitReceived

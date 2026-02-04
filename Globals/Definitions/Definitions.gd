@@ -1,7 +1,7 @@
 extends Node
-const currentVersion : String = "V1.09 development"
+const currentVersion : String = "V1.09 release"
 var GODMODE : bool = false
-var DEVMODE : bool = true
+var DEVMODE : bool = false
 var steamEnabled : bool = false
 var hasDLC : bool = false
 func _ready() :

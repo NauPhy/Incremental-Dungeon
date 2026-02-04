@@ -230,8 +230,13 @@ func purchaseItem(type : String, item : int, purchase : Purchasable) -> bool:
 		return false
 	var currencyCount = await getCurrencyAmount(currency)
 	if (currencyCount < purchase.purchasablePrice) :
+		AudioHandler.playMenuSfx(AudioHandler.menuSfx.warning)
 		return false
 	if (await givePurchaseBenefit(type, item, purchase)) :
+		if (type == "soul" && (item >= soulPurchasable.fighterSubclass_1 && item <= soulPurchasable.mageSubclass_2)) :
+			AudioHandler.playMenuSfx(AudioHandler.menuSfx.save)
+		else :
+			AudioHandler.playMenuSfx(AudioHandler.menuSfx.select)
 		emit_signal("removeCurrencyRequested", currency, purchase.purchasablePrice)
 	else :
 		return false
@@ -807,7 +812,7 @@ func createSoulShop() :
 	var respecItem = Purchasable.new()
 	respecItem.equipment_optional = null
 	respecItem.purchasableName = soulPurchasableDictionary[soulPurchasable.respec]
-	respecItem.description = "Remove your subclass (if any) and choose a new class! [color=red]You will lose half of your [/color]Cumulative Routine Levels[color=red].[/color]"
+	respecItem.description = "Remove your subclass (if any) and choose a new class! [color=red]You will lose 25% of your [/color]Cumulative Routine Levels[color=red].[/color]"
 	respecItem.purchasablePrice = -1
 	column1.purchasables.append(respecItem)
 	

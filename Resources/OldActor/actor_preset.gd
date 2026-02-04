@@ -111,7 +111,7 @@ func getSaveDictionary() -> Dictionary :
 	if (getResourceName() == "athena") :
 		retVal["actualSkillcheck"] = actualSkillcheck
 		#print("problem")
-	retVal["myScalingFactor"] = myScalingFactor
+	#retVal["myScalingFactor"] = myScalingFactor
 	#if (myScalingFactor != -1) :
 		#retVal["drops"] = []
 		#retVal["dropChances"] = []
@@ -121,10 +121,14 @@ func getSaveDictionary() -> Dictionary :
 	return retVal
 	
 ## If you ever make this virtual you have to remove static and use the stupid pattern
-static func createFromSaveDictionary(val : Dictionary) -> ActorPreset :
+static func createFromSaveDictionary(val : Dictionary, scaling) -> ActorPreset :
 	if (val.is_empty()) :
 		return ActorPreset.new()
-	var scalingFactor = val["myScalingFactor"]
+	var scalingFactor
+	if (scaling == null) :
+		scalingFactor = val["myScalingFactor"]
+	else :
+		scalingFactor = scaling
 	
 	#if (scalingFactor == -1) :
 	var enemy = EnemyDatabase.getEnemy(val["resourceName"]).getAdjustedCopy(scalingFactor)

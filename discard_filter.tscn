@@ -672,6 +672,21 @@ scroll_active = false
 autowrap_mode = 0
 vertical_alignment = 1
 
+[node name="Option21" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Filter"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="PanelContainer/VBoxContainer/Filter/Option21"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/Filter/Option21"]
+layout_mode = 2
+bbcode_enabled = true
+text = " Neither "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
+
 [connection signal="toggled" from="PanelContainer/VBoxContainer/Filter/Option14/CheckBox" to="PanelContainer/VBoxContainer/Filter" method="option14"]
 [connection signal="toggled" from="PanelContainer/VBoxContainer/Filter/Option15/CheckBox" to="PanelContainer/VBoxContainer/Filter" method="option15"]
 [connection signal="toggled" from="PanelContainer/VBoxContainer/Filter/Option12/CheckBox" to="PanelContainer/VBoxContainer/Filter" method="option12"]

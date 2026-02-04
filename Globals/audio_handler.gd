@@ -19,6 +19,13 @@ const combatSounds = {
 		preload("res://Audio/SFX/Combat/sword_03.wav")
 	]
 }
+enum menuSfx {save,select,cancel,warning}
+const menuSounds = {
+	menuSfx.save : preload("res://Audio/SFX/Menu/save.wav"),
+	menuSfx.select : preload("res://Audio/SFX/Menu/select.wav"),
+	menuSfx.cancel : preload("res://Audio/SFX/Menu/cancel.wav"),
+	menuSfx.warning : preload("res://Audio/SFX/Menu/alert.wav")
+}
 
 enum bus {master,music,sfx}
 const busDict = {
@@ -59,6 +66,7 @@ func _ready() :
 	sfxStream = AudioStreamPlayer.new()
 	add_child(sfxStream)
 	sfxStream.bus = busDict[bus.sfx]
+	sfxStream.max_polyphony = 10
 	
 	myTimer = Timer.new()
 	add_child(myTimer)
@@ -249,37 +257,51 @@ func waitForDependencies() :
 		await SaveManager.myReadySignal
 		
 ## Only allows 1 sfx at a time. Ask ChatGPT how to cleanly implement multiple sfx?
-var sfxMutex = Mutex.new()
-var sfxPlaying : bool = false
+#var sfxMutex = Mutex.new()
+#var sfxPlaying : bool = false
 var lastPlayed = null
 func playSfx(type : sfx, lowerVolume : bool) :
-	sfxMutex.lock()
-	if (sfxPlaying || AudioServer.is_bus_mute(getIdx(bus.sfx))) :
-		sfxMutex.unlock()
-		return
-	if (combatSounds.get(type) == null) :
-		sfxMutex.unlock()
-		return
-	sfxPlaying = true
-	sfxMutex.unlock()
+	playSfx_internal("combat", type as int, lowerVolume)
+func playMenuSfx(type : menuSfx) :
+	playSfx_internal("menu", type as int, false)
 	
-	var oldVolume = getVolume(bus.sfx)
-	var newVolume = oldVolume-6
+func createSfxAudioStreamPlayer(stream : AudioStream, lowerVolume : bool) -> AudioStreamPlayer :
+	var ret : AudioStreamPlayer = sfxStream.duplicate()
+	ret.stream = stream
 	if (lowerVolume) :
-		setVolume(bus.sfx,newVolume)
-	var roll = randi_range(0, combatSounds[type].size()-1)
-	while (combatSounds[type][roll] == lastPlayed) :
-		roll = randi_range(0, combatSounds[type].size()-1)
-	sfxStream.stream = combatSounds[type][roll]
-	lastPlayed = combatSounds[type][roll]
-	sfxStream.play()
-	##Make sure to test what happens when you save and quit or Alt-F4 while sfx is playing
-	await sfxStream.finished
-	sfxStream.stop()
-	if (lowerVolume) :
-		if (is_equal_approx(newVolume, getVolume(bus.sfx))) :
-			setVolume(bus.sfx, oldVolume)
-	sfxMutex.lock()
-	sfxPlaying = false
-	sfxMutex.unlock()
-	
+		ret.volume_db -= 6
+	else :
+		ret.volume_db -= 0
+	return ret
+func playSfx_internal(sfxType : String, myEnum : int, lowerVolume : bool) :
+	var type
+	var sounds
+	if (sfxType == "combat") :
+		type = myEnum as sfx
+		sounds = combatSounds
+	elif (sfxType == "menu") :
+		type = myEnum as menuSfx
+		sounds = menuSounds
+	if (AudioServer.is_bus_mute(getIdx(bus.sfx))) :
+		return
+	if (sounds.get(type) == null) :
+		return
+	var tempStream
+	if (sounds[type] is Array) :
+		var roll
+		if (sounds[type].size() > 1) :
+			roll = randi_range(0, sounds[type].size()-1)
+			while (sounds[type][roll] == lastPlayed) :
+				roll = randi_range(0, sounds[type].size()-1)
+		else :
+			roll = 0
+		tempStream = sounds[type][roll]
+		lastPlayed = sounds[type][roll]
+	else :
+		tempStream = sounds[type]
+		lastPlayed = sounds[type]
+	var tempPlayer = createSfxAudioStreamPlayer(tempStream, lowerVolume)
+	add_child(tempPlayer)
+	tempPlayer.play()
+	await tempPlayer.finished
+	tempPlayer.queue_free()

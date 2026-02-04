@@ -413,6 +413,18 @@ func forceBoundaries() :
 var debounceTimer = 0
 func _process(delta) :
 	debounceTimer += delta
+	if (dragging) :
+		var posDif = get_global_mouse_position()-dragPos
+		$CombatMap.global_position += posDif
+		dragPos = get_global_mouse_position()
+var dragging : bool = false
+var dragPos : Vector2 = Vector2(0,0)
+func _gui_input(event : InputEvent) :
+	if (event is InputEventMouseButton && (event.button_index == MOUSE_BUTTON_LEFT || event.button_index == MOUSE_BUTTON_RIGHT)) :
+		accept_event()
+		dragging = event.pressed
+		if (dragging) :
+			dragPos = get_global_mouse_position()
 func _unhandled_input(event: InputEvent) -> void :
 	if (!is_visible_in_tree() || !UIEnabled) :
 		return

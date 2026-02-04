@@ -7,8 +7,8 @@ var athenaGenerated : bool = false
 var athenaFloor : int = -1
 func handleAthena(mapInProgress : MapData) -> MapData :
 	var retVal : MapData = mapInProgress.duplicate(true)
-	#if (!Definitions.hasDLC) :
-		#return retVal
+	if (!Definitions.hasDLC) :
+		return retVal
 	if (athenaGenerated) :
 		return retVal
 	var load = SaveManager.getGlobalSettings()
@@ -82,7 +82,7 @@ func handleAthena(mapInProgress : MapData) -> MapData :
 					index += 1
 	return retVal
 
-var previousMaps : Array[MapData] = []
+var previousMaps : Array[Dictionary] = []
 func createMap() -> MapData :
 	var environment : MyEnvironment = getEnvironment()
 	$EnemyPoolHandler.reset(environment, getAllEnemies())
@@ -111,7 +111,7 @@ func createMap() -> MapData :
 			for enemy in room.enemies :
 				enemy.MAXHP *= 0.7
 	newMap = handleAthena(newMap)
-	previousMaps.append(newMap)
+	previousMaps.append(newMap.getShortVersion())
 	return newMap
 	
 ## moderately inefficent
@@ -210,13 +210,13 @@ func createdRecently(newEnv : MyEnvironment) -> bool :
 	## There are 20 environments and 10 floors... might as well ensure no repeats whatsoever outside of endless mode
 	if (previousMaps.size() < 10) :
 		for map in previousMaps :
-			if (map.environmentName == envName) :
+			if (map["environmentName"] == envName) :
 				return true
 		return false
 	else :
 		var mostRecentPermitted = previousMaps.size()-4
 		for index in range(mostRecentPermitted,previousMaps.size()) :
-			if (previousMaps[index].environmentName == envName) :
+			if (previousMaps[index]["environmentName"] == envName) :
 				return true
 		return false
 
@@ -580,7 +580,7 @@ func getSaveDictionary() -> Dictionary :
 	retVal["athenaFloor"] = athenaFloor
 	retVal["previousMaps"] = []
 	for map in previousMaps :
-		retVal["previousMaps"].append(map.getSaveDictionary())
+		retVal["previousMaps"].append(map)
 	return retVal
 func beforeLoad(newGame) :
 	myReady = false
@@ -595,7 +595,10 @@ func onLoad(loadDict : Dictionary) :
 	myReady = false
 	if (loadDict.get("previousMaps") != null) :
 		for map in loadDict.get("previousMaps") :
-			previousMaps.append(MapData.createFromSaveDictionary(map))
+			if (map.get("boss") == null) :
+				previousMaps.append(map)
+			else :
+				previousMaps.append(MapData.createFromSaveDictionary(map).getShortVersion())
 	if (loadDict.get("athenaGenerated") != null) :
 		athenaGenerated = loadDict["athenaGenerated"]
 	if (loadDict.get("athenaFloor") != null) :

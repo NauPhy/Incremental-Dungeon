@@ -359,7 +359,7 @@ var descriptions : Dictionary = {
 	
 	#"Softcap" : "Every time the Bonus provided to an attribute by Cumulative Routine Levels reaches a new power of 10 (starting at 100), your Routine Speed for that attribute halves permanently.",
 	
-	"Class" : "Your Class determines your starting Attributes, Attribute multipliers, and unarmed Weapon Scaling. Fighter is the tankiest, Mage is the highest damage, and Rogue is balanced. You can respec about halfway through the game at the cost of half of your Cumulative Routine Levels",
+	"Class" : "Your Class determines your starting Attributes, Attribute multipliers, and unarmed Weapon Scaling. Fighter is the tankiest, Mage is the highest damage, and Rogue is balanced. You can respec about halfway through the game at the cost of 25% of your Cumulative Routine Levels",
 	
 	"Currency" : "Currency items do not take up inventory space and only exist to be exchanged at shops.\n\nThe amount of currency acquired from a victory depends only on how deep in the dungeon it is (except in the case of a particular wandering boss ;3)", 
 		
