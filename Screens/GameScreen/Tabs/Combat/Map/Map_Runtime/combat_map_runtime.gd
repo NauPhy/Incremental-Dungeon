@@ -23,9 +23,12 @@ func getBossName() -> String :
 	var boss = mapData.bossEncounter.enemies[0]
 	return boss.getName()
 func getEnvironment() -> MyEnvironment :
+	var ret : MyEnvironment
 	if (mapData == null) :
-		return MyEnvironment.new()
-	return MegaFile.getEnvironment(mapData.environmentName)
+		ret = MyEnvironment.new()
+	else :
+		ret = MegaFile.getEnvironment(mapData.environmentName)
+	return ret
 func getRoomRow(room : Node) :
 	return getRow(room)
 		

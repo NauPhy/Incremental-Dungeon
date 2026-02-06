@@ -400,9 +400,11 @@ func queueSaveGame_playSfx(slot : Definitions.saveSlots) :
 			await purgeComplete
 			break
 		elif (taskList.size() > 0) :
+			purgeMutex.unlock()
 			await purgeComplete
 			continue
 		else :
+			purgeMutex.unlock()
 			break
 	AudioHandler.playMenuSfx(AudioHandler.menuSfx.save)
 	

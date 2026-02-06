@@ -463,7 +463,8 @@ func onLoad(loadDict : Dictionary) :
 		if (currentFloorIndex == 0) :
 			$FloorDisplay.setTutorialBiome()
 		else : 
-			$FloorDisplay.setEnvironment(currentFloor.getEnvironment())
+			var env : MyEnvironment = currentFloor.getEnvironment()
+			$FloorDisplay.setEnvironment(env)
 	enableUI()
 	$MapContainer.visible = true
 	currentFloor.visible = true

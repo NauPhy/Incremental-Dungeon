@@ -125,6 +125,7 @@ func _on_filter_button_pressed() -> void:
 func _on_filter_save_pressed() :
 	var tempCopy = IGOptions.getIGOptionsCopy()
 	tempCopy["filter"] = myFilter.getData()
+	optionDictCopy["filter"] = myFilter.getData()
 	IGOptions.saveAndUpdateIGOptions(tempCopy)
 	AudioHandler.playMenuSfx(AudioHandler.menuSfx.save)
 

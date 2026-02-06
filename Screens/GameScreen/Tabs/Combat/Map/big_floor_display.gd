@@ -23,7 +23,7 @@ func setMaxFloor(val) :
 	$FloorDisplay.setMaxFloor(val)
 	
 func setEnvironment(val : MyEnvironment) :
-	$BiomeLabel.text = " " + val.getName().to_upper() + " "
+	$BiomeLabel.text = " " + val.title.to_upper() + " "
 	$FactionSymbol.clearAllSymbols()
 	for faction : EnemyGroups.factionEnum in val.permittedFactions :
 		$FactionSymbol.setSymbol(faction)

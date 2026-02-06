@@ -459,6 +459,10 @@ func unlockAchievement(val : Definitions.achievementEnum) :
 		print("Failed to unlock achievement: " + Definitions.achievementDictionary[val])
 	if (!Steam.storeStats()) :
 		print("Failed to store achievement: " + Definitions.achievementDictionary[val])
+	unlockLastAchievement()
+	
+
+func unlockLastAchievement() :
 	if (oneHundredAchCache) :
 		return
 	var oneHundredAch = Steam.getAchievement(Definitions.achievementDictionary[Definitions.achievementEnum.all_complete]) 
@@ -468,8 +472,11 @@ func unlockAchievement(val : Definitions.achievementEnum) :
 		return
 	var unlock : bool = true
 	for key in Definitions.achievementDictionary.keys() :
+		if (key == Definitions.achievementEnum.all_complete) :
+			continue
 		var ach = Steam.getAchievement(Definitions.achievementDictionary[key])
 		if (!ach["achieved"]) :
+			#print("achievement not unlocked: " + Definitions.achievementDictionary[key])
 			unlock = false
 			break
 	if (unlock) :

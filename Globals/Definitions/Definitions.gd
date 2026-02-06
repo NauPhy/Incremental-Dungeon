@@ -1,5 +1,5 @@
 extends Node
-const currentVersion : String = "V1.09 release"
+const currentVersion : String = "V1.10 release"
 var GODMODE : bool = false
 var DEVMODE : bool = false
 var steamEnabled : bool = false
@@ -8,7 +8,7 @@ func _ready() :
 	attributeCount = 0
 	for key in attributeDictionary :
 		attributeCount += 1
-	if (currentVersion != "V1.09 development") :
+	if (currentVersion != "V1.10 development") :
 		GODMODE = false
 		DEVMODE = false
 	if (steamInitialise()) :
@@ -26,6 +26,8 @@ func steamInitialise() -> bool :
 		print("Owned: " + str(owned)) 
 		print("Installed: " + str(installed))
 		hasDLC = owned && installed
+		## Compensate for old files
+		Helpers.unlockLastAchievement()
 		return true
 	return false
 	
