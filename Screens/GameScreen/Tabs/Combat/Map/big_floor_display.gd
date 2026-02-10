@@ -16,8 +16,8 @@ signal floorUp
 func _on_floor_display_floor_up() -> void:
 	emit_signal("floorUp")
 
-func setFloor(val) :
-	$FloorDisplay.setFloor(val)
+func setFloor(val, showMaxFloor : bool) :
+	$FloorDisplay.setFloor(val, showMaxFloor)
 	
 func setMaxFloor(val) :
 	$FloorDisplay.setMaxFloor(val)

@@ -106,7 +106,7 @@ func checkEquipmentEncyclopedia() :
 			unlock = false
 			break
 	if (unlock) :
-		Helpers.unlockAchievement(Definitions.achievementEnum.all_equipment)
+		SteamWrapper.unlockAchievement(Definitions.achievementEnum.all_equipment)
 
 func getSaveDictionary() -> Dictionary :
 	var tempDict : Dictionary = {}

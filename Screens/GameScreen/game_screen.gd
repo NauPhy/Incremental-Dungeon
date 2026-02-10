@@ -416,7 +416,13 @@ func _on_currently_equipped_item_requested(emitter, type) :
 		emitter.provideCurrentlyEquippedItem(ret.core)
 	else :
 		emitter.provideCurrentlyEquippedItem(null)
-
+func _on_apophis_killed_requested(emitter) :
+	emitter.provideApophisKilled(apophisKilledOnThisFile)
+func _on_return_to_menu_requested() :
+	await SaveManager.queueSaveGame(Definitions.saveSlots.current)
+	if (SaveManager.taskList.size() > 0) :
+		await SaveManager.purgeComplete
+	emit_signal("exitToMenu")
 func _on_shop_shortcut_selected(type : String) :
 	var details
 	if (type == "routine") :
@@ -620,6 +626,10 @@ func beforeLoad(newSave) :
 			tab.connect("itemListForYourInspectionGoodSir", _item_list_inspection)
 		if (tab.has_signal("currentlyEquippedItemRequested")) :
 			tab.connect("currentlyEquippedItemRequested", _on_currently_equipped_item_requested)
+		if (tab.has_signal("apophisKilledRequested")) :
+			tab.connect("apophisKilledRequested", _on_apophis_killed_requested)
+		if (tab.has_signal("returnToMenuRequested")) :
+			tab.connect("returnToMenuRequested", _on_return_to_menu_requested)
 		#if (tab.has_signal("isReforgedHoveredRequested")) :
 			#tab.connect("isReforgedHoveredRequested", _on_reforge_hovered_requested)
 		#if (tab.has_signal("playerAttributeModsRequested")) :
@@ -708,7 +718,7 @@ func createApophisScreen() :
 	var newPopup = binaryPopupLoader.instantiate()
 	add_child(newPopup)
 	newPopup.setTitle("The Demon King is Slain!")
-	newPopup.setText("Congratulations, you've defeated the Demon King! The Surface world is saved! Or something. This game was going to have a more in depth story but game development is hard. In any case, there are actually 20 biomes, 25 bosses, and 10 factions in this game, and levels 1-9 are randomly generated! So I encourage you to check out endless mode or try one of the other classes. Do be aware that endless mode will have integer overflow issues eventually! Thanks for playing!")
+	newPopup.setText("Congratulations, you've defeated the Demon King! The Surface world is saved! Or something. This game was going to have a more in depth story but game development is hard. In any case, there are actually 20 biomes, 25 bosses, and 10 factions in this game, and levels 1-9 are randomly generated! So I encourage you to check out endless* mode or try one of the other classes. Thanks for playing!\n\n*Endless mode ends at floor 190 because the numbers get too big.")
 	newPopup.setButton0Name(" Continue playing (begin endless mode) ")
 	newPopup.setButton1Name(" Return to Main Menu ")
 	var choice = await newPopup.binaryChosen

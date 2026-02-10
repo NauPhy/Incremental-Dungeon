@@ -489,7 +489,7 @@ func checkDragon(room) :
 			for enemy in encounter.enemies :
 				var myName = enemy.getName()
 				if (myName.to_upper().find("DRAGON") != -1) :
-					Helpers.unlockAchievement(Definitions.achievementEnum.legend)
+					SteamWrapper.unlockAchievement(Definitions.achievementEnum.legend)
 signal apophisKilled
 func checkApophis(room) :
 	if (room.has_method("getEncounterRef")) :

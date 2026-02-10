@@ -451,49 +451,10 @@ func engineeringNotation(origVal) -> String :
 func pythag(val : Vector2) :
 	return sqrt(pow(val.x,2)+pow(val.y,2))
 
-var oneHundredAchCache : bool = false
-func unlockAchievement(val : Definitions.achievementEnum) :
-	if (!Definitions.steamEnabled || Definitions.GODMODE || Definitions.DEVMODE) :
-		return
-	if (!Steam.setAchievement(Definitions.achievementDictionary[val])) :
-		print("Failed to unlock achievement: " + Definitions.achievementDictionary[val])
-	if (!Steam.storeStats()) :
-		print("Failed to store achievement: " + Definitions.achievementDictionary[val])
-	unlockLastAchievement()
-	
-
-func unlockLastAchievement() :
-	if (oneHundredAchCache) :
-		return
-	var oneHundredAch = Steam.getAchievement(Definitions.achievementDictionary[Definitions.achievementEnum.all_complete]) 
-	var oneHundredCompleted : bool = oneHundredAch["achieved"]
-	if (oneHundredCompleted) :
-		oneHundredAchCache = true
-		return
-	var unlock : bool = true
-	for key in Definitions.achievementDictionary.keys() :
-		if (key == Definitions.achievementEnum.all_complete) :
-			continue
-		var ach = Steam.getAchievement(Definitions.achievementDictionary[key])
-		if (!ach["achieved"]) :
-			#print("achievement not unlocked: " + Definitions.achievementDictionary[key])
-			unlock = false
-			break
-	if (unlock) :
-		if (!Steam.setAchievement(Definitions.achievementDictionary[Definitions.achievementEnum.all_complete])) :
-			print("Failed to unlock achievement: " + Definitions.achievementDictionary[Definitions.achievementEnum.all_complete])
-		if (!Steam.storeStats()) :
-			print("Failed to store achievement: " + Definitions.achievementDictionary[Definitions.achievementEnum.all_complete])
-
 func isDLC(item : Equipment) -> bool :
 	if (Definitions.DLCWeapons.find(item.getItemName()) != -1) :
 		return true
 	return false
-	
-func handleBiomeAchievement(biome : MyEnvironment) :
-	var achEnum = Definitions.biomeAchievementMap.get(biome.getFileName())
-	if (achEnum != null) :
-		unlockAchievement(achEnum)
 		
 func highVisScroll(scrollContainer : ScrollContainer) :
 	var scroll : VScrollBar = scrollContainer.get_v_scroll_bar()

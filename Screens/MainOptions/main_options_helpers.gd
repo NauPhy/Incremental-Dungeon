@@ -75,7 +75,7 @@ func loadSettings() :
 func createGlobalDictionary(dict) :
 	for slot in range(1,5) :
 		var loadDict = SaveManager.loadSaveDict(slot as Definitions.saveSlots)
-		if (loadDict == null) :
+		if (loadDict == null || loadDict == {}) :
 			continue
 		var enemies = loadDict["/root/EnemyDatabase"]["killed"]
 		for key in enemies.keys() :

@@ -20,6 +20,7 @@ config/icon="res://Images/icon.svg"
 
 MegaFile="*res://Resources/mega_resource_reference_file.gd"
 Definitions="*res://Globals/Definitions/Definitions.gd"
+SteamWrapper="*res://Globals/steam_wrapper.gd"
 SaveManager="*res://Globals/save_manager.gd"
 Helpers="*res://Globals/Helpers.gd"
 SceneLoader="*res://ScenePreloads/SceneLoader.gd"
@@ -102,11 +103,6 @@ Options={
 [physics]
 
 common/physics_interpolation=true
-
-[rendering]
-
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
 
 [steam]
 

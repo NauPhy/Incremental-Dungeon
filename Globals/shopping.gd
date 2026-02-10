@@ -444,6 +444,7 @@ func _on_purchase_requested(item, _price, myCurrency, emitter, purchase : Purcha
 				threshold = 15
 			if (unlockedRoutines.size() >= threshold) :
 				allRoutinesPurchased = true
+			emitter.refreshPrice(item, itemPrices[type][index])
 		else :
 			emitter.refreshPrice(item, itemPrices[type][index])
 		emitter.softNotification(purchase)

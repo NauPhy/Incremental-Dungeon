@@ -35,7 +35,7 @@ func initialise(rewards : Dictionary) :
 			changed = true
 			encounteredItems.append(entry.getItemSceneRef().getItemName())
 	if (changed) :
-		encounteredItems.sort_custom(func(a,b) : a<b)
+		encounteredItems.sort_custom(func(a,b) : return a<b)
 		optionsCopy["encounteredItems"] = encounteredItems
 		IGOptions.saveAndUpdateIGOptions(optionsCopy)
 		IGOptions.updateGlobalSettings_items()

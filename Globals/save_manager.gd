@@ -95,6 +95,18 @@ func saveExists() -> bool :
 		if (FileAccess.file_exists(Definitions.slotPaths[key])) :
 			return true
 	return false
+func validateSaves() -> int :
+	var keys = Definitions.slotNames.keys()
+	keys.sort_custom(func(a,b):return a<b)
+	for index in range(0, keys.size()) :
+		var key = keys[index]
+		if (!FileAccess.file_exists(Definitions.slotPaths[key])) :
+			continue
+		var text = FileAccess.open(Definitions.slotPaths[key], FileAccess.READ).get_as_text()
+		var dict = JSON.parse_string(text)
+		if (dict == null || dict == {}) :
+			return index
+	return -1
 #############################################################
 ## Saving Sequence
 
@@ -233,6 +245,7 @@ func handleSafetySave() :
 var saveActive : bool = false
 var saveMutex = Mutex.new()
 func saveGame(slot : Definitions.saveSlots) :
+	MainOptionsHelpers.saveSettings(globalSettings)
 	saveMutex.lock()
 	if (saveActive) :
 		saveMutex.unlock()
@@ -316,7 +329,7 @@ func loadSaveDict(slot : Definitions.saveSlots) :
 	if (!FileAccess.file_exists(Definitions.slotPaths[slot])) : return null
 	var text = FileAccess.open(Definitions.slotPaths[slot], FileAccess.READ).get_as_text()
 	var centralisedGameState = JSON.parse_string(text)
-	JSON.new().parse(text)
+	#JSON.new().parse(text)
 	if (centralisedGameState == null) :
 		centralisedGameState = {}
 	fixEnumRecursive(centralisedGameState)
@@ -424,6 +437,7 @@ var saveQueueSemaphore = 0
 signal saveFinished
 func queueSaveGame(slot) :
 	var first : bool = true
+	await MainOptionsHelpers.queueSaveSettings(globalSettings)
 	while (true) :
 		saveMutex.lock()
 		if (first) :
