@@ -62,7 +62,7 @@ func getDetails() :
 	return $Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/EquipmentDetails
 signal finished
 func _on_return_button_pressed() -> void:
-	emit_signal("finished", workingDict)
+	emit_signal("finished")
 	queue_free()
 	
 func _on_equipment_details_individual_equipment_take_changed(itemSceneRef : Node, index : int) -> void:

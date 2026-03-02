@@ -28,13 +28,15 @@ func _ready() :
 			index += 1
 	$Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/RichTextLabel2.text = str(EnemyDatabase.getSoulCount())
 	$Panel/CenterContainer/Window/VBoxContainer/HBoxContainer/RichTextLabel/TooltipTrigger.currentLayer = layer+1
+	var copy = IGOptions.getIGOptionsCopy()
+	var global = SaveManager.getGlobalSettings()
 	for enemy in enemyDict :
 		var newEntry = getContainer().get_node("Sample").duplicate()
 		getContainer().add_child(newEntry)
 		newEntry.visible = true
 		var isDiscovered : bool
-		if (IGOptions.getIGOptionsCopy()[IGOptions.options.globalEncyclopedia]) :
-			var val = SaveManager.getGlobalSettings()["globalEncyclopedia"]["beastiary"].get(enemy.getResourceName())
+		if (copy[IGOptions.options.globalEncyclopedia]) :
+			var val = global["globalEncyclopedia"]["beastiary"].get(enemy.getResourceName())
 			isDiscovered = val != null && val != 0
 		else :
 			isDiscovered = EnemyDatabase.getKillCount(enemy.getResourceName()) != 0
