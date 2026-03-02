@@ -1,5 +1,5 @@
 extends Node
-const currentVersion : String = "V1.12 release"
+const currentVersion : String = "V1.18 release"
 var GODMODE : bool = false
 var DEVMODE : bool = false
 var steamEnabled : bool = false
@@ -8,7 +8,7 @@ func _ready() :
 	attributeCount = 0
 	for key in attributeDictionary :
 		attributeCount += 1
-	if (currentVersion != "V1.12 development") :
+	if (currentVersion != "V1.18 development") :
 		GODMODE = false
 		DEVMODE = false
 	
@@ -236,10 +236,10 @@ var slotPaths = {
 	saveSlots.slot3 : "user://save_slot_3.json"
 }
 var slotNames = {
-	saveSlots.slot0 : "save slot 0",
-	saveSlots.slot1 : "save slot 1",
-	saveSlots.slot2 : "save slot 2",
-	saveSlots.slot3 : "save slot 3"
+	saveSlots.slot0 : "save slot 1",
+	saveSlots.slot1 : "save slot 2",
+	saveSlots.slot2 : "save slot 3",
+	saveSlots.slot3 : "save slot 4"
 }
 const mainSettingsPath = "user://main_settings.json"
 #enum scalingEnum {
