@@ -110,5 +110,6 @@ func checkAllEnemies(globalKillDict : Dictionary) :
 		if ((!enemy.enemyGroups.isEligible) && (forcedEnemyInclude.find(key) == -1)) :
 			continue
 		unlock = false
+		break
 	if (unlock) :
 		unlockAchievement(Definitions.achievementEnum.all_monsters)

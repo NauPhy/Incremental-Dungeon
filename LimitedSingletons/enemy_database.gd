@@ -27,6 +27,8 @@ func getEnemyKilled(enemyName : String) -> bool :
 	#emit_signal("enemyDataChanged", enemyName)
 func incrementKills(enemyName : String) :
 	var newEntry : bool = false;
+	if (killedDictionary.get(enemyName) == null) :
+		killedDictionary[enemyName] = 0
 	killedDictionary[enemyName] += 1
 	var current = SaveManager.getGlobalSettings()
 	if (current["globalEncyclopedia"]["beastiary"].get(enemyName) == null || current["globalEncyclopedia"]["beastiary"].get(enemyName) == 0) :
@@ -36,7 +38,7 @@ func incrementKills(enemyName : String) :
 		current["globalEncyclopedia"]["beastiary"][enemyName] += 1
 	SaveManager.saveGlobalSettings(current)
 	if (newEntry) :
-		emit_signal("checkForAllEnemiesAchievement", current)
+		emit_signal("checkForAllEnemiesAchievement", current["globalEncyclopedia"]["beastiary"])
 	emit_signal("enemyDataChanged", enemyName)
 func getAllEnemyDropsCollected(enemyName : String) -> bool :
 	if (!getEnemyKilled(enemyName)) :
@@ -108,7 +110,7 @@ func onLoad(loadDict : Dictionary) :
 			changed = true
 	if (changed) :
 		SaveManager.saveGlobalSettings(current)
-		emit_signal("checkForAllEnemiesAchievement", current)
+		emit_signal("checkForAllEnemiesAchievement", current["globalEncyclopedia"]["beastiary"])
 	itemsObtainedDictionary = loadDict["items"]
 	await get_tree().process_frame
 	emit_signal("enemyDataChanged", "ALL")

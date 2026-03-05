@@ -1,5 +1,5 @@
 extends Node
-const currentVersion : String = "V1.18 release"
+const currentVersion : String = "V1.19 development"
 var GODMODE : bool = false
 var DEVMODE : bool = false
 var steamEnabled : bool = false
@@ -8,7 +8,7 @@ func _ready() :
 	attributeCount = 0
 	for key in attributeDictionary :
 		attributeCount += 1
-	if (currentVersion != "V1.18 development") :
+	if (currentVersion != "V1.19 development") :
 		GODMODE = false
 		DEVMODE = false
 	
